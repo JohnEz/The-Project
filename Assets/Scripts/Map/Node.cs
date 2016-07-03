@@ -7,9 +7,9 @@ public struct Neighbour {
 }
 
 public enum Walkable {
-	Impassable,
+	Walkable,
 	Flying,
-	Walkable
+	Impassable
 }
 
 public class Node : MonoBehaviour {
@@ -20,11 +20,11 @@ public class Node : MonoBehaviour {
 	public int y;
 
 	[System.NonSerialized]
-	public Neighbour[] neighbours;
+	public List<Neighbour> neighbours;
 	[System.NonSerialized]
 	public Neighbour previous;
 	[System.NonSerialized]
-	public float cost = Mathf.Infinity;
+	public float cost = 0;
 	[System.NonSerialized]
 	public float dist = 0;
 	public float moveCost = 0;

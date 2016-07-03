@@ -81,12 +81,17 @@ public class TileMap : MonoBehaviour {
 
 					visual.GetComponent<SpriteRenderer> ().sortingOrder = level.layers [j].depth;
 
-					if (tiles [i].walkable > visual.GetComponent<Node> ().walkable) {
+					if (tiles [i].walkable < visual.GetComponent<Node> ().walkable) {
 						tiles [i].walkable = visual.GetComponent<Node> ().walkable;
+					}
+
+					if (tiles [i].moveCost < visual.GetComponent<Node> ().moveCost) {
+						tiles [i].moveCost = visual.GetComponent<Node> ().moveCost;
 					}
 				}
 			}
 		}
+		CalculateNeighbours ();
 	}
 
 	void CalculateNeighbours() {
@@ -100,32 +105,38 @@ public class TileMap : MonoBehaviour {
 			x = i % mapWidth;
 			y = i / mapHeight;
 
+			getNode (x, y).neighbours = new List<Neighbour>();
+
 			//set all neighbours
 			if (x > 0) {
 				Neighbour left;
-				left.node = tiles [y * mapWidth + x - 1];
+				left.node = getNode(x-1, y);
 				left.direction = new Vector2 (-1, 0);
-				tiles [y * mapWidth + x].neighbours [0] = left; //left
+				getNode(x, y).neighbours.Add(left);
 			}
 			if (x < mapWidth-1) {
 				Neighbour right;
-				right.node = tiles [y * mapWidth + x + 1];
+				right.node = getNode(x+1, y);
 				right.direction = new Vector2 (1, 0);
-				tiles [y * mapWidth + x].neighbours [1] = right; //right
+				getNode(x, y).neighbours.Add(right);
 			}
 			if (y > 0) {
 				Neighbour up;
-				up.node = tiles [(y - 1) * mapWidth + x];
+				up.node = getNode(x, y-1);
 				up.direction = new Vector2 (0, -1);
-				tiles [y * mapWidth + x].neighbours [2] = up; //up
+				getNode(x, y).neighbours.Add(up);
 			}
 			if (y < mapHeight-1) {
 				Neighbour down;
-				down.node = tiles [(y + 1) * mapWidth + x];
+				down.node = getNode(x, y+1);
 				down.direction = new Vector2 (0, 1);
-				tiles [y * mapWidth + x].neighbours [3] = down; //down
+				getNode(x, y).neighbours.Add(down);
 			}
 
 		}
+	}
+
+	public Node getNode(int x, int y) {
+		return tiles [y * mapWidth + x];
 	}
 }

@@ -7,7 +7,7 @@ public class CameraController : MonoBehaviour {
 	const float ZOOMSPEED = 0.5f; //speed the camera zooms
 	const float MINZOOM = 2f; //minimum zoom value
 	const float MAXZOOM = 8f; //maximum zoom value
-	const float BOUNDARY = 5; //distance from edge of screen that the camera starts to move
+	const float BOUNDARY = -5; //distance from edge of screen that the camera starts to move
 
 	public float screenWidth = 0;
 	public float screenHeight = 0;
@@ -23,9 +23,13 @@ public class CameraController : MonoBehaviour {
 	public float TestX = 0;
 	public float TestY = 0;
 
+	public float textureSize = 128f;
+
 	// Use this for initialization
 	void Start () {
+		float unitsPerPixel = 1f / textureSize;
 
+		Camera.main.orthographicSize = (Screen.height / 2f) * unitsPerPixel;
 	}
 
 	public void Initialise(TileMap map) {
@@ -39,7 +43,7 @@ public class CameraController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		UpdateMovement ();
-		UpdateZoom ();
+		//UpdateZoom ();
 	}
 
 	//updates the position of the camera via keyboard input
