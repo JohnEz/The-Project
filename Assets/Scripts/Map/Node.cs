@@ -29,11 +29,13 @@ public class Node : MonoBehaviour {
 	public float dist = 0;
 	public float moveCost = 0;
 	public Walkable walkable;
+	public int level = 0;
+	public UnitController myUnit;
 
 
 	// Use this for initialization
 	void Start () {
-	
+
 	}
 	
 	// Update is called once per frame
