@@ -1,0 +1,319 @@
+fileFormatVersion: 2
+guid: 9b7f57030f54d2345ba6172eee1b29a0
+timeCreated: 1468096381
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: holder_sprite_2_0
+    21300002: holder_sprite_2_1
+    21300004: holder_sprite_2_2
+    21300006: holder_sprite_2_3
+    21300008: holder_sprite_2_4
+    21300010: holder_sprite_2_5
+    21300012: holder_sprite_2_6
+    21300014: holder_sprite_2_7
+    21300016: holder_sprite_2_8
+    21300018: holder_sprite_2_9
+    21300020: holder_sprite_2_10
+    21300022: holder_sprite_2_11
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -3
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: 0
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 176
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: holder_sprite_2_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 384
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -26, y: 62}
+        - {x: -55, y: -5}
+        - {x: -55, y: -57}
+        - {x: -44, y: -64}
+        - {x: 44, y: -64}
+        - {x: 56, y: -62}
+        - {x: 56, y: 11}
+        - {x: 39, y: 62}
+    - name: holder_sprite_2_1
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 384
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 43, y: 15}
+        - {x: 40, y: 20}
+        - {x: 55, y: 36}
+        - {x: 23, y: 64}
+        - {x: -29, y: 64}
+        - {x: -55, y: 28}
+        - {x: -55, y: -62}
+        - {x: -54, y: -64}
+        - {x: 52, y: -64}
+        - {x: 55, y: -63}
+        - {x: 59, y: -46}
+        - {x: 59, y: 4}
+        - {x: 47, y: 14}
+    - name: holder_sprite_2_2
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 384
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 20, y: 62}
+        - {x: -21, y: 62}
+        - {x: -55, y: -3}
+        - {x: -55, y: -64}
+        - {x: 56, y: -64}
+        - {x: 56, y: -8}
+        - {x: 37, y: 54}
+    - name: holder_sprite_2_3
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 256
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -3, y: 64}
+        - {x: -36, y: 64}
+        - {x: -43, y: 47}
+        - {x: -56, y: 1}
+        - {x: -56, y: -64}
+        - {x: 55, y: -64}
+        - {x: 55, y: -31}
+        - {x: 18, y: 55}
+    - name: holder_sprite_2_4
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 256
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -56, y: -64}
+        - {x: 55, y: -64}
+        - {x: 55, y: 20}
+        - {x: 47, y: 64}
+        - {x: -24, y: 64}
+        - {x: -56, y: -7}
+    - name: holder_sprite_2_5
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 256
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -39, y: 64}
+        - {x: -56, y: 18}
+        - {x: -56, y: -61}
+        - {x: -50, y: -64}
+        - {x: 37, y: -64}
+        - {x: 55, y: -57}
+        - {x: 55, y: -4}
+        - {x: 23, y: 64}
+    - name: holder_sprite_2_6
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 128
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -6, y: 64}
+        - {x: -9, y: 63}
+        - {x: -55, y: 9}
+        - {x: -55, y: -60}
+        - {x: -53, y: -64}
+        - {x: 40, y: -64}
+        - {x: 53, y: -61}
+        - {x: 56, y: -51}
+        - {x: 56, y: 18}
+        - {x: 26, y: 64}
+    - name: holder_sprite_2_7
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 128
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 21, y: 64}
+        - {x: -23, y: 64}
+        - {x: -55, y: 23}
+        - {x: -55, y: -64}
+        - {x: 42, y: -64}
+        - {x: 56, y: -57}
+        - {x: 56, y: -10}
+        - {x: 40, y: 56}
+    - name: holder_sprite_2_8
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 128
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 44, y: -34}
+        - {x: 39, y: -32}
+        - {x: 49, y: -34}
+        - {x: 56, y: -30}
+        - {x: 56, y: 20}
+        - {x: 42, y: 64}
+        - {x: -4, y: 64}
+        - {x: -17, y: 55}
+        - {x: -55, y: -15}
+        - {x: -55, y: -62}
+        - {x: -48, y: -64}
+        - {x: 51, y: -64}
+        - {x: 56, y: -59}
+        - {x: 56, y: -41}
+        - {x: 50, y: -34}
+    - name: holder_sprite_2_9
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 31, y: 64}
+        - {x: -31, y: 64}
+        - {x: -55, y: -5}
+        - {x: -55, y: -61}
+        - {x: -54, y: -63}
+        - {x: -47, y: -64}
+        - {x: 41, y: -64}
+        - {x: 56, y: -55}
+        - {x: 56, y: -38}
+        - {x: 42, y: 62}
+    - name: holder_sprite_2_10
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 16, y: 64}
+        - {x: -16, y: 64}
+        - {x: -53, y: 1}
+        - {x: -55, y: -14}
+        - {x: -55, y: -55}
+        - {x: -44, y: -64}
+        - {x: 56, y: -64}
+        - {x: 56, y: 9}
+        - {x: 23, y: 61}
+      - - {x: -40, y: 35}
+        - {x: -39, y: 32}
+        - {x: -35, y: 32}
+        - {x: -33, y: 34}
+        - {x: -34, y: 37}
+        - {x: -38, y: 37}
+      - - {x: 37, y: 32}
+        - {x: 40, y: 33}
+        - {x: 40, y: 36}
+        - {x: 37, y: 37}
+        - {x: 35, y: 35}
+    - name: holder_sprite_2_11
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 0
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -55, y: 64}
+        - {x: -55, y: -64}
+        - {x: 56, y: -64}
+        - {x: 56, y: 33}
+        - {x: 27, y: 64}
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

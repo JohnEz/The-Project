@@ -4,9 +4,9 @@ using System.Collections;
 public class CameraController : MonoBehaviour {
 
 	const float MOVESPEED = 12; //speed the camera moves
-	const float ZOOMSPEED = 0.5f; //speed the camera zooms
-	const float MINZOOM = 2f; //minimum zoom value
-	const float MAXZOOM = 8f; //maximum zoom value
+	const float ZOOMSPEED = 0.2f; //speed the camera zooms
+	const float MINZOOM = 1f; //minimum zoom value
+	const float MAXZOOM = 2f; //maximum zoom value
 	const float BOUNDARY = -5; //distance from edge of screen that the camera starts to move
 
 	public float screenWidth = 0;
@@ -25,11 +25,13 @@ public class CameraController : MonoBehaviour {
 
 	public float textureSize = 128f;
 
+	float currentZoom = 1f;
+
 	// Use this for initialization
 	void Start () {
 		float unitsPerPixel = 1f / textureSize;
 
-		Camera.main.orthographicSize = (Screen.height / 2f) * unitsPerPixel;
+		Camera.main.orthographicSize = ((Screen.height / 2f) * unitsPerPixel)*currentZoom;
 	}
 
 	public void Initialise(TileMap map) {
@@ -43,7 +45,7 @@ public class CameraController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		UpdateMovement ();
-		//UpdateZoom ();
+		UpdateZoom ();
 	}
 
 	//updates the position of the camera via keyboard input
@@ -88,27 +90,31 @@ public class CameraController : MonoBehaviour {
 	void UpdateZoom() {
 		float d = Input.GetAxis("Mouse ScrollWheel");
 
+		float unitsPerPixel = 1f / textureSize;
 
 		Camera cam = GetComponent<Camera> ();
 
 		if (d > 0f)
 		{
 			//zoom in
-			cam.orthographicSize -= ZOOMSPEED;
+			currentZoom -= ZOOMSPEED;
 
-			if (cam.orthographicSize < MINZOOM) {
-				cam.orthographicSize = MINZOOM;
+			if (currentZoom < MINZOOM) {
+				currentZoom = MINZOOM;
 			}
 		}
 		else if (d < 0f)
 		{
 			//zoom out
-			cam.orthographicSize += ZOOMSPEED;
+			currentZoom += ZOOMSPEED;
 
-			if (cam.orthographicSize > MAXZOOM) {
-				cam.orthographicSize = MAXZOOM;
+			if (currentZoom > MAXZOOM) {
+				currentZoom = MAXZOOM;
 			}
 		}
+
+		cam.orthographicSize = ((Screen.height / 2f) * unitsPerPixel)*currentZoom;
+
 	}
 
 

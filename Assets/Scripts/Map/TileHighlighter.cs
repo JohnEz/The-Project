@@ -27,6 +27,8 @@ public class TileHighlighter : MonoBehaviour {
 	float maxAlpha = 0.5f;
 	float minAlpha = 0.05f;
 
+	SquareTarget myTarget = SquareTarget.NONE;
+
 	// Use this for initialization
 	void Start () {
 
@@ -41,12 +43,7 @@ public class TileHighlighter : MonoBehaviour {
 	{
 		Node myNode = GetComponentInParent<Node> ();
 		if (hovered) {
-			Pathfinder pathfinder = GetComponentInParent<Pathfinder> ();
-			Dictionary<Node, float> reachableNodes = pathfinder.findReachableTiles (myNode, 3, Walkable.Walkable);
-			foreach (Node n in reachableNodes.Keys) {
-				n.GetComponentInChildren<TileHighlighter> ().highlight (SquareTarget.MOVEMENT);
-				n.GetComponentInChildren<TileHighlighter> ().showHighlight (true);
-			}
+			GetComponentInParent<TurnManager> ().TileClicked (myNode, myTarget);
 		}
 	}
 
@@ -92,6 +89,8 @@ public class TileHighlighter : MonoBehaviour {
 		SpriteRenderer mySprite = GetComponent<SpriteRenderer> ();
 
 		float startAlpha = mySprite.color.a;
+
+		myTarget = targetType;
 
 		switch (targetType) {
 		case SquareTarget.MOVEMENT:
