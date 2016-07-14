@@ -17,12 +17,16 @@ public class UnitManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+
+	}
+
+	public void Initialise() {
 		units = new List<UnitController> ();
 		map = GetComponentInChildren<TileMap> ();
 		map.Initialise ();
 		SpawnUnit (0, 0, 0, 0, 1);
-		SpawnUnit (0, 0, 5, 5, 1);
-		SpawnUnit (0, 1, 4, 4, 0);
+		SpawnUnit (0, 1, 5, 5, 1);
+		SpawnUnit (0, 2, 4, 4, 0);
 	}
 	
 	// Update is called once per frame
@@ -42,6 +46,14 @@ public class UnitManager : MonoBehaviour {
 		unitController.FaceDirection (Vector2.down);
 		unitController.myManager = this;
 		units.Add (unitController);
+	}
+
+	public void StartTurn(int playersTurn) {
+		foreach (UnitController unit in units) {
+			if (unit.myTeam == playersTurn) {
+				unit.NewTurn ();
+			}
+		}
 	}
 
 	public bool SelectUnit(UnitController unit) {
@@ -70,6 +82,25 @@ public class UnitManager : MonoBehaviour {
 	}
 
 	public void UnitFinishedMoving() {
-		GetComponent<TurnManager> ().FinishedMoving ();
+		TurnManager turnManager = GetComponent<TurnManager> ();
+		turnManager.FinishedMoving ();
+
+		//check to see if that was the last thing the player could do
+		if (PlayerOutOfActions (turnManager.playersTurn)) {
+			turnManager.EndTurn ();
+		}
+	}
+
+	public bool PlayerOutOfActions(int team) {
+		bool noActions = true;
+
+		foreach (UnitController unit in units) {
+			if (unit.myTeam == team && unit.actionPoints > 0) {
+				noActions = false;
+			}
+		}
+
+		return noActions;
+
 	}
 }

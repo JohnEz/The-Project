@@ -14,7 +14,7 @@ public class UnitController : MonoBehaviour {
 
 
 	//constants
-	const float WALKSPEED = 1.75f;
+	const float WALKSPEED = 2.75f;
 	const float CLOSE_ENOUGH_TO_TILE = 0.005f;
 
 	//Pathfinding
@@ -42,6 +42,10 @@ public class UnitController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		FollowPath ();
+	}
+
+	public void NewTurn() {
+		actionPoints = 1;
 	}
 
 	public void Spawn(int team, int player, Node startNode) {

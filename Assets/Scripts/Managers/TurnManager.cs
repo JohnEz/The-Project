@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public enum TurnPhase {
 	TURN_STARTING,
@@ -9,24 +10,68 @@ public enum TurnPhase {
 	TURN_ENDING
 }
 
+public struct Player {
+	public string name;
+	public bool ai;
+}
+
 public class TurnManager : MonoBehaviour {
 
 	UnitManager unitManager;
 
-	TurnPhase currentPhase = TurnPhase.WAITING_FOR_INPUT;
-	int playersTurn = 1;
+	TurnPhase currentPhase = TurnPhase.TURN_STARTING;
+
+	List<Player> players;
+	public int playersTurn = -1;
 
 	// Use this for initialization
 	void Start () {
 		unitManager = GetComponent<UnitManager> ();
+		unitManager.Initialise ();
+		AddPlayers ();
+		StartNewTurn ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+		if (Input.GetKeyUp (KeyCode.X) && currentPhase == TurnPhase.WAITING_FOR_INPUT) {
+			EndTurn ();
+		}
+	}
+
+	void AddPlayers() {
+		players = new List<Player> ();
+
+		Player p1 = new Player ();
+		p1.name = "Player 1";
+		p1.ai = false;
+		players.Add (p1);
+
+		Player p2 = new Player ();
+		p2.name = "Player 2";
+		p2.ai = false;
+		players.Add (p2);
+
+		Player p3 = new Player ();
+		p3.name = "AI";
+		p3.ai = true;
+		players.Add (p3);
+
 	}
 
 	//FINITE STATE MACHINE
+
+	public void StartNewTurn() {
+		currentPhase = TurnPhase.TURN_STARTING;
+		playersTurn++;
+		playersTurn = playersTurn % players.Count;
+		GetComponent<UnitManager> ().StartTurn (playersTurn);
+		GetComponentInChildren<UserInterfaceController> ().StartNewTurn (players [playersTurn].name + " turn");
+	}
+
+	public void FinishStartingTurn() {
+		currentPhase = TurnPhase.WAITING_FOR_INPUT;
+	}
 
 	public void StartMoving() {
 		currentPhase = TurnPhase.UNIT_MOVING;
@@ -34,6 +79,11 @@ public class TurnManager : MonoBehaviour {
 
 	public void FinishedMoving() {
 		currentPhase = TurnPhase.WAITING_FOR_INPUT;
+	}
+
+	public void EndTurn() {
+		currentPhase = TurnPhase.TURN_ENDING;
+		StartNewTurn ();
 	}
 
 	//MOVEMENT PHASE
@@ -71,7 +121,7 @@ public class TurnManager : MonoBehaviour {
 	}
 
 	public bool ShowMovement (Node node) {
-		if (node.myUnit != null && node.myUnit.actionPoints > 0) {
+		if (node.myUnit != null && node.myUnit.actionPoints > 0 && node.myUnit.myTeam == playersTurn) {
 			if (unitManager.SelectUnit (node.myUnit)) {
 				unitManager.ShowMovement (node.myUnit);
 			}
