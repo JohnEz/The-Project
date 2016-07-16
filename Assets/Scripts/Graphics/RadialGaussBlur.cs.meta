@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 3892593ef3456f14283f028ec8b1b364
+timeCreated: 1468666543
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - radialGaussShader: {fileID: 4800000, guid: d542fc8cb79cd014bbe5ca050616c784, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
