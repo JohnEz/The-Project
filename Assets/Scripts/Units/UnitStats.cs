@@ -55,6 +55,7 @@ public class UnitStats : MonoBehaviour {
 		//TODO LOAD BASE STATS FROM DATABASE
 		currentHealth = MaxHealth;
 		currentMana = MaxMana;
+		myBuffs.Add (new Buff ());
 	}
 
 	public int GetModifiedStat(int baseValue, Stats stat) {

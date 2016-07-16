@@ -62,7 +62,10 @@ public class Pathfinder : MonoBehaviour {
 
 		}
 
-		costToNode = costToNode.Where (item => item.Key.myUnit == null).ToDictionary(item => item.Key, item => item.Value);
+		//if you cant end your path on a unit THIS IS DANGEROUS
+		if (team != -1) {
+			costToNode = costToNode.Where (item => item.Key.myUnit == null).ToDictionary (item => item.Key, item => item.Value);
+		}
 
 		return costToNode;
 	}
@@ -96,7 +99,7 @@ public class Pathfinder : MonoBehaviour {
 			passed = false;
 		}
 
-		if (endNode.myUnit != null && endNode.myUnit.myTeam != team) {
+		if (endNode.myUnit != null && endNode.myUnit.myTeam != team && team != -1) {
 			passed = false;
 		}
 
@@ -109,6 +112,18 @@ public class Pathfinder : MonoBehaviour {
 		}
 
 		return passed;
+	}
+
+	public List<Node> FindAttackableTiles(UnitController caster, BaseAbility ability) {
+		//TODO switch state on if its aoe, cleave, single target etc
+		return FindSingleTargetTiles(caster, ability);
+	}
+
+	List<Node> FindSingleTargetTiles(UnitController caster, BaseAbility ability) {
+		List<Node> reachableTiles = findReachableTiles (caster.myNode, ability.range, Walkable.Flying, -1).Keys.ToList();
+
+		//TODO check to see if the tile is in line of sight
+		return reachableTiles;
 	}
 
 

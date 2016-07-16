@@ -35,8 +35,9 @@ public class TurnManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (Input.GetKeyUp (KeyCode.X) && currentPhase == TurnPhase.WAITING_FOR_INPUT) {
-			EndTurn ();
+		//TODO these should probably be moved to a interface class
+		if (Input.GetKeyUp ("1") && currentPhase == TurnPhase.WAITING_FOR_INPUT) {
+			unitManager.ShowAbility (0);
 		}
 	}
 
@@ -82,6 +83,14 @@ public class TurnManager : MonoBehaviour {
 		currentPhase = TurnPhase.WAITING_FOR_INPUT;
 	}
 
+	public void StartAttacking() {
+		currentPhase = TurnPhase.UNIT_ATTACKING;
+	}
+
+	public void FinishedAttacking() {
+		currentPhase = TurnPhase.WAITING_FOR_INPUT;
+	}
+
 	public void EndTurn() {
 		currentPhase = TurnPhase.TURN_ENDING;
 		StartNewTurn ();
@@ -95,6 +104,7 @@ public class TurnManager : MonoBehaviour {
 			
 			switch (target) {
 			case SquareTarget.ATTACK:
+				ClickedAttack (node);
 				break;
 			case SquareTarget.MOVEMENT:
 				ClickedMovement (node);
@@ -118,6 +128,13 @@ public class TurnManager : MonoBehaviour {
 	public void ClickedUnselected(Node node) {
 		if (!ShowMovement (node)) {
 			unitManager.DeselectUnit ();
+		}
+	}
+
+	public void ClickedAttack(Node node) {
+		if (unitManager.AttackTile (node)) {
+			unitManager.DeselectUnit ();
+			StartAttacking ();
 		}
 	}
 

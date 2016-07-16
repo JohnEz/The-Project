@@ -160,4 +160,10 @@ public class TileMap : MonoBehaviour {
 		}
 	}
 
+	public Vector2 GetDirectionBetweenNodes(Node startNode, Node endNode) {
+		Vector2 direction = new Vector2 (endNode.x - startNode.x, -(endNode.y - startNode.y));
+
+		return direction.normalized;
+	}
+
 }

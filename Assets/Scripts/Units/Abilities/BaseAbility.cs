@@ -22,6 +22,24 @@ public class BaseAbility {
 
 	}
 
+	public bool CanTargetTile(UnitController caster, Node targetNode) {
+		bool canTarget = true;
+
+		if (targets == TargetType.ENEMY & (targetNode.myUnit == null || targetNode.myUnit.myTeam == caster.myTeam)) {
+			canTarget = false;
+		}
+
+		if (targets == TargetType.ALLY & (targetNode.myUnit == null || targetNode.myUnit.myTeam != caster.myTeam)) {
+			canTarget = false;
+		}
+
+		if (targets == TargetType.UNIT & targetNode.myUnit == null) {
+			canTarget = false;
+		}
+
+		return canTarget;
+	}
+
 	public int Cooldown {
 		get { return cooldown; }
 		set { cooldown = value; }

@@ -14,7 +14,7 @@ public class UnitController : MonoBehaviour {
 	public Vector2 facingDirection;
 
 	//constants
-	const float WALKSPEED = 2.75f;
+	const float WALKSPEED = 3.25f;
 	const float CLOSE_ENOUGH_TO_TILE = 0.005f;
 
 	//Pathfinding
@@ -59,7 +59,16 @@ public class UnitController : MonoBehaviour {
 	}
 
 	public void SetWalking(bool walking) {
-		anim.isWalking (walking);
+		anim.IsWalking (walking);
+	}
+
+	public void SetAttacking(bool attacking) {
+		anim.IsAttacking (attacking);
+	}
+
+	public void FinishedAttacking() {
+		myManager.UnitFinishedAttacking ();
+		myStats.ActionPoints--;
 	}
 
 	public void FollowPath() {
@@ -73,7 +82,7 @@ public class UnitController : MonoBehaviour {
 				if (myPath.Count > 1) {
 					FaceDirection (myPath [1].previous.direction);
 				} else {
-					anim.isWalking (false);
+					anim.IsWalking (false);
 					myPath [0].myUnit = this;
 					myNode = myPath [0];
 					myManager.UnitFinishedMoving ();
@@ -87,7 +96,7 @@ public class UnitController : MonoBehaviour {
 		myPath = newPath.path;
 		//TODO REMOVE MOVEMENT COST
 		FaceDirection (myPath [0].previous.direction);
-		anim.isWalking (true);
+		anim.IsWalking (true);
 	}
 
 	public bool TakeDamage(UnitController attacker, int damage) {
