@@ -45,6 +45,7 @@ public class UnitManager : MonoBehaviour {
 		unitController.Spawn(team, player, startingNode);
 		unitController.FaceDirection (Vector2.down);
 		unitController.myManager = this;
+		unitController.Initialise ();
 		units.Add (unitController);
 	}
 
@@ -70,7 +71,7 @@ public class UnitManager : MonoBehaviour {
 	}
 
 	public void ShowMovement(UnitController unit) {
-		Dictionary<Node, float> reachableTiles = map.pathfinder.findReachableTiles (unit.myNode, unit.movementSpeed, unit.walkingType, unit.myTeam);
+		Dictionary<Node, float> reachableTiles = map.pathfinder.findReachableTiles (unit.myNode, unit.myStats.Speed, unit.myStats.WalkingType, unit.myTeam);
 		map.highlighter.HighlightTiles (reachableTiles.Keys.ToList(), SquareTarget.MOVEMENT);
 	}
 
@@ -78,7 +79,7 @@ public class UnitManager : MonoBehaviour {
 		MovementPath path = map.pathfinder.getPathFromTile (targetNode);
 		selectedUnit.SetPath (path);
 		selectedUnit.myNode.myUnit = null;
-		selectedUnit.actionPoints--;
+		selectedUnit.myStats.ActionPoints--;
 	}
 
 	public void UnitFinishedMoving() {
@@ -95,7 +96,7 @@ public class UnitManager : MonoBehaviour {
 		bool noActions = true;
 
 		foreach (UnitController unit in units) {
-			if (unit.myTeam == team && unit.actionPoints > 0) {
+			if (unit.myTeam == team && unit.myStats.ActionPoints > 0) {
 				noActions = false;
 			}
 		}

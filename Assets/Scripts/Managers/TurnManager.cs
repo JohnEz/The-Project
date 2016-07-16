@@ -24,6 +24,7 @@ public class TurnManager : MonoBehaviour {
 	List<Player> players;
 	public int playersTurn = -1;
 
+
 	// Use this for initialization
 	void Start () {
 		unitManager = GetComponent<UnitManager> ();
@@ -121,7 +122,7 @@ public class TurnManager : MonoBehaviour {
 	}
 
 	public bool ShowMovement (Node node) {
-		if (node.myUnit != null && node.myUnit.actionPoints > 0 && node.myUnit.myTeam == playersTurn) {
+		if (node.myUnit != null && node.myUnit.myStats.ActionPoints > 0 && node.myUnit.myTeam == playersTurn) {
 			if (unitManager.SelectUnit (node.myUnit)) {
 				unitManager.ShowMovement (node.myUnit);
 			}

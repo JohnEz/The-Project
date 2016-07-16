@@ -3,15 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class UnitController : MonoBehaviour {
-
-	public Node myNode;
-
-	UnitAnimationController anim;
+	
+	[System.NonSerialized]
+	public UnitStats myStats;
+	[System.NonSerialized]
 	public UnitManager myManager;
+	UnitAnimationController anim;
 
+	[System.NonSerialized]
 	public Vector2 facingDirection;
-
-
 
 	//constants
 	const float WALKSPEED = 2.75f;
@@ -19,23 +19,22 @@ public class UnitController : MonoBehaviour {
 
 	//Pathfinding
 	List<Node> myPath;
+	[System.NonSerialized]
+	public Node myNode;
 
 	//Gameplay variables
 	public int myTeam = 1;
 	public int myPlayer = 1;
-	public int actionPoints = 1;
-
-	//Basic Stats
-	public int movementSpeed = 3;
-	public Walkable walkingType = Walkable.Walkable;
 
 	// Use this for initialization
 	void Start () {
-		Initialise ();
+
 	}
 
 	public void Initialise() {
 		anim = GetComponentInChildren<UnitAnimationController> ();
+		myStats = GetComponent<UnitStats> ();
+		myStats.Initailise ();
 		myPath = new List<Node> ();
 	}
 	
@@ -45,7 +44,7 @@ public class UnitController : MonoBehaviour {
 	}
 
 	public void NewTurn() {
-		actionPoints = 1;
+		myStats.ActionPoints = myStats.MaxActionPoints;
 	}
 
 	public void Spawn(int team, int player, Node startNode) {
@@ -89,5 +88,31 @@ public class UnitController : MonoBehaviour {
 		//TODO REMOVE MOVEMENT COST
 		FaceDirection (myPath [0].previous.direction);
 		anim.isWalking (true);
+	}
+
+	public bool TakeDamage(UnitController attacker, int damage) {
+		//if the damage has a source
+		if (attacker) {
+
+		}
+
+		myStats.Health -= damage;
+		return true;
+	}
+
+	public bool DealDamageTo(UnitController target, int damage) {
+
+		int endDamage = damage;
+
+		//add power to attack
+		endDamage += myStats.Power;
+
+		//check to see if damage is a crit
+		float critRoll = Random.value * 100;
+		if (critRoll <= myStats.Crit) {
+			endDamage = (int)(endDamage * 1.5f);
+		}
+			
+		return target.TakeDamage (this, endDamage);
 	}
 }
