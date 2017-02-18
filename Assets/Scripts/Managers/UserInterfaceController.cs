@@ -25,15 +25,17 @@ public class UserInterfaceController : MonoBehaviour {
 
 	}
 
-	public void StartNewTurn(string text) {
+	public void StartNewTurn(bool ally) {
 		showingTurn = true;
 		turnText = (GameObject)Instantiate (turnTextPrefab, turnTextPrefab.transform.position, Quaternion.identity);
 		turnText.transform.SetParent (transform);
 		turnText.transform.localPosition = turnTextPrefab.transform.position;
-		turnText.GetComponent<Text> ().text = text;
+		turnText.transform.localScale = new Vector3 (1, 1, 1);
+		turnText.transform.FindChild("AllyTurnImage").gameObject.SetActive(ally);
+		turnText.transform.FindChild("EnemyTurnImage").gameObject.SetActive(!ally);
 
 		//TODO THIS SHOULD FIND THE LENGTH OF THE ANIMATION AND NOT BE HARD CODED BUT IM TIRED
-		Destroy (turnText, 2);
+		Destroy (turnText, 1.917f);
 
 	}
 }

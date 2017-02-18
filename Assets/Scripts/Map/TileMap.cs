@@ -153,6 +153,14 @@ public class TileMap : MonoBehaviour {
 		return getNode(x, y).transform.position;
 	}
 
+	public float getWidth() {
+		return mapWidth;
+	}
+
+	public float getHeight() {
+		return mapHeight;
+	}
+
 	public void resetTiles() {
 		foreach (Node n in tiles) {
 			n.cost = 0;

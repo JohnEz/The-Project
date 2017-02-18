@@ -21,7 +21,7 @@ public class Buff {
 		}
 
 		for (int i = 0; i < percentMod.Length; ++i) {
-			percentMod [i] = 2.0f;
+			percentMod [i] = 1.0f;
 		}
 
 		duration = maxDuration;

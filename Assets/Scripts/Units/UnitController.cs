@@ -2,6 +2,16 @@
 using System.Collections;
 using System.Collections.Generic;
 
+public struct DamageTarget {
+	public UnitController target;
+	public int damage;
+
+	public DamageTarget(UnitController _target, int _damage) {
+		target = _target;
+		damage = _damage;
+	}
+}
+
 public class UnitController : MonoBehaviour {
 	
 	[System.NonSerialized]
@@ -9,6 +19,7 @@ public class UnitController : MonoBehaviour {
 	[System.NonSerialized]
 	public UnitManager myManager;
 	UnitAnimationController anim;
+	public Canvas unitCanvas;
 
 	[System.NonSerialized]
 	public Vector2 facingDirection;
@@ -25,6 +36,8 @@ public class UnitController : MonoBehaviour {
 	//Gameplay variables
 	public int myTeam = 1;
 	public int myPlayer = 1;
+
+	List<DamageTarget> damageTargets = new List<DamageTarget>();
 
 	// Use this for initialization
 	void Start () {
@@ -44,6 +57,7 @@ public class UnitController : MonoBehaviour {
 	}
 
 	public void NewTurn() {
+		myStats.HasMoved = false;
 		myStats.ActionPoints = myStats.MaxActionPoints;
 	}
 
@@ -66,37 +80,58 @@ public class UnitController : MonoBehaviour {
 		anim.IsAttacking (attacking);
 	}
 
+	public void SetSelected(bool selected) {
+		anim.IsSelected (selected);
+	}
+
 	public void FinishedAttacking() {
 		myManager.UnitFinishedAttacking ();
+		HitDamageTargets ();
+		ClearDamageTargets ();
 		myStats.ActionPoints--;
 	}
 
 	public void FollowPath() {
-		if (myPath.Count > 0) {
-			float distanceToNode = Vector3.Distance (myPath[0].transform.position, transform.position);
+		if (myPath.Count <= 0) {
+			return;
+		}
 
-			if (distanceToNode - (WALKSPEED * Time.deltaTime) > CLOSE_ENOUGH_TO_TILE) {
-				transform.position = transform.position + ((Vector3)facingDirection * WALKSPEED * Time.deltaTime);
+		float distanceToNode = Vector3.Distance (myPath[0].transform.position, transform.position);
+
+		if (distanceToNode - (WALKSPEED * Time.deltaTime) > CLOSE_ENOUGH_TO_TILE) {
+			transform.position = transform.position + ((Vector3)facingDirection * WALKSPEED * Time.deltaTime);
+		} else {
+			transform.position = myPath [0].transform.position;
+			if (myPath.Count > 1) {
+				FaceDirection (myPath [1].previous.direction);
 			} else {
-				transform.position = myPath [0].transform.position;
-				if (myPath.Count > 1) {
-					FaceDirection (myPath [1].previous.direction);
-				} else {
-					anim.IsWalking (false);
-					myPath [0].myUnit = this;
-					myNode = myPath [0];
-					myManager.UnitFinishedMoving ();
-				}
-				myPath.RemoveAt (0);
+				anim.IsWalking (false);
+				myPath [0].myUnit = this;
+				myNode = myPath [0];
+				myManager.UnitFinishedMoving ();
 			}
+			myPath.RemoveAt (0);
 		}
 	}
 
 	public void SetPath(MovementPath newPath) {
 		myPath = newPath.path;
-		//TODO REMOVE MOVEMENT COST
 		FaceDirection (myPath [0].previous.direction);
-		anim.IsWalking (true);
+		SetWalking(true);
+	}
+
+	public void AddDamageTarget(UnitController target, int damage) {
+		damageTargets.Add (new DamageTarget (target, damage));
+	}
+
+	public void HitDamageTargets() {
+		foreach (DamageTarget damageTarget in damageTargets) {
+			DealDamageTo (damageTarget.target, damageTarget.damage);
+		}
+	}
+
+	public void ClearDamageTargets() {
+		damageTargets.Clear ();
 	}
 
 	public bool TakeDamage(UnitController attacker, int damage) {
@@ -106,6 +141,9 @@ public class UnitController : MonoBehaviour {
 		}
 
 		myStats.Health -= damage;
+
+		unitCanvas.GetComponent<UnitCanvasController> ().UpdateHP (myStats.Health, myStats.MaxHealth);
+
 		return true;
 	}
 

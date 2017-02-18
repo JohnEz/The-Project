@@ -4,9 +4,9 @@ using System.Collections;
 public class CameraController : MonoBehaviour {
 
 	const float MOVESPEED = 12; //speed the camera moves
-	const float ZOOMSPEED = 0.2f; //speed the camera zooms
+	const float ZOOMSPEED = 1f; //speed the camera zooms
 	const float MINZOOM = 1f; //minimum zoom value
-	const float MAXZOOM = 2f; //maximum zoom value
+	const float MAXZOOM = 3f; //maximum zoom value
 	const float BOUNDARY = -5; //distance from edge of screen that the camera starts to move
 
 	public float screenWidth = 0;
@@ -35,11 +35,11 @@ public class CameraController : MonoBehaviour {
 	}
 
 	public void Initialise(TileMap map) {
-		minX = -100000;
-		minY = -100000;
+		minX = 0;
+		minY = -map.getHeight();
 
-		maxX = 100000;
-		maxY = 100000;
+		maxX = map.getWidth();
+		maxY = 0;
 	}
 
 	// Update is called once per frame
@@ -83,7 +83,10 @@ public class CameraController : MonoBehaviour {
 			}
 
 			move.Normalize ();
-			transform.position += (move * MOVESPEED) * Time.deltaTime;
+			Vector3 newPos = transform.position + (move * MOVESPEED) * Time.deltaTime;
+			Vector3 roundPos = new Vector3(RoundToNearestPixel(newPos.x, GetComponent<Camera>()), RoundToNearestPixel(newPos.y, GetComponent<Camera>()), newPos.z);
+
+			transform.position = roundPos;
 		}
 	}
 
@@ -94,26 +97,26 @@ public class CameraController : MonoBehaviour {
 
 		Camera cam = GetComponent<Camera> ();
 
-		if (d > 0f)
-		{
-			//zoom in
-			currentZoom -= ZOOMSPEED;
+		if (d != 0) {
+			if (d > 0f) {
+				//zoom in
+				currentZoom -= ZOOMSPEED;
 
-			if (currentZoom < MINZOOM) {
-				currentZoom = MINZOOM;
+				if (currentZoom < MINZOOM) {
+					currentZoom = MINZOOM;
+				}
+			} else if (d < 0f) {
+				//zoom out
+				currentZoom += ZOOMSPEED;
+
+				if (currentZoom > MAXZOOM) {
+					currentZoom = MAXZOOM;
+				}
 			}
-		}
-		else if (d < 0f)
-		{
-			//zoom out
-			currentZoom += ZOOMSPEED;
-
-			if (currentZoom > MAXZOOM) {
-				currentZoom = MAXZOOM;
-			}
+			cam.orthographicSize = ((Screen.height / 2f) * unitsPerPixel)*currentZoom;
 		}
 
-		cam.orthographicSize = ((Screen.height / 2f) * unitsPerPixel)*currentZoom;
+
 
 	}
 
@@ -121,5 +124,13 @@ public class CameraController : MonoBehaviour {
 	public void MoveToTarget(Vector3 pos) {
 		movingToDestination = true;
 		targetLocation = new Vector3 (pos.x, pos.y, transform.position.z);
+	}
+
+	public static float RoundToNearestPixel(float unityUnits, Camera viewingCamera)
+	{
+		float valueInPixels = (Screen.height / (viewingCamera.orthographicSize * 2)) * unityUnits;
+		valueInPixels = Mathf.Round(valueInPixels);
+		float adjustedUnityUnits = valueInPixels / (Screen.height / (viewingCamera.orthographicSize * 2));
+		return adjustedUnityUnits;
 	}
 }

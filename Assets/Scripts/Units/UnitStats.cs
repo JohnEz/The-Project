@@ -44,6 +44,7 @@ public class UnitStats : MonoBehaviour {
 	[SerializeField]
 	int baseActionPoints = 1;
 	int actionPoints;
+	bool hasMoved = false;
 
 	[SerializeField]
 	Walkable baseWalkingType = Walkable.Walkable;
@@ -55,7 +56,6 @@ public class UnitStats : MonoBehaviour {
 		//TODO LOAD BASE STATS FROM DATABASE
 		currentHealth = MaxHealth;
 		currentMana = MaxMana;
-		myBuffs.Add (new Buff ());
 	}
 
 	public int GetModifiedStat(int baseValue, Stats stat) {
@@ -124,6 +124,11 @@ public class UnitStats : MonoBehaviour {
 	public int ActionPoints {
 		get { return actionPoints; }
 		set { actionPoints = value; }
+	}
+
+	public bool HasMoved {
+		get { return hasMoved; }
+		set { hasMoved = value; }
 	}
 
 	public Walkable WalkingType {

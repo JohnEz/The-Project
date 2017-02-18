@@ -19,6 +19,8 @@ public class TurnManager : MonoBehaviour {
 
 	UnitManager unitManager;
 
+	CameraManager cameraManager;
+
 	TurnPhase currentPhase = TurnPhase.TURN_STARTING;
 
 	List<Player> players;
@@ -29,6 +31,8 @@ public class TurnManager : MonoBehaviour {
 	void Start () {
 		unitManager = GetComponent<UnitManager> ();
 		unitManager.Initialise ();
+		cameraManager = GetComponent<CameraManager> ();
+		cameraManager.Initialise ();
 		AddPlayers ();
 		StartNewTurn ();
 	}
@@ -38,6 +42,10 @@ public class TurnManager : MonoBehaviour {
 		//TODO these should probably be moved to a interface class
 		if (Input.GetKeyUp ("1") && currentPhase == TurnPhase.WAITING_FOR_INPUT) {
 			unitManager.ShowAbility (0);
+		}
+
+		if (Input.GetKeyUp ("space") && currentPhase == TurnPhase.WAITING_FOR_INPUT) {
+			EndTurn ();
 		}
 	}
 
@@ -50,14 +58,9 @@ public class TurnManager : MonoBehaviour {
 		players.Add (p1);
 
 		Player p2 = new Player ();
-		p2.name = "Player 2";
-		p2.ai = false;
+		p2.name = "AI";
+		p2.ai = true;
 		players.Add (p2);
-
-		Player p3 = new Player ();
-		p3.name = "AI";
-		p3.ai = true;
-		players.Add (p3);
 
 	}
 
@@ -68,7 +71,9 @@ public class TurnManager : MonoBehaviour {
 		playersTurn++;
 		playersTurn = playersTurn % players.Count;
 		GetComponent<UnitManager> ().StartTurn (playersTurn);
-		GetComponentInChildren<UserInterfaceController> ().StartNewTurn (players [playersTurn].name + " turn");
+		bool alliedTurn = players [playersTurn].name.Equals ("Player 1");
+
+		GetComponentInChildren<UserInterfaceController> ().StartNewTurn (alliedTurn);
 	}
 
 	public void FinishStartingTurn() {
@@ -93,6 +98,7 @@ public class TurnManager : MonoBehaviour {
 
 	public void EndTurn() {
 		currentPhase = TurnPhase.TURN_ENDING;
+		//TODO CLEAN UP, EG SELECTED TILES
 		StartNewTurn ();
 	}
 
@@ -126,7 +132,17 @@ public class TurnManager : MonoBehaviour {
 	}
 
 	public void ClickedUnselected(Node node) {
-		if (!ShowMovement (node)) {
+		if (node.myUnit != null) {
+			unitManager.SelectUnit (node.myUnit);
+
+			if (node.myUnit.myTeam == playersTurn) {
+				if (!node.myUnit.myStats.HasMoved) {
+					unitManager.ShowMovement (node.myUnit);
+				} else if (node.myUnit.myStats.ActionPoints > 0) {
+					unitManager.ShowAbility (0);
+				}
+			}
+		} else {
 			unitManager.DeselectUnit ();
 		}
 	}
@@ -138,13 +154,7 @@ public class TurnManager : MonoBehaviour {
 		}
 	}
 
-	public bool ShowMovement (Node node) {
-		if (node.myUnit != null && node.myUnit.myStats.ActionPoints > 0 && node.myUnit.myTeam == playersTurn) {
-			if (unitManager.SelectUnit (node.myUnit)) {
-				unitManager.ShowMovement (node.myUnit);
-			}
-			return true;
-		}
-		return false;
+	public bool doesNodeContainPlayerUnit(Node node) {
+		return node.myUnit != null && node.myUnit.myTeam == playersTurn;
 	}
 }

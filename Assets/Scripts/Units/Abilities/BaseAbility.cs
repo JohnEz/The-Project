@@ -25,6 +25,8 @@ public class BaseAbility {
 	public bool CanTargetTile(UnitController caster, Node targetNode) {
 		bool canTarget = true;
 
+		//TODO this is dumb and needs rewriting
+
 		if (targets == TargetType.ENEMY & (targetNode.myUnit == null || targetNode.myUnit.myTeam == caster.myTeam)) {
 			canTarget = false;
 		}
@@ -38,6 +40,10 @@ public class BaseAbility {
 		}
 
 		return canTarget;
+	}
+
+	public void AddDamageTarget(UnitController caster, UnitController target, int damage) {
+		caster.AddDamageTarget (target, damage);
 	}
 
 	public int Cooldown {
