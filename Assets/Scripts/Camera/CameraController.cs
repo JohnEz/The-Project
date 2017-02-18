@@ -20,41 +20,45 @@ public class CameraController : MonoBehaviour {
 	public float maxX = 100000;
 	public float maxY = 100000;
 
-	public float TestX = 0;
-	public float TestY = 0;
-
 	public float textureSize = 128f;
+	float unitsPerPixel;
 
 	float currentZoom = 1f;
 
+	public bool mouseMovement = false;
+
 	// Use this for initialization
 	void Start () {
-		float unitsPerPixel = 1f / textureSize;
 
-		Camera.main.orthographicSize = ((Screen.height / 2f) * unitsPerPixel)*currentZoom;
+
 	}
 
 	public void Initialise(TileMap map) {
-		minX = 0;
-		minY = -map.getHeight();
 
-		maxX = map.getWidth();
-		maxY = 0;
+		unitsPerPixel = 1f / textureSize;
+
+		Camera.main.orthographicSize = ((Screen.height / 2f) * unitsPerPixel)*currentZoom;
+
+		Debug.Log (Camera.main.orthographicSize);
+
+		float vertExtent = Camera.main.GetComponent<Camera>().orthographicSize;    
+		float horzExtent = vertExtent * Screen.width / Screen.height;
+
+		minX = horzExtent - 0.5f;
+		maxX = map.getWidth() - horzExtent - 0.5f;
+		minY = vertExtent + 0.5f - map.getHeight();
+		maxY = -vertExtent + 0.5f;
 	}
 
 	// Update is called once per frame
 	void Update () {
 		UpdateMovement ();
 		UpdateZoom ();
+		ClampBounds ();
 	}
 
 	//updates the position of the camera via keyboard input
 	void UpdateMovement() {
-
-		TestX = transform.position.x;
-		TestY = transform.position.y;
-
-
 
 		//if the camera is moving to a destination
 		if (movingToDestination) {
@@ -69,16 +73,16 @@ public class CameraController : MonoBehaviour {
 			Vector3 move = new Vector3 (0, 0, 0);
 
 
-			if ((Input.GetKey(KeyCode.W) || Input.mousePosition.y > Screen.height - BOUNDARY) && transform.position.y < maxY) {
+			if ((Input.GetKey(KeyCode.W) || (Input.mousePosition.y > Screen.height - BOUNDARY && mouseMovement))) {
 				move += new Vector3(0, 1, 0);
 			}
-			if ((Input.GetKey(KeyCode.A) || Input.mousePosition.x < BOUNDARY) && transform.position.x > minX) {
+			if ((Input.GetKey(KeyCode.A) || (Input.mousePosition.x < BOUNDARY && mouseMovement))) {
 				move -= new Vector3(1, 0, 0);
 			}
-			if ((Input.GetKey(KeyCode.S) || Input.mousePosition.y < BOUNDARY) && transform.position.y > minY) {
+			if ((Input.GetKey(KeyCode.S) || (Input.mousePosition.y < BOUNDARY && mouseMovement))) {
 				move -= new Vector3(0, 1, 0);
 			}
-			if ((Input.GetKey(KeyCode.D) || Input.mousePosition.x > Screen.width - BOUNDARY) && transform.position.x < maxX) {
+			if ((Input.GetKey(KeyCode.D) || (Input.mousePosition.x > Screen.width - BOUNDARY && mouseMovement))) {
 				move += new Vector3(1, 0, 0);
 			}
 
@@ -132,5 +136,12 @@ public class CameraController : MonoBehaviour {
 		valueInPixels = Mathf.Round(valueInPixels);
 		float adjustedUnityUnits = valueInPixels / (Screen.height / (viewingCamera.orthographicSize * 2));
 		return adjustedUnityUnits;
+	}
+
+	public void ClampBounds() {
+		Vector3 clampedPosition = transform.position;
+		clampedPosition.x = Mathf.Clamp (clampedPosition.x, minX, maxX);
+		clampedPosition.y = Mathf.Clamp (clampedPosition.y, minY, maxY);
+		transform.position = clampedPosition;
 	}
 }

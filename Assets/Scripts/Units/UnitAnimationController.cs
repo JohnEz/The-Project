@@ -55,4 +55,8 @@ public class UnitAnimationController : MonoBehaviour {
 		GetComponent<Animator> ().SetBool ("isSelected", selected);
 	}
 
+	public void PlayHitAnimation() {
+		GetComponent<Animator> ().SetTrigger ("hit");
+	}
+
 }

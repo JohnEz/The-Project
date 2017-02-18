@@ -142,6 +142,7 @@ public class UnitController : MonoBehaviour {
 
 		myStats.Health -= damage;
 
+		anim.PlayHitAnimation ();
 		unitCanvas.GetComponent<UnitCanvasController> ().UpdateHP (myStats.Health, myStats.MaxHealth);
 
 		return true;

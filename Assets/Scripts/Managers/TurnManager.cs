@@ -99,6 +99,7 @@ public class TurnManager : MonoBehaviour {
 	public void EndTurn() {
 		currentPhase = TurnPhase.TURN_ENDING;
 		//TODO CLEAN UP, EG SELECTED TILES
+		unitManager.DeselectUnit();
 		StartNewTurn ();
 	}
 

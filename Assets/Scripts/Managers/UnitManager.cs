@@ -68,9 +68,11 @@ public class UnitManager : MonoBehaviour {
 	}
 
 	public void DeselectUnit() {
-		selectedUnit.SetSelected (false);
-		selectedUnit = null;
-		map.highlighter.UnhighlightTiles ();
+		if (selectedUnit != null) {
+			selectedUnit.SetSelected (false);
+			selectedUnit = null;
+			map.highlighter.UnhighlightTiles ();
+		}
 	}
 
 	public void ShowMovement(UnitController unit) {
