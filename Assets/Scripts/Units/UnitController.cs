@@ -67,6 +67,10 @@ public class UnitController : MonoBehaviour {
 		myNode = startNode;
 	}
 
+	public void DestroySelf() {
+		Destroy (gameObject);
+	}
+
 	public void FaceDirection(Vector2 dir) {
 		GetComponentInChildren<UnitAnimationController> ().FaceDirection (dir);
 		facingDirection = dir;
@@ -142,11 +146,17 @@ public class UnitController : MonoBehaviour {
 
 		int modifiedDamage = damage;
 
-		myStats.Health -= modifiedDamage;
+		myStats.SetHealth(myStats.Health - modifiedDamage);
 
-		anim.PlayHitAnimation ();
 		unitCanvas.GetComponent<UnitCanvasController> ().UpdateHP (myStats.Health, myStats.MaxHealth);
 		unitCanvas.GetComponent<UnitCanvasController> ().CreateDamageText (modifiedDamage);
+
+		if (myStats.Health > 0) {
+			anim.PlayHitAnimation ();
+			myManager.UnitDied (this);
+		} else {
+			anim.PlayDeathAnimation ();
+		}
 
 		return true;
 	}

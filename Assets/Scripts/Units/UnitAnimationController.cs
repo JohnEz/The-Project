@@ -59,4 +59,12 @@ public class UnitAnimationController : MonoBehaviour {
 		GetComponent<Animator> ().SetTrigger ("hit");
 	}
 
+	public void PlayDeathAnimation() {
+		GetComponent<Animator> ().SetTrigger ("die");
+	}
+
+	public void DestroyParentUnit() {
+		GetComponentInParent<UnitController> ().DestroySelf ();
+	}
+
 }

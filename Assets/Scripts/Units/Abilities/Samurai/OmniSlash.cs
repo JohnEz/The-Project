@@ -3,7 +3,7 @@ using System.Collections;
 
 public class OmniSlash : BaseAbility {
 
-	int baseDamage = 10;
+	int baseDamage = 100;
 
 	public override void UseAbility (UnitController caster, Node target, Vector2 direction)
 	{

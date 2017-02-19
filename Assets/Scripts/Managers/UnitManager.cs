@@ -50,6 +50,11 @@ public class UnitManager : MonoBehaviour {
 		units.Add (unitController);
 	}
 
+	public void RemoveUnit(UnitController unit) {
+		unit.myNode.myUnit = null;
+		units.Remove (unit);
+	}
+
 	public void StartTurn(int playersTurn) {
 		foreach (UnitController unit in units) {
 			if (unit.myTeam == playersTurn) {
@@ -150,6 +155,10 @@ public class UnitManager : MonoBehaviour {
 		if (PlayerOutOfActions (turnManager.playersTurn)) {
 			turnManager.EndTurn ();
 		}
+	}
+
+	public void UnitDied(UnitController unit) {
+		RemoveUnit (unit);
 	}
 
 	public bool PlayerOutOfActions(int team) {

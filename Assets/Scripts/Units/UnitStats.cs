@@ -70,6 +70,16 @@ public class UnitStats : MonoBehaviour {
 		return (int)((baseValue + flatMods) * percentMods);
 	}
 
+	public void SetHealth(int health) {
+		if (health < 0) {
+			Health = 0;
+		} else if (health > MaxHealth) {
+			Health = MaxHealth;
+		} else {
+			Health = health;
+		}
+	}
+
 	public int Vitality {
 		get { return GetModifiedStat(baseVitality, Stats.VITALITY); }
 	}
