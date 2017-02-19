@@ -20,6 +20,7 @@ public class UnitController : MonoBehaviour {
 	public UnitManager myManager;
 	UnitAnimationController anim;
 	public Canvas unitCanvas;
+	UnitAudioController audioController;
 
 	[System.NonSerialized]
 	public Vector2 facingDirection;
@@ -29,7 +30,7 @@ public class UnitController : MonoBehaviour {
 	const float CLOSE_ENOUGH_TO_TILE = 0.005f;
 
 	//Pathfinding
-	List<Node> myPath;
+	List<Node> myPath = new List<Node>();
 	[System.NonSerialized]
 	public Node myNode;
 
@@ -48,7 +49,7 @@ public class UnitController : MonoBehaviour {
 		anim = GetComponentInChildren<UnitAnimationController> ();
 		myStats = GetComponent<UnitStats> ();
 		myStats.Initailise ();
-		myPath = new List<Node> ();
+		audioController = GetComponent<UnitAudioController> ();
 	}
 	
 	// Update is called once per frame
@@ -175,5 +176,9 @@ public class UnitController : MonoBehaviour {
 		}
 			
 		return target.TakeDamage (this, endDamage);
+	}
+
+	public void PlayOneShot(AudioClip sound) {
+		audioController.PlayOneShot (sound);
 	}
 }

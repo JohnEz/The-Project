@@ -18,8 +18,16 @@ public class BaseAbility {
 
 	public TargetType targets = TargetType.ENEMY;
 
-	public virtual void UseAbility(UnitController caster, Node Target, Vector2 direction) {
+	AudioClip launchSound;
 
+	public BaseAbility(AudioClip _launchSound) {
+		launchSound = _launchSound;
+	}
+
+	public virtual void UseAbility(UnitController caster, Node Target, Vector2 direction) {
+		if (launchSound != null) {
+			caster.PlayOneShot (launchSound);
+		}
 	}
 
 	public bool CanTargetTile(UnitController caster, Node targetNode) {
