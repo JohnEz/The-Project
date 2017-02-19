@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class UnitCanvasController : MonoBehaviour {
 
 	public Image hpBar;
+	public GameObject damageText;
 
 	// Use this for initialization
 	void Start () {
@@ -18,5 +19,11 @@ public class UnitCanvasController : MonoBehaviour {
 
 	public void UpdateHP(float currentHP, float maxHP) {
 		hpBar.fillAmount = currentHP / maxHP;
+	}
+
+	public void CreateDamageText(int damage) {
+		GameObject newDamageText = Instantiate (damageText);
+		newDamageText.GetComponent<Text> ().text = damage.ToString();
+		newDamageText.transform.SetParent(this.transform);
 	}
 }

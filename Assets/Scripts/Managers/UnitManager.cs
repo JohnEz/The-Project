@@ -58,8 +58,12 @@ public class UnitManager : MonoBehaviour {
 		}
 	}
 
+	public bool UnitAlreadySelected(UnitController unit) {
+		return selectedUnit == unit;
+	}
+
 	public bool SelectUnit(UnitController unit) {
-		if (selectedUnit != unit) {
+		if (!UnitAlreadySelected(unit)) {
 			selectedUnit = unit;
 			selectedUnit.SetSelected (true);
 			return true;

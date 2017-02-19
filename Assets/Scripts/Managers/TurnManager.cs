@@ -133,7 +133,8 @@ public class TurnManager : MonoBehaviour {
 	}
 
 	public void ClickedUnselected(Node node) {
-		if (node.myUnit != null) {
+		if (node.myUnit != null && !unitManager.UnitAlreadySelected(node.myUnit)) {
+			unitManager.DeselectUnit ();
 			unitManager.SelectUnit (node.myUnit);
 
 			if (node.myUnit.myTeam == playersTurn) {
