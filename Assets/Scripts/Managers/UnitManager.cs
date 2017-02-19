@@ -71,6 +71,7 @@ public class UnitManager : MonoBehaviour {
 		if (!UnitAlreadySelected(unit)) {
 			selectedUnit = unit;
 			selectedUnit.SetSelected (true);
+			map.highlighter.HighlightTile (unit.myNode, SquareTarget.NONE);
 			return true;
 		}
 		return false;
@@ -86,6 +87,8 @@ public class UnitManager : MonoBehaviour {
 
 	public void ShowMovement(UnitController unit) {
 		Dictionary<Node, float> reachableTiles = map.pathfinder.findReachableTiles (unit.myNode, unit.myStats.Speed, unit.myStats.WalkingType, unit.myTeam);
+		map.highlighter.UnhighlightTiles ();
+		map.highlighter.HighlightTile (unit.myNode, SquareTarget.NONE);
 		map.highlighter.HighlightTiles (reachableTiles.Keys.ToList(), SquareTarget.MOVEMENT);
 	}
 
@@ -111,6 +114,8 @@ public class UnitManager : MonoBehaviour {
 
 		activeAbility = unitClass.abilities [ability];
 		List<Node> attackableTiles = map.pathfinder.FindAttackableTiles (selectedUnit, activeAbility);
+		map.highlighter.UnhighlightTiles ();
+		map.highlighter.HighlightTile (selectedUnit.myNode, SquareTarget.NONE);
 		map.highlighter.HighlightTiles (attackableTiles, SquareTarget.ATTACK);
 		return true;
 
@@ -140,21 +145,11 @@ public class UnitManager : MonoBehaviour {
 	public void UnitFinishedMoving() {
 		TurnManager turnManager = GetComponent<TurnManager> ();
 		turnManager.FinishedMoving ();
-
-		//check to see if that was the last thing the player could do
-		if (PlayerOutOfActions (turnManager.playersTurn)) {
-			turnManager.EndTurn ();
-		}
 	}
 
 	public void UnitFinishedAttacking() {
 		TurnManager turnManager = GetComponent<TurnManager> ();
 		turnManager.FinishedAttacking ();
-
-		//check to see if that was the last thing the player could do
-		if (PlayerOutOfActions (turnManager.playersTurn)) {
-			turnManager.EndTurn ();
-		}
 	}
 
 	public void UnitDied(UnitController unit) {

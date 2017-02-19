@@ -71,13 +71,7 @@ public class UnitStats : MonoBehaviour {
 	}
 
 	public void SetHealth(int health) {
-		if (health < 0) {
-			Health = 0;
-		} else if (health > MaxHealth) {
-			Health = MaxHealth;
-		} else {
-			Health = health;
-		}
+		Health = Mathf.Clamp (health, 0, MaxHealth);
 	}
 
 	public int Vitality {

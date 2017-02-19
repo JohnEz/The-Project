@@ -20,7 +20,7 @@ public class TileHighlighter : MonoBehaviour {
 	Color green = new Color (0.7294f, 0.9569f, 0.1176f);
 	Color white = new Color (1, 1, 1);
 
-	bool visible = false;
+	bool showingHighlight = false;
 	bool highlighted = false;
 	bool hovered = false;
 
@@ -50,7 +50,7 @@ public class TileHighlighter : MonoBehaviour {
 	public void OnMouseEnter() {
 		SpriteRenderer mySprite = GetComponent<SpriteRenderer> ();
 		mySprite.sprite = hoverSprite;
-		if (!visible) {
+		if (!showingHighlight) {
 			updateAlpha (maxAlpha);
 		}
 		hovered = true;
@@ -59,14 +59,14 @@ public class TileHighlighter : MonoBehaviour {
 	public void OnMouseExit() {
 		SpriteRenderer mySprite = GetComponent<SpriteRenderer> ();
 		mySprite.sprite = highlightedSprite;
-		if (!visible) {
+		if (!showingHighlight) {
 			updateAlpha (minAlpha);
 		}
 		hovered = false;
 	}
 
 	public void showHighlight(bool show) {
-		visible = show;
+		showingHighlight = show;
 		float newAlpha = maxAlpha;
 
 		if (!show) {

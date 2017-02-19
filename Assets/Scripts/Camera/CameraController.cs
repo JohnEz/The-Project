@@ -9,8 +9,8 @@ public class CameraController : MonoBehaviour {
 	const float MAXZOOM = 3f; //maximum zoom value
 	const float BOUNDARY = -5; //distance from edge of screen that the camera starts to move
 
-	public float screenWidth = 0;
-	public float screenHeight = 0;
+	public float mapWidth = 0;
+	public float mapHeight = 0;
 
 	public bool movingToDestination = false;
 	Vector3 targetLocation;
@@ -39,14 +39,19 @@ public class CameraController : MonoBehaviour {
 
 		Camera.main.orthographicSize = ((Screen.height / 2f) * unitsPerPixel)*currentZoom;
 
-		Debug.Log (Camera.main.orthographicSize);
+		mapHeight = map.getHeight ();
+		mapWidth = map.getWidth ();
 
+		CalculateBounds ();
+	}
+
+	public void CalculateBounds() {
 		float vertExtent = Camera.main.GetComponent<Camera>().orthographicSize;    
 		float horzExtent = vertExtent * Screen.width / Screen.height;
 
 		minX = horzExtent - 0.5f;
-		maxX = map.getWidth() - horzExtent - 0.5f;
-		minY = vertExtent + 0.5f - map.getHeight();
+		maxX = mapHeight - horzExtent - 0.5f;
+		minY = vertExtent + 0.5f - mapWidth;
 		maxY = -vertExtent + 0.5f;
 	}
 
@@ -118,10 +123,8 @@ public class CameraController : MonoBehaviour {
 				}
 			}
 			cam.orthographicSize = ((Screen.height / 2f) * unitsPerPixel)*currentZoom;
+			CalculateBounds ();
 		}
-
-
-
 	}
 
 

@@ -153,9 +153,9 @@ public class UnitController : MonoBehaviour {
 
 		if (myStats.Health > 0) {
 			anim.PlayHitAnimation ();
-			myManager.UnitDied (this);
 		} else {
 			anim.PlayDeathAnimation ();
+			myManager.UnitDied (this);
 		}
 
 		return true;

@@ -47,6 +47,11 @@ public class TurnManager : MonoBehaviour {
 		if (Input.GetKeyUp ("space") && currentPhase == TurnPhase.WAITING_FOR_INPUT) {
 			EndTurn ();
 		}
+
+		//check to see if the turn should end
+		if (currentPhase == TurnPhase.WAITING_FOR_INPUT && unitManager.PlayerOutOfActions (playersTurn)) {
+			EndTurn ();
+		}
 	}
 
 	void AddPlayers() {

@@ -17,9 +17,8 @@ public class HighlightManager : MonoBehaviour {
 	}
 
 	public void HighlightTiles(List<Node> tilesToHighlight, SquareTarget targetType) {
-		UnhighlightTiles ();
-		currentlyHighlighted = tilesToHighlight;
 		foreach (Node n in tilesToHighlight) {
+			currentlyHighlighted.Add (n);
 			n.GetComponentInChildren<TileHighlighter> ().highlight (targetType);
 			n.GetComponentInChildren<TileHighlighter> ().showHighlight (true);
 		}
@@ -31,5 +30,16 @@ public class HighlightManager : MonoBehaviour {
 			n.GetComponentInChildren<TileHighlighter> ().showHighlight (false);
 		}
 		currentlyHighlighted = new List<Node>();
+	}
+
+	public void HighlightTile(Node tileToHighlight, SquareTarget targetType) {
+		currentlyHighlighted.Add(tileToHighlight);
+		tileToHighlight.GetComponentInChildren<TileHighlighter> ().highlight (targetType);
+		tileToHighlight.GetComponentInChildren<TileHighlighter> ().showHighlight (true);
+	}
+
+	public void UnhighlightTile(Node tileToHighlight) {
+		tileToHighlight.GetComponentInChildren<TileHighlighter> ().highlight (SquareTarget.NONE);
+		tileToHighlight.GetComponentInChildren<TileHighlighter> ().showHighlight (false);
 	}
 }
