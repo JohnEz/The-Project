@@ -3,10 +3,12 @@ using System.Collections;
 
 public class CameraController : MonoBehaviour {
 
-	const float MOVESPEED = 12; //speed the camera moves
-	const float ZOOMSPEED = 1f; //speed the camera zooms
-	const float MINZOOM = 1f; //minimum zoom value
-	const float MAXZOOM = 3f; //maximum zoom value
+	const float MOVE_SPEED = 12; //speed the camera moves
+	const float ZOOM_SPEED = 0.1f; // speed the camera zooms
+	const float ZOOM_CHANGE = 1f; //change in camera zoom
+	const float ZOOM_CLOSE_ENOUGH = 0.02f; // how close the zoom needs to be before it snaps
+	const float MINIMUM_ZOOM = 1f; //minimum zoom value
+	const float MAXIMUM_ZOOM = 2f; //maximum zoom value
 	const float BOUNDARY = -5; //distance from edge of screen that the camera starts to move
 
 	public float mapWidth = 0;
@@ -24,6 +26,7 @@ public class CameraController : MonoBehaviour {
 	float unitsPerPixel;
 
 	float currentZoom = 1f;
+	float targetZoom = 1f;
 
 	public bool mouseMovement = false;
 
@@ -92,7 +95,7 @@ public class CameraController : MonoBehaviour {
 			}
 
 			move.Normalize ();
-			Vector3 newPos = transform.position + (move * MOVESPEED) * Time.deltaTime;
+			Vector3 newPos = transform.position + (move * MOVE_SPEED) * Time.deltaTime;
 			Vector3 roundPos = new Vector3(RoundToNearestPixel(newPos.x, GetComponent<Camera>()), RoundToNearestPixel(newPos.y, GetComponent<Camera>()), newPos.z);
 
 			transform.position = roundPos;
@@ -103,25 +106,27 @@ public class CameraController : MonoBehaviour {
 		float d = Input.GetAxis("Mouse ScrollWheel");
 
 		float unitsPerPixel = 1f / textureSize;
+		bool zoomHasChanged = false;
 
 		Camera cam = GetComponent<Camera> ();
 
 		if (d != 0) {
-			if (d > 0f) {
-				//zoom in
-				currentZoom -= ZOOMSPEED;
+			int direction = -(int)Mathf.Sign (d);
 
-				if (currentZoom < MINZOOM) {
-					currentZoom = MINZOOM;
-				}
-			} else if (d < 0f) {
-				//zoom out
-				currentZoom += ZOOMSPEED;
+			targetZoom += ZOOM_CHANGE * direction;
 
-				if (currentZoom > MAXZOOM) {
-					currentZoom = MAXZOOM;
-				}
-			}
+			targetZoom = Mathf.Clamp (targetZoom, MINIMUM_ZOOM, MAXIMUM_ZOOM);
+		}
+
+		if (Mathf.Abs (targetZoom - currentZoom) > ZOOM_CLOSE_ENOUGH) {
+			zoomHasChanged = true;
+			currentZoom = Mathf.Lerp (currentZoom, targetZoom, ZOOM_SPEED);
+		} else if (currentZoom != targetZoom) {
+			zoomHasChanged = true;
+			currentZoom = targetZoom;
+		}
+
+		if (zoomHasChanged) {
 			cam.orthographicSize = ((Screen.height / 2f) * unitsPerPixel)*currentZoom;
 			CalculateBounds ();
 		}
