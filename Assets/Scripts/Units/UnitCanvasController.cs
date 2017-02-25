@@ -7,10 +7,11 @@ public class UnitCanvasController : MonoBehaviour {
 	public Image hpBar;
 	public GameObject damageText;
 
+
 	// Use this for initialization
 	void Start () {
-	
-	}
+
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -26,4 +27,9 @@ public class UnitCanvasController : MonoBehaviour {
 		newDamageText.GetComponent<Text> ().text = damage.ToString();
 		newDamageText.transform.SetParent(this.transform);
 	}
+
+    public void ShowActionMenu(bool show) {
+        transform.FindChild("actionMenu").gameObject.SetActive(show);
+    }
+
 }
