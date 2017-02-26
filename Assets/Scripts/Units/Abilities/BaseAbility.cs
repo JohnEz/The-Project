@@ -35,11 +35,11 @@ public class BaseAbility {
 
 		//TODO this is dumb and needs rewriting
 
-		if (targets == TargetType.ENEMY & (targetNode.myUnit == null || targetNode.myUnit.myTeam == caster.myTeam)) {
+		if (targets == TargetType.ENEMY & (targetNode.myUnit == null || targetNode.myUnit.myPlayer.faction == caster.myPlayer.faction)) {
 			canTarget = false;
 		}
 
-		if (targets == TargetType.ALLY & (targetNode.myUnit == null || targetNode.myUnit.myTeam != caster.myTeam)) {
+		if (targets == TargetType.ALLY & (targetNode.myUnit == null || targetNode.myUnit.myPlayer.faction != caster.myPlayer.faction)) {
 			canTarget = false;
 		}
 

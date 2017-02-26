@@ -35,8 +35,7 @@ public class UnitController : MonoBehaviour {
 	public Node myNode;
 
 	//Gameplay variables
-	public int myTeam = 1;
-	public int myPlayer = 1;
+	public Player myPlayer;
 
 	List<DamageTarget> damageTargets = new List<DamageTarget>();
 
@@ -62,8 +61,7 @@ public class UnitController : MonoBehaviour {
 		myStats.ActionPoints = myStats.MaxActionPoints;
 	}
 
-	public void Spawn(int team, int player, Node startNode) {
-		myTeam = team;
+	public void Spawn(Player player, Node startNode) {
 		myPlayer = player;
 		myNode = startNode;
 	}

@@ -11,15 +11,18 @@ public enum TurnPhase {
 }
 
 public struct Player {
+	public int id;
 	public string name;
 	public bool ai;
+	public int faction;
 }
 
 public class TurnManager : MonoBehaviour {
 
 	UnitManager unitManager;
-
+	AIManager aiManager;
 	CameraManager cameraManager;
+	TileMap map;
 
 	TurnPhase currentPhase = TurnPhase.TURN_STARTING;
 
@@ -29,11 +32,15 @@ public class TurnManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		AddPlayers ();
+		map = GetComponentInChildren<TileMap> ();
+		map.Initialise ();
 		unitManager = GetComponent<UnitManager> ();
-		unitManager.Initialise ();
+		unitManager.Initialise (players, map);
+		aiManager = GetComponent<AIManager> ();
+		aiManager.Initialise (map);
 		cameraManager = GetComponent<CameraManager> ();
 		cameraManager.Initialise ();
-		AddPlayers ();
 		StartNewTurn ();
 	}
 	
@@ -57,15 +64,19 @@ public class TurnManager : MonoBehaviour {
 	void AddPlayers() {
 		players = new List<Player> ();
 
-		Player p1 = new Player ();
-		p1.name = "Player 1";
-		p1.ai = false;
-		players.Add (p1);
+		Player p0 = new Player ();
+		p0.id = 0;
+		p0.name = "Player 1";
+		p0.ai = false;
+		p0.faction = 1;
+		players.Add (p0);
 
-		Player p2 = new Player ();
-		p2.name = "AI";
-		p2.ai = true;
-		players.Add (p2);
+		Player p1 = new Player ();
+		p1.id = 1;
+		p1.name = "AI";
+		p1.ai = true;
+		p1.faction = 2;
+		players.Add (p1);
 
 	}
 
@@ -76,9 +87,13 @@ public class TurnManager : MonoBehaviour {
 		playersTurn++;
 		playersTurn = playersTurn % players.Count;
 		GetComponent<UnitManager> ().StartTurn (playersTurn);
-		bool alliedTurn = players [playersTurn].name.Equals ("Player 1");
+		bool alliedTurn = !isAiTurn();
 
 		GetComponentInChildren<UserInterfaceController> ().StartNewTurn (alliedTurn);
+
+		if (players [playersTurn].ai) {
+			aiManager.NewTurn (playersTurn);
+		}
 	}
 
 	public void FinishStartingTurn() {
@@ -108,11 +123,15 @@ public class TurnManager : MonoBehaviour {
 		StartNewTurn ();
 	}
 
+	public bool isAiTurn() {
+		return players [playersTurn].ai;
+	}
+
 	//MOVEMENT PHASE
 
 	public void TileClicked(Node node, SquareTarget target) {
 		
-		if (currentPhase == TurnPhase.WAITING_FOR_INPUT) {
+		if (currentPhase == TurnPhase.WAITING_FOR_INPUT && !isAiTurn()) {
 			
 			switch (target) {
 			case SquareTarget.ATTACK:
@@ -142,7 +161,7 @@ public class TurnManager : MonoBehaviour {
 			unitManager.DeselectUnit ();
 			unitManager.SelectUnit (node.myUnit);
 
-			if (node.myUnit.myTeam == playersTurn) {
+			if (node.myUnit.myPlayer.id == playersTurn) {
 				if (!node.myUnit.myStats.HasMoved) {
 					unitManager.ShowMovement (node.myUnit);
 				} else if (node.myUnit.myStats.ActionPoints > 0) {
@@ -162,6 +181,6 @@ public class TurnManager : MonoBehaviour {
 	}
 
 	public bool doesNodeContainPlayerUnit(Node node) {
-		return node.myUnit != null && node.myUnit.myTeam == playersTurn;
+		return node.myUnit != null && node.myUnit.myPlayer.id == playersTurn;
 	}
 }

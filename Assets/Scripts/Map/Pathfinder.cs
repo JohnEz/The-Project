@@ -23,7 +23,7 @@ public class Pathfinder : MonoBehaviour {
 	
 	}
 
-	public Dictionary<Node, float> findReachableTiles(Node startNode, float distance, Walkable walkingType, int team) {
+	public Dictionary<Node, float> findReachableTiles(Node startNode, float distance, Walkable walkingType, int faction) {
 		List<Node> openList = new List<Node> ();
 		List<Node> currentList;
 		Dictionary<Node, float> costToNode = new Dictionary<Node, float> ();
@@ -40,7 +40,7 @@ public class Pathfinder : MonoBehaviour {
 
 				foreach (Neighbour neighbour in node.neighbours) {
 					
-					if (neighbour.node != startNode && isTileWalkable(node, neighbour.node, walkingType, team)) {
+					if (neighbour.node != startNode && isTileWalkable(node, neighbour.node, walkingType, faction)) {
 						float totalCost = node.cost + neighbour.node.moveCost;
 
 						if (totalCost <= distance) {
@@ -63,11 +63,61 @@ public class Pathfinder : MonoBehaviour {
 		}
 
 		//if you cant end your path on a unit THIS IS DANGEROUS
-		if (team != -1) {
+		if (faction != -1) {
 			costToNode = costToNode.Where (item => item.Key.myUnit == null).ToDictionary (item => item.Key, item => item.Value);
 		}
 
 		return costToNode;
+	}
+
+	public MovementPath FindPath(Node source, Node target, Walkable walkingType, int faction) {
+		map.resetTiles ();
+
+		List<Node> currentPath = null;
+		List<Node> openList = new List<Node> ();
+		List<Node> closedList = new List<Node> ();
+		MovementPath path = new MovementPath ();
+
+		openList.Add (source);
+
+		while (openList.Count > 0) {
+
+			//find the current lowest cost tile
+			Node currentNode = null;
+			foreach (Node n in openList) {
+				// TODO this may need is walkable check, but i think it can be done in adding neighbours
+				if (currentNode == null || n.Value < currentNode.Value) {
+					currentNode = n;
+				}
+			}
+
+			if (currentNode == null || currentNode == target) {
+				break; // i hate just calling break, lets change to bool?
+			}
+
+			openList.Remove (currentNode);
+			closedList.Add (currentNode);
+
+			foreach (Neighbour neighbour in currentNode.neighbours) {
+				if (neighbour.node != source && (isTileWalkable(currentNode, neighbour.node, walkingType, faction) || neighbour.node == target)) {
+					float totalCost = currentNode.cost + neighbour.node.moveCost;
+
+					if (!closedList.Contains(neighbour.node) || neighbour.node.cost > totalCost) {
+						neighbour.node.previous = new Neighbour();
+						neighbour.node.previous.node = currentNode;
+						neighbour.node.previous.direction = neighbour.direction;
+						neighbour.node.cost = totalCost;
+						openList.Add (neighbour.node);
+					}
+				}
+			}
+		}
+
+		if (target.previous.node != null) {
+			path = getPathFromTile (target);
+		}
+
+		return path;
 	}
 
 	public MovementPath getPathFromTile (Node endNode) {
@@ -92,26 +142,23 @@ public class Pathfinder : MonoBehaviour {
 		return newPath;
 	}
 
-	public bool isTileWalkable(Node startNode, Node endNode, Walkable walkingType, int team) {
-		bool passed = true;
+	public bool isTileWalkable(Node startNode, Node endNode, Walkable walkingType, int faction) {
+		return UnitCanStandOnTile(endNode, walkingType) && !UnitInTheWay(endNode, faction) && UnitCanChangeLevel(startNode, endNode, walkingType);
+	}
 
-		if (endNode.walkable > walkingType) {
-			passed = false;
-		}
+	public bool UnitCanStandOnTile(Node node, Walkable walkingType) {
+		return node.walkable <= walkingType;
+	}
 
-		if (endNode.myUnit != null && endNode.myUnit.myTeam != team && team != -1) {
-			passed = false;
-		}
+	public bool UnitInTheWay(Node node, int faction) {
+		return node.myUnit != null && node.myUnit.myPlayer.faction != faction && faction != -1;
+	}
 
+	public bool UnitCanChangeLevel(Node startNode, Node endNode, Walkable walkingType) {
 		int levelDifference = Math.Abs(startNode.level - endNode.level);
-
 		int maxDifference = (int)walkingType;
 
-		if (levelDifference > maxDifference+1) {
-			passed = false;
-		}
-
-		return passed;
+		return levelDifference <= maxDifference + 1;
 	}
 
 	public List<Node> FindAttackableTiles(UnitController caster, BaseAbility ability) {
