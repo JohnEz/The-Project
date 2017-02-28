@@ -1,60 +1,49 @@
 fileFormatVersion: 2
-guid: 481d42f34a3a95541bf3dac36a804b8d
-timeCreated: 1487443307
+guid: a22d48461fc889749870ff93941d03fd
+timeCreated: 1488137363
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: samurai_0
-    21300002: samurai_1
-    21300004: samurai_2
-    21300006: samurai_3
-    21300008: samurai_4
-    21300010: samurai_5
-    21300012: samurai_6
-    21300014: samurai_7
-    21300016: samurai_8
-    21300018: samurai_9
-    21300020: samurai_10
-    21300022: samurai_11
-    21300024: samurai_12
-    21300026: samurai_13
-    21300028: samurai_14
-    21300030: samurai_15
-    21300032: samurai_16
-    21300034: samurai_17
-    21300036: samurai_18
-    21300038: samurai_19
-    21300040: samurai_20
-    21300042: samurai_21
-    21300044: samurai_22
-    21300046: samurai_23
-    21300048: samurai_24
-    21300050: samurai_25
-    21300052: samurai_26
-    21300054: samurai_27
-    21300056: samurai_28
-    21300058: samurai_29
-    21300060: samurai_30
-    21300062: samurai_31
-    21300064: samurai_32
-    21300066: samurai_33
-    21300068: samurai_34
-    21300070: samurai_35
-    21300072: samurai_36
-    21300074: samurai_37
-    21300076: samurai_38
-    21300078: samurai_39
-    21300080: samurai_40
-    21300082: samurai_41
-    21300084: samurai_42
-    21300086: samurai_43
-    21300088: samurai_44
-    21300090: samurai_45
-    21300092: samurai_46
-    21300094: samurai_47
-    21300096: samurai_48
-    21300098: samurai_49
-    21300100: samurai_50
+    21300000: crazedSoul_0
+    21300002: crazedSoul_1
+    21300004: crazedSoul_2
+    21300006: crazedSoul_3
+    21300008: crazedSoul_4
+    21300010: crazedSoul_5
+    21300012: crazedSoul_6
+    21300014: crazedSoul_7
+    21300016: crazedSoul_8
+    21300018: crazedSoul_9
+    21300020: crazedSoul_10
+    21300022: crazedSoul_11
+    21300024: crazedSoul_12
+    21300026: crazedSoul_13
+    21300028: crazedSoul_14
+    21300030: crazedSoul_15
+    21300032: crazedSoul_16
+    21300034: crazedSoul_17
+    21300036: crazedSoul_18
+    21300038: crazedSoul_19
+    21300040: crazedSoul_20
+    21300042: crazedSoul_21
+    21300044: crazedSoul_22
+    21300046: crazedSoul_23
+    21300048: crazedSoul_24
+    21300050: crazedSoul_25
+    21300052: crazedSoul_26
+    21300054: crazedSoul_27
+    21300056: crazedSoul_28
+    21300058: crazedSoul_29
+    21300060: crazedSoul_30
+    21300062: crazedSoul_31
+    21300064: crazedSoul_32
+    21300066: crazedSoul_33
+    21300068: crazedSoul_34
+    21300070: crazedSoul_35
+    21300072: crazedSoul_36
+    21300074: crazedSoul_37
+    21300076: crazedSoul_38
+    21300078: crazedSoul_39
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -129,665 +118,522 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: samurai_0
+      name: crazedSoul_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 477
+        y: 944
         width: 80
         height: 80
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: samurai_1
+      name: crazedSoul_1
       rect:
         serializedVersion: 2
         x: 81
-        y: 477
+        y: 944
         width: 80
         height: 80
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: samurai_2
+      name: crazedSoul_2
       rect:
         serializedVersion: 2
         x: 162
-        y: 477
+        y: 944
         width: 80
         height: 80
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: samurai_3
+      name: crazedSoul_3
       rect:
         serializedVersion: 2
         x: 243
-        y: 477
+        y: 944
         width: 80
         height: 80
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: samurai_4
-      rect:
-        serializedVersion: 2
-        x: 324
-        y: 477
-        width: 80
-        height: 80
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: samurai_5
-      rect:
-        serializedVersion: 2
-        x: 405
-        y: 477
-        width: 80
-        height: 80
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: samurai_6
-      rect:
-        serializedVersion: 2
-        x: 486
-        y: 477
-        width: 80
-        height: 80
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: samurai_7
-      rect:
-        serializedVersion: 2
-        x: 567
-        y: 477
-        width: 80
-        height: 80
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: samurai_8
+      name: crazedSoul_4
       rect:
         serializedVersion: 2
         x: 0
-        y: 396
+        y: 863
         width: 80
         height: 80
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: samurai_9
+      name: crazedSoul_5
       rect:
         serializedVersion: 2
         x: 81
-        y: 396
+        y: 863
         width: 80
         height: 80
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: samurai_10
+      name: crazedSoul_6
       rect:
         serializedVersion: 2
         x: 162
-        y: 396
+        y: 863
         width: 80
         height: 80
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: samurai_11
+      name: crazedSoul_7
       rect:
         serializedVersion: 2
         x: 243
-        y: 396
+        y: 863
         width: 80
         height: 80
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: samurai_12
-      rect:
-        serializedVersion: 2
-        x: 324
-        y: 396
-        width: 80
-        height: 80
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: samurai_13
-      rect:
-        serializedVersion: 2
-        x: 405
-        y: 396
-        width: 80
-        height: 80
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: samurai_14
-      rect:
-        serializedVersion: 2
-        x: 486
-        y: 396
-        width: 80
-        height: 80
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: samurai_15
-      rect:
-        serializedVersion: 2
-        x: 567
-        y: 396
-        width: 80
-        height: 80
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: samurai_16
-      rect:
-        serializedVersion: 2
-        x: 648
-        y: 396
-        width: 80
-        height: 80
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: samurai_17
-      rect:
-        serializedVersion: 2
-        x: 729
-        y: 396
-        width: 80
-        height: 80
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: samurai_18
-      rect:
-        serializedVersion: 2
-        x: 810
-        y: 396
-        width: 80
-        height: 80
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: samurai_19
-      rect:
-        serializedVersion: 2
-        x: 891
-        y: 396
-        width: 80
-        height: 80
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: samurai_20
-      rect:
-        serializedVersion: 2
-        x: 972
-        y: 396
-        width: 80
-        height: 80
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: samurai_21
-      rect:
-        serializedVersion: 2
-        x: 1053
-        y: 396
-        width: 80
-        height: 80
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: samurai_22
+      name: crazedSoul_8
       rect:
         serializedVersion: 2
         x: 0
-        y: 315
+        y: 782
         width: 80
         height: 80
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: samurai_23
+      name: crazedSoul_9
       rect:
         serializedVersion: 2
         x: 81
-        y: 315
+        y: 782
         width: 80
         height: 80
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: samurai_24
+      name: crazedSoul_10
       rect:
         serializedVersion: 2
         x: 162
-        y: 315
+        y: 782
         width: 80
         height: 80
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: samurai_25
+      name: crazedSoul_11
       rect:
         serializedVersion: 2
         x: 243
-        y: 315
+        y: 782
         width: 80
         height: 80
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: samurai_26
-      rect:
-        serializedVersion: 2
-        x: 324
-        y: 315
-        width: 80
-        height: 80
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: samurai_27
-      rect:
-        serializedVersion: 2
-        x: 405
-        y: 315
-        width: 80
-        height: 80
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: samurai_28
+      name: crazedSoul_12
       rect:
         serializedVersion: 2
         x: 0
-        y: 234
+        y: 701
         width: 80
         height: 80
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: samurai_29
+      name: crazedSoul_13
       rect:
         serializedVersion: 2
         x: 81
-        y: 234
+        y: 701
         width: 80
         height: 80
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: samurai_30
+      name: crazedSoul_14
       rect:
         serializedVersion: 2
         x: 162
-        y: 234
+        y: 701
         width: 80
         height: 80
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: samurai_31
+      name: crazedSoul_15
       rect:
         serializedVersion: 2
         x: 243
-        y: 234
+        y: 701
         width: 80
         height: 80
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: samurai_32
-      rect:
-        serializedVersion: 2
-        x: 324
-        y: 234
-        width: 80
-        height: 80
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: samurai_33
-      rect:
-        serializedVersion: 2
-        x: 405
-        y: 234
-        width: 80
-        height: 80
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: samurai_34
-      rect:
-        serializedVersion: 2
-        x: 486
-        y: 234
-        width: 80
-        height: 80
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: samurai_35
-      rect:
-        serializedVersion: 2
-        x: 567
-        y: 234
-        width: 80
-        height: 80
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: samurai_36
-      rect:
-        serializedVersion: 2
-        x: 648
-        y: 234
-        width: 80
-        height: 80
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: samurai_37
-      rect:
-        serializedVersion: 2
-        x: 729
-        y: 234
-        width: 80
-        height: 80
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      tessellationDetail: 0
-    - serializedVersion: 2
-      name: samurai_38
+      name: crazedSoul_16
       rect:
         serializedVersion: 2
         x: 0
-        y: 153
+        y: 620
         width: 80
         height: 80
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: samurai_39
+      name: crazedSoul_17
       rect:
         serializedVersion: 2
         x: 81
-        y: 153
+        y: 620
         width: 80
         height: 80
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: samurai_40
+      name: crazedSoul_18
       rect:
         serializedVersion: 2
         x: 162
-        y: 153
+        y: 620
         width: 80
         height: 80
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: samurai_41
+      name: crazedSoul_19
       rect:
         serializedVersion: 2
         x: 0
-        y: 72
+        y: 539
         width: 80
         height: 80
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: samurai_42
+      name: crazedSoul_20
       rect:
         serializedVersion: 2
         x: 81
-        y: 72
+        y: 539
         width: 80
         height: 80
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: samurai_43
+      name: crazedSoul_21
       rect:
         serializedVersion: 2
         x: 162
-        y: 72
+        y: 539
         width: 80
         height: 80
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: samurai_44
+      name: crazedSoul_22
       rect:
         serializedVersion: 2
-        x: 243
-        y: 72
+        x: 0
+        y: 458
         width: 80
         height: 80
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: samurai_45
+      name: crazedSoul_23
       rect:
         serializedVersion: 2
-        x: 324
-        y: 72
+        x: 81
+        y: 458
         width: 80
         height: 80
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: samurai_46
+      name: crazedSoul_24
       rect:
         serializedVersion: 2
-        x: 405
-        y: 72
+        x: 162
+        y: 458
         width: 80
         height: 80
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: samurai_47
+      name: crazedSoul_25
       rect:
         serializedVersion: 2
-        x: 486
-        y: 72
+        x: 0
+        y: 377
         width: 80
         height: 80
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: samurai_48
+      name: crazedSoul_26
       rect:
         serializedVersion: 2
-        x: 567
-        y: 72
+        x: 81
+        y: 377
         width: 80
         height: 80
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: samurai_49
+      name: crazedSoul_27
       rect:
         serializedVersion: 2
-        x: 648
-        y: 72
+        x: 162
+        y: 377
         width: 80
         height: 80
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: samurai_50
+      name: crazedSoul_28
       rect:
         serializedVersion: 2
-        x: 729
-        y: 72
+        x: 0
+        y: 296
         width: 80
         height: 80
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: crazedSoul_29
+      rect:
+        serializedVersion: 2
+        x: 81
+        y: 296
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: crazedSoul_30
+      rect:
+        serializedVersion: 2
+        x: 162
+        y: 296
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: crazedSoul_31
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 215
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: crazedSoul_32
+      rect:
+        serializedVersion: 2
+        x: 81
+        y: 215
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: crazedSoul_33
+      rect:
+        serializedVersion: 2
+        x: 162
+        y: 215
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: crazedSoul_34
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 134
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: crazedSoul_35
+      rect:
+        serializedVersion: 2
+        x: 81
+        y: 134
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: crazedSoul_36
+      rect:
+        serializedVersion: 2
+        x: 162
+        y: 134
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: crazedSoul_37
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 53
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: crazedSoul_38
+      rect:
+        serializedVersion: 2
+        x: 81
+        y: 53
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: crazedSoul_39
+      rect:
+        serializedVersion: 2
+        x: 162
+        y: 53
+        width: 80
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       tessellationDetail: 0

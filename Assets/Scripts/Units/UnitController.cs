@@ -96,6 +96,11 @@ public class UnitController : MonoBehaviour {
 		myStats.ActionPoints--;
 	}
 
+	public void RemoveTurn() {
+		myStats.HasMoved = true;
+		myStats.ActionPoints = 0;
+	}
+
 	public void FollowPath() {
 		if (myPath.Count <= 0) {
 			return;

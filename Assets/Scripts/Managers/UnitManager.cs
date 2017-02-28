@@ -26,7 +26,8 @@ public class UnitManager : MonoBehaviour {
 		myMap = map;
 		SpawnUnit (0, players[0], 0, 0);
 		SpawnUnit (0, players[0], 5, 5);
-		SpawnUnit (1, players[1], 4, 4);
+		SpawnUnit (1, players[0], 4, 4);
+		SpawnUnit (2, players[1], 3, 8);
 	}
 	
 	// Update is called once per frame
@@ -144,6 +145,10 @@ public class UnitManager : MonoBehaviour {
 
 	public void MoveToTile(Node targetNode) {
 		MovementPath path = myMap.pathfinder.getPathFromTile (targetNode);
+		SetUnitPath (path);
+	}
+
+	public void SetUnitPath(MovementPath path) {
 		selectedUnit.SetPath (path);
 		selectedUnit.myStats.HasMoved = true;
 		selectedUnit.myNode.myUnit = null;

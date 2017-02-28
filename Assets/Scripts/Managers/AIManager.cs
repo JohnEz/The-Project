@@ -37,7 +37,20 @@ public class AIManager : MonoBehaviour {
 		myUnits = unitManager.Units.Where (unit => unit.myPlayer.id == myPlayerId).ToList ();
 
 		foreach (UnitController unit in myUnits) {
-			FindPathsToEnemies (unit);
+			unitManager.SelectUnit (unit);
+			List<MovementPath> paths = FindPathsToEnemies (unit);
+
+			MovementPath shortestPath = new MovementPath();
+			shortestPath.movementCost = -1;
+
+			foreach (MovementPath path in paths) {
+				if (shortestPath.movementCost == -1 || path.movementCost < shortestPath.movementCost) {
+					shortestPath = path;
+				}
+			}
+
+			shortestPath.path.RemoveAt (shortestPath.path.Count - 1);
+			unitManager.SetUnitPath(shortestPath);
 		}
 	}
 

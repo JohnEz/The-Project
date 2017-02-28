@@ -73,7 +73,6 @@ public class Pathfinder : MonoBehaviour {
 	public MovementPath FindPath(Node source, Node target, Walkable walkingType, int faction) {
 		map.resetTiles ();
 
-		List<Node> currentPath = null;
 		List<Node> openList = new List<Node> ();
 		List<Node> closedList = new List<Node> ();
 		MovementPath path = new MovementPath ();
@@ -124,6 +123,7 @@ public class Pathfinder : MonoBehaviour {
 		Node currentNode = endNode;
 		MovementPath newPath = new MovementPath ();
 		newPath.path = new List<Node> ();
+		newPath.movementCost = (int)endNode.cost;
 
 		newPath.path.Add (endNode);
 
