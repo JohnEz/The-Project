@@ -85,8 +85,6 @@ public class UnitController : MonoBehaviour {
 
 	public void SetSelected(bool selected) {
 		anim.IsSelected (selected);
-        unitCanvas.GetComponent<UnitCanvasController>().ShowActionMenu(selected);
-
     }
 
 	public void FinishedAttacking() {

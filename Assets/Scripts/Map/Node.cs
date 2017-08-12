@@ -27,7 +27,7 @@ public class Node : MonoBehaviour {
 	public float cost = 0;
 	[System.NonSerialized]
 	public float dist = 0;
-	public float moveCost = 0;
+	public float moveCost = 1;
 	public Walkable walkable;
 	public int level = 0;
 	public UnitController myUnit;

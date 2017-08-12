@@ -27,7 +27,7 @@ public class UnitManager : MonoBehaviour {
 		SpawnUnit (0, players[0], 0, 0);
 		SpawnUnit (0, players[0], 5, 5);
 		SpawnUnit (1, players[0], 4, 4);
-		SpawnUnit (2, players[1], 3, 8);
+		SpawnUnit (2, players[1], 4, 5);
 	}
 	
 	// Update is called once per frame

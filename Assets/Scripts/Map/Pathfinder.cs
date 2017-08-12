@@ -24,11 +24,15 @@ public class Pathfinder : MonoBehaviour {
 	}
 
 	public Dictionary<Node, float> findReachableTiles(Node startNode, float distance, Walkable walkingType, int faction) {
+		map.resetTiles ();
+
 		List<Node> openList = new List<Node> ();
 		List<Node> currentList;
 		Dictionary<Node, float> costToNode = new Dictionary<Node, float> ();
-		map.resetTiles ();
+
 		bool changed = true;
+
+		startNode.cost = 0;
 		openList.Add (startNode);
 
 		while (changed) {
@@ -74,8 +78,9 @@ public class Pathfinder : MonoBehaviour {
 		map.resetTiles ();
 
 		List<Node> openList = new List<Node> ();
-		List<Node> closedList = new List<Node> ();
 		MovementPath path = new MovementPath ();
+
+		source.cost = 0;
 
 		openList.Add (source);
 
@@ -95,13 +100,12 @@ public class Pathfinder : MonoBehaviour {
 			}
 
 			openList.Remove (currentNode);
-			closedList.Add (currentNode);
 
 			foreach (Neighbour neighbour in currentNode.neighbours) {
-				if (neighbour.node != source && (isTileWalkable(currentNode, neighbour.node, walkingType, faction) || neighbour.node == target)) {
+				if ((neighbour.node != source && (isTileWalkable(currentNode, neighbour.node, walkingType, faction)) || (neighbour.node == target && UnitCanChangeLevel(currentNode, neighbour.node, walkingType)))) {
 					float totalCost = currentNode.cost + neighbour.node.moveCost;
 
-					if (!closedList.Contains(neighbour.node) || neighbour.node.cost > totalCost) {
+					if (neighbour.node.cost > totalCost) {
 						neighbour.node.previous = new Neighbour();
 						neighbour.node.previous.node = currentNode;
 						neighbour.node.previous.direction = neighbour.direction;
