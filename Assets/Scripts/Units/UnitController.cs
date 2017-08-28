@@ -70,7 +70,7 @@ public class UnitController : MonoBehaviour {
 	}
 
 	public void NewTurn() {
-		myStats.ActionPoints = myStats.MaxActionPoints;
+		ActionPoints = myStats.MaxActionPoints;
 	}
 
 	public void Spawn(Player player, Node startNode) {
@@ -101,6 +101,14 @@ public class UnitController : MonoBehaviour {
 
 	public void RemoveTurn() {
 		myStats.ActionPoints = 0;
+	}
+
+	public int ActionPoints {
+		get { return myStats.ActionPoints; }
+		set { 
+			myStats.ActionPoints = value;
+			unitCanvas.GetComponent<UnitCanvasController> ().SetActionPoints (value);
+		}
 	}
 
 	public void FollowPath() {
@@ -155,9 +163,9 @@ public class UnitController : MonoBehaviour {
 
 	public void SetPath(List<Node> path) {
 		if (path [path.Count - 1].cost > myStats.Speed) {
-			myStats.ActionPoints -= 2;
+			ActionPoints -= 2;
 		} else {
-			myStats.ActionPoints--;
+			ActionPoints--;
 		}
 		myNode.myUnit = null;
 		myPath = path;
@@ -178,7 +186,7 @@ public class UnitController : MonoBehaviour {
 		ability.UseAbility (this, targetNode, targetNode.previous.direction);
 		FaceDirection (targetNode.previous.direction);
 		SetAttacking (true);
-		myStats.ActionPoints--;
+		ActionPoints--;
 		myManager.UnitStartedAttacking ();
 	}
 

@@ -1,10 +1,16 @@
 fileFormatVersion: 2
 guid: 6fc59da9e127e6c4eb30e2d5916f0cdc
-timeCreated: 1469738867
+timeCreated: 1503940566
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - hpBarPrefab: {fileID: 1160650913043780, guid: 0cf9e063f8d3de548a706f2d918ec82d,
+      type: 2}
+  - damageTextPrefab: {fileID: 1676128883330252, guid: 1e661445437df394d89992b6a185c41f,
+      type: 2}
+  - actionPointPrefab: {fileID: 1532739700277802, guid: 556918738325457499554a0ab48fcf9f,
+      type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
