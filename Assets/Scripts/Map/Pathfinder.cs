@@ -9,6 +9,11 @@ public struct MovementPath {
 	public int movementCost;
 }
 
+public struct MovementAndAttackPath {
+	public Dictionary<Node, float> movementTiles;
+	public List<Node> attackTiles;
+}
+
 public class Pathfinder : MonoBehaviour {
 
 	TileMap map;
@@ -146,6 +151,44 @@ public class Pathfinder : MonoBehaviour {
 		return newPath;
 	}
 
+	public MovementAndAttackPath findMovementAndAttackTiles(UnitController unit, BaseAbility ability) {
+		MovementAndAttackPath reachableTiles;
+		reachableTiles.movementTiles = findReachableTiles (unit.myNode, unit.myStats.Speed, unit.myStats.WalkingType, unit.myPlayer.faction);
+		reachableTiles.attackTiles = new List<Node> ();
+
+		//Need to do a test for the starting tile
+		foreach (Neighbour neighbour in unit.myNode.neighbours) {
+			UnitController targetUnit = neighbour.node.myUnit;
+			if (targetUnit && ability.CanTargetTile (unit, neighbour.node)) {
+				reachableTiles.attackTiles.Add (neighbour.node);
+				neighbour.node.previous = new Neighbour ();
+				neighbour.node.previous.node = unit.myNode;
+				neighbour.node.previous.direction = neighbour.direction;
+				neighbour.node.previous.node.cost = 0;
+			}
+		}
+
+		foreach (Node tile in reachableTiles.movementTiles.Keys) {
+			foreach (Neighbour neighbour in tile.neighbours) {
+
+				//if its a tile we cant already walk on to
+				if (!reachableTiles.movementTiles.Keys.Contains(neighbour.node)) {
+					//if its not already highligheted or if the new parent is faster than previous
+					if (!reachableTiles.attackTiles.Contains(neighbour.node) || reachableTiles.movementTiles[tile] < neighbour.node.previous.node.cost) {
+					UnitController targetUnit = neighbour.node.myUnit;
+						if (targetUnit && ability.CanTargetTile (unit, neighbour.node)) {
+							reachableTiles.attackTiles.Add (neighbour.node);
+							neighbour.node.previous = new Neighbour ();
+							neighbour.node.previous.node = tile;
+							neighbour.node.previous.direction = neighbour.direction;
+						}
+					}
+				}
+			}
+		}
+		return reachableTiles;
+	}
+
 	public bool isTileWalkable(Node startNode, Node endNode, Walkable walkingType, int faction) {
 		return UnitCanStandOnTile(endNode, walkingType) && !UnitInTheWay(endNode, faction) && UnitCanChangeLevel(startNode, endNode, walkingType);
 	}
@@ -165,13 +208,13 @@ public class Pathfinder : MonoBehaviour {
 		return levelDifference <= maxDifference + 1;
 	}
 
-	public List<Node> FindAttackableTiles(UnitController caster, BaseAbility ability) {
+	public List<Node> FindAttackableTiles(Node node, BaseAbility ability) {
 		//TODO switch state on if its aoe, cleave, single target etc
-		return FindSingleTargetTiles(caster, ability);
+		return FindSingleTargetTiles(node, ability);
 	}
 
-	List<Node> FindSingleTargetTiles(UnitController caster, BaseAbility ability) {
-		List<Node> reachableTiles = findReachableTiles (caster.myNode, ability.range, Walkable.Flying, -1).Keys.ToList();
+	List<Node> FindSingleTargetTiles(Node node, BaseAbility ability) {
+		List<Node> reachableTiles = findReachableTiles (node, ability.range, Walkable.Flying, -1).Keys.ToList();
 
 		//TODO check to see if the tile is in line of sight
 		return reachableTiles;

@@ -12,6 +12,18 @@ public struct DamageTarget {
 	}
 }
 
+public enum ActionType {
+	MOVEMENT,
+	ATTACK,
+	NULL
+}
+
+public struct Action {
+	public ActionType type;
+	public List<Node> nodes;
+	public BaseAbility ability;
+}
+
 public class UnitController : MonoBehaviour {
 	
 	[System.NonSerialized]
@@ -38,6 +50,7 @@ public class UnitController : MonoBehaviour {
 	public Player myPlayer;
 
 	List<DamageTarget> damageTargets = new List<DamageTarget>();
+	Queue<Action> actionQueue = new Queue<Action>();
 
 	// Use this for initialization
 	void Start () {
@@ -87,13 +100,6 @@ public class UnitController : MonoBehaviour {
 		anim.IsSelected (selected);
     }
 
-	public void FinishedAttacking() {
-		myManager.UnitFinishedAttacking ();
-		HitDamageTargets ();
-		ClearDamageTargets ();
-		myStats.ActionPoints--;
-	}
-
 	public void RemoveTurn() {
 		myStats.HasMoved = true;
 		myStats.ActionPoints = 0;
@@ -113,19 +119,74 @@ public class UnitController : MonoBehaviour {
 			if (myPath.Count > 1) {
 				FaceDirection (myPath [1].previous.direction);
 			} else {
-				anim.IsWalking (false);
-				myPath [0].myUnit = this;
-				myNode = myPath [0];
-				myManager.UnitFinishedMoving ();
+				FinishWalking ();
 			}
 			myPath.RemoveAt (0);
 		}
 	}
 
-	public void SetPath(MovementPath newPath) {
-		myPath = newPath.path;
+	public bool AddAction(Action action) {
+		actionQueue.Enqueue (action);
+
+		if (actionQueue.Count == 1) {
+			RunNextAction (false);
+		}
+
+		return true;
+	}
+
+	private void RunNextAction(bool removeAction) {
+
+		if (removeAction) {
+			actionQueue.Dequeue ();
+		}
+
+		if (actionQueue.Count >= 1) {
+			Action nextAction = actionQueue.Peek ();
+
+			switch (nextAction.type) {
+			case ActionType.MOVEMENT:
+				SetPath (nextAction.nodes);
+				break;
+			case ActionType.ATTACK:
+				AttackTarget (nextAction.nodes [0], nextAction.ability);
+				break;
+			}
+		}
+	}
+
+	public void SetPath(List<Node> path) {
+		myStats.HasMoved = true;
+		myNode.myUnit = null;
+		myPath = path;
 		FaceDirection (myPath [0].previous.direction);
 		SetWalking(true);
+		myManager.UnitStartedMoving ();
+	}
+
+	private void FinishWalking() {
+		anim.IsWalking (false);
+		myPath [0].myUnit = this;
+		myNode = myPath [0];
+		myManager.UnitFinishedMoving ();
+		RunNextAction (true);
+	}
+
+	public void AttackTarget(Node targetNode, BaseAbility ability) {
+		ability.UseAbility (this, targetNode, targetNode.previous.direction);
+		FaceDirection (targetNode.previous.direction);
+		SetAttacking (true);
+		myStats.ActionPoints--;
+		myStats.HasMoved = true;
+		myManager.UnitStartedAttacking ();
+	}
+
+	public void FinishedAttacking() {
+		myManager.UnitFinishedAttacking ();
+		HitDamageTargets ();
+		ClearDamageTargets ();
+		myStats.ActionPoints--;
+		RunNextAction (true);
 	}
 
 	public void AddDamageTarget(UnitController target, int damage) {

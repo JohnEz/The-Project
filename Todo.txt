@@ -1,0 +1,5 @@
+show path
+Way to distinguish units teams
+Distinguish which units have taken their turn
+Quest / Objective
+lose scenario

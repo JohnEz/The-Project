@@ -21,7 +21,6 @@ public class TileHighlighter : MonoBehaviour {
 	Color white = new Color (1, 1, 1);
 
 	bool showingHighlight = false;
-	bool highlighted = false;
 	bool hovered = false;
 
 	float maxAlpha = 0.5f;

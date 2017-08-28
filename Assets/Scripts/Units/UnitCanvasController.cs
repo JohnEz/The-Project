@@ -9,13 +9,17 @@ public class UnitCanvasController : MonoBehaviour {
 
 	HpBarController hpBar;
 
-	int hpBarHeight = 100;
-
+	Color[] teamColours = new Color[]{
+		new Color(0,0,1),
+		new Color(1,0,0),
+		new Color(0,1,0)
+	};
 
 	// Use this for initialization
 	void Start () {
 		hpBar = Instantiate (hpBarPrefab).GetComponent<HpBarController>();
 		hpBar.transform.SetParent (transform, false);
+		//hpBar.
     }
 	
 	// Update is called once per frame

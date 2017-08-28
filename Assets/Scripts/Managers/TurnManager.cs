@@ -29,6 +29,8 @@ public class TurnManager : MonoBehaviour {
 	List<Player> players;
 	public int playersTurn = -1;
 
+	bool checkedPlayerStatus = true;
+
 
 	// Use this for initialization
 	void Start () {
@@ -56,8 +58,12 @@ public class TurnManager : MonoBehaviour {
 		}
 
 		//check to see if the turn should end
-		if (currentPhase == TurnPhase.WAITING_FOR_INPUT && unitManager.PlayerOutOfActions (playersTurn)) {
-			EndTurn ();
+		if (!checkedPlayerStatus) {
+			if (currentPhase == TurnPhase.WAITING_FOR_INPUT && unitManager.PlayerOutOfActions (playersTurn)) {
+				EndTurn ();
+			} else {
+				checkedPlayerStatus = true;
+			}
 		}
 	}
 
@@ -83,7 +89,7 @@ public class TurnManager : MonoBehaviour {
 	//FINITE STATE MACHINE
 
 	public void StartNewTurn() {
-		currentPhase = TurnPhase.TURN_STARTING;
+		ChangeState(TurnPhase.TURN_STARTING);
 		playersTurn++;
 		playersTurn = playersTurn % players.Count;
 		GetComponent<UnitManager> ().StartTurn (playersTurn);
@@ -96,28 +102,33 @@ public class TurnManager : MonoBehaviour {
 		}
 	}
 
+	public void ChangeState(TurnPhase newPhase) {
+		currentPhase = newPhase;
+		checkedPlayerStatus = false;
+	}
+
 	public void FinishStartingTurn() {
-		currentPhase = TurnPhase.WAITING_FOR_INPUT;
+		ChangeState(TurnPhase.WAITING_FOR_INPUT);
 	}
 
 	public void StartMoving() {
-		currentPhase = TurnPhase.UNIT_MOVING;
+		ChangeState(TurnPhase.UNIT_MOVING);
 	}
 
 	public void FinishedMoving() {
-		currentPhase = TurnPhase.WAITING_FOR_INPUT;
+		ChangeState(TurnPhase.WAITING_FOR_INPUT);
 	}
 
 	public void StartAttacking() {
-		currentPhase = TurnPhase.UNIT_ATTACKING;
+		ChangeState(TurnPhase.UNIT_ATTACKING);
 	}
 
 	public void FinishedAttacking() {
-		currentPhase = TurnPhase.WAITING_FOR_INPUT;
+		ChangeState(TurnPhase.WAITING_FOR_INPUT);
 	}
 
 	public void EndTurn() {
-		currentPhase = TurnPhase.TURN_ENDING;
+		ChangeState(TurnPhase.TURN_ENDING);
 		//TODO CLEAN UP, EG SELECTED TILES
 		unitManager.DeselectUnit();
 		StartNewTurn ();
@@ -151,7 +162,6 @@ public class TurnManager : MonoBehaviour {
 	}
 
 	public void ClickedMovement(Node node) {
-		StartMoving ();
 		unitManager.MoveToTile (node);
 		unitManager.DeselectUnit ();
 	}
@@ -176,7 +186,6 @@ public class TurnManager : MonoBehaviour {
 	public void ClickedAttack(Node node) {
 		if (unitManager.AttackTile (node)) {
 			unitManager.DeselectUnit ();
-			StartAttacking ();
 		}
 	}
 

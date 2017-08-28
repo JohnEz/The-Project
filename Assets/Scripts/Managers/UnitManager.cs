@@ -25,7 +25,7 @@ public class UnitManager : MonoBehaviour {
 		units = new List<UnitController> ();
 		myMap = map;
 		SpawnUnit (0, players[0], 0, 0);
-		SpawnUnit (0, players[0], 5, 5);
+		SpawnUnit (0, players[0], 3, 5);
 		SpawnUnit (1, players[0], 4, 4);
 		SpawnUnit (2, players[1], 4, 5);
 	}
@@ -94,10 +94,26 @@ public class UnitManager : MonoBehaviour {
 	}
 
 	public void ShowMovement(UnitController unit) {
-		Dictionary<Node, float> reachableTiles = FindReachableTiles(unit);
+		if (selectedUnit.myStats.ActionPoints > 0) {
+			ShowMovementAndAttack (unit);
+		} else {
+			Dictionary<Node, float> reachableTiles = FindReachableTiles(unit);
+			myMap.highlighter.UnhighlightTiles ();
+			myMap.highlighter.HighlightTile (unit.myNode, SquareTarget.NONE);
+			myMap.highlighter.HighlightTiles (reachableTiles.Keys.ToList(), SquareTarget.MOVEMENT);
+		}
+	}
+
+	public void ShowMovementAndAttack(UnitController unit) {
 		myMap.highlighter.UnhighlightTiles ();
 		myMap.highlighter.HighlightTile (unit.myNode, SquareTarget.NONE);
-		myMap.highlighter.HighlightTiles (reachableTiles.Keys.ToList(), SquareTarget.MOVEMENT);
+
+		UnitClass unitClass = unit.GetComponent<UnitClass>();
+		MovementAndAttackPath reachableTiles = myMap.pathfinder.findMovementAndAttackTiles (unit, unitClass.abilities [0]);
+		activeAbility = unitClass.abilities[0];
+
+		myMap.highlighter.HighlightTiles (reachableTiles.movementTiles.Keys.ToList(), SquareTarget.MOVEMENT);
+		myMap.highlighter.HighlightTiles (reachableTiles.attackTiles, SquareTarget.ATTACK);
 	}
 
 	public bool ShowAbility(int ability) {
@@ -121,7 +137,7 @@ public class UnitManager : MonoBehaviour {
 		}
 
 		activeAbility = unitClass.abilities [ability];
-		List<Node> attackableTiles = myMap.pathfinder.FindAttackableTiles (selectedUnit, activeAbility);
+		List<Node> attackableTiles = myMap.pathfinder.FindAttackableTiles (selectedUnit.myNode, activeAbility);
 		myMap.highlighter.UnhighlightTiles ();
 		myMap.highlighter.HighlightTile (selectedUnit.myNode, SquareTarget.NONE);
 		myMap.highlighter.HighlightTiles (attackableTiles, SquareTarget.ATTACK);
@@ -134,29 +150,47 @@ public class UnitManager : MonoBehaviour {
 			return false;
 		}
 
-		Vector2 direction = myMap.GetDirectionBetweenNodes (selectedUnit.myNode, targetNode);
-		activeAbility.UseAbility (selectedUnit, targetNode, direction);
-		selectedUnit.FaceDirection (direction);
-		selectedUnit.SetAttacking (true);
-		selectedUnit.myStats.ActionPoints--;
+		MovementPath movementPath = myMap.pathfinder.getPathFromTile (targetNode.previous.node);
+		Action attackAction = new Action();
+		attackAction.type = ActionType.ATTACK;
+		attackAction.ability = activeAbility;
+		attackAction.nodes = new List<Node> ();
+		attackAction.nodes.Add (targetNode);
+
+		if (movementPath.movementCost >= 1) {
+			SetUnitPath (movementPath);
+		}
+
+		selectedUnit.AddAction (attackAction);
 
 		return true;
 	}
 
-	public void MoveToTile(Node targetNode) {
-		MovementPath path = myMap.pathfinder.getPathFromTile (targetNode);
-		SetUnitPath (path);
+	public void SetUnitPath(MovementPath movementPath) {
+		Action moveAction = new Action();
+		moveAction.type = ActionType.MOVEMENT;
+		moveAction.nodes = movementPath.path;
+		selectedUnit.AddAction (moveAction);
 	}
 
-	public void SetUnitPath(MovementPath path) {
-		selectedUnit.SetPath (path);
-		selectedUnit.myStats.HasMoved = true;
-		selectedUnit.myNode.myUnit = null;
+	public void MoveToTile(Node targetNode) {
+		MovementPath movementPath = myMap.pathfinder.getPathFromTile (targetNode);
+		SetUnitPath(movementPath);
+	}
+
+	public void UnitStartedMoving() {
+		TurnManager turnManager = GetComponent<TurnManager> ();
+		turnManager.StartMoving ();
 	}
 
 	public void UnitFinishedMoving() {
 		TurnManager turnManager = GetComponent<TurnManager> ();
 		turnManager.FinishedMoving ();
+	}
+
+	public void UnitStartedAttacking() {
+		TurnManager turnManager = GetComponent<TurnManager> ();
+		turnManager.StartAttacking ();
 	}
 
 	public void UnitFinishedAttacking() {
@@ -169,15 +203,26 @@ public class UnitManager : MonoBehaviour {
 	}
 
 	public bool PlayerOutOfActions(int playerId) {
-		bool noActionsRemaining = true;
-
 		foreach (UnitController unit in units) {
-			if (unit.myPlayer.id == playerId && (unit.myStats.ActionPoints > 0 || !unit.myStats.HasMoved)) {
-				noActionsRemaining = false;
+			if (unit.myPlayer.id == playerId && (!unit.myStats.HasMoved || unitCanAttack(unit))) {
+				return false;
 			}
 		}
+		return true;
+	}
 
-		return noActionsRemaining;
-
+	public bool unitCanAttack(UnitController unit) {
+		if (unit.myStats.ActionPoints > 0) {
+			foreach (BaseAbility abil in unit.GetComponent<UnitClass>().abilities) {
+				if (abil != null) {
+					foreach (Node attackNode in myMap.pathfinder.FindAttackableTiles (unit.myNode, abil)) {
+						if (attackNode.myUnit && abil.CanTargetTile (unit, attackNode)) {
+							return true;
+						}
+					}
+				}
+			}
+		}
+		return false;
 	}
 }
