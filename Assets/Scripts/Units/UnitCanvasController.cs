@@ -9,17 +9,21 @@ public class UnitCanvasController : MonoBehaviour {
 
 	HpBarController hpBar;
 
+	int myTeam;
+
 	Color[] teamColours = new Color[]{
-		new Color(0,0,1),
-		new Color(1,0,0),
-		new Color(0,1,0)
+		new Color (0, 0.9647f, 1), //blue
+		new Color (0.8431f, 0.2f, 0.2f), //red
+		new Color (0.7294f, 0.9569f, 0.1176f) //green
 	};
 
 	// Use this for initialization
 	void Start () {
+		myTeam = GetComponentInParent<UnitController> ().myPlayer.id;
 		hpBar = Instantiate (hpBarPrefab).GetComponent<HpBarController>();
 		hpBar.transform.SetParent (transform, false);
-		//hpBar.
+		hpBar.Initialize ();
+		hpBar.SetHPColor (teamColours [myTeam]);
     }
 	
 	// Update is called once per frame

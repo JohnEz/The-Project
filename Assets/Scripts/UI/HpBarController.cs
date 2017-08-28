@@ -8,7 +8,7 @@ public class HpBarController : MonoBehaviour {
 	public Image hpBar;
 
 	// Use this for initialization
-	void Start () {
+	public void Initialize () {
 		hpBar = transform.FindChild("hpBar").GetComponent<Image>();
 	}
 	
@@ -19,5 +19,9 @@ public class HpBarController : MonoBehaviour {
 
 	public void SetHP(float percentage) {
 		hpBar.fillAmount = percentage;
+	}
+
+	public void SetHPColor(Color color) {
+		hpBar.color = color;
 	}
 }
