@@ -148,6 +148,7 @@ public class TurnManager : MonoBehaviour {
 			case SquareTarget.ATTACK:
 				ClickedAttack (node);
 				break;
+			case SquareTarget.DASH:
 			case SquareTarget.MOVEMENT:
 				ClickedMovement (node);
 				break;
@@ -172,10 +173,8 @@ public class TurnManager : MonoBehaviour {
 			unitManager.SelectUnit (node.myUnit);
 
 			if (node.myUnit.myPlayer.id == playersTurn) {
-				if (!node.myUnit.myStats.HasMoved) {
-					unitManager.ShowMovement (node.myUnit);
-				} else if (node.myUnit.myStats.ActionPoints > 0) {
-					unitManager.ShowAbility (0);
+				if (node.myUnit.myStats.ActionPoints > 0) {
+					unitManager.ShowActions (node.myUnit);
 				}
 			}
 		} else {

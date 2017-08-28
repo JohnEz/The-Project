@@ -70,7 +70,6 @@ public class UnitController : MonoBehaviour {
 	}
 
 	public void NewTurn() {
-		myStats.HasMoved = false;
 		myStats.ActionPoints = myStats.MaxActionPoints;
 	}
 
@@ -101,7 +100,6 @@ public class UnitController : MonoBehaviour {
     }
 
 	public void RemoveTurn() {
-		myStats.HasMoved = true;
 		myStats.ActionPoints = 0;
 	}
 
@@ -156,7 +154,11 @@ public class UnitController : MonoBehaviour {
 	}
 
 	public void SetPath(List<Node> path) {
-		myStats.HasMoved = true;
+		if (path [path.Count - 1].cost > myStats.Speed) {
+			myStats.ActionPoints -= 2;
+		} else {
+			myStats.ActionPoints--;
+		}
 		myNode.myUnit = null;
 		myPath = path;
 		FaceDirection (myPath [0].previous.direction);
@@ -177,7 +179,6 @@ public class UnitController : MonoBehaviour {
 		FaceDirection (targetNode.previous.direction);
 		SetAttacking (true);
 		myStats.ActionPoints--;
-		myStats.HasMoved = true;
 		myManager.UnitStartedAttacking ();
 	}
 
@@ -185,7 +186,6 @@ public class UnitController : MonoBehaviour {
 		myManager.UnitFinishedAttacking ();
 		HitDamageTargets ();
 		ClearDamageTargets ();
-		myStats.ActionPoints--;
 		RunNextAction (true);
 	}
 

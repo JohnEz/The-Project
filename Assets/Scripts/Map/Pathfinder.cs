@@ -6,11 +6,17 @@ using System.Linq;
 
 public struct MovementPath {
 	public List<Node> path;
+	public List<Node> dashPath;
 	public int movementCost;
 }
 
+public struct ReachableTiles {
+	public Dictionary<Node, float> basic;
+	public Dictionary<Node, float> extended;
+}
+
 public struct MovementAndAttackPath {
-	public Dictionary<Node, float> movementTiles;
+	public ReachableTiles movementTiles;
 	public List<Node> attackTiles;
 }
 
@@ -28,12 +34,14 @@ public class Pathfinder : MonoBehaviour {
 	
 	}
 
-	public Dictionary<Node, float> findReachableTiles(Node startNode, float distance, Walkable walkingType, int faction) {
+	public ReachableTiles findReachableTiles(Node startNode, float distance, Walkable walkingType, int faction, bool canDash = false) {
 		map.resetTiles ();
 
 		List<Node> openList = new List<Node> ();
 		List<Node> currentList;
-		Dictionary<Node, float> costToNode = new Dictionary<Node, float> ();
+		Dictionary<Node, float> reachableNodes = new Dictionary<Node, float> ();
+
+		float maxDistance = canDash ? distance*2 : distance;
 
 		bool changed = true;
 
@@ -52,13 +60,13 @@ public class Pathfinder : MonoBehaviour {
 					if (neighbour.node != startNode && isTileWalkable(node, neighbour.node, walkingType, faction)) {
 						float totalCost = node.cost + neighbour.node.moveCost;
 
-						if (totalCost <= distance) {
-							if (!costToNode.ContainsKey (neighbour.node) || costToNode[neighbour.node] > totalCost) {
+						if (totalCost <= maxDistance) {
+							if (!reachableNodes.ContainsKey (neighbour.node) || reachableNodes[neighbour.node] > totalCost) {
 								neighbour.node.previous = new Neighbour();
 								neighbour.node.previous.node = node;
 								neighbour.node.previous.direction = neighbour.direction;
 								neighbour.node.cost = totalCost;
-								costToNode [neighbour.node] = totalCost;
+								reachableNodes [neighbour.node] = totalCost;
 								openList.Add (neighbour.node);
 								changed = true;
 							}
@@ -70,13 +78,17 @@ public class Pathfinder : MonoBehaviour {
 			}
 
 		}
-
+			
 		//if you cant end your path on a unit THIS IS DANGEROUS
 		if (faction != -1) {
-			costToNode = costToNode.Where (item => item.Key.myUnit == null).ToDictionary (item => item.Key, item => item.Value);
+			reachableNodes = reachableNodes.Where (item => item.Key.myUnit == null).ToDictionary (item => item.Key, item => item.Value);
 		}
 
-		return costToNode;
+		ReachableTiles reachableTiles;
+		reachableTiles.basic = reachableNodes.Where (item => item.Key.cost <= distance).ToDictionary (item => item.Key, item => item.Value);
+		reachableTiles.extended = reachableNodes.Where (item => item.Key.cost > distance).ToDictionary (item => item.Key, item => item.Value);
+
+		return reachableTiles;
 	}
 
 	public MovementPath FindPath(Node source, Node target, Walkable walkingType, int faction) {
@@ -151,9 +163,10 @@ public class Pathfinder : MonoBehaviour {
 		return newPath;
 	}
 
-	public MovementAndAttackPath findMovementAndAttackTiles(UnitController unit, BaseAbility ability) {
+	public MovementAndAttackPath findMovementAndAttackTiles(UnitController unit, BaseAbility ability, int actions) {
+		bool canDash = actions > 1;
 		MovementAndAttackPath reachableTiles;
-		reachableTiles.movementTiles = findReachableTiles (unit.myNode, unit.myStats.Speed, unit.myStats.WalkingType, unit.myPlayer.faction);
+		reachableTiles.movementTiles = findReachableTiles (unit.myNode, unit.myStats.Speed, unit.myStats.WalkingType, unit.myPlayer.faction, canDash);
 		reachableTiles.attackTiles = new List<Node> ();
 
 		//Need to do a test for the starting tile
@@ -168,19 +181,21 @@ public class Pathfinder : MonoBehaviour {
 			}
 		}
 
-		foreach (Node tile in reachableTiles.movementTiles.Keys) {
-			foreach (Neighbour neighbour in tile.neighbours) {
+		if (actions > 1) {
+			foreach (Node tile in reachableTiles.movementTiles.basic.Keys) {
+				foreach (Neighbour neighbour in tile.neighbours) {
 
-				//if its a tile we cant already walk on to
-				if (!reachableTiles.movementTiles.Keys.Contains(neighbour.node)) {
-					//if its not already highligheted or if the new parent is faster than previous
-					if (!reachableTiles.attackTiles.Contains(neighbour.node) || reachableTiles.movementTiles[tile] < neighbour.node.previous.node.cost) {
-					UnitController targetUnit = neighbour.node.myUnit;
-						if (targetUnit && ability.CanTargetTile (unit, neighbour.node)) {
-							reachableTiles.attackTiles.Add (neighbour.node);
-							neighbour.node.previous = new Neighbour ();
-							neighbour.node.previous.node = tile;
-							neighbour.node.previous.direction = neighbour.direction;
+					//if its a tile we cant already walk on to
+					if (!reachableTiles.movementTiles.basic.Keys.Contains (neighbour.node)) {
+						//if its not already highligheted or if the new parent is faster than previous
+						if (!reachableTiles.attackTiles.Contains (neighbour.node) || tile.cost < neighbour.node.previous.node.cost) {
+							UnitController targetUnit = neighbour.node.myUnit;
+							if (targetUnit && ability.CanTargetTile (unit, neighbour.node)) {
+								reachableTiles.attackTiles.Add (neighbour.node);
+								neighbour.node.previous = new Neighbour ();
+								neighbour.node.previous.node = tile;
+								neighbour.node.previous.direction = neighbour.direction;
+							}
 						}
 					}
 				}
@@ -214,7 +229,7 @@ public class Pathfinder : MonoBehaviour {
 	}
 
 	List<Node> FindSingleTargetTiles(Node node, BaseAbility ability) {
-		List<Node> reachableTiles = findReachableTiles (node, ability.range, Walkable.Flying, -1).Keys.ToList();
+		List<Node> reachableTiles = findReachableTiles (node, ability.range, Walkable.Flying, -1).basic.Keys.ToList();
 
 		//TODO check to see if the tile is in line of sight
 		return reachableTiles;

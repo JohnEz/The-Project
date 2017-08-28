@@ -41,10 +41,8 @@ public class UnitStats : MonoBehaviour {
 	int baseBlock = 0;
 	[SerializeField]
 	int baseArmour = 0;
-	[SerializeField]
-	int baseActionPoints = 1;
+	int baseActionPoints = 2;
 	int actionPoints;
-	bool hasMoved = false;
 
 	[SerializeField]
 	Walkable baseWalkingType = Walkable.Walkable;
@@ -128,11 +126,6 @@ public class UnitStats : MonoBehaviour {
 	public int ActionPoints {
 		get { return actionPoints; }
 		set { actionPoints = value; }
-	}
-
-	public bool HasMoved {
-		get { return hasMoved; }
-		set { hasMoved = value; }
 	}
 
 	public Walkable WalkingType {

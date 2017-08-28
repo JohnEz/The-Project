@@ -6,6 +6,7 @@ using System.Collections.Generic;
 public enum SquareTarget {
 	NONE,
 	MOVEMENT,
+	DASH,
 	HELPFULL,
 	ATTACK
 }
@@ -18,6 +19,7 @@ public class TileHighlighter : MonoBehaviour {
 	Color blue = new Color (0, 0.9647f, 1);
 	Color red = new Color (0.8431f, 0.2f, 0.2f);
 	Color green = new Color (0.7294f, 0.9569f, 0.1176f);
+	Color yellow = new Color (0.9569f, 0.7294f, 0.1176f);
 	Color white = new Color (1, 1, 1);
 
 	bool showingHighlight = false;
@@ -95,14 +97,17 @@ public class TileHighlighter : MonoBehaviour {
 		case SquareTarget.MOVEMENT:
 			mySprite.color = blue;
 			break;
+		case SquareTarget.DASH:
+			mySprite.color = yellow;
+			break;
 		case SquareTarget.HELPFULL:
 			mySprite.color = green;
 			break;
 		case SquareTarget.ATTACK:
 			mySprite.color = red;
 			break;
-		default: 
 		case SquareTarget.NONE:
+		default: 
 			mySprite.color = white;
 			break;
 		}
