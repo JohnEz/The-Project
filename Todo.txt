@@ -1,3 +1,10 @@
+fix move and attack for ranged basic abilities
+projectile attacks
+Create Buffs (stop infinite stacking)
 show path
+stand behind map objects
+cant run at top left?
+Show if something was a crit or blocked
 Quest / Objective
 lose scenario
+AI

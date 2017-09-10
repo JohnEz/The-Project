@@ -30,7 +30,10 @@ public class Node : MonoBehaviour {
 	public float moveCost = 1;
 	public Walkable walkable;
 	public int level = 0;
+
+	//Game engine variables
 	public UnitController myUnit;
+	public Node previousMoveNode; //used for move and attack
 
 
 	// Use this for initialization
@@ -49,6 +52,12 @@ public class Node : MonoBehaviour {
 
 	public float Value {
 		get { return cost + dist; }
+	}
+
+	public void Reset() {
+		cost = Mathf.Infinity;
+		previous = new Neighbour();
+		previousMoveNode = null;
 	}
 }
 

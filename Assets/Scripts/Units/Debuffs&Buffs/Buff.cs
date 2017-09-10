@@ -10,6 +10,8 @@ public class Buff {
 	public int maxDuration = 1;
 	public int duration;
 
+	public int maxStack = 1;
+
 	public bool isDebuff = false;
 
 	public Buff() {

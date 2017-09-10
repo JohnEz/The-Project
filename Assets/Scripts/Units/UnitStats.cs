@@ -65,7 +65,7 @@ public class UnitStats : MonoBehaviour {
 			percentMods *= buff.percentMod [(int)stat];
 		}
 
-		return (int)((baseValue + flatMods) * percentMods);
+		return (int)((baseValue * percentMods) + flatMods);
 	}
 
 	public void SetHealth(int health) {
@@ -119,13 +119,17 @@ public class UnitStats : MonoBehaviour {
 	}
 
 	public int MaxActionPoints {
-		get { return baseActionPoints; }
-		set { baseActionPoints = value; }
+		get { return GetModifiedStat(baseActionPoints, Stats.AP); }
 	}
 
 	public int ActionPoints {
 		get { return actionPoints; }
 		set { actionPoints = value; }
+	}
+
+	public List<Buff> Buffs {
+		get { return myBuffs; }
+		set { myBuffs = value; }
 	}
 
 	public Walkable WalkingType {

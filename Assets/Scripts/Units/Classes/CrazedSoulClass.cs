@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class CrazedSoulClass : UnitClass {
 
@@ -7,7 +8,9 @@ public class CrazedSoulClass : UnitClass {
 
 	// Use this for initialization
 	void Start () {
-		abilities [0] = new DualSlash (abilitySound0);
+		List<EventAction> dualSlashActions = new List<EventAction> ();
+		dualSlashActions.Add(EventAction.CreateAudioEventAction(Event.CAST_START, abilitySound0, true));
+		abilities [0] = new DualSlash (dualSlashActions);
 	}
 
 }

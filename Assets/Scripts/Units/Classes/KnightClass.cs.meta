@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 0297aaaf579ba3d42a67f3757c77a695
+timeCreated: 1504353586
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - onHitSfx: {fileID: 8300000, guid: 05cd846a910792f43b6b76e5a25d0b6c, type: 3}
+  - onDeathSfx: {fileID: 8300000, guid: 1a3fdb04d9eef13458fcb3ca1c9f2df0, type: 3}
+  - holyStrikeSFx: {fileID: 8300000, guid: 021bb56554211cf4887a7ad8bf6de52d, type: 3}
+  - rallyFx: {fileID: 1821630232969320, guid: ef20646951711ba46a6ecca9132c9afd, type: 2}
+  - rallySfx: {fileID: 8300000, guid: c782fedd70914f44c88a9dee4584fd48, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

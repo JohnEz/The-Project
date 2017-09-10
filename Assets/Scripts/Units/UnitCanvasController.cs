@@ -68,9 +68,18 @@ public class UnitCanvasController : MonoBehaviour {
 		hpBar.SetHP(currentHP / maxHP);
 	}
 
-	public void CreateDamageText(int damage) {
+	public void CreateDamageText(string damage) {
+		CreateCombatText(damage, new Color(0.8431f, 0.2f, 0.2f));
+	}
+
+	public void CreateHealText(string healing) {
+		CreateCombatText(healing, new Color(0.7294f, 0.9569f, 0.1176f));
+	}
+
+	public void CreateCombatText(string text, Color color) {
 		GameObject newDamageText = Instantiate (damageTextPrefab);
-		newDamageText.GetComponent<Text> ().text = damage.ToString();
+		newDamageText.GetComponent<Text> ().text = text;
+		newDamageText.GetComponent<Text> ().color = color;
 		newDamageText.transform.SetParent(this.transform);
 	}
 

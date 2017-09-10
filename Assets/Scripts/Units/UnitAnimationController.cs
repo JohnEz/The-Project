@@ -18,7 +18,7 @@ public class UnitAnimationController : MonoBehaviour {
 		Animator anim = GetComponent<Animator> ();
 		//TODO This may accidently skip past the last frame and get stuck, must be a better way (TODO is sticking for a frame or two)
 		if (anim.GetCurrentAnimatorStateInfo(0).IsName("Attacking") &&
-			anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f) {
+			anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.95f) {
 			IsAttacking (false);
 			GetComponentInParent<UnitController> ().FinishedAttacking ();
 		}

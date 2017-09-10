@@ -191,10 +191,11 @@ public class Pathfinder : MonoBehaviour {
 						if (!reachableTiles.attackTiles.Contains (neighbour.node) || tile.cost < neighbour.node.previous.node.cost) {
 							UnitController targetUnit = neighbour.node.myUnit;
 							if (targetUnit && ability.CanTargetTile (unit, neighbour.node)) {
-								reachableTiles.attackTiles.Add (neighbour.node);
+								neighbour.node.previousMoveNode = tile;
 								neighbour.node.previous = new Neighbour ();
 								neighbour.node.previous.node = tile;
 								neighbour.node.previous.direction = neighbour.direction;
+								reachableTiles.attackTiles.Add (neighbour.node);
 							}
 						}
 					}
@@ -224,8 +225,14 @@ public class Pathfinder : MonoBehaviour {
 	}
 
 	public List<Node> FindAttackableTiles(Node node, BaseAbility ability) {
-		//TODO switch state on if its aoe, cleave, single target etc
-		return FindSingleTargetTiles(node, ability);
+		switch (ability.areaOfEffect) {
+		case AreaOfEffect.AURA:
+			return FindAuraTargetTiles (node, ability);
+		case AreaOfEffect.SINGLE:
+		default:
+			return FindSingleTargetTiles(node, ability);
+		}
+
 	}
 
 	List<Node> FindSingleTargetTiles(Node node, BaseAbility ability) {
@@ -233,6 +240,10 @@ public class Pathfinder : MonoBehaviour {
 
 		//TODO check to see if the tile is in line of sight
 		return reachableTiles;
+	}
+
+	List<Node> FindAuraTargetTiles(Node node, BaseAbility ability) {
+		return findReachableTiles (node, ability.aoeRange, Walkable.Flying, -1).basic.Keys.ToList();
 	}
 
 

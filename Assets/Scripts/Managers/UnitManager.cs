@@ -14,6 +14,7 @@ public class UnitManager : MonoBehaviour {
 	//currentSelect
 	UnitController selectedUnit = null;
 	BaseAbility activeAbility = null;
+	List<Node> attackableTiles = new List<Node>();
 
 
 	// Use this for initialization
@@ -24,10 +25,13 @@ public class UnitManager : MonoBehaviour {
 	public void Initialise(List<Player> players, TileMap map) {
 		units = new List<UnitController> ();
 		myMap = map;
-		SpawnUnit (0, players[0], 0, 0);
-		SpawnUnit (0, players[0], 3, 5);
-		SpawnUnit (1, players[0], 4, 4);
-		SpawnUnit (2, players[1], 4, 5);
+		SpawnUnit (5, players[0], 3, 8);
+		SpawnUnit (3, players[0], 3, 9);
+		SpawnUnit (4, players[0], 3, 10);
+		SpawnUnit (2, players[1], 9, 9);
+		SpawnUnit (1, players[1], 9, 10);
+		SpawnUnit (2, players[1], 8, 10);
+		SpawnUnit (2, players[1], 9, 11);
 	}
 	
 	// Update is called once per frame
@@ -67,6 +71,14 @@ public class UnitManager : MonoBehaviour {
 		}
 	}
 
+	public void EndTurn(int playersTurn) {
+		foreach (UnitController unit in units) {
+			if (unit.myPlayer.id == playersTurn) {
+				unit.EndTurn ();
+			}
+		}
+	}
+
 	public bool UnitAlreadySelected(UnitController unit) {
 		return selectedUnit == unit;
 	}
@@ -85,6 +97,8 @@ public class UnitManager : MonoBehaviour {
 		if (selectedUnit != null) {
 			selectedUnit.SetSelected (false);
 			selectedUnit = null;
+			activeAbility = null;
+			attackableTiles = new List<Node> ();
 			myMap.highlighter.UnhighlightTiles ();
 		}
 	}
@@ -127,10 +141,11 @@ public class UnitManager : MonoBehaviour {
 		}
 
 		activeAbility = unitClass.abilities [ability];
-		List<Node> attackableTiles = myMap.pathfinder.FindAttackableTiles (selectedUnit.myNode, activeAbility);
+		attackableTiles = myMap.pathfinder.FindAttackableTiles (selectedUnit.myNode, activeAbility);
 		myMap.highlighter.UnhighlightTiles ();
 		myMap.highlighter.HighlightTile (selectedUnit.myNode, SquareTarget.NONE);
-		myMap.highlighter.HighlightTiles (attackableTiles, SquareTarget.ATTACK);
+		SquareTarget targetType = activeAbility.targets == TargetType.ALLY ? SquareTarget.HELPFULL : SquareTarget.ATTACK;
+		myMap.highlighter.HighlightTiles (attackableTiles, targetType);
 
 		return true;
 	}
@@ -140,20 +155,31 @@ public class UnitManager : MonoBehaviour {
 			return false;
 		}
 
-		MovementPath movementPath = myMap.pathfinder.getPathFromTile (targetNode.previous.node);
+		if (targetNode.previousMoveNode) {
+			MovementPath movementPath = myMap.pathfinder.getPathFromTile (targetNode.previousMoveNode);
+			SetUnitPath (movementPath);
+		}
+
 		Action attackAction = new Action();
 		attackAction.type = ActionType.ATTACK;
 		attackAction.ability = activeAbility;
-		attackAction.nodes = new List<Node> ();
-		attackAction.nodes.Add (targetNode);
-
-		if (movementPath.movementCost >= 1) {
-			SetUnitPath (movementPath);
-		}
+		attackAction.nodes = GetTargetNodes(activeAbility, targetNode);
 
 		selectedUnit.AddAction (attackAction);
 
 		return true;
+	}
+
+	List<Node> GetTargetNodes(BaseAbility ability, Node targetNode) {
+		List<Node> targetTiles = new List<Node> ();
+		switch (ability.areaOfEffect) {
+		case AreaOfEffect.AURA:
+			return attackableTiles;
+		case AreaOfEffect.SINGLE:
+		default:
+			targetTiles.Add (targetNode);
+			return targetTiles;
+		}
 	}
 
 	public void SetUnitPath(MovementPath movementPath) {

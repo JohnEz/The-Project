@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 36844768fe7c366479d9d180dd3b0d5a
+timeCreated: 1504353560
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - onHitSfx: {fileID: 8300000, guid: 9023caa56fabd1b4f899babb9843500f, type: 3}
+  - onDeathSfx: {fileID: 8300000, guid: 308a6424807d5784cab1b87e7c959d12, type: 3}
+  - engulfFx: {fileID: 1098257094324610, guid: 93b1d9dc31a759848bf145f0c704817b, type: 2}
+  - engulfSfx: {fileID: 8300000, guid: e2cc85e2581f09e45ada2015af6597b4, type: 3}
+  - cauterizeFx: {fileID: 1098257094324610, guid: 93b1d9dc31a759848bf145f0c704817b,
+      type: 2}
+  - cauterizeSfx: {fileID: 8300000, guid: e2cc85e2581f09e45ada2015af6597b4, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: bce818999de7b624b9b035afaf8c13e5
+timeCreated: 1505042232
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - onHitSfx: {fileID: 8300000, guid: 3ac3521dd313ac547ba3a231e8b2d833, type: 3}
+  - onDeathSfx: {fileID: 8300000, guid: 65874898d29066d458762ed8d20370ad, type: 3}
+  - arcaneBoltProjectile: {fileID: 1326313888929918, guid: 2869e2cf00a90704dab28a1c75229927,
+      type: 2}
+  - arcaneBoltSfx: {fileID: 8300000, guid: 7a4914e877a91f04d976734448e28865, type: 3}
+  - frostNovaFx: {instanceID: 0}
+  - frostNovaSfx: {fileID: 8300000, guid: 7a4914e877a91f04d976734448e28865, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

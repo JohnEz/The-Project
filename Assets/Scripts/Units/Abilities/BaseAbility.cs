@@ -1,11 +1,72 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public enum TargetType {
 	ENEMY,
 	ALLY,
-	UNIT, //both enemies and allies
-	TILE
+	UNIT //both enemies and allies
+}
+
+public enum TileTarget {
+	TILE,
+	UNIT
+}
+
+public enum AreaOfEffect {
+	SINGLE,
+	CIRCLE,
+	CLEAVE,
+	AURA
+}
+
+public enum Event {
+	CAST_START,
+	CAST_END, //called just for the caster after cast
+	HIT //called for each target on hit
+}
+
+public struct EventAction {
+	public Event eventTrigger;
+	public System.Action<UnitController, UnitController> action;
+
+	public static EventAction CreateAudioEventAction(Event _eventTrigger, AudioClip audioClip, bool onCaster) {
+		EventAction newEventAction = new EventAction ();
+		newEventAction.eventTrigger = _eventTrigger;
+		newEventAction.action = (UnitController caster, UnitController target) => {
+			if (onCaster) {
+				caster.PlayOneShot(audioClip);
+			} else {
+				target.PlayOneShot(audioClip);
+			}
+		};
+
+		return newEventAction;
+	}
+
+	public static EventAction CreateEffectEventAction(Event _eventTrigger, GameObject effectObject, bool onCaster, float delay = 0) {
+		EventAction newEventAction = new EventAction ();
+		newEventAction.eventTrigger = _eventTrigger;
+		newEventAction.action = (UnitController caster, UnitController target) => {
+			if (onCaster) {
+				caster.CreateEffectWithDelay(effectObject, delay);
+			} else {
+				target.CreateEffectWithDelay(effectObject, delay);
+			}
+		};
+
+		return newEventAction;
+	}
+
+	public static EventAction CreateProjectileEventAction(Event _eventTrigger, GameObject projectileObject, float speed, float delay = 0) {
+		EventAction newEventAction = new EventAction ();
+		newEventAction.eventTrigger = _eventTrigger;
+		newEventAction.action = (UnitController caster, UnitController target) => {
+			caster.CreateProjectileWithDelay(projectileObject, target.myNode, speed, delay);
+		};
+
+		return newEventAction;
+	}
 }
 
 public class BaseAbility {
@@ -16,42 +77,59 @@ public class BaseAbility {
 	public int range = 1;
 	public int minRange = 1;
 
+	public AreaOfEffect areaOfEffect = AreaOfEffect.SINGLE;
+	public int aoeRange = 1;
+
 	public TargetType targets = TargetType.ENEMY;
+	public TileTarget tileTarget = TileTarget.UNIT;
 
-	AudioClip launchSound;
+	public List<EventAction> eventActions;
 
-	public BaseAbility(AudioClip _launchSound) {
-		launchSound = _launchSound;
+	public BaseAbility(List<EventAction> _eventActions) {
+		eventActions = _eventActions;
 	}
 
-	public virtual void UseAbility(UnitController caster, Node Target, Vector2 direction) {
-		if (launchSound != null) {
-			caster.PlayOneShot (launchSound);
-		}
+	public virtual void UseAbility(UnitController caster, Node target) {
+
+		eventActions.ForEach ((eventAction) => {
+			if (eventAction.eventTrigger == Event.CAST_START) {
+				eventAction.action(caster, target.myUnit);
+			}
+		});
+	}
+
+	public virtual void UseAbility(UnitController caster, List<Node> targets) {
+
 	}
 
 	public bool CanTargetTile(UnitController caster, Node targetNode) {
-		bool canTarget = true;
+		if (tileTarget == TileTarget.UNIT && !CanHitUnit (caster, targetNode)) {
+			return false;
+		}
 
+		return true;
+	}
+
+	public bool CanHitUnit(UnitController caster, Node targetNode) {
 		//TODO this is dumb and needs rewriting
 
 		if (targets == TargetType.ENEMY & (targetNode.myUnit == null || targetNode.myUnit.myPlayer.faction == caster.myPlayer.faction)) {
-			canTarget = false;
+			return false;
 		}
 
 		if (targets == TargetType.ALLY & (targetNode.myUnit == null || targetNode.myUnit.myPlayer.faction != caster.myPlayer.faction)) {
-			canTarget = false;
+			return false;
 		}
 
 		if (targets == TargetType.UNIT & targetNode.myUnit == null) {
-			canTarget = false;
+			return false;
 		}
 
-		return canTarget;
+		return true;
 	}
 
-	public void AddDamageTarget(UnitController caster, UnitController target, int damage) {
-		caster.AddDamageTarget (target, damage);
+	public void AddAbilityTarget(UnitController caster, UnitController target, System.Action ability) {
+		caster.AddAbilityTarget (target, ability);
 	}
 
 	public int Cooldown {

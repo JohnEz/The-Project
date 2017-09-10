@@ -163,8 +163,7 @@ public class TileMap : MonoBehaviour {
 
 	public void resetTiles() {
 		foreach (Node n in tiles) {
-			n.cost = Mathf.Infinity;
-			n.previous = new Neighbour();
+			n.Reset ();
 		}
 	}
 

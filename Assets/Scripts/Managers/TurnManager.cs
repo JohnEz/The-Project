@@ -53,6 +53,10 @@ public class TurnManager : MonoBehaviour {
 			unitManager.ShowAbility (0);
 		}
 
+		if (Input.GetKeyUp ("2") && currentPhase == TurnPhase.WAITING_FOR_INPUT) {
+			unitManager.ShowAbility (1);
+		}
+
 		if (Input.GetKeyUp ("space") && currentPhase == TurnPhase.WAITING_FOR_INPUT) {
 			EndTurn ();
 		}
@@ -131,6 +135,7 @@ public class TurnManager : MonoBehaviour {
 		ChangeState(TurnPhase.TURN_ENDING);
 		//TODO CLEAN UP, EG SELECTED TILES
 		unitManager.DeselectUnit();
+		unitManager.EndTurn (playersTurn);
 		StartNewTurn ();
 	}
 
@@ -145,6 +150,7 @@ public class TurnManager : MonoBehaviour {
 		if (currentPhase == TurnPhase.WAITING_FOR_INPUT && !isAiTurn()) {
 			
 			switch (target) {
+			case SquareTarget.HELPFULL:
 			case SquareTarget.ATTACK:
 				ClickedAttack (node);
 				break;

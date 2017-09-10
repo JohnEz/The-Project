@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class SamuraiClass : UnitClass {
 
@@ -7,7 +8,9 @@ public class SamuraiClass : UnitClass {
 
 	// Use this for initialization
 	void Start () {
-		abilities [0] = new OmniSlash (abilitySound0);
+		List<EventAction> omniSlashActions = new List<EventAction> ();
+		omniSlashActions.Add(EventAction.CreateAudioEventAction(Event.CAST_START, abilitySound0, true));
+		abilities [0] = new OmniSlash (omniSlashActions);
 	}
 
 }

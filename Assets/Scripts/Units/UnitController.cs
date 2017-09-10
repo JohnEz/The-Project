@@ -2,13 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public struct DamageTarget {
+public struct AbilityTarget {
 	public UnitController target;
-	public int damage;
+	public System.Action abilityFunction;
 
-	public DamageTarget(UnitController _target, int _damage) {
+	public AbilityTarget(UnitController _target, System.Action _ability) {
 		target = _target;
-		damage = _damage;
+		abilityFunction = _ability;
 	}
 }
 
@@ -33,9 +33,11 @@ public class UnitController : MonoBehaviour {
 	UnitAnimationController anim;
 	public Canvas unitCanvas;
 	UnitAudioController audioController;
+	UnitClass myClass;
 
 	[System.NonSerialized]
 	public Vector2 facingDirection;
+
 
 	//constants
 	const float WALKSPEED = 3.25f;
@@ -49,8 +51,11 @@ public class UnitController : MonoBehaviour {
 	//Gameplay variables
 	public Player myPlayer;
 
-	List<DamageTarget> damageTargets = new List<DamageTarget>();
+	//Ability variables
+	BaseAbility activeAbility;
+	List<AbilityTarget> abilityTargets = new List<AbilityTarget>();
 	Queue<Action> actionQueue = new Queue<Action>();
+	List<ProjectileController> projectiles;
 
 	// Use this for initialization
 	void Start () {
@@ -62,6 +67,8 @@ public class UnitController : MonoBehaviour {
 		myStats = GetComponent<UnitStats> ();
 		myStats.Initailise ();
 		audioController = GetComponent<UnitAudioController> ();
+		myClass = GetComponent<UnitClass> ();
+		projectiles = new List<ProjectileController> ();
 	}
 	
 	// Update is called once per frame
@@ -71,6 +78,10 @@ public class UnitController : MonoBehaviour {
 
 	public void NewTurn() {
 		ActionPoints = myStats.MaxActionPoints;
+	}
+
+	public void EndTurn() {
+		ActionPoints = 0;
 	}
 
 	public void Spawn(Player player, Node startNode) {
@@ -86,6 +97,19 @@ public class UnitController : MonoBehaviour {
 		GetComponentInChildren<UnitAnimationController> ().FaceDirection (dir);
 		facingDirection = dir;
 	}
+		
+	Vector2 GetDirectionToTile(Node target) {
+		//find if we want to check x or y
+		float difX = target.x - myNode.x;
+		float difY = target.y - myNode.y;
+
+		//This needs to be changed if we get 4 directions to x >= y
+		if (Mathf.Abs (difX) > 0) {
+			return new Vector2 (Mathf.Sign (difX), 0);
+		} else {
+			return new Vector2 (0, Mathf.Sign(difY));
+		}
+	}
 
 	public void SetWalking(bool walking) {
 		anim.IsWalking (walking);
@@ -100,7 +124,7 @@ public class UnitController : MonoBehaviour {
     }
 
 	public void RemoveTurn() {
-		myStats.ActionPoints = 0;
+		ActionPoints = 0;
 	}
 
 	public int ActionPoints {
@@ -155,7 +179,7 @@ public class UnitController : MonoBehaviour {
 				SetPath (nextAction.nodes);
 				break;
 			case ActionType.ATTACK:
-				AttackTarget (nextAction.nodes [0], nextAction.ability);
+				AttackTarget (nextAction.nodes, nextAction.ability);
 				break;
 			}
 		}
@@ -182,9 +206,14 @@ public class UnitController : MonoBehaviour {
 		RunNextAction (true);
 	}
 
-	public void AttackTarget(Node targetNode, BaseAbility ability) {
-		ability.UseAbility (this, targetNode, targetNode.previous.direction);
-		FaceDirection (targetNode.previous.direction);
+	public void AttackTarget(List<Node> targetNodes, BaseAbility ability) {
+		if (ability.areaOfEffect == AreaOfEffect.SINGLE) {
+			ability.UseAbility (this, targetNodes[0]);
+			FaceDirection (GetDirectionToTile(targetNodes[0]));
+		} else {
+			ability.UseAbility (this, targetNodes);
+		}
+		activeAbility = ability;
 		SetAttacking (true);
 		ActionPoints--;
 		myManager.UnitStartedAttacking ();
@@ -192,23 +221,28 @@ public class UnitController : MonoBehaviour {
 
 	public void FinishedAttacking() {
 		myManager.UnitFinishedAttacking ();
-		HitDamageTargets ();
-		ClearDamageTargets ();
+		RunAbilityTargets ();
+		ClearAbilityTargets ();
 		RunNextAction (true);
 	}
 
-	public void AddDamageTarget(UnitController target, int damage) {
-		damageTargets.Add (new DamageTarget (target, damage));
+	public void AddAbilityTarget(UnitController target, System.Action ability) {
+		abilityTargets.Add (new AbilityTarget (target, ability));
 	}
 
-	public void HitDamageTargets() {
-		foreach (DamageTarget damageTarget in damageTargets) {
-			DealDamageTo (damageTarget.target, damageTarget.damage);
+	public void RunAbilityTargets() {
+		foreach (AbilityTarget target in abilityTargets) {
+			target.abilityFunction ();
+			activeAbility.eventActions.ForEach ((eventAction) => {
+				if (eventAction.eventTrigger == Event.CAST_END) {
+					eventAction.action(this, target.target);
+				}
+			});
 		}
 	}
 
-	public void ClearDamageTargets() {
-		damageTargets.Clear ();
+	public void ClearAbilityTargets() {
+		abilityTargets.Clear ();
 	}
 
 	public bool TakeDamage(UnitController attacker, int damage) {
@@ -217,17 +251,29 @@ public class UnitController : MonoBehaviour {
 
 		}
 
-		int modifiedDamage = damage;
+		int modifiedDamage = damage - myStats.Armour;
+
+		//check to see if attack was blocked
+		float blockRoll = Random.value * 100;
+		if (blockRoll <= myStats.Block) {
+			modifiedDamage = (int)(modifiedDamage * 0.5f);
+		}
 
 		myStats.SetHealth(myStats.Health - modifiedDamage);
 
 		unitCanvas.GetComponent<UnitCanvasController> ().UpdateHP (myStats.Health, myStats.MaxHealth);
-		unitCanvas.GetComponent<UnitCanvasController> ().CreateDamageText (modifiedDamage);
+		unitCanvas.GetComponent<UnitCanvasController> ().CreateDamageText (modifiedDamage.ToString ());
 
 		if (myStats.Health > 0) {
 			anim.PlayHitAnimation ();
+			if (myClass.onHitSfx) {
+				PlayOneShot (myClass.onHitSfx);
+			}
 		} else {
 			anim.PlayDeathAnimation ();
+			if (myClass.onDeathSfx) {
+				PlayOneShot (myClass.onDeathSfx);
+			}
 			myManager.UnitDied (this);
 		}
 
@@ -250,7 +296,65 @@ public class UnitController : MonoBehaviour {
 		return target.TakeDamage (this, endDamage);
 	}
 
+	public bool TakeHealing(UnitController caster, int healing) {
+
+		myStats.SetHealth(myStats.Health + healing);
+
+		unitCanvas.GetComponent<UnitCanvasController> ().UpdateHP (myStats.Health, myStats.MaxHealth);
+		unitCanvas.GetComponent<UnitCanvasController> ().CreateHealText (healing.ToString ());
+
+		return true;
+	}
+
+	public bool GiveHealingTo(UnitController target, int healing) {
+
+		int endHealing = healing;
+
+		//add power to attack
+		endHealing += myStats.Power;
+
+		//check to see if damage is a crit
+		float critRoll = Random.value * 100;
+		if (critRoll <= myStats.Crit) {
+			endHealing = (int)(endHealing * 1.5f);
+		}
+
+		return target.TakeHealing (this, endHealing);
+	}
+
+	public void ApplyBuff(Buff buff) {
+		myStats.Buffs.Add (buff);
+	}
+
 	public void PlayOneShot(AudioClip sound) {
 		audioController.PlayOneShot (sound);
+	}
+
+	public IEnumerator CreateEffect(GameObject effect, float delay = 0) {
+		yield return new WaitForSeconds (delay);
+		GameObject myEffect =  Instantiate (effect);
+		myEffect.transform.SetParent (transform, false);
+	}
+
+	public void CreateEffectWithDelay(GameObject effect, float delay) {
+		StartCoroutine(CreateEffect (effect, delay));
+	}
+
+	public IEnumerator CreateProjectile(GameObject projectile, Node target, float speed, float delay = 0) {
+		yield return new WaitForSeconds (delay);
+		GameObject createdProjectile = Instantiate (projectile);
+
+		ProjectileController createdProjectileController = createdProjectile.GetComponent<ProjectileController> ();
+		createdProjectileController.SetTarget (this, target, speed);
+		projectiles.Add (createdProjectileController);
+	}
+
+	public void CreateProjectileWithDelay(GameObject projectile, Node target, float speed, float delay) {
+		StartCoroutine(CreateProjectile (projectile, target, speed, delay));
+	}
+
+	public void ProjectileHit(ProjectileController projectile) {
+		projectiles.Remove (projectile);
+		Destroy (projectile.gameObject);
 	}
 }
