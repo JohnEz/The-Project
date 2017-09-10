@@ -227,7 +227,9 @@ public class Pathfinder : MonoBehaviour {
 	public List<Node> FindAttackableTiles(Node node, BaseAbility ability) {
 		switch (ability.areaOfEffect) {
 		case AreaOfEffect.AURA:
-			return FindAuraTargetTiles (node, ability);
+			return FindAOEHitTiles (node, ability);
+		case AreaOfEffect.CIRCLE:
+			return FindCircleTargetTiles (node, ability);
 		case AreaOfEffect.SINGLE:
 		default:
 			return FindSingleTargetTiles(node, ability);
@@ -242,10 +244,14 @@ public class Pathfinder : MonoBehaviour {
 		return reachableTiles;
 	}
 
-	List<Node> FindAuraTargetTiles(Node node, BaseAbility ability) {
-		return findReachableTiles (node, ability.aoeRange, Walkable.Flying, -1).basic.Keys.ToList();
+	List<Node> FindCircleTargetTiles(Node node, BaseAbility ability) {
+		return findReachableTiles (node, ability.range, Walkable.Flying, -1).basic.Keys.ToList();
 	}
 
-
+	public List<Node> FindAOEHitTiles(Node node, BaseAbility ability) {
+		List<Node> targetTiles = findReachableTiles (node, ability.aoeRange, Walkable.Flying, -1).basic.Keys.ToList();
+		targetTiles.Add (node);
+		return targetTiles;
+	}
 		
 }

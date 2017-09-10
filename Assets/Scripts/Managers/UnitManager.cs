@@ -175,6 +175,8 @@ public class UnitManager : MonoBehaviour {
 		switch (ability.areaOfEffect) {
 		case AreaOfEffect.AURA:
 			return attackableTiles;
+		case AreaOfEffect.CIRCLE:
+			return myMap.pathfinder.FindAOEHitTiles(targetNode, ability);
 		case AreaOfEffect.SINGLE:
 		default:
 			targetTiles.Add (targetNode);

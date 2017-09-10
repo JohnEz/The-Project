@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class ProjectileController : MonoBehaviour {
 
+	[SerializeField]
+	public GameObject onHitEffect;
+
 	UnitController myCaster;
 	Node myTarget;
 	Vector3 direction;
@@ -55,8 +58,10 @@ public class ProjectileController : MonoBehaviour {
 	}
 
 	public void ReachedTarget() {
-		//tell caster
-		speed = 0;
+		if (onHitEffect != null) {
+			myTarget.myUnit.CreateEffectWithDelay (onHitEffect, 0);
+		}
+
 		myCaster.ProjectileHit (this);
 	}
 }

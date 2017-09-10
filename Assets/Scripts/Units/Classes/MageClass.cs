@@ -24,7 +24,7 @@ public class MageClass : UnitClass {
 		List<EventAction> frostNovaActions = new List<EventAction> ();
 		frostNovaActions.Add(EventAction.CreateAudioEventAction(Event.CAST_START, frostNovaSfx, true));
 		frostNovaActions.Add(EventAction.CreateEffectEventAction(Event.CAST_START, frostNovaFx, false));
-		abilities [1] = new Cauterize (frostNovaActions);
+		abilities [1] = new FrostNova (frostNovaActions);
 	}
 
 }

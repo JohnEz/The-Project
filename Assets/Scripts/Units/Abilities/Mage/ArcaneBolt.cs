@@ -7,7 +7,7 @@ public class ArcaneBolt : BaseAbility {
 	int baseDamage = 15;
 
 	public ArcaneBolt(List<EventAction> _eventActions) : base (_eventActions) {
-		range = 8;
+		range = 6;
 	}
 
 	public override void UseAbility (UnitController caster, Node target)
