@@ -4,11 +4,24 @@ using UnityEngine;
 
 public class PersistentFxController : MonoBehaviour {
 
+	[SerializeField]
+	AudioClip spawnSfx;
+	[SerializeField]
+	float spawnSfxDelay = 0f;
 
+	[SerializeField]
+	AudioClip loopSfx;
+	[SerializeField]
+	float loopSfxDelay = 0f;
+
+	[SerializeField]
+	AudioClip disappearSfx;
+	[SerializeField]
+	float disappearSfxDelay = 0f;
 
 	// Use this for initialization
 	void Start () {
-
+		StartCoroutine (PlayAudioClip (spawnSfx, spawnSfxDelay));
 	}
 
 	// Update is called once per frame
@@ -23,5 +36,11 @@ public class PersistentFxController : MonoBehaviour {
 
 	public void Remove() {
 		GetComponent<Animator> ().SetTrigger ("die");
+		StartCoroutine (PlayAudioClip (disappearSfx, disappearSfxDelay));
+	}
+
+	IEnumerator PlayAudioClip(AudioClip audio, float delay) {
+		yield return new WaitForSeconds (delay);
+		GetComponent<AudioSource> ().PlayOneShot (audio);
 	}
 }

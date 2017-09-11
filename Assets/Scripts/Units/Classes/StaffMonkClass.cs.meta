@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 6b6c495e518274a41be73cce3d99f31e
-timeCreated: 1505130114
+timeCreated: 1505140812
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
@@ -9,6 +9,8 @@ MonoImporter:
   - onDeathSfx: {fileID: 8300000, guid: 9d82ff565b42b4345a0e210ba4c34aec, type: 3}
   - JadeSlamSfxCaster: {fileID: 8300000, guid: c1ca9f352b4b4194bb3244f39ec0ab2b, type: 3}
   - JadeSlamSfxHit: {fileID: 8300000, guid: ee935d1449332b64da5db9c2364c03ea, type: 3}
+  - sacredGroundFx: {fileID: 1398712624292980, guid: 001b281de5bb90240b8d019eedb7f88d,
+      type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

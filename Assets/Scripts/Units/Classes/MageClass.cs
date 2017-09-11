@@ -19,8 +19,6 @@ public class MageClass : UnitClass {
 	AudioClip frostNovaCasterSfx;
 	[SerializeField]
 	AudioClip frostNovaAoeSfx;
-	[SerializeField]
-	AudioClip frostNovaHitSfx;
 
 	// Use this for initialization
 	void Start () {
@@ -33,7 +31,6 @@ public class MageClass : UnitClass {
 		List<EventAction> frostNovaActions = new List<EventAction> ();
 		frostNovaActions.Add(EventAction.CreateAudioEventAction(Event.CAST_START, frostNovaCasterSfx, EventTarget.CASTER));
 		frostNovaActions.Add(EventAction.CreateAudioEventAction(Event.CAST_START, frostNovaAoeSfx, EventTarget.CASTER));
-		frostNovaActions.Add(EventAction.CreateAudioEventAction(Event.CAST_END, frostNovaHitSfx, EventTarget.TARGETUNIT));
 		frostNovaActions.Add(EventAction.CreateEffectAtLocationEventAction(Event.CAST_START, frostNovaFx, 0.7f));
 		abilities [1] = new FrostNova (frostNovaActions, frostNovaDebuffFx);
 	}

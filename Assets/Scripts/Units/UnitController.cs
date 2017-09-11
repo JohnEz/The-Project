@@ -260,6 +260,8 @@ public class UnitController : MonoBehaviour {
 	}
 
 	public bool TakeDamage(UnitController attacker, int damage) {
+		bool isStillAlive = true;
+
 		//if the damage has a source
 		if (attacker) {
 
@@ -289,9 +291,10 @@ public class UnitController : MonoBehaviour {
 				PlayOneShot (myClass.onDeathSfx);
 			}
 			myManager.UnitDied (this);
+			isStillAlive = false;
 		}
-
-		return true;
+			
+		return isStillAlive;
 	}
 
 	public bool DealDamageTo(UnitController target, int damage) {
@@ -340,6 +343,15 @@ public class UnitController : MonoBehaviour {
 		myStats.Buffs.Add (buff);
 		if (buff.persistentFxPrefab) {
 			CreateBuffEffect (buff);
+		}
+	}
+
+	public void Dispell(bool debuff) {
+		if (myStats.Buffs.Count > 0) {
+			Buff buffToDispell = myStats.FindFirstBuff (debuff);
+			if (buffToDispell != null) {
+				myStats.RemoveBuff (buffToDispell);
+			}
 		}
 	}
 

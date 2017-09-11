@@ -20,8 +20,10 @@ public class FrostNova : BaseAbility {
 	{
 		if (CanHitUnit(caster, target)) {
 			AddAbilityTarget (caster, target.myUnit, () => {
-				caster.DealDamageTo(target.myUnit, baseDamage);
-				target.myUnit.ApplyBuff (new Snare (2, persistentSnareFxPrefab));
+				bool targetStillAlive = caster.DealDamageTo(target.myUnit, baseDamage);
+				if (targetStillAlive) {
+					target.myUnit.ApplyBuff (new Snare (2, persistentSnareFxPrefab));
+				}
 			});
 		}
 	}

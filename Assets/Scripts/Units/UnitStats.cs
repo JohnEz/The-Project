@@ -155,6 +155,10 @@ public class UnitStats : MonoBehaviour {
 
 	}
 
+	public Buff FindFirstBuff(bool debuff) {
+		return Buffs.Find (buff => buff.isDebuff = debuff);
+	}
+
 	public void RemoveBuff(Buff buff) {
 		buff.Remove();
 		Buffs.Remove(buff);
