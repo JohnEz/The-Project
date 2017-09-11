@@ -16,7 +16,6 @@ public class FrostNova : BaseAbility {
 	public override void UseAbility (UnitController caster, Node target)
 	{
 		if (CanHitUnit(caster, target)) {
-			base.UseAbility (caster, target);
 			AddAbilityTarget (caster, target.myUnit, () => {
 				caster.DealDamageTo(target.myUnit, baseDamage);
 				target.myUnit.ApplyBuff (new Snare (2));
@@ -24,7 +23,8 @@ public class FrostNova : BaseAbility {
 		}
 	}
 
-	public override void UseAbility(UnitController caster, List<Node> targets) {
+	public override void UseAbility(UnitController caster, List<Node> targets, Node targetedNode) {
+		base.UseAbility (caster, targets, targetedNode);
 		targets.ForEach (target => UseAbility (caster, target));
 	}
 

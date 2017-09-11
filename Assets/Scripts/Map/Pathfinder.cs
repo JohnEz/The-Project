@@ -250,7 +250,7 @@ public class Pathfinder : MonoBehaviour {
 
 	public List<Node> FindAOEHitTiles(Node node, BaseAbility ability) {
 		List<Node> targetTiles = findReachableTiles (node, ability.aoeRange, Walkable.Flying, -1).basic.Keys.ToList();
-		targetTiles.Add (node);
+		targetTiles.Insert (0, node);
 		return targetTiles;
 	}
 		

@@ -14,7 +14,6 @@ public class Rally : BaseAbility {
 	public override void UseAbility (UnitController caster, Node target)
 	{
 		if (CanHitUnit(caster, target)) {
-			base.UseAbility (caster, target);
 			caster.AddAbilityTarget (target.myUnit, () => {
 				target.myUnit.ApplyBuff (new Empower (3));
 				target.myUnit.ApplyBuff (new Momentum (3));
@@ -22,7 +21,8 @@ public class Rally : BaseAbility {
 		}
 	}
 
-	public override void UseAbility(UnitController caster, List<Node> targets) {
+	public override void UseAbility(UnitController caster, List<Node> targets, Node targetedNode) {
+		base.UseAbility (caster, targets, targetedNode);
 		targets.ForEach (target => UseAbility (caster, target));
 	}
 }

@@ -26,33 +26,62 @@ public enum Event {
 	HIT //called for each target on hit
 }
 
+public enum EventTarget {
+	TARGETEDTILE,
+	CASTER,
+	TARGETUNIT
+}
+
 public struct EventAction {
 	public Event eventTrigger;
-	public System.Action<UnitController, UnitController> action;
+	public EventTarget eventTarget;
+	public System.Action<UnitController, UnitController, Node> action;
 
-	public static EventAction CreateAudioEventAction(Event _eventTrigger, AudioClip audioClip, bool onCaster) {
+	public static EventAction CreateAudioEventAction(Event _eventTrigger, AudioClip audioClip, EventTarget _eventTarget) {
 		EventAction newEventAction = new EventAction ();
 		newEventAction.eventTrigger = _eventTrigger;
-		newEventAction.action = (UnitController caster, UnitController target) => {
-			if (onCaster) {
+		newEventAction.eventTarget = _eventTarget;
+		newEventAction.action = (UnitController caster, UnitController target, Node targetedTile) => {
+			switch (_eventTarget) {
+			case EventTarget.CASTER:
 				caster.PlayOneShot(audioClip);
-			} else {
+				break;
+			case EventTarget.TARGETUNIT:
 				target.PlayOneShot(audioClip);
-			}
+				break;
+			case EventTarget.TARGETEDTILE:
+				//TODO ADD SOUNDEFFECT TO NODE
+				break;
+			};
 		};
 
 		return newEventAction;
 	}
 
-	public static EventAction CreateEffectEventAction(Event _eventTrigger, GameObject effectObject, bool onCaster, float delay = 0) {
+	public static EventAction CreateEffectEventAction(Event _eventTrigger, GameObject effectObject, EventTarget _eventTarget, float delay = 0) {
 		EventAction newEventAction = new EventAction ();
 		newEventAction.eventTrigger = _eventTrigger;
-		newEventAction.action = (UnitController caster, UnitController target) => {
-			if (onCaster) {
+		newEventAction.eventTarget = _eventTarget;
+		newEventAction.action = (UnitController caster, UnitController target, Node targetedTile) => {
+			switch (_eventTarget) {
+			case EventTarget.CASTER:
 				caster.CreateEffectWithDelay(effectObject, delay);
-			} else {
+				break;
+			case EventTarget.TARGETUNIT:
 				target.CreateEffectWithDelay(effectObject, delay);
-			}
+				break;
+			};
+		};
+
+		return newEventAction;
+	}
+
+	public static EventAction CreateEffectAtLocationEventAction(Event _eventTrigger, GameObject effectObject, float delay = 0) {
+		EventAction newEventAction = new EventAction ();
+		newEventAction.eventTrigger = _eventTrigger;
+		newEventAction.eventTarget = EventTarget.TARGETEDTILE;
+		newEventAction.action = (UnitController caster, UnitController target, Node targetedTile) => {
+			caster.CreateEffectWithDelay(effectObject, delay, targetedTile);
 		};
 
 		return newEventAction;
@@ -61,7 +90,8 @@ public struct EventAction {
 	public static EventAction CreateProjectileEventAction(Event _eventTrigger, GameObject projectileObject, float speed, float delay = 0) {
 		EventAction newEventAction = new EventAction ();
 		newEventAction.eventTrigger = _eventTrigger;
-		newEventAction.action = (UnitController caster, UnitController target) => {
+		newEventAction.eventTarget = EventTarget.CASTER;
+		newEventAction.action = (UnitController caster, UnitController target, Node targetedTile) => {
 			caster.CreateProjectileWithDelay(projectileObject, target.myNode, speed, delay);
 		};
 
@@ -90,15 +120,28 @@ public class BaseAbility {
 	}
 
 	public virtual void UseAbility(UnitController caster, Node target) {
-
 		eventActions.ForEach ((eventAction) => {
 			if (eventAction.eventTrigger == Event.CAST_START) {
-				eventAction.action(caster, target.myUnit);
+				eventAction.action(caster, target.myUnit, target);
 			}
 		});
 	}
 
-	public virtual void UseAbility(UnitController caster, List<Node> targets) {
+	public virtual void UseAbility(UnitController caster, List<Node> targets, Node clickedNode) {
+
+		eventActions.ForEach ((eventAction) => {
+			if (eventAction.eventTrigger == Event.CAST_START) {
+				if (eventAction.eventTarget == EventTarget.CASTER || eventAction.eventTarget == EventTarget.TARGETEDTILE) {
+					eventAction.action(caster, null, clickedNode);
+				} else if (eventAction.eventTarget == EventTarget.TARGETUNIT) {
+					targets.ForEach((targetNode) => {
+						if (CanHitUnit(caster, targetNode)) {
+							eventAction.action(caster, targetNode.myUnit, clickedNode);
+						}
+					});
+				}
+			}
+		});
 
 	}
 

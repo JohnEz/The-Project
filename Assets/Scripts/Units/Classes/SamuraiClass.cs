@@ -9,7 +9,7 @@ public class SamuraiClass : UnitClass {
 	// Use this for initialization
 	void Start () {
 		List<EventAction> omniSlashActions = new List<EventAction> ();
-		omniSlashActions.Add(EventAction.CreateAudioEventAction(Event.CAST_START, abilitySound0, true));
+		omniSlashActions.Add(EventAction.CreateAudioEventAction(Event.CAST_START, abilitySound0, EventTarget.CASTER));
 		abilities [0] = new OmniSlash (omniSlashActions);
 	}
 

@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: bce818999de7b624b9b035afaf8c13e5
-timeCreated: 1505051611
+timeCreated: 1505121716
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
@@ -10,9 +10,12 @@ MonoImporter:
   - arcaneBoltProjectile: {fileID: 1326313888929918, guid: 2869e2cf00a90704dab28a1c75229927,
       type: 2}
   - arcaneBoltSfx: {fileID: 8300000, guid: 7a4914e877a91f04d976734448e28865, type: 3}
-  - frostNovaFx: {fileID: 1098257094324610, guid: 93b1d9dc31a759848bf145f0c704817b,
+  - frostNovaFx: {fileID: 1780628657122340, guid: 12129a271674e6b49a5eb39ed7aa1f2e,
       type: 2}
-  - frostNovaSfx: {fileID: 8300000, guid: 7a4914e877a91f04d976734448e28865, type: 3}
+  - frostNovaCasterSfx: {fileID: 8300000, guid: 7a4914e877a91f04d976734448e28865,
+      type: 3}
+  - frostNovaAoeSfx: {fileID: 8300000, guid: 590e0a64ac907f447b66a2b415b0a796, type: 3}
+  - frostNovaHitSfx: {fileID: 8300000, guid: d24f0bb7efeef30468cb26c869c2c810, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

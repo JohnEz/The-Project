@@ -56,6 +56,7 @@ public class UnitController : MonoBehaviour {
 	List<AbilityTarget> abilityTargets = new List<AbilityTarget>();
 	Queue<Action> actionQueue = new Queue<Action>();
 	List<ProjectileController> projectiles;
+	Node currentAbilityTarget;
 
 	// Use this for initialization
 	void Start () {
@@ -207,11 +208,12 @@ public class UnitController : MonoBehaviour {
 	}
 
 	public void AttackTarget(List<Node> targetNodes, BaseAbility ability) {
+		currentAbilityTarget = targetNodes [0];
 		if (ability.areaOfEffect == AreaOfEffect.SINGLE) {
-			ability.UseAbility (this, targetNodes[0]);
+			ability.UseAbility (this, currentAbilityTarget);
 			FaceDirection (GetDirectionToTile(targetNodes[0]));
 		} else {
-			ability.UseAbility (this, targetNodes);
+			ability.UseAbility (this, targetNodes, currentAbilityTarget);
 		}
 		activeAbility = ability;
 		SetAttacking (true);
@@ -223,6 +225,7 @@ public class UnitController : MonoBehaviour {
 		myManager.UnitFinishedAttacking ();
 		RunAbilityTargets ();
 		ClearAbilityTargets ();
+		currentAbilityTarget = null;
 		RunNextAction (true);
 	}
 
@@ -234,11 +237,19 @@ public class UnitController : MonoBehaviour {
 		foreach (AbilityTarget target in abilityTargets) {
 			target.abilityFunction ();
 			activeAbility.eventActions.ForEach ((eventAction) => {
-				if (eventAction.eventTrigger == Event.CAST_END) {
-					eventAction.action(this, target.target);
+				if (eventAction.eventTrigger == Event.CAST_END && eventAction.eventTarget == EventTarget.TARGETUNIT) {
+					eventAction.action(this, target.target, target.target.myNode);
 				}
 			});
 		}
+
+		activeAbility.eventActions.ForEach ((eventAction) => {
+			if (eventAction.eventTrigger == Event.CAST_END) {
+				if (eventAction.eventTarget == EventTarget.CASTER || eventAction.eventTarget == EventTarget.TARGETEDTILE) {
+					eventAction.action(this, null, currentAbilityTarget);
+				}
+			}
+		});
 	}
 
 	public void ClearAbilityTargets() {
@@ -336,8 +347,18 @@ public class UnitController : MonoBehaviour {
 		myEffect.transform.SetParent (transform, false);
 	}
 
-	public void CreateEffectWithDelay(GameObject effect, float delay) {
-		StartCoroutine(CreateEffect (effect, delay));
+	static IEnumerator CreateEffectAtLocation(Node location, GameObject effect, float delay = 0) {
+		yield return new WaitForSeconds (delay);
+		GameObject myEffect =  Instantiate (effect);
+		myEffect.transform.SetParent (location.transform, false);
+	}
+
+	public void CreateEffectWithDelay(GameObject effect, float delay, Node location = null) {
+		if (location != null) {
+			StartCoroutine (CreateEffectAtLocation (location, effect, delay));
+		} else {
+			StartCoroutine (CreateEffect (effect, delay));
+		}
 	}
 
 	public IEnumerator CreateProjectile(GameObject projectile, Node target, float speed, float delay = 0) {
