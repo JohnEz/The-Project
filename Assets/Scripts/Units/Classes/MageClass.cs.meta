@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: bce818999de7b624b9b035afaf8c13e5
-timeCreated: 1505124888
+timeCreated: 1505130626
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
@@ -9,7 +9,9 @@ MonoImporter:
   - onDeathSfx: {fileID: 8300000, guid: 65874898d29066d458762ed8d20370ad, type: 3}
   - arcaneBoltProjectile: {fileID: 1326313888929918, guid: 2869e2cf00a90704dab28a1c75229927,
       type: 2}
-  - arcaneBoltSfx: {fileID: 8300000, guid: 7a4914e877a91f04d976734448e28865, type: 3}
+  - arcaneBoltSfxCaster: {fileID: 8300000, guid: 7a4914e877a91f04d976734448e28865,
+      type: 3}
+  - arcaneBoltSfxHit: {instanceID: 0}
   - frostNovaFx: {fileID: 1780628657122340, guid: 12129a271674e6b49a5eb39ed7aa1f2e,
       type: 2}
   - frostNovaDebuffFx: {fileID: 1247239286536750, guid: 1d22f03b3bf2f5d46ad922084e875787,

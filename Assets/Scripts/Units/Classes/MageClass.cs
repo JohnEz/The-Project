@@ -7,7 +7,9 @@ public class MageClass : UnitClass {
 	[SerializeField]
 	GameObject arcaneBoltProjectile;
 	[SerializeField]
-	AudioClip arcaneBoltSfx;
+	AudioClip arcaneBoltSfxCaster;
+	[SerializeField]
+	AudioClip arcaneBoltSfxHit;
 
 	[SerializeField]
 	GameObject frostNovaFx;
@@ -23,7 +25,8 @@ public class MageClass : UnitClass {
 	// Use this for initialization
 	void Start () {
 		List<EventAction> arcaneBoltActions = new List<EventAction> ();
-		arcaneBoltActions.Add(EventAction.CreateAudioEventAction(Event.CAST_START, arcaneBoltSfx, EventTarget.CASTER));
+		arcaneBoltActions.Add(EventAction.CreateAudioEventAction(Event.CAST_START, arcaneBoltSfxCaster, EventTarget.CASTER));
+		arcaneBoltActions.Add(EventAction.CreateAudioEventAction(Event.CAST_END, arcaneBoltSfxHit, EventTarget.TARGETUNIT));
 		arcaneBoltActions.Add(EventAction.CreateProjectileEventAction(Event.CAST_START, arcaneBoltProjectile, 12f, 0.7f));
 		abilities [0] = new ArcaneBolt (arcaneBoltActions);
 
