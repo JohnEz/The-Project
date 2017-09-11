@@ -22,6 +22,11 @@ public class UnitAnimationController : MonoBehaviour {
 			IsAttacking (false);
 			GetComponentInParent<UnitController> ().FinishedAttacking ();
 		}
+
+		if (anim.GetCurrentAnimatorStateInfo(0).IsName("Death") &&
+			anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.95f) {
+			DestroyParentUnit ();
+		}
 	}
 
 	public void FaceDirection(Vector2 dir) {

@@ -6,11 +6,14 @@ public class FrostNova : BaseAbility {
 
 	int baseDamage = 3;
 
-	public FrostNova(List<EventAction> _eventActions) : base (_eventActions) {
+	GameObject persistentSnareFxPrefab;
+
+	public FrostNova(List<EventAction> _eventActions, GameObject snareFx) : base (_eventActions) {
 		range = 5;
 		areaOfEffect = AreaOfEffect.CIRCLE;
 		aoeRange = 2;
 		tileTarget = TileTarget.TILE;
+		persistentSnareFxPrefab = snareFx;
 	}
 
 	public override void UseAbility (UnitController caster, Node target)
@@ -18,7 +21,7 @@ public class FrostNova : BaseAbility {
 		if (CanHitUnit(caster, target)) {
 			AddAbilityTarget (caster, target.myUnit, () => {
 				caster.DealDamageTo(target.myUnit, baseDamage);
-				target.myUnit.ApplyBuff (new Snare (2));
+				target.myUnit.ApplyBuff (new Snare (2, persistentSnareFxPrefab));
 			});
 		}
 	}

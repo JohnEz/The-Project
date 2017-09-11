@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: bce818999de7b624b9b035afaf8c13e5
-timeCreated: 1505121716
+timeCreated: 1505124888
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
@@ -11,6 +11,8 @@ MonoImporter:
       type: 2}
   - arcaneBoltSfx: {fileID: 8300000, guid: 7a4914e877a91f04d976734448e28865, type: 3}
   - frostNovaFx: {fileID: 1780628657122340, guid: 12129a271674e6b49a5eb39ed7aa1f2e,
+      type: 2}
+  - frostNovaDebuffFx: {fileID: 1247239286536750, guid: 1d22f03b3bf2f5d46ad922084e875787,
       type: 2}
   - frostNovaCasterSfx: {fileID: 8300000, guid: 7a4914e877a91f04d976734448e28865,
       type: 3}

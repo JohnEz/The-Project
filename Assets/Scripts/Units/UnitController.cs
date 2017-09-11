@@ -78,11 +78,14 @@ public class UnitController : MonoBehaviour {
 	}
 
 	public void NewTurn() {
+		//TODO i dont like the fact that unitstats cant set action points because of ui
 		ActionPoints = myStats.MaxActionPoints;
+		myStats.NewTurn ();
 	}
 
 	public void EndTurn() {
 		ActionPoints = 0;
+		myStats.EndTurn ();
 	}
 
 	public void Spawn(Player player, Node startNode) {
@@ -335,10 +338,19 @@ public class UnitController : MonoBehaviour {
 
 	public void ApplyBuff(Buff buff) {
 		myStats.Buffs.Add (buff);
+		if (buff.persistentFxPrefab) {
+			CreateBuffEffect (buff);
+		}
 	}
 
 	public void PlayOneShot(AudioClip sound) {
 		audioController.PlayOneShot (sound);
+	}
+
+	public void CreateBuffEffect(Buff buff) {
+		GameObject myEffect =  Instantiate (buff.persistentFxPrefab);
+		myEffect.transform.SetParent (transform, false);
+		buff.persistentFx = myEffect;
 	}
 
 	public IEnumerator CreateEffect(GameObject effect, float delay = 0) {

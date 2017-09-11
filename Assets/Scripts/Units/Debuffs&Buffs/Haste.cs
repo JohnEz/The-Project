@@ -3,9 +3,8 @@ using System.Collections;
 
 public class Haste : Buff {
 
-	public Haste(int duration) : base () {
+	public Haste(int maxDuration) : base (maxDuration) {
 		flatMod [(int)Stats.AP] = 1;
-		maxDuration = duration;
 	}
 
 }

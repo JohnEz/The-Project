@@ -136,5 +136,28 @@ public class UnitStats : MonoBehaviour {
 		get { return walkingType; }
 	}
 
+	public void NewTurn() {
+		List<Buff> buffsToRemove = new List<Buff> ();
+
+		Buffs.ForEach ((buff) => {
+			buff.duration--;
+			if (buff.duration <= 0) {
+				buffsToRemove.Add(buff);
+			}
+		});
+
+		buffsToRemove.ForEach ((buff) => {
+			RemoveBuff(buff);
+		});
+	}
+
+	public void EndTurn() {
+
+	}
+
+	public void RemoveBuff(Buff buff) {
+		buff.Remove();
+		Buffs.Remove(buff);
+	}
 
 }

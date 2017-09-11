@@ -12,6 +12,8 @@ public class MageClass : UnitClass {
 	[SerializeField]
 	GameObject frostNovaFx;
 	[SerializeField]
+	GameObject frostNovaDebuffFx;
+	[SerializeField]
 	AudioClip frostNovaCasterSfx;
 	[SerializeField]
 	AudioClip frostNovaAoeSfx;
@@ -30,7 +32,7 @@ public class MageClass : UnitClass {
 		frostNovaActions.Add(EventAction.CreateAudioEventAction(Event.CAST_START, frostNovaAoeSfx, EventTarget.CASTER));
 		frostNovaActions.Add(EventAction.CreateAudioEventAction(Event.CAST_END, frostNovaHitSfx, EventTarget.TARGETUNIT));
 		frostNovaActions.Add(EventAction.CreateEffectAtLocationEventAction(Event.CAST_START, frostNovaFx, 0.7f));
-		abilities [1] = new FrostNova (frostNovaActions);
+		abilities [1] = new FrostNova (frostNovaActions, frostNovaDebuffFx);
 	}
 
 }

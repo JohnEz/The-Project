@@ -14,7 +14,10 @@ public class Buff {
 
 	public bool isDebuff = false;
 
-	public Buff() {
+	public GameObject persistentFxPrefab;
+	public GameObject persistentFx;
+
+	public Buff(int _maxDuration, GameObject _persistentFxPrefab = null) {
 		flatMod = new int[Enum.GetNames(typeof(Stats)).Length];
 		percentMod = new float[Enum.GetNames(typeof(Stats)).Length];
 
@@ -26,7 +29,16 @@ public class Buff {
 			percentMod [i] = 1.0f;
 		}
 
+		persistentFxPrefab = _persistentFxPrefab;
+
+		maxDuration = _maxDuration;
 		duration = maxDuration;
+	}
+
+	public void Remove() {
+		if (persistentFx) {
+			persistentFx.GetComponent<PersistentFxController> ().Remove ();
+		}
 	}
 
 }

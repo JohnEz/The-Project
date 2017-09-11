@@ -3,9 +3,8 @@ using System.Collections;
 
 public class Snare : Buff {
 
-	public Snare(int duration) : base () {
+	public Snare(int maxDuration, GameObject persistentFx) : base (maxDuration, persistentFx) {
 		percentMod [(int)Stats.SPEED] = 0;
-		maxDuration = duration;
 		isDebuff = true;
 	}
 
