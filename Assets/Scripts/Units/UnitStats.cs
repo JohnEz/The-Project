@@ -61,8 +61,8 @@ public class UnitStats : MonoBehaviour {
 		float percentMods = 1;
 
 		foreach (Buff buff in myBuffs) {
-			flatMods += buff.flatMod [(int)stat];
-			percentMods *= buff.percentMod [(int)stat];
+			flatMods += buff.GetFlatMod((int)stat);
+			percentMods *= buff.GetPercentMod((int)stat);
 		}
 
 		return (int)((baseValue * percentMods) + flatMods);
@@ -155,13 +155,36 @@ public class UnitStats : MonoBehaviour {
 
 	}
 
-	public Buff FindFirstBuff(bool debuff) {
+	public Buff FindOldestBuff(bool debuff) {
 		return Buffs.Find (buff => buff.isDebuff = debuff);
 	}
 
-	public void RemoveBuff(Buff buff) {
-		buff.Remove();
+	public Buff FindNewestBuff(bool debuff) {
+		return Buffs.FindLast (buff => buff.isDebuff = debuff);
+	}
+
+	public void RemoveBuff(Buff buff, bool withEffects = true) {
+		buff.Remove(withEffects);
 		Buffs.Remove(buff);
+	}
+
+	public bool ApplyBuff(Buff newBuff) {
+		Buff currentBuff = Buffs.Find ((buff) => buff.name == newBuff.name); 
+
+		if (currentBuff != null) {
+			int newDuration = Math.Max(currentBuff.duration, newBuff.maxDuration);
+			int newStacks = Math.Min(currentBuff.stacks + 1, currentBuff.maxStack);
+
+			newBuff.maxDuration = newDuration;
+			newBuff.duration = newDuration;
+			newBuff.stacks = newStacks;
+
+			RemoveBuff (currentBuff, false);
+		}
+
+		Buffs.Add (newBuff);
+
+		return true;
 	}
 
 }

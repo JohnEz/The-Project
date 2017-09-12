@@ -34,9 +34,13 @@ public class PersistentFxController : MonoBehaviour {
 		}
 	}
 
-	public void Remove() {
-		GetComponent<Animator> ().SetTrigger ("die");
-		StartCoroutine (PlayAudioClip (disappearSfx, disappearSfxDelay));
+	public void Remove(bool withEffects = true) {
+		if (withEffects) {
+			GetComponent<Animator> ().SetTrigger ("die");
+			StartCoroutine (PlayAudioClip (disappearSfx, disappearSfxDelay));
+		} else {
+			Destroy (gameObject);
+		}
 	}
 
 	IEnumerator PlayAudioClip(AudioClip audio, float delay) {

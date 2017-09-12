@@ -340,17 +340,17 @@ public class UnitController : MonoBehaviour {
 	}
 
 	public void ApplyBuff(Buff buff) {
-		myStats.Buffs.Add (buff);
-		if (buff.persistentFxPrefab) {
+		bool buffAdded = myStats.ApplyBuff (buff);
+		if (buffAdded && buff.persistentFxPrefab) {
 			CreateBuffEffect (buff);
 		}
 	}
 
 	public void Dispell(bool debuff) {
 		if (myStats.Buffs.Count > 0) {
-			Buff buffToDispell = myStats.FindFirstBuff (debuff);
+			Buff buffToDispell = myStats.FindNewestBuff (debuff);
 			if (buffToDispell != null) {
-				myStats.RemoveBuff (buffToDispell);
+				myStats.RemoveBuff (buffToDispell, true);
 			}
 		}
 	}
