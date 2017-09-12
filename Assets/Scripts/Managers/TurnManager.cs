@@ -19,6 +19,8 @@ public struct Player {
 
 public class TurnManager : MonoBehaviour {
 
+	UserInterfaceManager uIManager;
+	GUIController gUIController;
 	UnitManager unitManager;
 	AIManager aiManager;
 	CameraManager cameraManager;
@@ -27,7 +29,7 @@ public class TurnManager : MonoBehaviour {
 	TurnPhase currentPhase = TurnPhase.TURN_STARTING;
 
 	List<Player> players;
-	public int playersTurn = -1;
+	int playersTurn = -1;
 
 	bool checkedPlayerStatus = true;
 
@@ -35,6 +37,8 @@ public class TurnManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		AddPlayers ();
+		uIManager = GetComponentInChildren<UserInterfaceManager> ();
+		gUIController = GetComponentInChildren<GUIController> ();
 		map = GetComponentInChildren<TileMap> ();
 		map.Initialise ();
 		unitManager = GetComponent<UnitManager> ();
@@ -48,19 +52,6 @@ public class TurnManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		//TODO these should probably be moved to a interface class
-		if (Input.GetKeyUp ("1") && currentPhase == TurnPhase.WAITING_FOR_INPUT) {
-			unitManager.ShowAbility (0);
-		}
-
-		if (Input.GetKeyUp ("2") && currentPhase == TurnPhase.WAITING_FOR_INPUT) {
-			unitManager.ShowAbility (1);
-		}
-
-		if (Input.GetKeyUp ("space") && currentPhase == TurnPhase.WAITING_FOR_INPUT) {
-			EndTurn ();
-		}
-
 		//check to see if the turn should end
 		if (!checkedPlayerStatus) {
 			if (currentPhase == TurnPhase.WAITING_FOR_INPUT && unitManager.PlayerOutOfActions (playersTurn)) {
@@ -90,20 +81,38 @@ public class TurnManager : MonoBehaviour {
 
 	}
 
-	//FINITE STATE MACHINE
-
 	public void StartNewTurn() {
 		ChangeState(TurnPhase.TURN_STARTING);
 		playersTurn++;
 		playersTurn = playersTurn % players.Count;
-		GetComponent<UnitManager> ().StartTurn (playersTurn);
+		unitManager.StartTurn (playersTurn);
 		bool alliedTurn = !isAiTurn();
 
-		GetComponentInChildren<UserInterfaceController> ().StartNewTurn (alliedTurn);
+		gUIController.StartNewTurn (alliedTurn);
 
 		if (players [playersTurn].ai) {
 			aiManager.NewTurn (playersTurn);
 		}
+
+		uIManager.StartTurn ();
+	}
+
+	public void EndTurn() {
+		ChangeState(TurnPhase.TURN_ENDING);
+		unitManager.DeselectUnit();
+		unitManager.EndTurn (playersTurn);
+		StartNewTurn ();
+		uIManager.EndTurn ();
+	}
+
+	public TurnPhase CurrentPhase {
+		get { return currentPhase; }
+		set { ChangeState(value); }
+	}
+
+	public int PlayersTurn {
+		get { return playersTurn; }
+		set { playersTurn = value; }
 	}
 
 	public void ChangeState(TurnPhase newPhase) {
@@ -121,6 +130,7 @@ public class TurnManager : MonoBehaviour {
 
 	public void FinishedMoving() {
 		ChangeState(TurnPhase.WAITING_FOR_INPUT);
+		uIManager.FinishedMoving ();
 	}
 
 	public void StartAttacking() {
@@ -129,72 +139,10 @@ public class TurnManager : MonoBehaviour {
 
 	public void FinishedAttacking() {
 		ChangeState(TurnPhase.WAITING_FOR_INPUT);
-	}
-
-	public void EndTurn() {
-		ChangeState(TurnPhase.TURN_ENDING);
-		//TODO CLEAN UP, EG SELECTED TILES
-		unitManager.DeselectUnit();
-		unitManager.EndTurn (playersTurn);
-		StartNewTurn ();
+		uIManager.FinishedAttacking ();
 	}
 
 	public bool isAiTurn() {
 		return players [playersTurn].ai;
-	}
-
-	//MOVEMENT PHASE
-
-	public void TileClicked(Node node, SquareTarget target) {
-		
-		if (currentPhase == TurnPhase.WAITING_FOR_INPUT && !isAiTurn()) {
-			
-			switch (target) {
-			case SquareTarget.HELPFULL:
-			case SquareTarget.ATTACK:
-				ClickedAttack (node);
-				break;
-			case SquareTarget.DASH:
-			case SquareTarget.MOVEMENT:
-				ClickedMovement (node);
-				break;
-			case SquareTarget.NONE: 
-			default:
-				ClickedUnselected (node);
-				break;
-			}
-
-		}
-
-	}
-
-	public void ClickedMovement(Node node) {
-		unitManager.MoveToTile (node);
-		unitManager.DeselectUnit ();
-	}
-
-	public void ClickedUnselected(Node node) {
-		if (node.myUnit != null && !unitManager.UnitAlreadySelected(node.myUnit)) {
-			unitManager.DeselectUnit ();
-			unitManager.SelectUnit (node.myUnit);
-
-			if (node.myUnit.myPlayer.id == playersTurn) {
-				if (node.myUnit.myStats.ActionPoints > 0) {
-					unitManager.ShowActions (node.myUnit);
-				}
-			}
-		} else {
-			unitManager.DeselectUnit ();
-		}
-	}
-
-	public void ClickedAttack(Node node) {
-		if (unitManager.AttackTile (node)) {
-			unitManager.DeselectUnit ();
-		}
-	}
-
-	public bool doesNodeContainPlayerUnit(Node node) {
-		return node.myUnit != null && node.myUnit.myPlayer.id == playersTurn;
 	}
 }

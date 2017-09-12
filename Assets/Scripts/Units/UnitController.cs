@@ -66,15 +66,20 @@ public class UnitController : MonoBehaviour {
 	public void Initialise() {
 		anim = GetComponentInChildren<UnitAnimationController> ();
 		myStats = GetComponent<UnitStats> ();
-		myStats.Initailise ();
+		myStats.Initialise ();
 		audioController = GetComponent<UnitAudioController> ();
 		myClass = GetComponent<UnitClass> ();
+		myClass.Initialise ();
 		projectiles = new List<ProjectileController> ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		FollowPath ();
+	}
+
+	public bool HasRemainingQueuedActions() {
+		return actionQueue.Count > 0;
 	}
 
 	public void NewTurn() {

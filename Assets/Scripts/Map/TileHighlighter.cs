@@ -44,7 +44,7 @@ public class TileHighlighter : MonoBehaviour {
 	{
 		Node myNode = GetComponentInParent<Node> ();
 		if (hovered) {
-			GetComponentInParent<TurnManager> ().TileClicked (myNode, myTarget);
+			GetComponentInParent<UserInterfaceManager> ().TileClicked (myNode, myTarget);
 		}
 	}
 

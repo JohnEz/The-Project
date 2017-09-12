@@ -13,6 +13,7 @@ public class UnitManager : MonoBehaviour {
 
 	//currentSelect
 	UnitController selectedUnit = null;
+	public UnitController lastSelectedUnit = null;
 	BaseAbility activeAbility = null;
 	List<Node> attackableTiles = new List<Node>();
 
@@ -72,6 +73,7 @@ public class UnitManager : MonoBehaviour {
 	}
 
 	public void EndTurn(int playersTurn) {
+		lastSelectedUnit = null;
 		foreach (UnitController unit in units) {
 			if (unit.myPlayer.id == playersTurn) {
 				unit.EndTurn ();
@@ -86,6 +88,7 @@ public class UnitManager : MonoBehaviour {
 	public bool SelectUnit(UnitController unit) {
 		if (!UnitAlreadySelected(unit)) {
 			selectedUnit = unit;
+			lastSelectedUnit = unit;
 			selectedUnit.SetSelected (true);
 			myMap.highlighter.HighlightTile (unit.myNode, SquareTarget.NONE);
 			return true;
@@ -107,7 +110,9 @@ public class UnitManager : MonoBehaviour {
 		return myMap.pathfinder.findReachableTiles (unit.myNode, unit.myStats.Speed, unit.myStats.WalkingType, unit.myPlayer.faction);
 	}
 
-	public void ShowActions(UnitController unit) {
+	public void ShowActions(UnitController unit = null) {
+		unit = unit == null ? selectedUnit : unit;
+
 		myMap.highlighter.UnhighlightTiles ();
 		myMap.highlighter.HighlightTile (unit.myNode, SquareTarget.NONE);
 
@@ -227,5 +232,61 @@ public class UnitManager : MonoBehaviour {
 			}
 		}
 		return true;
+	}
+
+	public UnitController GetNextUnit (int player, bool withActions = true) {
+		if (selectedUnit == null) {
+			return GetFirstUnit (player, withActions);
+		} else {
+			int startingIndex = units.FindIndex ((unit) => unit == selectedUnit);
+			int currentIndex = (startingIndex + 1) % units.Count;
+
+			while (currentIndex != startingIndex) {
+				UnitController unit = units [currentIndex];
+				if (unit.myPlayer.id == player && 
+					(!withActions || unit.myStats.ActionPoints > 0)) {
+					return unit;
+				}
+				currentIndex = (currentIndex + 1) % units.Count;
+			}
+		}
+
+		return null;
+	}
+
+	public UnitController GetPreviousUnit (int player, bool withActions = true) {
+		if (selectedUnit == null) {
+			return GetFirstUnit (player, withActions);
+		} else {
+			int startingIndex = units.FindIndex ((unit) => unit == selectedUnit);
+			int currentIndex = startingIndex - 1;
+
+			if (currentIndex < 0) {
+				currentIndex = units.Count - 1;
+			}
+
+			while (currentIndex != startingIndex) {
+				UnitController unit = units [currentIndex];
+				if (unit.myPlayer.id == player && 
+					(!withActions || unit.myStats.ActionPoints > 0)) {
+					return unit;
+				}
+
+				currentIndex--;
+				if (currentIndex < 0) {
+					currentIndex = units.Count - 1;
+				}
+			}
+		}
+
+		return null;
+	}
+
+	public UnitController GetFirstUnit(int player, bool withActions = true) {
+		return units.Find ((unit) => {
+			bool belongsToPlayer = unit.myPlayer.id == player;
+			bool hasActions = !withActions || unit.myStats.ActionPoints > 0;
+			return belongsToPlayer && hasActions;
+		});
 	}
 }

@@ -50,7 +50,7 @@ public class UnitStats : MonoBehaviour {
 	[System.NonSerialized]
 	public Walkable walkingType;
 
-	public void Initailise() {
+	public void Initialise() {
 		//TODO LOAD BASE STATS FROM DATABASE
 		currentHealth = MaxHealth;
 		currentMana = MaxMana;

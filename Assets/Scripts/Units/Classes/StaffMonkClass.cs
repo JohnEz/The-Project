@@ -13,7 +13,7 @@ public class StaffMonkClass : UnitClass {
 	GameObject sacredGroundFx;
 
 	// Use this for initialization
-	void Start () {
+	public override void Initialise() {
 		List<EventAction> jadeSlamActions = new List<EventAction> ();
 		jadeSlamActions.Add(EventAction.CreateAudioEventAction(Event.CAST_START, JadeSlamSfxCaster, EventTarget.CASTER));
 		jadeSlamActions.Add(EventAction.CreateAudioEventAction(Event.CAST_END, JadeSlamSfxHit, EventTarget.TARGETUNIT));

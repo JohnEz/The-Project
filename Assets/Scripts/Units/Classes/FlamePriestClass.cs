@@ -15,7 +15,7 @@ public class FlamePriestClass : UnitClass {
 	AudioClip cauterizeSfx;
 
 	// Use this for initialization
-	void Start () {
+	public override void Initialise() {
 		List<EventAction> englufActions = new List<EventAction> ();
 		englufActions.Add(EventAction.CreateAudioEventAction(Event.CAST_START, engulfSfx, EventTarget.CASTER));
 		englufActions.Add(EventAction.CreateEffectEventAction(Event.CAST_START, engulfFx, EventTarget.TARGETUNIT, 0.5f));

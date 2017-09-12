@@ -21,7 +21,7 @@ public class MageClass : UnitClass {
 	AudioClip frostNovaAoeSfx;
 
 	// Use this for initialization
-	void Start () {
+	public override void Initialise () {
 		List<EventAction> arcaneBoltActions = new List<EventAction> ();
 		arcaneBoltActions.Add(EventAction.CreateAudioEventAction(Event.CAST_START, arcaneBoltSfxCaster, EventTarget.CASTER));
 		arcaneBoltActions.Add(EventAction.CreateAudioEventAction(Event.CAST_END, arcaneBoltSfxHit, EventTarget.TARGETUNIT));

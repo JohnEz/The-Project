@@ -7,7 +7,7 @@ public class SamuraiClass : UnitClass {
 	public AudioClip abilitySound0;
 
 	// Use this for initialization
-	void Start () {
+	public override void Initialise() {
 		List<EventAction> omniSlashActions = new List<EventAction> ();
 		omniSlashActions.Add(EventAction.CreateAudioEventAction(Event.CAST_START, abilitySound0, EventTarget.CASTER));
 		abilities [0] = new OmniSlash (omniSlashActions);

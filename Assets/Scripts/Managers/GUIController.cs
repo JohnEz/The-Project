@@ -2,27 +2,29 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class UserInterfaceController : MonoBehaviour {
+public class GUIController : MonoBehaviour {
 
 	public GameObject turnTextPrefab;
 	bool showingTurn = false;
 	GameObject turnText;
 
+	TurnManager turnManager;
+
+
 	// Use this for initialization
 	void Start () {
-	
+		turnManager = GetComponentInParent<TurnManager> ();
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
-		
+		//TODO this should probably be some sort of timer so there is less a chance the user can get stuck
 		if (showingTurn) {
 			if (turnText == null) {
-				GetComponentInParent<TurnManager> ().FinishStartingTurn ();
+				turnManager.FinishStartingTurn ();
 				showingTurn = false;
 			}
 		}
-
 	}
 
 	public void StartNewTurn(bool ally) {

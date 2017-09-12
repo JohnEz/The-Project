@@ -9,6 +9,9 @@ public class UnitClass : MonoBehaviour {
 	[SerializeField]
 	public AudioClip onDeathSfx;
 
+	public virtual void Initialise() {
+
+	}
 
 	public bool CanUseAbility(int abil) {
 		if (abil >= 0 && abil < abilities.Length && abilities [abil] != null) {
