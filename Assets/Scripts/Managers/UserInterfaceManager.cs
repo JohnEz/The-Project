@@ -15,6 +15,7 @@ public class UserInterfaceManager : MonoBehaviour {
 	void Start () {
 		turnManager = GetComponentInParent<TurnManager> ();
 		unitManager = GetComponentInParent<UnitManager> ();
+		turnManager.Initialise ();
 	}
 	
 	// Update is called once per frame
@@ -119,6 +120,7 @@ public class UserInterfaceManager : MonoBehaviour {
 		if (!turnManager.isAiTurn ()) {
 			if (!ReselectUnit ()) {
 				SelectNextUnit ();
+				showingAbility = false;
 			}
 		}
 	}

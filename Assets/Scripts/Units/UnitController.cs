@@ -79,6 +79,7 @@ public class UnitController : MonoBehaviour {
 	}
 
 	public bool HasRemainingQueuedActions() {
+		Debug.Log (actionQueue.Peek().type);
 		return actionQueue.Count > 0;
 	}
 
@@ -170,6 +171,9 @@ public class UnitController : MonoBehaviour {
 		if (actionQueue.Count == 1) {
 			RunNextAction (false);
 		}
+
+		Debug.Log (actionQueue.Count);
+		Debug.Log (actionQueue.Peek ().type);
 
 		return true;
 	}

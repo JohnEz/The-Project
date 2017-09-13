@@ -33,9 +33,8 @@ public class TurnManager : MonoBehaviour {
 
 	bool checkedPlayerStatus = true;
 
-
 	// Use this for initialization
-	void Start () {
+	public void Initialise () {
 		AddPlayers ();
 		uIManager = GetComponentInChildren<UserInterfaceManager> ();
 		gUIController = GetComponentInChildren<GUIController> ();
