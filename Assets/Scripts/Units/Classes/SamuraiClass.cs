@@ -10,7 +10,7 @@ public class SamuraiClass : UnitClass {
 	public override void Initialise() {
 		List<EventAction> omniSlashActions = new List<EventAction> ();
 		omniSlashActions.Add(EventAction.CreateAudioEventAction(Event.CAST_START, abilitySound0, EventTarget.CASTER));
-		abilities [0] = new OmniSlash (omniSlashActions);
+		abilities.Add(new OmniSlash (omniSlashActions));
 	}
 
 }

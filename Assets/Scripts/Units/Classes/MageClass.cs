@@ -26,13 +26,13 @@ public class MageClass : UnitClass {
 		arcaneBoltActions.Add(EventAction.CreateAudioEventAction(Event.CAST_START, arcaneBoltSfxCaster, EventTarget.CASTER));
 		arcaneBoltActions.Add(EventAction.CreateAudioEventAction(Event.CAST_END, arcaneBoltSfxHit, EventTarget.TARGETUNIT));
 		arcaneBoltActions.Add(EventAction.CreateProjectileEventAction(Event.CAST_START, arcaneBoltProjectile, 12f, 0.7f));
-		abilities [0] = new ArcaneBolt (arcaneBoltActions);
+		abilities.Add(new ArcaneBolt (arcaneBoltActions));
 
 		List<EventAction> frostNovaActions = new List<EventAction> ();
 		frostNovaActions.Add(EventAction.CreateAudioEventAction(Event.CAST_START, frostNovaCasterSfx, EventTarget.CASTER));
 		frostNovaActions.Add(EventAction.CreateAudioEventAction(Event.CAST_START, frostNovaAoeSfx, EventTarget.CASTER));
 		frostNovaActions.Add(EventAction.CreateEffectAtLocationEventAction(Event.CAST_START, frostNovaFx, 0.7f));
-		abilities [1] = new FrostNova (frostNovaActions, frostNovaDebuffFx);
+		abilities.Add(new FrostNova (frostNovaActions, frostNovaDebuffFx));
 	}
 
 }

@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class UserInterfaceManager : MonoBehaviour {
 
-	bool showingAbility = false;
+	int showingAbility = -1;
 
 	//Managers
 	TurnManager turnManager;
@@ -25,14 +25,35 @@ public class UserInterfaceManager : MonoBehaviour {
 		UserControls ();
 	}
 
+	public bool isShowingAbility {
+		get { return showingAbility > -1; }
+	}
+
+	public void SetShowingAbility(int abilityIndex) {
+		SetUnshowAbility ();
+		showingAbility = abilityIndex;
+		gUIController.AbilitySelected (abilityIndex);
+	}
+
+	public void SetUnshowAbility() {
+		if (isShowingAbility) {
+			gUIController.AbilityDeselected (showingAbility);
+			showingAbility = -1;
+		}
+	}
+
 	void UserControls() {
 		if (turnManager.CurrentPhase == TurnPhase.WAITING_FOR_INPUT) {
 			if (Input.GetKeyUp ("1")) {
-				showingAbility = unitManager.ShowAbility (0);
+				if (unitManager.ShowAbility (0)) {
+					SetShowingAbility(0);
+				}
 			}
 
 			if (Input.GetKeyUp ("2")) {
-				showingAbility = unitManager.ShowAbility (1);
+				if (unitManager.ShowAbility (1)) {
+					SetShowingAbility(1);
+				}
 			}
 
 			if (Input.GetKeyUp ("space")) {
@@ -40,7 +61,7 @@ public class UserInterfaceManager : MonoBehaviour {
 			}
 
 			if (Input.GetKeyUp (KeyCode.Escape)) {
-				if (showingAbility) {
+				if (isShowingAbility) {
 					ShowMovement ();
 				}
 			}
@@ -80,7 +101,7 @@ public class UserInterfaceManager : MonoBehaviour {
 
 	public void ClickedMovement(Node node) {
 		unitManager.MoveToTile (node);
-		showingAbility = false;
+		SetUnshowAbility();
 		DeselectUnit ();
 	}
 
@@ -97,7 +118,7 @@ public class UserInterfaceManager : MonoBehaviour {
 					}
 				}
 			}
-		} else if (showingAbility) {
+		} else if (isShowingAbility) {
 			ShowMovement ();
 		}
 	}
@@ -124,7 +145,7 @@ public class UserInterfaceManager : MonoBehaviour {
 	public void ClickedAttack(Node node) {
 		if (unitManager.AttackTile (node)) {
 			DeselectUnit ();
-			showingAbility = false;
+			SetUnshowAbility();
 		}
 	}
 
@@ -132,7 +153,7 @@ public class UserInterfaceManager : MonoBehaviour {
 		if (!turnManager.isAiTurn ()) {
 			if (!ReselectUnit ()) {
 				SelectNextUnit ();
-				showingAbility = false;
+				SetUnshowAbility();
 			}
 		}
 	}
@@ -148,7 +169,7 @@ public class UserInterfaceManager : MonoBehaviour {
 	}
 
 	public void ShowMovement() {
-		showingAbility = false;
+		SetUnshowAbility();
 		unitManager.ShowActions ();
 	}
 

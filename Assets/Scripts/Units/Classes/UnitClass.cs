@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class UnitClass : MonoBehaviour {
 
-	public BaseAbility[] abilities = new BaseAbility[5];
+	public List<BaseAbility> abilities = new List<BaseAbility> ();
 	[SerializeField]
 	public AudioClip onHitSfx;
 	[SerializeField]
@@ -14,7 +15,7 @@ public class UnitClass : MonoBehaviour {
 	}
 
 	public bool CanUseAbility(int abil) {
-		if (abil >= 0 && abil < abilities.Length && abilities [abil] != null) {
+		if (abil >= 0 && abil < abilities.Count) {
 			return true;
 		}
 

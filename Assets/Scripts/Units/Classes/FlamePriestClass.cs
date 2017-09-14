@@ -19,12 +19,12 @@ public class FlamePriestClass : UnitClass {
 		List<EventAction> englufActions = new List<EventAction> ();
 		englufActions.Add(EventAction.CreateAudioEventAction(Event.CAST_START, engulfSfx, EventTarget.CASTER));
 		englufActions.Add(EventAction.CreateEffectEventAction(Event.CAST_START, engulfFx, EventTarget.TARGETUNIT, 0.5f));
-		abilities [0] = new Engulf (englufActions);
+		abilities.Add(new Engulf (englufActions));
 
 		List<EventAction> cauterizeActions = new List<EventAction> ();
 		cauterizeActions.Add(EventAction.CreateAudioEventAction(Event.CAST_START, cauterizeSfx, EventTarget.CASTER));
 		cauterizeActions.Add(EventAction.CreateEffectEventAction(Event.CAST_START, cauterizeFx, EventTarget.TARGETUNIT, 0.5f));
-		abilities [1] = new Cauterize (cauterizeActions);
+		abilities.Add(new Cauterize (cauterizeActions));
 	}
 
 }

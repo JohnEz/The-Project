@@ -16,12 +16,12 @@ public class KnightClass : UnitClass {
 	public override void Initialise() {
 		List<EventAction> holyStrikeActions = new List<EventAction> ();
 		holyStrikeActions.Add(EventAction.CreateAudioEventAction(Event.CAST_START, holyStrikeSFx, EventTarget.CASTER));
-		abilities [0] = new HolyStrike (holyStrikeActions);
+		abilities.Add(new HolyStrike (holyStrikeActions));
 
 		List<EventAction> rallyActions = new List<EventAction> ();
 		rallyActions.Add(EventAction.CreateAudioEventAction(Event.CAST_START, rallySfx, EventTarget.CASTER));
 		rallyActions.Add(EventAction.CreateEffectEventAction(Event.CAST_START, rallyFx, EventTarget.TARGETUNIT));
-		abilities [1] = new Rally (rallyActions);
+		abilities.Add(new Rally (rallyActions));
 	}
 
 }

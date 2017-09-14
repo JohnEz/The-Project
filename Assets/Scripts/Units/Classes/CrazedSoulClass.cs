@@ -10,7 +10,7 @@ public class CrazedSoulClass : UnitClass {
 	public override void Initialise() {
 		List<EventAction> dualSlashActions = new List<EventAction> ();
 		dualSlashActions.Add(EventAction.CreateAudioEventAction(Event.CAST_START, abilitySound0, EventTarget.CASTER));
-		abilities [0] = new DualSlash (dualSlashActions);
+		abilities.Add(new DualSlash (dualSlashActions));
 	}
 
 }

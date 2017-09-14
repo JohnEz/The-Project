@@ -62,7 +62,19 @@ public class GUIController : MonoBehaviour {
 	public void DisplayUnitAbilities(UnitController unit) {
 		UnitClass unitClass = unit.GetComponent<UnitClass> ();
 
-		CreateAbilityIcon (unitClass.abilities [0]);
+		unitClass.abilities.ForEach ((ability) => CreateAbilityIcon (ability));
+	}
+
+	public void AbilitySelected(int abilityIndex) {
+		if (abilityIcons.Count > abilityIndex) {
+			abilityIcons [abilityIndex].GetComponent<Animator> ().SetTrigger ("active");
+		}
+	}
+
+	public void AbilityDeselected(int abilityIndex) {
+		if (abilityIcons.Count > abilityIndex) {
+			abilityIcons [abilityIndex].GetComponent<Animator> ().SetTrigger ("idle");
+		}
 	}
 
 	public void CreateAbilityIcon(BaseAbility ability) {
@@ -70,7 +82,7 @@ public class GUIController : MonoBehaviour {
 		newAbilityIcon.GetComponent<Animator> ().runtimeAnimatorController = LoadRuntimeAnimatorController(ability.icon);
 		Vector3 newPosition = newAbilityIcon.transform.position;
 		newAbilityIcon.transform.SetParent(transform, false);
-		newPosition.x = -32 + (abilityIcons.Count * 17);
+		newPosition.x = -35 + (abilityIcons.Count * 70);
 		newAbilityIcon.transform.localPosition = newPosition;
 		abilityIcons.Add(newAbilityIcon);
 	}

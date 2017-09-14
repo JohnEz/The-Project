@@ -9,6 +9,7 @@ public class Rally : BaseAbility {
 		areaOfEffect = AreaOfEffect.AURA;
 		tileTarget = TileTarget.TILE;
 		aoeRange = 4;
+		icon = "abilityRallyController";
 	}
 
 	public override void UseAbility (UnitController caster, Node target)

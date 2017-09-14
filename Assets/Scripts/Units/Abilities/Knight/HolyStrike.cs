@@ -7,7 +7,7 @@ public class HolyStrike : BaseAbility {
 	int baseDamage = 8;
 
 	public HolyStrike(List<EventAction> _eventActions) : base (_eventActions) {
-
+		icon = "abilityHolyStrikeController";
 	}
 
 	public override void UseAbility (UnitController caster, Node target)
