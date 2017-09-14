@@ -115,6 +115,8 @@ public class BaseAbility {
 
 	public List<EventAction> eventActions;
 
+	public string icon = "abilityHolyStrikeController";
+
 	public BaseAbility(List<EventAction> _eventActions) {
 		eventActions = _eventActions;
 	}

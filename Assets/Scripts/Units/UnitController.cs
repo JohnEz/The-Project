@@ -25,13 +25,14 @@ public struct Action {
 }
 
 public class UnitController : MonoBehaviour {
-	
+
+	public GameObject unitCanvasPrefab;
 	[System.NonSerialized]
 	public UnitStats myStats;
 	[System.NonSerialized]
 	public UnitManager myManager;
 	UnitAnimationController anim;
-	public Canvas unitCanvas;
+	UnitCanvasController unitCanvasController;
 	UnitAudioController audioController;
 	UnitClass myClass;
 
@@ -64,6 +65,10 @@ public class UnitController : MonoBehaviour {
 	}
 
 	public void Initialise() {
+		GameObject unitCanvas = Instantiate (unitCanvasPrefab);
+		unitCanvas.transform.SetParent (transform, false);
+		unitCanvasController = unitCanvas.GetComponent<UnitCanvasController> ();
+
 		anim = GetComponentInChildren<UnitAnimationController> ();
 		myStats = GetComponent<UnitStats> ();
 		myStats.Initialise ();
@@ -79,7 +84,6 @@ public class UnitController : MonoBehaviour {
 	}
 
 	public bool HasRemainingQueuedActions() {
-		Debug.Log (actionQueue.Peek().type);
 		return actionQueue.Count > 0;
 	}
 
@@ -141,7 +145,7 @@ public class UnitController : MonoBehaviour {
 		get { return myStats.ActionPoints; }
 		set { 
 			myStats.ActionPoints = value;
-			unitCanvas.GetComponent<UnitCanvasController> ().SetActionPoints (value);
+			unitCanvasController.SetActionPoints (value);
 		}
 	}
 
@@ -171,9 +175,6 @@ public class UnitController : MonoBehaviour {
 		if (actionQueue.Count == 1) {
 			RunNextAction (false);
 		}
-
-		Debug.Log (actionQueue.Count);
-		Debug.Log (actionQueue.Peek ().type);
 
 		return true;
 	}
@@ -215,8 +216,8 @@ public class UnitController : MonoBehaviour {
 		anim.IsWalking (false);
 		myPath [0].myUnit = this;
 		myNode = myPath [0];
-		myManager.UnitFinishedMoving ();
 		RunNextAction (true);
+		myManager.UnitFinishedMoving ();
 	}
 
 	public void AttackTarget(List<Node> targetNodes, BaseAbility ability) {
@@ -234,11 +235,11 @@ public class UnitController : MonoBehaviour {
 	}
 
 	public void FinishedAttacking() {
-		myManager.UnitFinishedAttacking ();
 		RunAbilityTargets ();
 		ClearAbilityTargets ();
 		currentAbilityTarget = null;
 		RunNextAction (true);
+		myManager.UnitFinishedAttacking ();
 	}
 
 	public void AddAbilityTarget(UnitController target, System.Action ability) {
@@ -286,8 +287,8 @@ public class UnitController : MonoBehaviour {
 
 		myStats.SetHealth(myStats.Health - modifiedDamage);
 
-		unitCanvas.GetComponent<UnitCanvasController> ().UpdateHP (myStats.Health, myStats.MaxHealth);
-		unitCanvas.GetComponent<UnitCanvasController> ().CreateDamageText (modifiedDamage.ToString ());
+		unitCanvasController.UpdateHP (myStats.Health, myStats.MaxHealth);
+		unitCanvasController.CreateDamageText (modifiedDamage.ToString ());
 
 		if (myStats.Health > 0) {
 			anim.PlayHitAnimation ();
@@ -326,8 +327,8 @@ public class UnitController : MonoBehaviour {
 
 		myStats.SetHealth(myStats.Health + healing);
 
-		unitCanvas.GetComponent<UnitCanvasController> ().UpdateHP (myStats.Health, myStats.MaxHealth);
-		unitCanvas.GetComponent<UnitCanvasController> ().CreateHealText (healing.ToString ());
+		unitCanvasController.UpdateHP (myStats.Health, myStats.MaxHealth);
+		unitCanvasController.CreateHealText (healing.ToString ());
 
 		return true;
 	}

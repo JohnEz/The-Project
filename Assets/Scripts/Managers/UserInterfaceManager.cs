@@ -9,10 +9,12 @@ public class UserInterfaceManager : MonoBehaviour {
 	//Managers
 	TurnManager turnManager;
 	UnitManager unitManager;
+	GUIController gUIController;
 
 
 	// Use this for initialization
 	void Start () {
+		gUIController = GetComponentInChildren<GUIController> ();
 		turnManager = GetComponentInParent<TurnManager> ();
 		unitManager = GetComponentInParent<UnitManager> ();
 		turnManager.Initialise ();
@@ -79,7 +81,7 @@ public class UserInterfaceManager : MonoBehaviour {
 	public void ClickedMovement(Node node) {
 		unitManager.MoveToTile (node);
 		showingAbility = false;
-		unitManager.DeselectUnit ();
+		DeselectUnit ();
 	}
 
 	public void ClickedUnselected(Node node) {
@@ -87,8 +89,7 @@ public class UserInterfaceManager : MonoBehaviour {
 			if (unitManager.UnitAlreadySelected (node.myUnit)) {
 				ShowMovement ();
 			} else {
-				unitManager.DeselectUnit ();
-				unitManager.SelectUnit (node.myUnit);
+				SelectUnit (node.myUnit);
 
 				if (node.myUnit.myPlayer.id == turnManager.PlayersTurn) {
 					if (node.myUnit.myStats.ActionPoints > 0) {
@@ -109,9 +110,20 @@ public class UserInterfaceManager : MonoBehaviour {
 
 	}
 
+	public void SelectUnit(UnitController unit) {
+		DeselectUnit();
+		unitManager.SelectUnit (unit);
+		gUIController.UnitSelected (unit);
+	}
+
+	public void DeselectUnit () {
+		unitManager.DeselectUnit ();
+		gUIController.UnitDeselected ();
+	}
+
 	public void ClickedAttack(Node node) {
 		if (unitManager.AttackTile (node)) {
-			unitManager.DeselectUnit ();
+			DeselectUnit ();
 			showingAbility = false;
 		}
 	}
@@ -142,7 +154,7 @@ public class UserInterfaceManager : MonoBehaviour {
 
 	public bool ReselectUnit() {
 		if (unitManager.lastSelectedUnit != null && unitManager.lastSelectedUnit.ActionPoints > 0) {
-			unitManager.SelectUnit (unitManager.lastSelectedUnit);
+			SelectUnit (unitManager.lastSelectedUnit);
 			ShowMovement ();
 			return true;
 		}
@@ -152,8 +164,7 @@ public class UserInterfaceManager : MonoBehaviour {
 	public void SelectNextUnit() {
 		UnitController nextUnit = unitManager.GetNextUnit (turnManager.PlayersTurn);
 		if (nextUnit != null) {
-			unitManager.DeselectUnit ();
-			unitManager.SelectUnit (nextUnit);
+			SelectUnit (nextUnit);
 			ShowMovement ();
 		}
 	}
@@ -161,8 +172,7 @@ public class UserInterfaceManager : MonoBehaviour {
 	public void SelectPreviousUnit() {
 		UnitController nextUnit = unitManager.GetPreviousUnit (turnManager.PlayersTurn);
 		if (nextUnit != null) {
-			unitManager.DeselectUnit ();
-			unitManager.SelectUnit (nextUnit);
+			SelectUnit (nextUnit);
 			ShowMovement ();
 		}
 	}

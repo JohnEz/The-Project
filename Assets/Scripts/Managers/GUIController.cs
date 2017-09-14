@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class GUIController : MonoBehaviour {
 
@@ -8,8 +9,12 @@ public class GUIController : MonoBehaviour {
 	bool showingTurn = false;
 	GameObject turnText;
 
+	public GameObject abilityIconPrefab;
+
 	TurnManager turnManager;
 
+	List<GameObject> abilityIcons = new List<GameObject>();
+	Dictionary<string, RuntimeAnimatorController> abilityIconControllers = new Dictionary<string, RuntimeAnimatorController>();
 
 	// Use this for initialization
 	void Start () {
@@ -39,5 +44,42 @@ public class GUIController : MonoBehaviour {
 		//TODO THIS SHOULD FIND THE LENGTH OF THE ANIMATION AND NOT BE HARD CODED BUT IM TIRED
 		Destroy (turnText, 1.917f);
 
+	}
+
+	public void UnitSelected(UnitController unit) {
+		DisplayUnitAbilities (unit);
+	}
+
+	public void UnitDeselected() {
+		ClearAbilityIcons ();
+	}
+
+	public void ClearAbilityIcons() {
+		abilityIcons.ForEach ((icon) => Destroy (icon.gameObject));
+		abilityIcons.Clear ();
+	}
+
+	public void DisplayUnitAbilities(UnitController unit) {
+		UnitClass unitClass = unit.GetComponent<UnitClass> ();
+
+		CreateAbilityIcon (unitClass.abilities [0]);
+	}
+
+	public void CreateAbilityIcon(BaseAbility ability) {
+		GameObject newAbilityIcon = Instantiate (abilityIconPrefab);
+		newAbilityIcon.GetComponent<Animator> ().runtimeAnimatorController = LoadRuntimeAnimatorController(ability.icon);
+		Vector3 newPosition = newAbilityIcon.transform.position;
+		newAbilityIcon.transform.SetParent(transform, false);
+		newPosition.x = -32 + (abilityIcons.Count * 17);
+		newAbilityIcon.transform.localPosition = newPosition;
+		abilityIcons.Add(newAbilityIcon);
+	}
+
+	RuntimeAnimatorController LoadRuntimeAnimatorController(string controller) {
+		if (!abilityIconControllers.ContainsKey(controller)) {
+			abilityIconControllers.Add (controller, Resources.Load<RuntimeAnimatorController> ("Graphics/UI/InGame/Icons/" + controller));
+		}
+
+		return abilityIconControllers [controller];
 	}
 }
