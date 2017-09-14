@@ -9,6 +9,7 @@ public class Cauterize : BaseAbility {
 	public Cauterize(List<EventAction> _eventActions) : base (_eventActions) {
 		range = 4;
 		targets = TargetType.ALLY;
+		icon = "abilityEngulfController";
 	}
 
 	public override void UseAbility (UnitController caster, Node target)

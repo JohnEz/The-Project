@@ -14,6 +14,7 @@ public class FrostNova : BaseAbility {
 		aoeRange = 2;
 		tileTarget = TileTarget.TILE;
 		persistentSnareFxPrefab = snareFx;
+		icon = "abilityFrostNovaController";
 	}
 
 	public override void UseAbility (UnitController caster, Node target)

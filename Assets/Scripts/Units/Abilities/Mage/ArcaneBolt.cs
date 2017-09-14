@@ -8,6 +8,7 @@ public class ArcaneBolt : BaseAbility {
 
 	public ArcaneBolt(List<EventAction> _eventActions) : base (_eventActions) {
 		range = 6;
+		icon = "abilityArcaneBoltController";
 	}
 
 	public override void UseAbility (UnitController caster, Node target)

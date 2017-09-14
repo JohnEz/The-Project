@@ -55,7 +55,10 @@ public class GUIController : MonoBehaviour {
 	}
 
 	public void ClearAbilityIcons() {
-		abilityIcons.ForEach ((icon) => Destroy (icon.gameObject));
+		abilityIcons.ForEach ((icon) => {
+			Destroy (icon.gameObject);
+			AbilityDeselected(abilityIcons.IndexOf(icon));
+		});
 		abilityIcons.Clear ();
 	}
 
@@ -67,13 +70,13 @@ public class GUIController : MonoBehaviour {
 
 	public void AbilitySelected(int abilityIndex) {
 		if (abilityIcons.Count > abilityIndex) {
-			abilityIcons [abilityIndex].GetComponent<Animator> ().SetTrigger ("active");
+			abilityIcons [abilityIndex].GetComponent<Animator> ().SetBool("active", true);
 		}
 	}
 
 	public void AbilityDeselected(int abilityIndex) {
 		if (abilityIcons.Count > abilityIndex) {
-			abilityIcons [abilityIndex].GetComponent<Animator> ().SetTrigger ("idle");
+			abilityIcons [abilityIndex].GetComponent<Animator> ().SetBool("active", false);
 		}
 	}
 

@@ -8,6 +8,7 @@ public class Engulf : BaseAbility {
 
 	public Engulf(List<EventAction> _eventActions) : base (_eventActions) {
 		range = 5;
+		icon = "abilityEngulfController";
 	}
 
 	public override void UseAbility (UnitController caster, Node target)
