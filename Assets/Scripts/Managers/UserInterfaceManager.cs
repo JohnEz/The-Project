@@ -30,12 +30,12 @@ public class UserInterfaceManager : MonoBehaviour {
 	}
 
 	public void SetShowingAbility(int abilityIndex) {
-		SetUnshowAbility ();
+		UnshowAbility ();
 		showingAbility = abilityIndex;
 		gUIController.AbilitySelected (abilityIndex);
 	}
 
-	public void SetUnshowAbility() {
+	public void UnshowAbility() {
 		if (isShowingAbility) {
 			gUIController.AbilityDeselected (showingAbility);
 			showingAbility = -1;
@@ -77,6 +77,18 @@ public class UserInterfaceManager : MonoBehaviour {
 
 	}
 
+	public void TileHovered(Node node, SquareTarget target) {
+		if (isShowingAbility && (target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL)) {
+			unitManager.HighlightEffectedTiles (node);
+		} else if (target == SquareTarget.MOVEMENT || target == SquareTarget.DASH) {
+			unitManager.ShowPath (node);
+		}
+	}
+
+	public void TileExit(Node node, SquareTarget target) {
+		unitManager.UnhiglightEffectedTiles ();
+	}
+
 	public void TileClicked(Node node, SquareTarget target) {
 
 		if (turnManager.CurrentPhase == TurnPhase.WAITING_FOR_INPUT && !turnManager.isAiTurn()) {
@@ -101,7 +113,7 @@ public class UserInterfaceManager : MonoBehaviour {
 
 	public void ClickedMovement(Node node) {
 		unitManager.MoveToTile (node);
-		SetUnshowAbility();
+		UnshowAbility();
 		DeselectUnit ();
 	}
 
@@ -145,7 +157,7 @@ public class UserInterfaceManager : MonoBehaviour {
 	public void ClickedAttack(Node node) {
 		if (unitManager.AttackTile (node)) {
 			DeselectUnit ();
-			SetUnshowAbility();
+			UnshowAbility();
 		}
 	}
 
@@ -153,7 +165,7 @@ public class UserInterfaceManager : MonoBehaviour {
 		if (!turnManager.isAiTurn ()) {
 			if (!ReselectUnit ()) {
 				SelectNextUnit ();
-				SetUnshowAbility();
+				UnshowAbility();
 			}
 		}
 	}
@@ -169,7 +181,7 @@ public class UserInterfaceManager : MonoBehaviour {
 	}
 
 	public void ShowMovement() {
-		SetUnshowAbility();
+		UnshowAbility();
 		unitManager.ShowActions ();
 	}
 

@@ -61,8 +61,10 @@ public class TileMap : MonoBehaviour {
 
 				if (tiles [i] == null) {
 					
-					GameObject baseNode = (GameObject)Instantiate (basicNode, pos, rot);
+					GameObject baseNode = Instantiate (basicNode, pos, rot);
 					baseNode.transform.parent = this.transform;
+
+					baseNode.GetComponentInChildren<TileHighlighter> ().Initialise ();
 
 					tiles [i] = baseNode.GetComponent<Node> ();
 					tiles [i].x = x;
@@ -83,8 +85,10 @@ public class TileMap : MonoBehaviour {
 
 					visual.GetComponent<SpriteRenderer> ().sortingOrder = level.layers [j].depth;
 
+					//this might not need to be a node if it just stores walkable
 					visual.GetComponent<Node> ().walkable = level.tileInfo [id].walkable;
 
+					//overriden is used for stairs, bridges etc.
 					if (!overriden [i]) {
 						if (level.tileInfo [id].overrideWalkability) {
 							overriden [i] = true;

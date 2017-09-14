@@ -4,6 +4,7 @@ using UnityEngine.EventSystems;
 using System.Collections.Generic;
 
 public enum SquareTarget {
+	UNDEFINED,
 	NONE,
 	MOVEMENT,
 	DASH,
@@ -13,6 +14,7 @@ public enum SquareTarget {
 
 public class TileHighlighter : MonoBehaviour {
 
+	public Sprite highlightSprite;
 	public Sprite highlightedSprite;
 	public Sprite hoverSprite;
 
@@ -28,16 +30,34 @@ public class TileHighlighter : MonoBehaviour {
 	float maxAlpha = 0.5f;
 	float minAlpha = 0.05f;
 
-	SquareTarget myTarget = SquareTarget.NONE;
+	public SquareTarget myTarget = SquareTarget.NONE;
+
+	bool effectedTile = false;
+
+	SpriteRenderer mySpriteRenderer;
 
 	// Use this for initialization
 	void Start () {
+		mySpriteRenderer = GetComponent<SpriteRenderer> ();
+	}
 
+	public void Initialise() {
+		mySpriteRenderer = GetComponent<SpriteRenderer> ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 	
+	}
+
+	public bool EffectedTile {
+		get { return effectedTile; }
+		set { 
+			if (!hovered) {
+				mySpriteRenderer.sprite = value ? highlightedSprite : highlightSprite;
+			}
+			effectedTile = value; 
+		}
 	}
 		
 	public void OnMouseUp ()
@@ -49,21 +69,23 @@ public class TileHighlighter : MonoBehaviour {
 	}
 
 	public void OnMouseEnter() {
-		SpriteRenderer mySprite = GetComponent<SpriteRenderer> ();
-		mySprite.sprite = hoverSprite;
+		mySpriteRenderer.sprite = hoverSprite;
 		if (!showingHighlight) {
 			updateAlpha (maxAlpha);
 		}
 		hovered = true;
+		Node myNode = GetComponentInParent<Node> ();
+		GetComponentInParent<UserInterfaceManager> ().TileHovered (myNode, myTarget);
 	}
 
 	public void OnMouseExit() {
-		SpriteRenderer mySprite = GetComponent<SpriteRenderer> ();
-		mySprite.sprite = highlightedSprite;
+		mySpriteRenderer.sprite = EffectedTile ? highlightedSprite : highlightSprite;
 		if (!showingHighlight) {
 			updateAlpha (minAlpha);
 		}
 		hovered = false;
+		Node myNode = GetComponentInParent<Node> ();
+		GetComponentInParent<UserInterfaceManager> ().TileExit (myNode, myTarget);
 	}
 
 	public void showHighlight(bool show) {
@@ -78,37 +100,34 @@ public class TileHighlighter : MonoBehaviour {
 	}
 
 	public void updateAlpha(float alpha) {
-		SpriteRenderer mySprite = GetComponent<SpriteRenderer> ();
-		Color newColour = mySprite.color;
+		Color newColour = mySpriteRenderer.color;
 
 		newColour.a = alpha;
 
-		mySprite.color = newColour;
+		mySpriteRenderer.color = newColour;
 	}
 
 	public void highlight(SquareTarget targetType) {
-		SpriteRenderer mySprite = GetComponent<SpriteRenderer> ();
-
-		float startAlpha = mySprite.color.a;
+		float startAlpha = mySpriteRenderer.color.a;
 
 		myTarget = targetType;
 
 		switch (targetType) {
 		case SquareTarget.MOVEMENT:
-			mySprite.color = blue;
+			mySpriteRenderer.color = blue;
 			break;
 		case SquareTarget.DASH:
-			mySprite.color = yellow;
+			mySpriteRenderer.color = yellow;
 			break;
 		case SquareTarget.HELPFULL:
-			mySprite.color = green;
+			mySpriteRenderer.color = green;
 			break;
 		case SquareTarget.ATTACK:
-			mySprite.color = red;
+			mySpriteRenderer.color = red;
 			break;
 		case SquareTarget.NONE:
 		default: 
-			mySprite.color = white;
+			mySpriteRenderer.color = white;
 			break;
 		}
 

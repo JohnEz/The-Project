@@ -102,7 +102,7 @@ public class UnitManager : MonoBehaviour {
 			selectedUnit = null;
 			activeAbility = null;
 			attackableTiles = new List<Node> ();
-			myMap.highlighter.UnhighlightTiles ();
+			myMap.highlighter.UnhighlightAllTiles ();
 		}
 	}
 
@@ -113,7 +113,7 @@ public class UnitManager : MonoBehaviour {
 	public void ShowActions(UnitController unit = null) {
 		unit = unit == null ? selectedUnit : unit;
 
-		myMap.highlighter.UnhighlightTiles ();
+		myMap.highlighter.UnhighlightAllTiles ();
 		myMap.highlighter.HighlightTile (unit.myNode, SquareTarget.NONE);
 
 		UnitClass unitClass = unit.GetComponent<UnitClass>();
@@ -147,12 +147,29 @@ public class UnitManager : MonoBehaviour {
 
 		activeAbility = unitClass.abilities [ability];
 		attackableTiles = myMap.pathfinder.FindAttackableTiles (selectedUnit.myNode, activeAbility);
-		myMap.highlighter.UnhighlightTiles ();
+		myMap.highlighter.UnhighlightAllTiles ();
 		myMap.highlighter.HighlightTile (selectedUnit.myNode, SquareTarget.NONE);
 		SquareTarget targetType = activeAbility.targets == TargetType.ALLY ? SquareTarget.HELPFULL : SquareTarget.ATTACK;
 		myMap.highlighter.HighlightTiles (attackableTiles, targetType);
 
 		return true;
+	}
+
+	public void HighlightEffectedTiles(Node target) {
+		if (attackableTiles.Contains (target)) {
+			List<Node> effectedNodes = GetTargetNodes (activeAbility, target);
+			SquareTarget targetType = activeAbility.targets == TargetType.ALLY ? SquareTarget.HELPFULL : SquareTarget.ATTACK;
+			myMap.highlighter.SetEffectedTiles (effectedNodes, targetType);
+		}
+	}
+
+	public void UnhiglightEffectedTiles() {
+		myMap.highlighter.ClearEffectedTiles ();
+	}
+
+	public void ShowPath(Node targetNode) {
+		MovementPath movementPath = myMap.pathfinder.getPathFromTile (targetNode);
+		myMap.highlighter.SetEffectedTiles (movementPath.path);
 	}
 
 	public bool AttackTile(Node targetNode) {
