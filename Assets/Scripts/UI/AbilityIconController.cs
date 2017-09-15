@@ -12,13 +12,7 @@ public class AbilityIconController : MonoBehaviour, IPointerClickHandler {
 		index = _index;
 	}
 
-	void OnMouseUp() {
-		Debug.Log ("Clicked: " + index.ToString ());
-		uIManager.ShowAbility (index);
-	}
-
 	public void OnPointerClick(PointerEventData e) {
-		Debug.Log ("Clicked: " + index.ToString ());
 		uIManager.ShowAbility (index);
 	}
 

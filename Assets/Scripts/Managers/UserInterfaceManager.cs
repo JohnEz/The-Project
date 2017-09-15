@@ -83,7 +83,7 @@ public class UserInterfaceManager : MonoBehaviour {
 	public void TileHovered(Node node, SquareTarget target) {
 		if (isShowingAbility && (target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL)) {
 			unitManager.HighlightEffectedTiles (node);
-		} else if (target == SquareTarget.MOVEMENT || target == SquareTarget.DASH) {
+		} else if (target == SquareTarget.MOVEMENT || target == SquareTarget.DASH || ((target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL) && node.previousMoveNode != null)) {
 			unitManager.ShowPath (node);
 		}
 	}

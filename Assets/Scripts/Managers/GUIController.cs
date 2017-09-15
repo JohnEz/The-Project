@@ -88,7 +88,7 @@ public class GUIController : MonoBehaviour {
 		Vector3 newPosition = newAbilityIcon.transform.position;
 		newAbilityIcon.transform.SetParent(transform, false);
 		newPosition.x = -35 + (abilityIcons.Count * 70);
-		newAbilityIcon.transform.localPosition = newPosition;
+		newAbilityIcon.GetComponent<RectTransform> ().anchoredPosition = newPosition;
 		newAbilityIcon.GetComponent<AbilityIconController> ().Initialize (abilityIcons.Count, uIManager);
 		abilityIcons.Add(newAbilityIcon);
 	}
