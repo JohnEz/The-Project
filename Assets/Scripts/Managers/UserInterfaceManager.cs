@@ -42,25 +42,28 @@ public class UserInterfaceManager : MonoBehaviour {
 		}
 	}
 
+	public void ShowAbility(int index) {
+		if (unitManager.ShowAbility (index)) {
+			SetShowingAbility(index);
+		}
+	}
+
 	void UserControls() {
 		if (turnManager.CurrentPhase == TurnPhase.WAITING_FOR_INPUT) {
 			if (Input.GetKeyUp ("1")) {
-				if (unitManager.ShowAbility (0)) {
-					SetShowingAbility(0);
-				}
+				ShowAbility (0);
 			}
 
 			if (Input.GetKeyUp ("2")) {
-				if (unitManager.ShowAbility (1)) {
-					SetShowingAbility(1);
-				}
+				ShowAbility (1);
 			}
 
 			if (Input.GetKeyUp ("space")) {
 				turnManager.EndTurn ();
 			}
 
-			if (Input.GetKeyUp (KeyCode.Escape)) {
+			//Cancel (right click)
+			if (Input.GetKeyUp (KeyCode.Escape) || Input.GetMouseButtonUp(1)) {
 				if (isShowingAbility) {
 					ShowMovement ();
 				}

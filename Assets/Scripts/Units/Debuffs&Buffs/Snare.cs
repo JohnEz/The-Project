@@ -7,6 +7,7 @@ public class Snare : Buff {
 		name = "Snare";
 		percentMod [(int)Stats.SPEED] = 0;
 		isDebuff = true;
+		icon = "buffSnare";
 	}
 
 }

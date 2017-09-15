@@ -2,17 +2,20 @@
 using System.Collections;
 using UnityEngine.EventSystems;
 
-public class BaseTile : MonoBehaviour {
+public class BaseTile : MonoBehaviour, 
+IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler {
 
-	void OnMouseUp() {
-		GetComponentInChildren<TileHighlighter> ().OnMouseUp();
+	public void OnPointerClick(PointerEventData eventData) {
+		if (eventData.button == PointerEventData.InputButton.Left) {
+			GetComponentInChildren<TileHighlighter> ().OnMouseUp ();
+		}
 	}
 
-	void OnMouseEnter() {
+	public void OnPointerEnter(PointerEventData eventData) {
 		GetComponentInChildren<TileHighlighter> ().OnMouseEnter();
 	}
 
-	void OnMouseExit() {
+	public void OnPointerExit(PointerEventData eventData) {
 		GetComponentInChildren<TileHighlighter> ().OnMouseExit();
 	}
 }

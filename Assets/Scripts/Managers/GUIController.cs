@@ -12,6 +12,7 @@ public class GUIController : MonoBehaviour {
 	public GameObject abilityIconPrefab;
 
 	TurnManager turnManager;
+	UserInterfaceManager uIManager;
 
 	List<GameObject> abilityIcons = new List<GameObject>();
 	Dictionary<string, RuntimeAnimatorController> abilityIconControllers = new Dictionary<string, RuntimeAnimatorController>();
@@ -19,6 +20,7 @@ public class GUIController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		turnManager = GetComponentInParent<TurnManager> ();
+		uIManager = GetComponentInParent<UserInterfaceManager> ();
 	}
 
 	// Update is called once per frame
@@ -87,6 +89,7 @@ public class GUIController : MonoBehaviour {
 		newAbilityIcon.transform.SetParent(transform, false);
 		newPosition.x = -35 + (abilityIcons.Count * 70);
 		newAbilityIcon.transform.localPosition = newPosition;
+		newAbilityIcon.GetComponent<AbilityIconController> ().Initialize (abilityIcons.Count, uIManager);
 		abilityIcons.Add(newAbilityIcon);
 	}
 
