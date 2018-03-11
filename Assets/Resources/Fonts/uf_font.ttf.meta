@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 59cc942cca830ab499ce66d2eb18c95e
+timeCreated: 1520792335
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: BigNoodleTitlingCyr
+  fontNames:
+  - BigNoodleTitlingCyr
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

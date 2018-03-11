@@ -17,10 +17,13 @@ public class GUIController : MonoBehaviour {
 	List<GameObject> abilityIcons = new List<GameObject>();
 	Dictionary<string, RuntimeAnimatorController> abilityIconControllers = new Dictionary<string, RuntimeAnimatorController>();
 
+	Text objectivesBody;
+
 	// Use this for initialization
 	void Start () {
 		turnManager = GetComponentInParent<TurnManager> ();
 		uIManager = GetComponentInParent<UserInterfaceManager> ();
+		objectivesBody = transform.FindChild ("ObjectivesBody").GetComponent<Text> ();
 	}
 
 	// Update is called once per frame
@@ -34,7 +37,7 @@ public class GUIController : MonoBehaviour {
 		}
 	}
 
-	public void StartNewTurn(bool ally) {
+	public void StartNewTurn(bool ally, List<Objective> objectives) {
 		showingTurn = true;
 		turnText = (GameObject)Instantiate (turnTextPrefab, turnTextPrefab.transform.position, Quaternion.identity);
 		turnText.transform.SetParent (transform);
@@ -42,6 +45,8 @@ public class GUIController : MonoBehaviour {
 		turnText.transform.localScale = new Vector3 (1, 1, 1);
 		turnText.transform.FindChild("AllyTurnImage").gameObject.SetActive(ally);
 		turnText.transform.FindChild("EnemyTurnImage").gameObject.SetActive(!ally);
+
+		objectivesBody.text = CreateObjectiveText (objectives);
 
 		//TODO THIS SHOULD FIND THE LENGTH OF THE ANIMATION AND NOT BE HARD CODED BUT IM TIRED
 		Destroy (turnText, 1.917f);
@@ -99,5 +104,13 @@ public class GUIController : MonoBehaviour {
 		}
 
 		return abilityIconControllers [controller];
+	}
+
+	string CreateObjectiveText(List<Objective> objectives) {
+		string constructedObjectiveText = "";
+		foreach (Objective objective in objectives) {
+			constructedObjectiveText += objective.text + "\n";
+		}
+		return constructedObjectiveText;
 	}
 }

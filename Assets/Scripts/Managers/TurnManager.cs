@@ -25,6 +25,7 @@ public class TurnManager : MonoBehaviour {
 	AIManager aiManager;
 	CameraManager cameraManager;
 	TileMap map;
+	ObjectiveManager objectiveManager;
 
 	TurnPhase currentPhase = TurnPhase.TURN_STARTING;
 
@@ -46,6 +47,9 @@ public class TurnManager : MonoBehaviour {
 		aiManager.Initialise (map);
 		cameraManager = GetComponent<CameraManager> ();
 		cameraManager.Initialise ();
+		objectiveManager = GetComponent<ObjectiveManager> ();
+		objectiveManager.Initialise ();
+		AddObjectives ();
 		StartNewTurn ();
 	}
 	
@@ -61,6 +65,7 @@ public class TurnManager : MonoBehaviour {
 		}
 	}
 
+	//TEMP
 	void AddPlayers() {
 		players = new List<Player> ();
 
@@ -80,6 +85,21 @@ public class TurnManager : MonoBehaviour {
 
 	}
 
+	//TEMP
+	void AddObjectives() {
+		Objective objective = new Objective ();
+		objective.optional = false;
+		objective.text = "Kill all enemies!";
+		objective.type = ObjectiveType.ANNIHILATION;
+		objectiveManager.AddObjective (players[0], objective);
+
+		Objective objective2 = new Objective ();
+		objective2.optional = false;
+		objective2.text = "Kill all enemies!";
+		objective2.type = ObjectiveType.ANNIHILATION;
+		objectiveManager.AddObjective (players[1], objective2);
+	}
+
 	public void StartNewTurn() {
 		ChangeState(TurnPhase.TURN_STARTING);
 		playersTurn++;
@@ -87,7 +107,7 @@ public class TurnManager : MonoBehaviour {
 		unitManager.StartTurn (playersTurn);
 		bool alliedTurn = !isAiTurn();
 
-		gUIController.StartNewTurn (alliedTurn);
+		gUIController.StartNewTurn (alliedTurn, objectiveManager.getObjectives(players[playersTurn]));
 
 		if (players [playersTurn].ai) {
 			aiManager.NewTurn (playersTurn);
@@ -99,9 +119,13 @@ public class TurnManager : MonoBehaviour {
 	public void EndTurn() {
 		ChangeState(TurnPhase.TURN_ENDING);
 		unitManager.DeselectUnit();
-		unitManager.EndTurn (playersTurn);
-		StartNewTurn ();
-		uIManager.EndTurn ();
+		if (objectiveManager.CheckObjectives (players [playersTurn])) {
+			Application.Quit ();
+		} else {
+			unitManager.EndTurn (playersTurn);
+			StartNewTurn ();
+			uIManager.EndTurn ();
+		}
 	}
 
 	public TurnPhase CurrentPhase {
