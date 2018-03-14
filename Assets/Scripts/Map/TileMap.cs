@@ -153,6 +153,10 @@ public class TileMap : MonoBehaviour {
 		return tiles [y * mapWidth + x];
 	}
 
+	public Vector3 getPositionOfNode(Node targetNode) {
+		return targetNode.transform.position;
+	}
+
 	public Vector3 getPositionOfNode(int x, int y) {
 		return getNode(x, y).transform.position;
 	}

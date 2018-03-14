@@ -22,4 +22,8 @@ public class CameraManager : MonoBehaviour {
 	void Update () {
 		
 	}
+
+	public void MoveToLocation(Vector2 location) {
+		cam.MoveToTarget (location);
+	}
 }

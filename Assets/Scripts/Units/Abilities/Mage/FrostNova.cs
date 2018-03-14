@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class FrostNova : BaseAbility {
 
-	int baseDamage = 3;
+	int baseDamage = 4;
 
 	GameObject persistentSnareFxPrefab;
 
@@ -12,6 +12,7 @@ public class FrostNova : BaseAbility {
 		range = 5;
 		areaOfEffect = AreaOfEffect.CIRCLE;
 		aoeRange = 2;
+		maxCooldown = 3;
 		tileTarget = TileTarget.TILE;
 		persistentSnareFxPrefab = snareFx;
 		icon = "abilityFrostNovaController";

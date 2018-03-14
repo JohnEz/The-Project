@@ -114,6 +114,8 @@ public class TurnManager : MonoBehaviour {
 		}
 
 		uIManager.StartTurn ();
+
+		cameraManager.MoveToLocation (map.getPositionOfNode(unitManager.SelectedUnit.myNode));
 	}
 
 	public void EndTurn() {

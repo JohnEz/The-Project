@@ -61,7 +61,7 @@ public class CameraController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		UpdateMovement ();
-		UpdateZoom ();
+		//UpdateZoom ();
 		ClampBounds ();
 	}
 
@@ -134,8 +134,13 @@ public class CameraController : MonoBehaviour {
 
 
 	public void MoveToTarget(Vector3 pos) {
+		MoveToTarget (new Vector2 (pos.x, pos.y));
+	}
+
+	public void MoveToTarget(Vector2 pos) {
 		movingToDestination = true;
-		targetLocation = new Vector3 (pos.x, pos.y, transform.position.z);
+		Vector3 clampedTarget = GetClampedPosition (pos);
+		targetLocation = new Vector3(RoundToNearestPixel(clampedTarget.x, GetComponent<Camera>()), RoundToNearestPixel(clampedTarget.y, GetComponent<Camera>()), transform.position.z);
 	}
 
 	public static float RoundToNearestPixel(float unityUnits, Camera viewingCamera)
@@ -147,9 +152,13 @@ public class CameraController : MonoBehaviour {
 	}
 
 	public void ClampBounds() {
-		Vector3 clampedPosition = transform.position;
+		transform.position = GetClampedPosition(transform.position);
+	}
+
+	public Vector3 GetClampedPosition(Vector3 targetPosition) {
+		Vector3 clampedPosition = targetPosition;
 		clampedPosition.x = Mathf.Clamp (clampedPosition.x, minX, maxX);
 		clampedPosition.y = Mathf.Clamp (clampedPosition.y, minY, maxY);
-		transform.position = clampedPosition;
+		return clampedPosition;
 	}
 }

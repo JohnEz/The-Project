@@ -106,6 +106,10 @@ public class UnitManager : MonoBehaviour {
 		}
 	}
 
+	public UnitController SelectedUnit {
+		get { return selectedUnit; }
+	}
+
 	public ReachableTiles FindReachableTiles(UnitController unit) {
 		return myMap.pathfinder.findReachableTiles (unit.myNode, unit.myStats.Speed, unit.myStats.WalkingType, unit.myPlayer.faction);
 	}

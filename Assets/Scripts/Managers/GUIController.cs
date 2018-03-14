@@ -94,7 +94,7 @@ public class GUIController : MonoBehaviour {
 		newAbilityIcon.transform.SetParent(transform, false);
 		newPosition.x = -35 + (abilityIcons.Count * 70);
 		newAbilityIcon.GetComponent<RectTransform> ().anchoredPosition = newPosition;
-		newAbilityIcon.GetComponent<AbilityIconController> ().Initialize (abilityIcons.Count, uIManager);
+		newAbilityIcon.GetComponent<AbilityIconController> ().Initialize (abilityIcons.Count, ability, uIManager);
 		abilityIcons.Add(newAbilityIcon);
 	}
 

@@ -4,10 +4,13 @@ using System.Collections.Generic;
 
 public class Rally : BaseAbility {
 
+	int buffDuration = 3;
+
 	public Rally(List<EventAction> _eventActions) : base (_eventActions) {
 		targets = TargetType.ALLY;
 		areaOfEffect = AreaOfEffect.AURA;
 		tileTarget = TileTarget.TILE;
+		maxCooldown = 3;
 		aoeRange = 4;
 		icon = "abilityRallyController";
 	}
@@ -16,8 +19,8 @@ public class Rally : BaseAbility {
 	{
 		if (CanHitUnit(caster, target)) {
 			caster.AddAbilityTarget (target.myUnit, () => {
-				target.myUnit.ApplyBuff (new Empower (3));
-				target.myUnit.ApplyBuff (new Momentum (3));
+				target.myUnit.ApplyBuff (new Empower (buffDuration));
+				target.myUnit.ApplyBuff (new Momentum (buffDuration));
 			});
 		}
 	}

@@ -101,8 +101,8 @@ public struct EventAction {
 
 public class BaseAbility {
 
-	public int maxCooldown = 1;
-	public int cooldown;
+	public int maxCooldown = 0;
+	public int cooldown = 0;
 
 	public int range = 1;
 	public int minRange = 1;
@@ -121,7 +121,19 @@ public class BaseAbility {
 		eventActions = _eventActions;
 	}
 
+	public bool IsOnCooldown() {
+		return cooldown > 0;
+	}
+
+	public void NewTurn() {
+		if (cooldown > 0) {
+			cooldown--;
+		}
+	}
+
 	public virtual void UseAbility(UnitController caster, Node target) {
+		cooldown = maxCooldown;
+
 		eventActions.ForEach ((eventAction) => {
 			if (eventAction.eventTrigger == Event.CAST_START) {
 				eventAction.action(caster, target.myUnit, target);
@@ -129,16 +141,17 @@ public class BaseAbility {
 		});
 	}
 
-	public virtual void UseAbility(UnitController caster, List<Node> targets, Node clickedNode) {
+	public virtual void UseAbility(UnitController caster, List<Node> targets, Node target) {
+		cooldown = maxCooldown;
 
 		eventActions.ForEach ((eventAction) => {
 			if (eventAction.eventTrigger == Event.CAST_START) {
 				if (eventAction.eventTarget == EventTarget.CASTER || eventAction.eventTarget == EventTarget.TARGETEDTILE) {
-					eventAction.action(caster, null, clickedNode);
+					eventAction.action(caster, null, target);
 				} else if (eventAction.eventTarget == EventTarget.TARGETUNIT) {
 					targets.ForEach((targetNode) => {
 						if (CanHitUnit(caster, targetNode)) {
-							eventAction.action(caster, targetNode.myUnit, clickedNode);
+							eventAction.action(caster, targetNode.myUnit, target);
 						}
 					});
 				}

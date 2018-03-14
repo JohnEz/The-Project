@@ -8,6 +8,7 @@ public class Cauterize : BaseAbility {
 
 	public Cauterize(List<EventAction> _eventActions) : base (_eventActions) {
 		range = 4;
+		maxCooldown = 1;
 		targets = TargetType.ALLY;
 		icon = "abilityEngulfController";
 	}

@@ -91,6 +91,7 @@ public class UnitController : MonoBehaviour {
 		//TODO i dont like the fact that unitstats cant set action points because of ui
 		ActionPoints = myStats.MaxActionPoints;
 		myStats.NewTurn ();
+		myClass.NewTurn ();
 	}
 
 	public void EndTurn() {

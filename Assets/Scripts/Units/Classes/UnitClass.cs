@@ -14,11 +14,13 @@ public class UnitClass : MonoBehaviour {
 
 	}
 
-	public bool CanUseAbility(int abil) {
-		if (abil >= 0 && abil < abilities.Count) {
-			return true;
+	public void NewTurn () {
+		foreach (BaseAbility ability in abilities) {
+			ability.NewTurn ();
 		}
+	}
 
-		return false;
+	public bool CanUseAbility(int abil) {
+		return abil >= 0 && abil < abilities.Count && !abilities [abil].IsOnCooldown ();
 	}
 }
