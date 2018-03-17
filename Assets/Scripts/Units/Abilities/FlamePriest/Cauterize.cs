@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class Cauterize : BaseAbility {
 
-	int baseHealing = 8;
+	int baseHealing = 12;
 
 	public Cauterize(List<EventAction> _eventActions) : base (_eventActions) {
 		range = 4;
@@ -16,7 +16,10 @@ public class Cauterize : BaseAbility {
 	public override void UseAbility (UnitController caster, Node target)
 	{
 		base.UseAbility (caster, target);
-		AddAbilityTarget (caster, target.myUnit, () => {caster.GiveHealingTo(target.myUnit, baseHealing);});
+		AddAbilityTarget (caster, target.myUnit, () => {
+			caster.GiveHealingTo(target.myUnit, baseHealing);
+			target.myUnit.ApplyBuff(new Burn(3, caster.myStats.Power));
+		});
 	}
 
 }

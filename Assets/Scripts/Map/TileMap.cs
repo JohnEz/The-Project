@@ -35,6 +35,7 @@ public class TileMap : MonoBehaviour {
 
 	public void Initialise() {
 		pathfinder = GetComponent<Pathfinder> ();
+		pathfinder.Initialise ();
 		highlighter = GetComponent<HighlightManager> ();
 		LevelLoader lLoader = GetComponent<LevelLoader> ();
 		lLoader.Initialise ();

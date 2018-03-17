@@ -6,10 +6,13 @@ using System.Linq;
 public class UnitManager : MonoBehaviour {
 
 	List<UnitController> units;
+	List<UnitController> unitsToRemove;
 
 	public GameObject[] unitPrefabs;
 
 	TileMap myMap;
+
+	GUIController guiController;
 
 	//currentSelect
 	UnitController selectedUnit = null;
@@ -24,7 +27,9 @@ public class UnitManager : MonoBehaviour {
 	}
 
 	public void Initialise(List<Player> players, TileMap map) {
+		guiController = GetComponentInChildren<GUIController> ();
 		units = new List<UnitController> ();
+		unitsToRemove = new List<UnitController> ();
 		myMap = map;
 		SpawnUnit (5, players[0], 3, 8);
 		SpawnUnit (3, players[0], 3, 9);
@@ -59,9 +64,17 @@ public class UnitManager : MonoBehaviour {
 		units.Add (unitController);
 	}
 
-	public void RemoveUnit(UnitController unit) {
+	public void AddUnitToRemove(UnitController unit) {
 		unit.myNode.myUnit = null;
-		units.Remove (unit);
+		unitsToRemove.Add (unit);
+	}
+
+	public void RemoveUnits() {
+		unitsToRemove.ForEach ((unit) => {
+			units.Remove(unit);
+		});
+
+		unitsToRemove.Clear ();
 	}
 
 	public void StartTurn(int playersTurn) {
@@ -70,6 +83,7 @@ public class UnitManager : MonoBehaviour {
 				unit.NewTurn ();
 			}
 		}
+		RemoveUnits ();
 	}
 
 	public void EndTurn(int playersTurn) {
@@ -133,23 +147,30 @@ public class UnitManager : MonoBehaviour {
 		UnitClass unitClass;
 
 		if (selectedUnit == null) {
-			//TODO add error messages
+			guiController.ShowErrorMessage ("No unit selected");
 			return false;
 		}
 
 		if (selectedUnit.myStats.ActionPoints <= 0) {
-			//TODO add error messages
+			guiController.ShowErrorMessage ("Not enough action points");
 			return false;
 		}
 
 		unitClass = selectedUnit.GetComponent<UnitClass> ();
 
-		if (!unitClass.CanUseAbility (ability)) {
-			//TODO add error messages
+		if (!unitClass.HasAbility (ability)) {
+			guiController.ShowErrorMessage ("ERROR: ABILITY AT INDEX " + ability + " DOES NOT EXIST");
 			return false;
 		}
 
 		activeAbility = unitClass.abilities [ability];
+
+		if (activeAbility.IsOnCooldown ()) {
+			guiController.ShowErrorMessage ("That ability is still on cooldown");
+			return false;
+		}
+
+		
 		attackableTiles = myMap.pathfinder.FindAttackableTiles (selectedUnit.myNode, activeAbility);
 		myMap.highlighter.UnhighlightAllTiles ();
 		myMap.highlighter.HighlightTile (selectedUnit.myNode, SquareTarget.NONE);
@@ -240,10 +261,11 @@ public class UnitManager : MonoBehaviour {
 	public void UnitFinishedAttacking() {
 		TurnManager turnManager = GetComponent<TurnManager> ();
 		turnManager.FinishedAttacking ();
+		RemoveUnits ();
 	}
 
 	public void UnitDied(UnitController unit) {
-		RemoveUnit (unit);
+		AddUnitToRemove (unit);
 	}
 
 	public bool PlayerOutOfActions(int playerId) {

@@ -90,6 +90,10 @@ public class UnitController : MonoBehaviour {
 	public void NewTurn() {
 		//TODO i dont like the fact that unitstats cant set action points because of ui
 		ActionPoints = myStats.MaxActionPoints;
+		myStats.ApplyStartingTurnBuffs (
+			(damage) => {this.TakeDamage(null, damage);}, 
+			(healing) => {this.TakeHealing(null, healing);}
+		);
 		myStats.NewTurn ();
 		myClass.NewTurn ();
 	}

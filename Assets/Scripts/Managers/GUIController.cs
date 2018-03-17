@@ -10,6 +10,7 @@ public class GUIController : MonoBehaviour {
 	GameObject turnText;
 
 	public GameObject abilityIconPrefab;
+	public GameObject errorMessagePrefab;
 
 	TurnManager turnManager;
 	UserInterfaceManager uIManager;
@@ -23,12 +24,11 @@ public class GUIController : MonoBehaviour {
 	void Start () {
 		turnManager = GetComponentInParent<TurnManager> ();
 		uIManager = GetComponentInParent<UserInterfaceManager> ();
-		objectivesBody = transform.FindChild ("ObjectivesBody").GetComponent<Text> ();
 	}
 
 	// Update is called once per frame
 	void Update () {
-		//TODO this should probably be some sort of timer so there is less a chance the user can get stuck
+		//TODO this should probably be some sort of timer so there is less of a chance the user can get stuck
 		if (showingTurn) {
 			if (turnText == null) {
 				turnManager.FinishStartingTurn ();
@@ -46,6 +46,9 @@ public class GUIController : MonoBehaviour {
 		turnText.transform.FindChild("AllyTurnImage").gameObject.SetActive(ally);
 		turnText.transform.FindChild("EnemyTurnImage").gameObject.SetActive(!ally);
 
+		if (objectivesBody == null) {
+			objectivesBody = transform.FindChild ("ObjectivesBody").GetComponent<Text> ();
+		}
 		objectivesBody.text = CreateObjectiveText (objectives);
 
 		//TODO THIS SHOULD FIND THE LENGTH OF THE ANIMATION AND NOT BE HARD CODED BUT IM TIRED
@@ -112,5 +115,12 @@ public class GUIController : MonoBehaviour {
 			constructedObjectiveText += objective.text + "\n";
 		}
 		return constructedObjectiveText;
+	}
+
+	public void ShowErrorMessage(string message) {
+		GameObject newDamageText = Instantiate (errorMessagePrefab);
+		newDamageText.GetComponent<Text> ().text = message;
+		newDamageText.GetComponent<Text> ().color = new Color(0.95f, 0.25f, 0.25f);
+		newDamageText.transform.SetParent(this.transform);
 	}
 }

@@ -20,7 +20,7 @@ public class UnitClass : MonoBehaviour {
 		}
 	}
 
-	public bool CanUseAbility(int abil) {
-		return abil >= 0 && abil < abilities.Count && !abilities [abil].IsOnCooldown ();
+	public bool HasAbility(int abil) {
+		return abil >= 0 && abil < abilities.Count;
 	}
 }

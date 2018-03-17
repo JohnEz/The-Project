@@ -12,7 +12,8 @@ public enum Stats {
 	BLOCK,
 	ARMOUR,
 	AP,
-	HEALTH,
+	DAMAGE,
+	HEALING,
 	MANA
 }
 
@@ -134,6 +135,24 @@ public class UnitStats : MonoBehaviour {
 
 	public Walkable WalkingType {
 		get { return walkingType; }
+	}
+
+	public void ApplyStartingTurnBuffs(System.Action<int> takeDamage, System.Action<int> takeHealing) {
+		int damage = 0;
+		int healing = 0;
+
+		Buffs.ForEach ((buff) => {
+			damage += buff.GetFlatMod((int)Stats.DAMAGE);
+			healing += buff.GetFlatMod((int)Stats.HEALING);
+		});
+
+		if (damage > 0) {
+			takeDamage (damage);
+		}
+
+		if (healing > 0) {
+			takeHealing (healing);
+		}
 	}
 
 	public void NewTurn() {

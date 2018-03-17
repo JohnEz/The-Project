@@ -25,7 +25,7 @@ public class Pathfinder : MonoBehaviour {
 	TileMap map;
 
 	// Use this for initialization
-	void Start () {
+	public void Initialise () {
 		map = GetComponent<TileMap> ();
 	}
 	
