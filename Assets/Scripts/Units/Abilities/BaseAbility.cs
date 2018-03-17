@@ -117,6 +117,8 @@ public class BaseAbility {
 
 	public string icon = "abilityHolyStrikeController";
 
+	bool canTargetSelf = false;
+
 	public BaseAbility(List<EventAction> _eventActions) {
 		eventActions = _eventActions;
 	}
@@ -169,21 +171,24 @@ public class BaseAbility {
 	}
 
 	public bool CanHitUnit(UnitController caster, Node targetNode) {
-		//TODO this is dumb and needs rewriting
 
-		if (targets == TargetType.ENEMY & (targetNode.myUnit == null || targetNode.myUnit.myPlayer.faction == caster.myPlayer.faction)) {
+		if (caster.myNode == targetNode && !CanTargetSelf) {
 			return false;
 		}
 
-		if (targets == TargetType.ALLY & (targetNode.myUnit == null || targetNode.myUnit.myPlayer.faction != caster.myPlayer.faction)) {
-			return false;
-		}
+		bool hasTarget = targetNode.myUnit != null;
+		bool isEnemy = hasTarget && targetNode.myUnit.myPlayer.faction != caster.myPlayer.faction;
 
-		if (targets == TargetType.UNIT & targetNode.myUnit == null) {
-			return false;
+		switch (targets) {
+			case TargetType.ENEMY:
+				return isEnemy;
+			case TargetType.ALLY: 
+				return hasTarget && !isEnemy;
+			case TargetType.UNIT:
+				return hasTarget;
+			default:
+				return false;
 		}
-
-		return true;
 	}
 
 	public void AddAbilityTarget(UnitController caster, UnitController target, System.Action ability) {
@@ -198,6 +203,11 @@ public class BaseAbility {
 	public int MaxCooldown {
 		get { return maxCooldown; }
 		set { maxCooldown = value; }
+	}
+
+	public bool CanTargetSelf {
+		get { return canTargetSelf; }
+		set { canTargetSelf = value; }
 	}
 
 }

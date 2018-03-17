@@ -239,13 +239,19 @@ public class Pathfinder : MonoBehaviour {
 
 	List<Node> FindSingleTargetTiles(Node node, BaseAbility ability) {
 		List<Node> reachableTiles = findReachableTiles (node, ability.range, Walkable.Flying, -1).basic.Keys.ToList();
-
+		if (ability.CanTargetSelf) {
+			reachableTiles.Insert (0, node);
+		}
 		//TODO check to see if the tile is in line of sight
 		return reachableTiles;
 	}
 
 	List<Node> FindCircleTargetTiles(Node node, BaseAbility ability) {
-		return findReachableTiles (node, ability.range, Walkable.Flying, -1).basic.Keys.ToList();
+		List<Node> reachableTiles = findReachableTiles (node, ability.range, Walkable.Flying, -1).basic.Keys.ToList();
+		if (ability.CanTargetSelf) {
+			reachableTiles.Insert (0, node);
+		}
+		return reachableTiles;
 	}
 
 	public List<Node> FindAOEHitTiles(Node node, BaseAbility ability) {

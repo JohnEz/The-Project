@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class FrostNova : BaseAbility {
 
-	int baseDamage = 4;
+	float damageMod = 0.33f;
 
 	GameObject persistentSnareFxPrefab;
 
@@ -22,7 +22,7 @@ public class FrostNova : BaseAbility {
 	{
 		if (CanHitUnit(caster, target)) {
 			AddAbilityTarget (caster, target.myUnit, () => {
-				bool targetStillAlive = caster.DealDamageTo(target.myUnit, baseDamage);
+				bool targetStillAlive = caster.DealDamageTo(target.myUnit, damageMod);
 				if (targetStillAlive) {
 					target.myUnit.ApplyBuff (new Snare (2, persistentSnareFxPrefab));
 				}

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class SacredGround : BaseAbility {
 
-	int baseHealing = 3;
+	float healingMod = 0.5f;
 
 	public SacredGround(List<EventAction> _eventActions) : base (_eventActions) {
 		targets = TargetType.ALLY;
@@ -18,7 +18,7 @@ public class SacredGround : BaseAbility {
 	{
 		if (CanHitUnit(caster, target)) {
 			AddAbilityTarget (caster, target.myUnit, () => {target.myUnit.Dispell(true);});
-			AddAbilityTarget (caster, target.myUnit, () => {caster.GiveHealingTo(target.myUnit, baseHealing);});
+			AddAbilityTarget (caster, target.myUnit, () => {caster.GiveHealingTo(target.myUnit, healingMod);});
 		}
 	}
 

@@ -312,20 +312,17 @@ public class UnitController : MonoBehaviour {
 		return isStillAlive;
 	}
 
-	public bool DealDamageTo(UnitController target, int damage) {
+	public bool DealDamageTo(UnitController target, float damage) {
 
-		int endDamage = damage;
-
-		//add power to attack
-		endDamage += myStats.Power;
+		float endDamage = myStats.Power * damage;
 
 		//check to see if damage is a crit
 		float critRoll = Random.value * 100;
 		if (critRoll <= myStats.Crit) {
-			endDamage = (int)(endDamage * 1.5f);
+			endDamage = endDamage * 1.5f;
 		}
 			
-		return target.TakeDamage (this, endDamage);
+		return target.TakeDamage (this, (int)endDamage);
 	}
 
 	public bool TakeHealing(UnitController caster, int healing) {
@@ -338,20 +335,17 @@ public class UnitController : MonoBehaviour {
 		return true;
 	}
 
-	public bool GiveHealingTo(UnitController target, int healing) {
+	public bool GiveHealingTo(UnitController target, float healing) {
 
-		int endHealing = healing;
-
-		//add power to attack
-		endHealing += myStats.Power;
+		float endHealing = myStats.Power * healing;
 
 		//check to see if damage is a crit
 		float critRoll = Random.value * 100;
 		if (critRoll <= myStats.Crit) {
-			endHealing = (int)(endHealing * 1.5f);
+			endHealing = endHealing * 1.5f;
 		}
 
-		return target.TakeHealing (this, endHealing);
+		return target.TakeHealing (this, (int)endHealing);
 	}
 
 	public void ApplyBuff(Buff buff) {

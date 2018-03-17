@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class Engulf : BaseAbility {
 
-	int baseDamage = 3;
+	float damageMod = 0.75f;
 
 	public Engulf(List<EventAction> _eventActions) : base (_eventActions) {
 		range = 5;
@@ -15,8 +15,10 @@ public class Engulf : BaseAbility {
 	{
 		base.UseAbility (caster, target);
 		AddAbilityTarget (caster, target.myUnit, () => {
-			caster.DealDamageTo(target.myUnit, baseDamage);
-			target.myUnit.ApplyBuff(new Burn(3, caster.myStats.Power));
+			bool targetStillAlive = caster.DealDamageTo(target.myUnit, damageMod);
+			if (targetStillAlive) {
+				target.myUnit.ApplyBuff(new Burn(3, caster.myStats.Power));
+			}
 		});
 	}
 

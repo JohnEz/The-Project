@@ -128,6 +128,7 @@ public class UnitManager : MonoBehaviour {
 		return myMap.pathfinder.findReachableTiles (unit.myNode, unit.myStats.Speed, unit.myStats.WalkingType, unit.myPlayer.faction);
 	}
 
+	// shows movement and attack tiles
 	public void ShowActions(UnitController unit = null) {
 		unit = unit == null ? selectedUnit : unit;
 
@@ -159,7 +160,7 @@ public class UnitManager : MonoBehaviour {
 		unitClass = selectedUnit.GetComponent<UnitClass> ();
 
 		if (!unitClass.HasAbility (ability)) {
-			guiController.ShowErrorMessage ("ERROR: ABILITY AT INDEX " + ability + " DOES NOT EXIST");
+			guiController.ShowErrorMessage ("ERROR: NO ABILITY AT INDEX " + ability);
 			return false;
 		}
 
