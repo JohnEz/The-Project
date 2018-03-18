@@ -17,26 +17,40 @@ public class HighlightManager : MonoBehaviour {
 	
 	}
 
-	public void SetEffectedTiles(List<Node> effectedTiles, SquareTarget targetType = SquareTarget.UNDEFINED) {
+	public void SetEffectedTiles(List<Node> effectedTiles, SquareTarget targetType = SquareTarget.UNDEFINED, bool path = false) {
 		ClearEffectedTiles ();
+		int i = 0;
 
 		effectedTiles.ForEach ((tile) => {
-			tile.GetComponentInChildren<TileHighlighter> ().EffectedTile = true;
+			TileHighlighter highlighter = tile.GetComponentInChildren<TileHighlighter> ();
+			highlighter.EffectedTile = true;
 			if (targetType != SquareTarget.UNDEFINED) {
-				tile.GetComponentInChildren<TileHighlighter> ().highlight (targetType);
+				highlighter.highlight (targetType);
 			}
-			tile.GetComponentInChildren<TileHighlighter> ().showHighlight (true);
+			highlighter.showHighlight (true);
+			if (path) {
+				Vector2 nextDirection = i < effectedTiles.Count-1 ? effectedTiles[i+1].previous.direction : new Vector2(0, 0);
+				//Vector2 previousDirection = i > 0 ? tile.previous.direction : new Vector2(0, 0);
+				Vector2 previousDirection = tile.previous.direction;
+
+				highlighter.ShowArrow(previousDirection, nextDirection); 
+			}
 			currentlyEffected.Add(tile);
+			i++;
 		});
+
+
 	}
 
 	public void ClearEffectedTiles() {
 		currentlyEffected.ForEach ((tile) => {
-			tile.GetComponentInChildren<TileHighlighter> ().EffectedTile = false;
+			TileHighlighter highlighter = tile.GetComponentInChildren<TileHighlighter> ();
+			highlighter.EffectedTile = false;
 			if (!currentlyHighlighted.Contains(tile)) {
-				tile.GetComponentInChildren<TileHighlighter> ().highlight (SquareTarget.NONE);
-				tile.GetComponentInChildren<TileHighlighter> ().showHighlight (false);
+				highlighter.highlight (SquareTarget.NONE);
+				highlighter.showHighlight (false);
 			}
+			highlighter.RemoveArrow();
 		});
 		currentlyEffected.Clear ();
 	}

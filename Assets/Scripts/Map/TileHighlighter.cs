@@ -18,6 +18,10 @@ public class TileHighlighter : MonoBehaviour {
 	public Sprite highlightedSprite;
 	public Sprite hoverSprite;
 
+	public GameObject arrowStraight;
+	public GameObject arrowCorner;
+	public GameObject arrowEnd;
+
 	Color blue = new Color (0, 0.9647f, 1);
 	Color red = new Color (0.8431f, 0.2f, 0.2f);
 	Color green = new Color (0.7294f, 0.9569f, 0.1176f);
@@ -35,6 +39,8 @@ public class TileHighlighter : MonoBehaviour {
 	bool effectedTile = false;
 
 	SpriteRenderer mySpriteRenderer;
+
+	GameObject myArrow;
 
 	// Use this for initialization
 	void Start () {
@@ -132,6 +138,53 @@ public class TileHighlighter : MonoBehaviour {
 		}
 
 		updateAlpha (startAlpha);
+	}
+
+	public void ShowArrow(Vector2 previous, Vector2 next) {
+		GameObject arrowPrefab;
+		Vector3 rotation = new Vector3(0, 0, 0);
+		Vector2 minusDirections = next - previous;
+
+		//end arrow
+		if (next == new Vector2 (0, 0)) {
+			arrowPrefab = arrowEnd;
+
+			if (previous.x == -1) {
+				rotation = new Vector3 (0, 0, -180);
+			} else if (previous.y == -1) {
+				rotation = new Vector3 (0, 0, -90);
+			} else if (previous.y == 1) {
+				rotation = new Vector3 (0, 0, 90);
+			}
+			//sort rotation
+		} else if (minusDirections == new Vector2 (0, 0)) {
+			arrowPrefab = arrowStraight;
+			if (previous.y != 0) {
+				rotation = new Vector3 (0, 0, -90);
+			}
+		} else {
+			arrowPrefab = arrowCorner;
+			//Vector2 addedDirections = next - previous;
+
+			if (minusDirections.x == -1 && minusDirections.y == -1) {
+				rotation = new Vector3 (0, 0, -90);
+			} else if (minusDirections.x == 1 && minusDirections.y == 1) {
+				rotation = new Vector3 (0, 0, 90);
+			} else if (minusDirections.x == -1 && minusDirections.y == 1) {
+				rotation = new Vector3 (0, 0, 180);
+			}
+		}
+			
+		myArrow = Instantiate (arrowPrefab);
+		myArrow.transform.SetParent(this.transform, false);
+		myArrow.transform.Rotate (rotation);
+	}
+
+	public void RemoveArrow() {
+		if (myArrow != null) {
+			Destroy (myArrow);
+			myArrow = null;
+		}
 	}
 
 }

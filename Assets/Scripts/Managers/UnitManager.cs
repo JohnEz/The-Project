@@ -195,7 +195,7 @@ public class UnitManager : MonoBehaviour {
 
 	public void ShowPath(Node targetNode) {
 		MovementPath movementPath = myMap.pathfinder.getPathFromTile (targetNode);
-		myMap.highlighter.SetEffectedTiles (movementPath.path);
+		myMap.highlighter.SetEffectedTiles (movementPath.path, SquareTarget.UNDEFINED, true);
 	}
 
 	public bool AttackTile(Node targetNode) {

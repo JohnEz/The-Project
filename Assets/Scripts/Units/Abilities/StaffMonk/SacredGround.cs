@@ -10,6 +10,7 @@ public class SacredGround : BaseAbility {
 		targets = TargetType.ALLY;
 		areaOfEffect = AreaOfEffect.AURA;
 		tileTarget = TileTarget.TILE;
+		CanTargetSelf = true;
 		maxCooldown = 2;
 		aoeRange = 3;
 	}
