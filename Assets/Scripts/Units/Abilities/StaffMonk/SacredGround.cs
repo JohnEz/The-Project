@@ -6,7 +6,7 @@ public class SacredGround : BaseAbility {
 
 	float healingMod = 0.5f;
 
-	public SacredGround(List<EventAction> _eventActions) : base (_eventActions) {
+	public SacredGround(List<EventAction> _eventActions, UnitStats casterStats) : base (_eventActions, casterStats) {
 		targets = TargetType.ALLY;
 		areaOfEffect = AreaOfEffect.AURA;
 		tileTarget = TileTarget.TILE;
@@ -14,7 +14,6 @@ public class SacredGround : BaseAbility {
 		maxCooldown = 2;
 		aoeRange = 3;
 		Name = "Sacred Ground";
-		Description = "Range: " + range + "\nCreates an area of sacred ground healing allies for " + healingMod + "x power and removing 1 negative effect from them.";
 	}
 
 	public override void UseAbility (UnitController caster, Node target)
@@ -28,5 +27,9 @@ public class SacredGround : BaseAbility {
 	public override void UseAbility(UnitController caster, List<Node> targets, Node targetedNode) {
 		base.UseAbility (caster, targets, targetedNode);
 		targets.ForEach (target => UseAbility (caster, target));
+	}
+
+	public override string GetDescription() {
+		return "Range: " + range + "\nCreates an area of sacred ground healing allies for " + (int)(healingMod * casterStats.Power) + " and removing 1 negative effect from them.";
 	}
 }

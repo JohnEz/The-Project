@@ -6,9 +6,8 @@ public class DualSlash : BaseAbility {
 
 	float damageMod = 1.25f;
 
-	public DualSlash(List<EventAction> _eventActions) : base (_eventActions) {
+	public DualSlash(List<EventAction> _eventActions, UnitStats casterStats) : base (_eventActions, casterStats) {
 		Name = "Dual Slash";
-		Description = "Range: " + range + "\nAttack using both blades dealing " + damageMod + "x power damage.";
 	}
 
 	public override void UseAbility (UnitController caster, Node target)
@@ -17,4 +16,7 @@ public class DualSlash : BaseAbility {
 		AddAbilityTarget (caster, target.myUnit, () => {caster.DealDamageTo(target.myUnit, damageMod);});
 	}
 
+	public override string GetDescription() {
+		return "Range: " + range + "\nAttack using both blades dealing " + (int)(damageMod * casterStats.Power) + " damage.";
+	}
 }

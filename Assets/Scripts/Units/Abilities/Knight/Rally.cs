@@ -6,15 +6,15 @@ public class Rally : BaseAbility {
 
 	int buffDuration = 3;
 
-	public Rally(List<EventAction> _eventActions) : base (_eventActions) {
+	public Rally(List<EventAction> _eventActions, UnitStats casterStats) : base (_eventActions, casterStats) {
 		targets = TargetType.ALLY;
 		areaOfEffect = AreaOfEffect.AURA;
 		tileTarget = TileTarget.TILE;
 		maxCooldown = 3;
 		aoeRange = 4;
 		icon = "abilityRallyController";
+		CanTargetSelf = true;
 		Name = "Rally";
-		Description = "Range: " + range + "\nBoosts allies moral increasing their movement and power for " + buffDuration + " turns.";
 	}
 
 	public override void UseAbility (UnitController caster, Node target)
@@ -30,5 +30,9 @@ public class Rally : BaseAbility {
 	public override void UseAbility(UnitController caster, List<Node> targets, Node targetedNode) {
 		base.UseAbility (caster, targets, targetedNode);
 		targets.ForEach (target => UseAbility (caster, target));
+	}
+
+	public override string GetDescription() {
+		return "Range: " + range + "\nBoosts allies moral increasing their movement and power for " + buffDuration + " turns.";
 	}
 }

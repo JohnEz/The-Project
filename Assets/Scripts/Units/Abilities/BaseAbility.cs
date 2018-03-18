@@ -120,10 +120,12 @@ public class BaseAbility {
 	bool canTargetSelf = false;
 
 	string name = "UNNAMED";
-	string description = "THIS ABILITY NEEDS A DESCRIPTION";
 
-	public BaseAbility(List<EventAction> _eventActions) {
+	protected UnitStats casterStats;
+
+	public BaseAbility(List<EventAction> _eventActions, UnitStats _casterStats) {
 		eventActions = _eventActions;
+		casterStats = _casterStats;
 	}
 
 	public bool IsOnCooldown() {
@@ -217,10 +219,9 @@ public class BaseAbility {
 		get { return name; }
 		set { name = value; }
 	}
-
-	public string Description {
-		get { return description; }
-		set { description = value; }
+		
+	public virtual string GetDescription() {
+		return "THIS ABILITY NEEDS A DESCRIPTION";
 	}
 
 }

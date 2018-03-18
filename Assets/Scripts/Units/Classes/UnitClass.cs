@@ -10,7 +10,7 @@ public class UnitClass : MonoBehaviour {
 	[SerializeField]
 	public AudioClip onDeathSfx;
 
-	public virtual void Initialise() {
+	public virtual void Initialise(UnitStats casterStats) {
 
 	}
 

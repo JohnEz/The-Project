@@ -9,7 +9,7 @@ public class FrostNova : BaseAbility {
 
 	GameObject persistentSnareFxPrefab;
 
-	public FrostNova(List<EventAction> _eventActions, GameObject snareFx) : base (_eventActions) {
+	public FrostNova(List<EventAction> _eventActions, GameObject snareFx, UnitStats casterStats) : base (_eventActions, casterStats) {
 		range = 5;
 		areaOfEffect = AreaOfEffect.CIRCLE;
 		aoeRange = 2;
@@ -18,7 +18,6 @@ public class FrostNova : BaseAbility {
 		persistentSnareFxPrefab = snareFx;
 		icon = "abilityFrostNovaController";
 		Name = "Frost Nova";
-		Description = "Range: " + range + "\nFreezes ememies in an area, dealing " + damageMod + "x power damage and snaring them for " + duration + " turns.";
 	}
 
 	public override void UseAbility (UnitController caster, Node target)
@@ -36,6 +35,10 @@ public class FrostNova : BaseAbility {
 	public override void UseAbility(UnitController caster, List<Node> targets, Node targetedNode) {
 		base.UseAbility (caster, targets, targetedNode);
 		targets.ForEach (target => UseAbility (caster, target));
+	}
+
+	public override string GetDescription() {
+		return "Range: " + range + "\nFreezes ememies in an area, dealing " + (int)(damageMod * casterStats.Power) + " damage and snaring them for " + duration + " turns.";
 	}
 
 }

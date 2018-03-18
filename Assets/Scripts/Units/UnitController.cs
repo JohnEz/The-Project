@@ -74,7 +74,7 @@ public class UnitController : MonoBehaviour {
 		myStats.Initialise ();
 		audioController = GetComponent<UnitAudioController> ();
 		myClass = GetComponent<UnitClass> ();
-		myClass.Initialise ();
+		myClass.Initialise (myStats);
 		projectiles = new List<ProjectileController> ();
 	}
 	

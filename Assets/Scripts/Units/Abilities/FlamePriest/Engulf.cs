@@ -7,11 +7,10 @@ public class Engulf : BaseAbility {
 	float damageMod = 0.75f;
 	int duration = 3;
 
-	public Engulf(List<EventAction> _eventActions) : base (_eventActions) {
+	public Engulf(List<EventAction> _eventActions, UnitStats casterStats) : base (_eventActions, casterStats) {
 		range = 5;
 		icon = "abilityEngulfController";
 		Name = "Engulf";
-		Description = "Range: " + range + "\nBurns an enemy for " + damageMod + "x power and applies a " + duration + " turn burn.";
 	}
 
 	public override void UseAbility (UnitController caster, Node target)
@@ -23,6 +22,10 @@ public class Engulf : BaseAbility {
 				target.myUnit.ApplyBuff(new Burn(duration, caster.myStats.Power));
 			}
 		});
+	}
+
+	public override string GetDescription() {
+		return "Range: " + range + "\nBurns an enemy for " + (int)(damageMod * casterStats.Power) + " and applies a " + duration + " turn burn.";
 	}
 
 }
