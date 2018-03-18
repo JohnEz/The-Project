@@ -34,7 +34,7 @@ public class UnitManager : MonoBehaviour {
 		SpawnUnit (5, players[0], 3, 8);
 		SpawnUnit (3, players[0], 3, 9);
 		SpawnUnit (4, players[0], 3, 10);
-		SpawnUnit (2, players[1], 9, 9);
+		SpawnUnit (0, players[1], 9, 9);
 		SpawnUnit (1, players[1], 9, 10);
 		SpawnUnit (2, players[1], 8, 10);
 		SpawnUnit (2, players[1], 9, 11);
@@ -225,6 +225,8 @@ public class UnitManager : MonoBehaviour {
 			return attackableTiles;
 		case AreaOfEffect.CIRCLE:
 			return myMap.pathfinder.FindAOEHitTiles(targetNode, ability);
+		case AreaOfEffect.CLEAVE:
+			return myMap.pathfinder.FindCleaveTargetTiles(targetNode, ability, selectedUnit.myNode);
 		case AreaOfEffect.SINGLE:
 		default:
 			targetTiles.Add (targetNode);

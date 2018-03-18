@@ -50,7 +50,6 @@ public class AIManager : MonoBehaviour {
 			}
 
 			shortestPath.path.RemoveAt (shortestPath.path.Count - 1);
-			unitManager.SetUnitPath(shortestPath);
 		}
 	}
 

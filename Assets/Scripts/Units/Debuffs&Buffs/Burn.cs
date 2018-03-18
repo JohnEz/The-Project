@@ -8,7 +8,7 @@ public class Burn : Buff {
 		maxStack = 5;
 		isDebuff = true;
 		flatMod [(int)Stats.DAMAGE] = (int)(power / 4);
-		icon = "buffPower";
+		icon = "buffBurn";
 	}
 
 }

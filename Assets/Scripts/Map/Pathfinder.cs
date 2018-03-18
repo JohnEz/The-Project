@@ -229,6 +229,7 @@ public class Pathfinder : MonoBehaviour {
 		case AreaOfEffect.AURA:
 			return FindAOEHitTiles (node, ability);
 		case AreaOfEffect.CIRCLE:
+		case AreaOfEffect.CLEAVE:
 			return FindCircleTargetTiles (node, ability);
 		case AreaOfEffect.SINGLE:
 		default:
@@ -257,6 +258,33 @@ public class Pathfinder : MonoBehaviour {
 	public List<Node> FindAOEHitTiles(Node node, BaseAbility ability) {
 		List<Node> targetTiles = findReachableTiles (node, ability.aoeRange, Walkable.Flying, -1).basic.Keys.ToList();
 		targetTiles.Insert (0, node);
+		return targetTiles;
+	}
+
+	public List<Node> FindCleaveTargetTiles(Node node, BaseAbility ability, Node start) {
+		//TODO write a smarter way of doing this
+		bool attackingHorizontally = start.x != node.x;
+		List<Node> targetTiles = findReachableTiles (node, ability.aoeRange, Walkable.Flying, -1).basic.Keys.ToList();
+		List<Node> removeTiles = new List<Node>();
+		targetTiles.Insert (0, node);
+		if (attackingHorizontally) {
+			targetTiles.ForEach ((tile) => {
+				if (tile.x != node.x) {
+					removeTiles.Add(tile);
+				}
+			});
+		} else {
+			targetTiles.ForEach ((tile) => {
+				if (tile.y != node.y) {
+					removeTiles.Add(tile);
+				}
+			});
+		}
+
+		removeTiles.ForEach ((tile) => {
+			targetTiles.Remove(tile);
+		});
+
 		return targetTiles;
 	}
 		
