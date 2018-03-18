@@ -7,7 +7,8 @@ public class DualSlash : BaseAbility {
 	float damageMod = 1.25f;
 
 	public DualSlash(List<EventAction> _eventActions) : base (_eventActions) {
-
+		Name = "Dual Slash";
+		Description = "Range: " + range + "\nAttack using both blades dealing " + damageMod + "x power damage.";
 	}
 
 	public override void UseAbility (UnitController caster, Node target)

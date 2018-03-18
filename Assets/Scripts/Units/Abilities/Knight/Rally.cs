@@ -13,6 +13,8 @@ public class Rally : BaseAbility {
 		maxCooldown = 3;
 		aoeRange = 4;
 		icon = "abilityRallyController";
+		Name = "Rally";
+		Description = "Range: " + range + "\nBoosts allies moral increasing their movement and power for " + buffDuration + " turns.";
 	}
 
 	public override void UseAbility (UnitController caster, Node target)

@@ -26,4 +26,8 @@ public class CameraManager : MonoBehaviour {
 	public void MoveToLocation(Vector2 location) {
 		cam.MoveToTarget (location);
 	}
+
+	public void MoveToLocation(Node node) {
+		MoveToLocation (map.getPositionOfNode(node));
+	}
 }

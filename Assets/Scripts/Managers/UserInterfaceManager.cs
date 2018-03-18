@@ -200,6 +200,7 @@ public class UserInterfaceManager : MonoBehaviour {
 	public void SelectNextUnit() {
 		UnitController nextUnit = unitManager.GetNextUnit (turnManager.PlayersTurn);
 		if (nextUnit != null) {
+			GetComponent<CameraManager> ().MoveToLocation (nextUnit.myNode);
 			SelectUnit (nextUnit);
 			ShowMovement ();
 		}
@@ -208,6 +209,7 @@ public class UserInterfaceManager : MonoBehaviour {
 	public void SelectPreviousUnit() {
 		UnitController nextUnit = unitManager.GetPreviousUnit (turnManager.PlayersTurn);
 		if (nextUnit != null) {
+			GetComponent<CameraManager> ().MoveToLocation (nextUnit.myNode);
 			SelectUnit (nextUnit);
 			ShowMovement ();
 		}

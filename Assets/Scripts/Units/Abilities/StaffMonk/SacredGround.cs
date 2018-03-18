@@ -13,6 +13,8 @@ public class SacredGround : BaseAbility {
 		CanTargetSelf = true;
 		maxCooldown = 2;
 		aoeRange = 3;
+		Name = "Sacred Ground";
+		Description = "Range: " + range + "\nCreates an area of sacred ground healing allies for " + healingMod + "x power and removing 1 negative effect from them.";
 	}
 
 	public override void UseAbility (UnitController caster, Node target)

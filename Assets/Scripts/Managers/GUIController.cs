@@ -19,11 +19,14 @@ public class GUIController : MonoBehaviour {
 	Dictionary<string, RuntimeAnimatorController> abilityIconControllers = new Dictionary<string, RuntimeAnimatorController>();
 
 	Text objectivesBody;
+	AbilityDescriptionController abilityDescription;
 
 	// Use this for initialization
 	void Start () {
 		turnManager = GetComponentInParent<TurnManager> ();
 		uIManager = GetComponentInParent<UserInterfaceManager> ();
+		abilityDescription = transform.FindChild("AbilityDescription").GetComponent<AbilityDescriptionController> ();
+		abilityDescription.HideDescription ();
 	}
 
 	// Update is called once per frame
@@ -97,7 +100,7 @@ public class GUIController : MonoBehaviour {
 		newAbilityIcon.transform.SetParent(transform, false);
 		newPosition.x = -35 + (abilityIcons.Count * 70);
 		newAbilityIcon.GetComponent<RectTransform> ().anchoredPosition = newPosition;
-		newAbilityIcon.GetComponent<AbilityIconController> ().Initialize (abilityIcons.Count, ability, uIManager);
+		newAbilityIcon.GetComponent<AbilityIconController> ().Initialize (abilityIcons.Count, ability, uIManager, this);
 		abilityIcons.Add(newAbilityIcon);
 	}
 
@@ -122,5 +125,14 @@ public class GUIController : MonoBehaviour {
 		newDamageText.GetComponent<Text> ().text = message;
 		newDamageText.GetComponent<Text> ().color = new Color(0.95f, 0.25f, 0.25f);
 		newDamageText.transform.SetParent(this.transform);
+	}
+
+	public void ShowAbilityDescription(BaseAbility ability) {
+		abilityDescription.SetAbility (ability);
+		abilityDescription.ShowDescription ();
+	}
+
+	public void HideAbilityDescription() {
+		abilityDescription.HideDescription ();
 	}
 }

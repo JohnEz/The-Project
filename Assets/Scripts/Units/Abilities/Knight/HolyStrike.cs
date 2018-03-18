@@ -8,6 +8,8 @@ public class HolyStrike : BaseAbility {
 
 	public HolyStrike(List<EventAction> _eventActions) : base (_eventActions) {
 		icon = "abilityHolyStrikeController";
+		Name = "Holy Strike";
+		Description = "Range: " + range + "\nAttack with holy might dealing " + damageMod + "x power damage.";
 	}
 
 	public override void UseAbility (UnitController caster, Node target)

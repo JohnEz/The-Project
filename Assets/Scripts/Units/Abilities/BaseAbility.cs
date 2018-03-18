@@ -119,6 +119,9 @@ public class BaseAbility {
 
 	bool canTargetSelf = false;
 
+	string name = "UNNAMED";
+	string description = "THIS ABILITY NEEDS A DESCRIPTION";
+
 	public BaseAbility(List<EventAction> _eventActions) {
 		eventActions = _eventActions;
 	}
@@ -208,6 +211,16 @@ public class BaseAbility {
 	public bool CanTargetSelf {
 		get { return canTargetSelf; }
 		set { canTargetSelf = value; }
+	}
+
+	public string Name {
+		get { return name; }
+		set { name = value; }
+	}
+
+	public string Description {
+		get { return description; }
+		set { description = value; }
 	}
 
 }

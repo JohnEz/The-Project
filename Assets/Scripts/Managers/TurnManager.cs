@@ -115,7 +115,8 @@ public class TurnManager : MonoBehaviour {
 
 		uIManager.StartTurn ();
 
-		cameraManager.MoveToLocation (map.getPositionOfNode(unitManager.SelectedUnit.myNode));
+		// Had error when unit died at turn start
+		cameraManager.MoveToLocation (unitManager.SelectedUnit.myNode);
 	}
 
 	public void EndTurn() {

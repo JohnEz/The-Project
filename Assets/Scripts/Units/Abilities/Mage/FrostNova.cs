@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class FrostNova : BaseAbility {
 
 	float damageMod = 0.33f;
+	int duration = 2;
 
 	GameObject persistentSnareFxPrefab;
 
@@ -16,6 +17,8 @@ public class FrostNova : BaseAbility {
 		tileTarget = TileTarget.TILE;
 		persistentSnareFxPrefab = snareFx;
 		icon = "abilityFrostNovaController";
+		Name = "Frost Nova";
+		Description = "Range: " + range + "\nFreezes ememies in an area, dealing " + damageMod + "x power damage and snaring them for " + duration + " turns.";
 	}
 
 	public override void UseAbility (UnitController caster, Node target)
@@ -24,7 +27,7 @@ public class FrostNova : BaseAbility {
 			AddAbilityTarget (caster, target.myUnit, () => {
 				bool targetStillAlive = caster.DealDamageTo(target.myUnit, damageMod);
 				if (targetStillAlive) {
-					target.myUnit.ApplyBuff (new Snare (2, persistentSnareFxPrefab));
+					target.myUnit.ApplyBuff (new Snare (duration, persistentSnareFxPrefab));
 				}
 			});
 		}

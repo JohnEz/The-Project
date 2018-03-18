@@ -7,7 +7,8 @@ public class JadeSlam : BaseAbility {
 	float damageMod = 1;
 
 	public JadeSlam (List<EventAction> _eventActions) : base (_eventActions) {
-
+		Name = "Jade Slam";
+		Description = "Range: " + range + "\nSlam an enemy with all your might dealing " + damageMod + "x power damage.";
 	}
 
 	public override void UseAbility (UnitController caster, Node target)
