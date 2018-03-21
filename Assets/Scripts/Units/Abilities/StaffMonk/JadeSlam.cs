@@ -17,7 +17,7 @@ public class JadeSlam : BaseAbility {
 	}
 
 	public override string GetDescription() {
-		return "Range: " + range + "\nSlam an enemy with all your might dealing " + (int)(damageMod * casterStats.Power) + " damage.";
+		return base.GetDescription() + "Slam an enemy with all your might dealing " + (int)(damageMod * casterStats.Power) + " damage.";
 	}
 
 }

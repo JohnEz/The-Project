@@ -221,7 +221,8 @@ public class BaseAbility {
 	}
 		
 	public virtual string GetDescription() {
-		return "THIS ABILITY NEEDS A DESCRIPTION";
+		string cooldownString = MaxCooldown > 0 ? "Cooldown: " + MaxCooldown : "";
+		return "Range: " + range + " " + cooldownString + "\n";
 	}
 
 }

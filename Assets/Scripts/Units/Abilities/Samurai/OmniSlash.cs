@@ -20,7 +20,7 @@ public class OmniSlash : BaseAbility {
 	}
 
 	public override string GetDescription() {
-		return "Range: " + range + "\nSlash an enemy for " + (int)(damageMod * casterStats.Power) + " damage and gives the Samurai 1 stack of armour.";
+		return base.GetDescription() + "Slash an enemy for " + (int)(damageMod * casterStats.Power) + " damage and gives the Samurai 1 stack of armour.";
 	}
 
 }

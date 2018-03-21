@@ -70,6 +70,7 @@ public class GUIController : MonoBehaviour {
 	public void UnitDeselected() {
 		ClearAbilityIcons ();
 		HideUnitInfo ();
+		HideAbilityDescription ();
 	}
 
 	public void ClearAbilityIcons() {

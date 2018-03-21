@@ -19,7 +19,7 @@ public class ArcaneBolt : BaseAbility {
 	}
 
 	public override string GetDescription() {
-		return "Range: " + range + "\nSends a bolt of arcane energy at an enemy dealing " + (int)(damageMod * casterStats.Power) + " damage.";
+		return base.GetDescription() + "Sends a bolt of arcane energy at an enemy dealing " + (int)(damageMod * casterStats.Power) + " damage.";
 	}
 
 }

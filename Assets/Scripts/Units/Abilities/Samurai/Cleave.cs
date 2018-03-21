@@ -34,7 +34,7 @@ public class Cleave : BaseAbility {
 	}
 
 	public override string GetDescription() {
-		return "Range: " + range + "\nCleaves up to 3 targets infront of the samurai for " + (int)(damageMod * casterStats.Power) + " damage and applies a " + duration + " turn burn to them.";
+		return base.GetDescription() + "Cleaves up to 3 targets infront of the samurai for " + (int)(damageMod * casterStats.Power) + " damage and applies a " + duration + " turn burn to them.";
 	}
 
 }

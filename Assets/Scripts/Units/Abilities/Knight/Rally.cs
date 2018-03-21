@@ -33,6 +33,6 @@ public class Rally : BaseAbility {
 	}
 
 	public override string GetDescription() {
-		return "Range: " + range + "\nBoosts allies moral increasing their movement and power for " + buffDuration + " turns.";
+		return base.GetDescription() + "Boosts allies moral increasing their movement and power for " + buffDuration + " turns.";
 	}
 }

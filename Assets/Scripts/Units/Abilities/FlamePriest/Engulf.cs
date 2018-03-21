@@ -25,7 +25,7 @@ public class Engulf : BaseAbility {
 	}
 
 	public override string GetDescription() {
-		return "Range: " + range + "\nBurns an enemy for " + (int)(damageMod * casterStats.Power) + " and applies a " + duration + " turn burn.";
+		return base.GetDescription() + "Burns an enemy for " + (int)(damageMod * casterStats.Power) + " and applies a " + duration + " turn burn.";
 	}
 
 }

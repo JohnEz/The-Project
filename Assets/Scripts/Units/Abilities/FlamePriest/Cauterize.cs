@@ -26,7 +26,7 @@ public class Cauterize : BaseAbility {
 	}
 
 	public override string GetDescription() {
-		return "Range: " + range + "\nClose wounds of an ally with fire. Healing them for " + (int)(healingMod * casterStats.Power)  + " but applys a " + duration + " turn burn.";
+		return base.GetDescription() + "Close wounds of an ally with fire. Healing them for " + (int)(healingMod * casterStats.Power)  + " but applys a " + duration + " turn burn.";
 	}
 
 }

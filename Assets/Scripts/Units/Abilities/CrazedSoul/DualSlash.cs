@@ -17,6 +17,6 @@ public class DualSlash : BaseAbility {
 	}
 
 	public override string GetDescription() {
-		return "Range: " + range + "\nAttack using both blades dealing " + (int)(damageMod * casterStats.Power) + " damage.";
+		return base.GetDescription() + "Attack using both blades dealing " + (int)(damageMod * casterStats.Power) + " damage.";
 	}
 }

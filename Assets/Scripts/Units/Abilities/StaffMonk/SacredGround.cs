@@ -30,6 +30,6 @@ public class SacredGround : BaseAbility {
 	}
 
 	public override string GetDescription() {
-		return "Range: " + range + "\nCreates an area of sacred ground healing allies for " + (int)(healingMod * casterStats.Power) + " and removing 1 negative effect from them.";
+		return base.GetDescription() + "Creates an area of sacred ground healing allies for " + (int)(healingMod * casterStats.Power) + " and removing 1 negative effect from them.";
 	}
 }

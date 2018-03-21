@@ -38,7 +38,7 @@ public class FrostNova : BaseAbility {
 	}
 
 	public override string GetDescription() {
-		return "Range: " + range + "\nFreezes ememies in an area, dealing " + (int)(damageMod * casterStats.Power) + " damage and snaring them for " + duration + " turns.";
+		return base.GetDescription() + "Freezes ememies in an area, dealing " + (int)(damageMod * casterStats.Power) + " damage and snaring them for " + duration + " turns.";
 	}
 
 }

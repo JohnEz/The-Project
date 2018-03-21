@@ -22,7 +22,7 @@ public class HolyStrike : BaseAbility {
 	}
 
 	public override string GetDescription() {
-		return "Range: " + range + "\nAttack with holy might dealing " + (int)(damageMod * casterStats.Power) + " damage and healing the knight for " + (int)(healingMod * casterStats.Power) + ".";
+		return base.GetDescription() + "Attack with holy might dealing " + (int)(damageMod * casterStats.Power) + " damage and healing the knight for " + (int)(healingMod * casterStats.Power) + ".";
 	}
 
 }
