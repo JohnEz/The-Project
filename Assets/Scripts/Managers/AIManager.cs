@@ -12,9 +12,11 @@ public class AIManager : MonoBehaviour {
 
 	TileMap myMap;
 
+	Dictionary<UnitController, List<System.Action>> unitActions;
+
 	// Use this for initialization
 	void Start () {
-
+		unitActions = new Dictionary<UnitController, List<System.Action>> ();
 	}
 
 	// Update is called once per frame
@@ -35,21 +37,10 @@ public class AIManager : MonoBehaviour {
 	// NewTurn is called at the start of each of the AIs turns.
 	public void NewTurn(int myPlayerId) {
 		myUnits = unitManager.Units.Where (unit => unit.myPlayer.id == myPlayerId).ToList ();
+		unitActions.Clear ();
 
 		foreach (UnitController unit in myUnits) {
-			unitManager.SelectUnit (unit);
-			List<MovementPath> paths = FindPathsToEnemies (unit);
-
-			MovementPath shortestPath = new MovementPath();
-			shortestPath.movementCost = -1;
-
-			foreach (MovementPath path in paths) {
-				if (shortestPath.movementCost == -1 || path.movementCost < shortestPath.movementCost) {
-					shortestPath = path;
-				}
-			}
-
-			shortestPath.path.RemoveAt (shortestPath.path.Count - 1);
+			PlanTurn (unit);
 		}
 	}
 
@@ -66,5 +57,24 @@ public class AIManager : MonoBehaviour {
 		return pathsToEnemies;
 	}
 
+	public void PlanTurn(UnitController unit) {
+		List<System.Action> actions = new List<System.Action> ();
+		unitManager.SelectUnit (unit);
+		List<MovementPath> paths = FindPathsToEnemies (unit);
 
+		MovementPath shortestPath = new MovementPath();
+		shortestPath.movementCost = -1;
+
+		foreach (MovementPath path in paths) {
+			if (shortestPath.movementCost == -1 || path.movementCost < shortestPath.movementCost) {
+				shortestPath = path;
+			}
+		}
+
+		shortestPath.path.RemoveAt (shortestPath.path.Count - 1);
+
+		bool inRangeToAttack = shortestPath.movementCost <= unit.myStats.Speed;
+
+
+	}
 }

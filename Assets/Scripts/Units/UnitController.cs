@@ -91,7 +91,7 @@ public class UnitController : MonoBehaviour {
 		//TODO i dont like the fact that unitstats cant set action points because of ui
 		ActionPoints = myStats.MaxActionPoints;
 		myStats.ApplyStartingTurnBuffs (
-			(damage) => {this.TakeDamage(null, damage);}, 
+			(damage) => {this.TakeDamage(null, damage, true);}, 
 			(healing) => {this.TakeHealing(null, healing);}
 		);
 		myStats.NewTurn ();
@@ -274,7 +274,7 @@ public class UnitController : MonoBehaviour {
 		abilityTargets.Clear ();
 	}
 
-	public bool TakeDamage(UnitController attacker, int damage) {
+	public bool TakeDamage(UnitController attacker, int damage, bool ignoreArmour = false) {
 		bool isStillAlive = true;
 
 		//if the damage has a source
@@ -282,7 +282,7 @@ public class UnitController : MonoBehaviour {
 
 		}
 
-		int modifiedDamage = damage - myStats.Armour;
+		int modifiedDamage = ignoreArmour ? damage : Mathf.Max(damage - myStats.Armour, 0);
 
 		//check to see if attack was blocked
 		float blockRoll = Random.value * 100;

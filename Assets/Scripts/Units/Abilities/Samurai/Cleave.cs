@@ -13,7 +13,6 @@ public class Cleave : BaseAbility {
 		aoeRange = 1;
 		maxCooldown = 2;
 		tileTarget = TileTarget.TILE;
-		icon = "abilityFrostNovaController";
 		Name = "Cleave";
 	}
 
@@ -35,7 +34,7 @@ public class Cleave : BaseAbility {
 	}
 
 	public override string GetDescription() {
-		return "Range: " + range + "\nFreezes ememies in an area, dealing " + (int)(damageMod * casterStats.Power) + " damage and snaring them for " + duration + " turns.";
+		return "Range: " + range + "\nCleaves up to 3 targets infront of the samurai for " + (int)(damageMod * casterStats.Power) + " damage and applies a " + duration + " turn burn to them.";
 	}
 
 }
