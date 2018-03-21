@@ -12,6 +12,10 @@ public class SamuraiClass : UnitClass {
 	[SerializeField]
 	GameObject slashFx;
 
+	public SamuraiClass() {
+		className = "Samurai";
+	}
+
 	// Use this for initialization
 	public override void Initialise(UnitStats casterStats) {
 		List<EventAction> omniSlashActions = new List<EventAction> ();

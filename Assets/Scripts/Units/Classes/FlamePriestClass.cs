@@ -14,6 +14,10 @@ public class FlamePriestClass : UnitClass {
 	[SerializeField]
 	AudioClip cauterizeSfx;
 
+	public FlamePriestClass() {
+		className = "Flame Priest";
+	}
+
 	// Use this for initialization
 	public override void Initialise(UnitStats casterStats) {
 		List<EventAction> englufActions = new List<EventAction> ();

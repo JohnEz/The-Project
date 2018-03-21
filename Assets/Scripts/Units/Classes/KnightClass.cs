@@ -12,6 +12,10 @@ public class KnightClass : UnitClass {
 	[SerializeField]
 	AudioClip rallySfx;
 
+	public KnightClass() {
+		className = "Knight";
+	}
+
 	// Use this for initialization
 	public override void Initialise(UnitStats casterStats) {
 		List<EventAction> holyStrikeActions = new List<EventAction> ();

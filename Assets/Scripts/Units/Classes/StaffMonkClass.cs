@@ -12,6 +12,10 @@ public class StaffMonkClass : UnitClass {
 	[SerializeField]
 	GameObject sacredGroundFx;
 
+	public StaffMonkClass() {
+		className = "Jade Monk";
+	}
+
 	// Use this for initialization
 	public override void Initialise(UnitStats casterStats) {
 		List<EventAction> jadeSlamActions = new List<EventAction> ();

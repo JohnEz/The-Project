@@ -16,11 +16,11 @@ public class AbilityDescriptionController : MonoBehaviour
 		transform.FindChild ("Description").GetComponent<Text> ().text = ability.GetDescription();
 	}
 	
-	public void ShowDescription() {
+	public void ShowWindow() {
 		gameObject.SetActive (true);
 	}
 
-	public void HideDescription() {
+	public void HideWindow() {
 		gameObject.SetActive (false);
 	}
 }

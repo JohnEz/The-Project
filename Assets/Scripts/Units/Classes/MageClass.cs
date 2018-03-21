@@ -20,6 +20,10 @@ public class MageClass : UnitClass {
 	[SerializeField]
 	AudioClip frostNovaAoeSfx;
 
+	public MageClass() {
+		className = "Mage";
+	}
+
 	// Use this for initialization
 	public override void Initialise (UnitStats casterStats) {
 		List<EventAction> arcaneBoltActions = new List<EventAction> ();

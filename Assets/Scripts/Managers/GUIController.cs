@@ -20,13 +20,16 @@ public class GUIController : MonoBehaviour {
 
 	Text objectivesBody;
 	AbilityDescriptionController abilityDescription;
+	UnitInfoController unitInfo;
 
 	// Use this for initialization
 	void Start () {
 		turnManager = GetComponentInParent<TurnManager> ();
 		uIManager = GetComponentInParent<UserInterfaceManager> ();
 		abilityDescription = transform.FindChild("AbilityDescription").GetComponent<AbilityDescriptionController> ();
-		abilityDescription.HideDescription ();
+		abilityDescription.HideWindow ();
+		unitInfo = transform.FindChild("UnitInfo").GetComponent<UnitInfoController> ();
+		unitInfo.HideWindow ();
 	}
 
 	// Update is called once per frame
@@ -61,10 +64,12 @@ public class GUIController : MonoBehaviour {
 
 	public void UnitSelected(UnitController unit) {
 		DisplayUnitAbilities (unit);
+		ShowUnitInfo (unit);
 	}
 
 	public void UnitDeselected() {
 		ClearAbilityIcons ();
+		HideUnitInfo ();
 	}
 
 	public void ClearAbilityIcons() {
@@ -129,10 +134,19 @@ public class GUIController : MonoBehaviour {
 
 	public void ShowAbilityDescription(BaseAbility ability) {
 		abilityDescription.SetAbility (ability);
-		abilityDescription.ShowDescription ();
+		abilityDescription.ShowWindow ();
 	}
 
 	public void HideAbilityDescription() {
-		abilityDescription.HideDescription ();
+		abilityDescription.HideWindow ();
+	}
+
+	public void ShowUnitInfo(UnitController unit) {
+		unitInfo.SetUnit (unit);
+		unitInfo.ShowWindow ();
+	}
+
+	public void HideUnitInfo() {
+		unitInfo.HideWindow ();
 	}
 }

@@ -6,6 +6,10 @@ public class CrazedSoulClass : UnitClass {
 
 	public AudioClip abilitySound0;
 
+	public CrazedSoulClass() {
+		className = "Crazed Soul";
+	}
+
 	// Use this for initialization
 	public override void Initialise(UnitStats casterStats) {
 		List<EventAction> dualSlashActions = new List<EventAction> ();
