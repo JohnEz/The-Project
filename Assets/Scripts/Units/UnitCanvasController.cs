@@ -26,10 +26,11 @@ public class UnitCanvasController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		myTeam = GetComponentInParent<UnitController> ().myPlayer.id;
+		UnitController myUnit = GetComponentInParent<UnitController> ();
+		myTeam = myUnit.myPlayer.id;
 		hpBar = Instantiate (hpBarPrefab).GetComponent<HpBarController>();
 		hpBar.transform.SetParent (transform, false);
-		hpBar.Initialize ();
+		hpBar.Initialize (myUnit.myStats.MaxHealth);
 		hpBar.SetHPColor (teamColours [myTeam]);
     }
 
@@ -101,8 +102,8 @@ public class UnitCanvasController : MonoBehaviour {
 		}
 	}
 
-	public void UpdateHP(float currentHP, float maxHP) {
-		hpBar.SetHP(currentHP / maxHP);
+	public void UpdateHP(int currentHP, int maxHP) {
+		hpBar.SetHP(currentHP, maxHP);
 	}
 
 	public void CreateDamageText(string damage) {
