@@ -179,7 +179,7 @@ public class UnitStats : MonoBehaviour {
 	}
 
 	public Buff FindNewestBuff(bool debuff) {
-		return Buffs.FindLast (buff => buff.isDebuff = debuff);
+		return Buffs.FindLast (buff => buff.isDebuff == debuff);
 	}
 
 	public void RemoveBuff(Buff buff, bool withEffects = true) {
