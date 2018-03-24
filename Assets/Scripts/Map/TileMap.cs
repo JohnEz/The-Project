@@ -23,6 +23,8 @@ public class TileMap : MonoBehaviour {
 	public Pathfinder pathfinder;
 	public HighlightManager highlighter;
 
+	float tileSize = 96;
+
 	// Use this for initialization
 	void Start () {
 
@@ -56,7 +58,7 @@ public class TileMap : MonoBehaviour {
 				Quaternion rot = basicNode.transform.rotation;
 				int x = i % level.maxSizeY;
 				int y = i / level.maxSizeX;
-				Vector3 pos = new Vector3 (x, -y, 0);
+				Vector3 pos = new Vector3 (x * tileSize, -y * tileSize, 0);
 
 				int id = level.layers [j].tiles [i] - 1;
 

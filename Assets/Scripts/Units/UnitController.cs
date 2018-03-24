@@ -41,7 +41,7 @@ public class UnitController : MonoBehaviour {
 
 
 	//constants
-	const float WALKSPEED = 3.25f;
+	const float WALKSPEED = 325f;
 	const float CLOSE_ENOUGH_TO_TILE = 0.005f;
 
 	//Pathfinding

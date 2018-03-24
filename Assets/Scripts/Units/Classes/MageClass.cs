@@ -29,7 +29,7 @@ public class MageClass : UnitClass {
 		List<EventAction> arcaneBoltActions = new List<EventAction> ();
 		arcaneBoltActions.Add(EventAction.CreateAudioEventAction(Event.CAST_START, arcaneBoltSfxCaster, EventTarget.CASTER));
 		arcaneBoltActions.Add(EventAction.CreateAudioEventAction(Event.CAST_END, arcaneBoltSfxHit, EventTarget.TARGETUNIT));
-		arcaneBoltActions.Add(EventAction.CreateProjectileEventAction(Event.CAST_START, arcaneBoltProjectile, 12f, 0.7f));
+		arcaneBoltActions.Add(EventAction.CreateProjectileEventAction(Event.CAST_START, arcaneBoltProjectile, 1200f, 0.7f));
 		abilities.Add(new ArcaneBolt (arcaneBoltActions, casterStats));
 
 		List<EventAction> frostNovaActions = new List<EventAction> ();

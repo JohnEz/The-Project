@@ -22,14 +22,17 @@ public class GUIController : MonoBehaviour {
 	AbilityDescriptionController abilityDescription;
 	UnitInfoController unitInfo;
 
-	// Use this for initialization
-	void Start () {
+	void Awake() {
 		turnManager = GetComponentInParent<TurnManager> ();
 		uIManager = GetComponentInParent<UserInterfaceManager> ();
 		abilityDescription = transform.FindChild("AbilityDescription").GetComponent<AbilityDescriptionController> ();
-		abilityDescription.HideWindow ();
 		unitInfo = transform.FindChild("UnitInfo").GetComponent<UnitInfoController> ();
 		unitInfo.HideWindow ();
+	}
+
+	// Use this for initialization
+	void Start () {
+		abilityDescription.HideWindow ();
 	}
 
 	// Update is called once per frame

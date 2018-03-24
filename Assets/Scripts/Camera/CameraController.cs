@@ -3,13 +3,14 @@ using System.Collections;
 
 public class CameraController : MonoBehaviour {
 
-	const float MOVE_SPEED = 12; //speed the camera moves
+	const float MOVE_SPEED = 1200; //speed the camera moves
 	const float ZOOM_SPEED = 0.1f; // speed the camera zooms
 	const float ZOOM_CHANGE = 1f; //change in camera zoom
 	const float ZOOM_CLOSE_ENOUGH = 0.02f; // how close the zoom needs to be before it snaps
 	const float MINIMUM_ZOOM = 1f; //minimum zoom value
 	const float MAXIMUM_ZOOM = 2f; //maximum zoom value
 	const float BOUNDARY = -5; //distance from edge of screen that the camera starts to move
+	const int TARGET_WIDTH = 1280;
 
 	public float mapWidth = 0;
 	public float mapHeight = 0;
@@ -22,28 +23,32 @@ public class CameraController : MonoBehaviour {
 	public float maxX = 100000;
 	public float maxY = 100000;
 
-	public float textureSize = 128f;
-	float unitsPerPixel;
+	float textureSize = 96;
 
 	float currentZoom = 1f;
 	float targetZoom = 1f;
 
-	public bool mouseMovement = false;
+	int pixelsToUnits = 1;
+
+	bool mouseMovement = false;
+
+	int height;
+
+	void Awake() {
+		//height = Mathf.RoundToInt(TARGET_WIDTH / (float)Screen.width * Screen.height);
+		//Camera.main.orthographicSize = (height / 2f) * currentZoom;
+		//Camera.main.orthographicSize = height / pixelsToUnits / 2f;
+		Camera.main.orthographicSize = Screen.height / pixelsToUnits / 2f;
+	}
 
 	// Use this for initialization
 	void Start () {
 
-
 	}
 
 	public void Initialise(TileMap map) {
-
-		unitsPerPixel = 1f / textureSize;
-
-		Camera.main.orthographicSize = ((Screen.height / 2f) * unitsPerPixel)*currentZoom;
-
-		mapHeight = map.getHeight ();
-		mapWidth = map.getWidth ();
+		mapHeight = map.getHeight () * textureSize;
+		mapWidth = map.getWidth () * textureSize;
 
 		CalculateBounds ();
 	}
@@ -52,10 +57,10 @@ public class CameraController : MonoBehaviour {
 		float vertExtent = Camera.main.GetComponent<Camera>().orthographicSize;    
 		float horzExtent = vertExtent * Screen.width / Screen.height;
 
-		minX = horzExtent - 0.5f;
-		maxX = mapHeight - horzExtent - 0.5f;
-		minY = vertExtent + 0.5f - mapWidth;
-		maxY = -vertExtent + 0.5f;
+		minX = RoundToNearestPixel(horzExtent - (0.5f * textureSize), GetComponent<Camera>());
+		maxX = RoundToNearestPixel(mapHeight - horzExtent - (0.5f * textureSize), GetComponent<Camera>());
+		minY = RoundToNearestPixel(vertExtent + (0.5f * textureSize) - mapWidth, GetComponent<Camera>());
+		maxY = RoundToNearestPixel(-vertExtent + (0.5f * textureSize), GetComponent<Camera>());
 	}
 
 	// Update is called once per frame
@@ -71,7 +76,7 @@ public class CameraController : MonoBehaviour {
 		//if the camera is moving to a destination
 		if (movingToDestination) {
 
-			if (Vector3.Distance (transform.position, targetLocation) < 0.2f) {
+			if (Vector3.Distance (transform.position, targetLocation) < 2f) {
 				movingToDestination = false;
 			}
 			//Smoothly animate towards the correct location
@@ -127,7 +132,8 @@ public class CameraController : MonoBehaviour {
 		}
 
 		if (zoomHasChanged) {
-			cam.orthographicSize = ((Screen.height / 2f) * unitsPerPixel)*currentZoom;
+			//cam.orthographicSize = ((Screen.height / 2f) * unitsPerPixel)*currentZoom;
+			cam.orthographicSize = Screen.height / 2f * currentZoom;
 			CalculateBounds ();
 		}
 	}
@@ -140,6 +146,7 @@ public class CameraController : MonoBehaviour {
 	public void MoveToTarget(Vector2 pos) {
 		movingToDestination = true;
 		Vector3 clampedTarget = GetClampedPosition (pos);
+		//Vector3 clampedTarget = pos;
 		targetLocation = new Vector3(RoundToNearestPixel(clampedTarget.x, GetComponent<Camera>()), RoundToNearestPixel(clampedTarget.y, GetComponent<Camera>()), transform.position.z);
 	}
 
