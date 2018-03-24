@@ -20,6 +20,12 @@ public class UnitManager : MonoBehaviour {
 	BaseAbility activeAbility = null;
 	List<Node> attackableTiles = new List<Node>();
 
+	Node currentlyHoveredNode;
+
+	public Node CurrentlyHoveredNode {
+		get { return currentlyHoveredNode; }
+		set { currentlyHoveredNode = value; }
+	}
 
 	// Use this for initialization
 	void Start () {
@@ -177,6 +183,10 @@ public class UnitManager : MonoBehaviour {
 		myMap.highlighter.HighlightTile (selectedUnit.myNode, SquareTarget.NONE);
 		SquareTarget targetType = activeAbility.targets == TargetType.ALLY ? SquareTarget.HELPFULL : SquareTarget.ATTACK;
 		myMap.highlighter.HighlightTiles (attackableTiles, targetType);
+
+		if (currentlyHoveredNode != null) {
+			HighlightEffectedTiles (currentlyHoveredNode);
+		}
 
 		return true;
 	}

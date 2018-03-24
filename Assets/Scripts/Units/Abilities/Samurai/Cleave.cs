@@ -22,7 +22,7 @@ public class Cleave : BaseAbility {
 			AddAbilityTarget (caster, target.myUnit, () => {
 				bool targetStillAlive = caster.DealDamageTo(target.myUnit, damageMod);
 				if (targetStillAlive) {
-					target.myUnit.ApplyBuff (new Burn (duration, caster.myStats.Power));
+					target.myUnit.ApplyBuff (new Bleed (duration, caster.myStats.Power));
 				}
 			});
 		}

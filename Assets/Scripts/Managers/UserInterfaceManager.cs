@@ -11,7 +11,6 @@ public class UserInterfaceManager : MonoBehaviour {
 	UnitManager unitManager;
 	GUIController gUIController;
 
-
 	// Use this for initialization
 	void Start () {
 		gUIController = GetComponentInChildren<GUIController> ();
@@ -81,6 +80,7 @@ public class UserInterfaceManager : MonoBehaviour {
 	}
 
 	public void TileHovered(Node node, SquareTarget target) {
+		unitManager.CurrentlyHoveredNode = node;
 		if (isShowingAbility && (target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL)) {
 			unitManager.HighlightEffectedTiles (node);
 		} else if (target == SquareTarget.MOVEMENT || target == SquareTarget.DASH || ((target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL) && node.previousMoveNode != null)) {
@@ -89,6 +89,7 @@ public class UserInterfaceManager : MonoBehaviour {
 	}
 
 	public void TileExit(Node node, SquareTarget target) {
+		unitManager.CurrentlyHoveredNode = null;
 		unitManager.UnhiglightEffectedTiles ();
 	}
 
