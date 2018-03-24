@@ -121,11 +121,11 @@ public class BaseAbility {
 
 	string name = "UNNAMED";
 
-	protected UnitStats casterStats;
+	protected UnitController caster;
 
-	public BaseAbility(List<EventAction> _eventActions, UnitStats _casterStats) {
+	public BaseAbility(List<EventAction> _eventActions, UnitController _caster) {
 		eventActions = _eventActions;
-		casterStats = _casterStats;
+		caster = _caster;
 	}
 
 	public bool IsOnCooldown() {
@@ -138,7 +138,7 @@ public class BaseAbility {
 		}
 	}
 
-	public virtual void UseAbility(UnitController caster, Node target) {
+	public virtual void UseAbility(Node target) {
 		cooldown = maxCooldown;
 
 		eventActions.ForEach ((eventAction) => {
@@ -148,7 +148,7 @@ public class BaseAbility {
 		});
 	}
 
-	public virtual void UseAbility(UnitController caster, List<Node> targets, Node target) {
+	public virtual void UseAbility(List<Node> targets, Node target) {
 		cooldown = maxCooldown;
 
 		eventActions.ForEach ((eventAction) => {
@@ -157,7 +157,7 @@ public class BaseAbility {
 					eventAction.action(caster, null, target);
 				} else if (eventAction.eventTarget == EventTarget.TARGETUNIT) {
 					targets.ForEach((targetNode) => {
-						if (CanHitUnit(caster, targetNode)) {
+						if (CanHitUnit(targetNode)) {
 							eventAction.action(caster, targetNode.myUnit, target);
 						}
 					});
@@ -167,15 +167,15 @@ public class BaseAbility {
 
 	}
 
-	public bool CanTargetTile(UnitController caster, Node targetNode) {
-		if (tileTarget == TileTarget.UNIT && !CanHitUnit (caster, targetNode)) {
+	public bool CanTargetTile(Node targetNode) {
+		if (tileTarget == TileTarget.UNIT && !CanHitUnit (targetNode)) {
 			return false;
 		}
 
 		return true;
 	}
 
-	public bool CanHitUnit(UnitController caster, Node targetNode) {
+	public bool CanHitUnit(Node targetNode) {
 
 		if (caster.myNode == targetNode && !CanTargetSelf) {
 			return false;
@@ -196,7 +196,7 @@ public class BaseAbility {
 		}
 	}
 
-	public void AddAbilityTarget(UnitController caster, UnitController target, System.Action ability) {
+	public void AddAbilityTarget(UnitController target, System.Action ability) {
 		caster.AddAbilityTarget (target, ability);
 	}
 

@@ -7,7 +7,7 @@ public class Cleave : BaseAbility {
 	float damageMod = 0.5f;
 	int duration = 5;
 
-	public Cleave(List<EventAction> _eventActions, UnitStats casterStats) : base (_eventActions, casterStats) {
+	public Cleave(List<EventAction> _eventActions, UnitController caster) : base (_eventActions, caster) {
 		range = 1;
 		areaOfEffect = AreaOfEffect.CLEAVE;
 		aoeRange = 1;
@@ -16,10 +16,10 @@ public class Cleave : BaseAbility {
 		Name = "Cleave";
 	}
 
-	public override void UseAbility (UnitController caster, Node target)
+	public override void UseAbility (Node target)
 	{
-		if (CanHitUnit(caster, target)) {
-			AddAbilityTarget (caster, target.myUnit, () => {
+		if (CanHitUnit(target)) {
+			AddAbilityTarget (target.myUnit, () => {
 				bool targetStillAlive = caster.DealDamageTo(target.myUnit, damageMod);
 				if (targetStillAlive) {
 					target.myUnit.ApplyBuff (new Bleed (duration, caster.myStats.Power));
@@ -28,13 +28,13 @@ public class Cleave : BaseAbility {
 		}
 	}
 
-	public override void UseAbility(UnitController caster, List<Node> targets, Node targetedNode) {
-		base.UseAbility (caster, targets, targetedNode);
-		targets.ForEach (target => UseAbility (caster, target));
+	public override void UseAbility(List<Node> targets, Node targetedNode) {
+		base.UseAbility (targets, targetedNode);
+		targets.ForEach (target => UseAbility (target));
 	}
 
 	public override string GetDescription() {
-		return base.GetDescription() + "Cleaves up to 3 targets infront of the samurai for " + (int)(damageMod * casterStats.Power) + " damage and applies a " + duration + " turn burn to them.";
+		return base.GetDescription() + "Cleaves up to 3 targets infront of the samurai for " + (int)(damageMod * caster.myStats.Power) + " damage and applies a " + duration + " turn burn to them.";
 	}
 
 }

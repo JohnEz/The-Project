@@ -74,7 +74,7 @@ public class UnitController : MonoBehaviour {
 		myStats.Initialise ();
 		audioController = GetComponent<UnitAudioController> ();
 		myClass = GetComponent<UnitClass> ();
-		myClass.Initialise (myStats);
+		myClass.Initialise (this);
 		projectiles = new List<ProjectileController> ();
 	}
 	
@@ -228,10 +228,10 @@ public class UnitController : MonoBehaviour {
 	public void AttackTarget(List<Node> targetNodes, BaseAbility ability) {
 		currentAbilityTarget = targetNodes [0];
 		if (ability.areaOfEffect == AreaOfEffect.SINGLE) {
-			ability.UseAbility (this, currentAbilityTarget);
+			ability.UseAbility (currentAbilityTarget);
 			FaceDirection (GetDirectionToTile(targetNodes[0]));
 		} else {
-			ability.UseAbility (this, targetNodes, currentAbilityTarget);
+			ability.UseAbility (targetNodes, currentAbilityTarget);
 		}
 		activeAbility = ability;
 		SetAttacking (true);

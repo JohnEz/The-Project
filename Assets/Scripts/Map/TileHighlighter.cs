@@ -2,6 +2,8 @@
 using System.Collections;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
+using System.Reflection;
+using System;
 
 public enum SquareTarget {
 	UNDEFINED,
@@ -12,15 +14,48 @@ public enum SquareTarget {
 	ATTACK
 }
 
+public enum SquareDecal {
+	NONE,
+	TARGET,
+	ARROW
+}
+
+struct TileState {
+	public bool hovered;
+	public bool highlighted;
+	public bool effected;
+
+	public void SetValue(string key, bool value) {
+		//TODO there must be a clean way to do this in c#
+		switch (key) {
+		case "hovered":
+			hovered = value;
+			break;
+		case "highlighted":
+			highlighted = value;
+			break;
+		case "effected":
+			effected = value;
+			break;
+		}
+	}
+}
+
 public class TileHighlighter : MonoBehaviour {
 
-	public Sprite highlightSprite;
+	//Highlights
+	public Sprite basicSprite;
 	public Sprite highlightedSprite;
+	public Sprite effectedSprite;
 	public Sprite hoverSprite;
 
-	public GameObject arrowStraight;
-	public GameObject arrowCorner;
-	public GameObject arrowEnd;
+	//Decals
+	public Sprite targetDecal;
+	public Sprite arrowStraight;
+	public Sprite arrowCorner;
+	public Sprite arrowEnd;
+
+	public GameObject tileDecalPrefab;
 
 	Color blue = new Color (0, 0.9647f, 1);
 	Color red = new Color (0.8431f, 0.2f, 0.2f);
@@ -28,26 +63,27 @@ public class TileHighlighter : MonoBehaviour {
 	Color yellow = new Color (0.9569f, 0.7294f, 0.1176f);
 	Color white = new Color (1, 1, 1);
 
-	bool showingHighlight = false;
-	bool hovered = false;
+	TileState myState;
 
-	float maxAlpha = 0.5f;
-	float minAlpha = 0.05f;
+	float maxAlpha = 1f;
+	float minAlpha = 1f;
 
 	public SquareTarget myTarget = SquareTarget.NONE;
 
-	bool effectedTile = false;
-
 	SpriteRenderer mySpriteRenderer;
 
-	GameObject myArrow;
+	List<GameObject> myDecals = new List<GameObject>();
 
 	// Use this for initialization
 	void Start () {
-		mySpriteRenderer = GetComponent<SpriteRenderer> ();
+		
 	}
 
 	public void Initialise() {
+		myState = new TileState ();
+		myState.effected = false;
+		myState.highlighted = false;
+		myState.hovered = false;
 		mySpriteRenderer = GetComponent<SpriteRenderer> ();
 	}
 	
@@ -55,54 +91,58 @@ public class TileHighlighter : MonoBehaviour {
 	void Update () {
 	
 	}
-
-	public bool EffectedTile {
-		get { return effectedTile; }
-		set { 
-			if (!hovered) {
-				mySpriteRenderer.sprite = value ? highlightedSprite : highlightSprite;
-			}
-			effectedTile = value; 
-		}
-	}
 		
 	public void OnMouseUp ()
 	{
 		Node myNode = GetComponentInParent<Node> ();
-		if (hovered) {
+		if (myState.hovered) {
 			GetComponentInParent<UserInterfaceManager> ().TileClicked (myNode, myTarget);
 		}
 	}
 
 	public void OnMouseEnter() {
-		mySpriteRenderer.sprite = hoverSprite;
-		if (!showingHighlight) {
-			updateAlpha (maxAlpha);
-		}
-		hovered = true;
+		UpdateState("hovered", true);
 		Node myNode = GetComponentInParent<Node> ();
 		GetComponentInParent<UserInterfaceManager> ().TileHovered (myNode, myTarget);
 	}
 
 	public void OnMouseExit() {
-		mySpriteRenderer.sprite = EffectedTile ? highlightedSprite : highlightSprite;
-		if (!showingHighlight) {
-			updateAlpha (minAlpha);
-		}
-		hovered = false;
+		UpdateState("hovered", false);
 		Node myNode = GetComponentInParent<Node> ();
 		GetComponentInParent<UserInterfaceManager> ().TileExit (myNode, myTarget);
 	}
 
-	public void showHighlight(bool show) {
-		showingHighlight = show;
-		float newAlpha = maxAlpha;
+	public void SetHighlighted(bool highlighted) {
+		UpdateState("highlighted", highlighted);
+	}
 
-		if (!show) {
-			newAlpha = minAlpha;
+	public void SetEffected(bool effected) {
+		UpdateState("effected", effected);
+	}
+
+	public void CleanHighlight() {
+		myState.effected = false;
+		myState.highlighted = false;
+		mySpriteRenderer.sprite = GetCurrentHighlight();
+		mySpriteRenderer.color = white;
+		ClearDecals ();
+	}
+
+	public void UpdateState(string key, bool value) {
+		myState.SetValue (key, value);
+		mySpriteRenderer.sprite = GetCurrentHighlight();
+	}
+
+	public Sprite GetCurrentHighlight() {
+		if (myState.hovered) {
+			return hoverSprite;
+		} else if (myState.effected) {
+			return effectedSprite;
+		} else if (myState.highlighted) {
+			return highlightedSprite;
+		} else {
+			return basicSprite;
 		}
-
-		updateAlpha (newAlpha);
 	}
 
 	public void updateAlpha(float alpha) {
@@ -113,9 +153,7 @@ public class TileHighlighter : MonoBehaviour {
 		mySpriteRenderer.color = newColour;
 	}
 
-	public void highlight(SquareTarget targetType) {
-		float startAlpha = mySpriteRenderer.color.a;
-
+	public void SetTargetType(SquareTarget targetType) {
 		myTarget = targetType;
 
 		switch (targetType) {
@@ -136,18 +174,16 @@ public class TileHighlighter : MonoBehaviour {
 			mySpriteRenderer.color = white;
 			break;
 		}
-
-		updateAlpha (startAlpha);
 	}
 
-	public void ShowArrow(Vector2 previous, Vector2 next) {
-		GameObject arrowPrefab;
-		Vector3 rotation = new Vector3(0, 0, 0);
+	public void CreateArrowDecal(Vector2 previous, Vector2 next) {
+		Sprite arrowSprite;
+		Vector3 rotation = new Vector3();
 		Vector2 minusDirections = next - previous;
 
 		//end arrow
 		if (next == new Vector2 (0, 0)) {
-			arrowPrefab = arrowEnd;
+			arrowSprite = arrowEnd;
 
 			if (previous.x == -1) {
 				rotation = new Vector3 (0, 0, -180);
@@ -158,13 +194,12 @@ public class TileHighlighter : MonoBehaviour {
 			}
 			//sort rotation
 		} else if (minusDirections == new Vector2 (0, 0)) {
-			arrowPrefab = arrowStraight;
+			arrowSprite = arrowStraight;
 			if (previous.y != 0) {
 				rotation = new Vector3 (0, 0, -90);
 			}
 		} else {
-			arrowPrefab = arrowCorner;
-			//Vector2 addedDirections = next - previous;
+			arrowSprite = arrowCorner;
 
 			if (minusDirections.x == -1 && minusDirections.y == -1) {
 				rotation = new Vector3 (0, 0, -90);
@@ -175,16 +210,31 @@ public class TileHighlighter : MonoBehaviour {
 			}
 		}
 			
-		myArrow = Instantiate (arrowPrefab);
-		myArrow.transform.SetParent(this.transform, false);
-		myArrow.transform.Rotate (rotation);
+		CreateDecal (arrowSprite, rotation);
 	}
 
-	public void RemoveArrow() {
-		if (myArrow != null) {
-			Destroy (myArrow);
-			myArrow = null;
+	public void ClearDecals() {
+		myDecals.ForEach (decal => {
+			Destroy(decal);
+		});
+		myDecals.Clear ();
+	}
+
+	public void AddDecal(SquareDecal decal) {
+		Sprite decalSprite;
+		switch(decal) {
+		case SquareDecal.TARGET:
+			CreateDecal(targetDecal);
+			break;
 		}
+	}
+
+	void CreateDecal(Sprite decalSprite, Vector3 rotation = new Vector3()) {
+		GameObject newDecal = Instantiate (tileDecalPrefab);
+		newDecal.GetComponent<SpriteRenderer> ().sprite = decalSprite;
+		newDecal.transform.SetParent(this.transform, false);
+		newDecal.transform.Rotate (rotation);
+		myDecals.Add (newDecal);
 	}
 
 }

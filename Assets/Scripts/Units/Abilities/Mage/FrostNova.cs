@@ -9,7 +9,7 @@ public class FrostNova : BaseAbility {
 
 	GameObject persistentSnareFxPrefab;
 
-	public FrostNova(List<EventAction> _eventActions, GameObject snareFx, UnitStats casterStats) : base (_eventActions, casterStats) {
+	public FrostNova(List<EventAction> _eventActions, GameObject snareFx, UnitController caster) : base (_eventActions, caster) {
 		range = 5;
 		areaOfEffect = AreaOfEffect.CIRCLE;
 		aoeRange = 2;
@@ -20,10 +20,10 @@ public class FrostNova : BaseAbility {
 		Name = "Frost Nova";
 	}
 
-	public override void UseAbility (UnitController caster, Node target)
+	public override void UseAbility (Node target)
 	{
-		if (CanHitUnit(caster, target)) {
-			AddAbilityTarget (caster, target.myUnit, () => {
+		if (CanHitUnit(target)) {
+			AddAbilityTarget (target.myUnit, () => {
 				bool targetStillAlive = caster.DealDamageTo(target.myUnit, damageMod);
 				if (targetStillAlive) {
 					target.myUnit.ApplyBuff (new Snare (duration, persistentSnareFxPrefab));
@@ -32,13 +32,13 @@ public class FrostNova : BaseAbility {
 		}
 	}
 
-	public override void UseAbility(UnitController caster, List<Node> targets, Node targetedNode) {
-		base.UseAbility (caster, targets, targetedNode);
-		targets.ForEach (target => UseAbility (caster, target));
+	public override void UseAbility(List<Node> targets, Node targetedNode) {
+		base.UseAbility (targets, targetedNode);
+		targets.ForEach (target => UseAbility (target));
 	}
 
 	public override string GetDescription() {
-		return base.GetDescription() + "Freezes ememies in an area, dealing " + (int)(damageMod * casterStats.Power) + " damage and snaring them for " + duration + " turns.";
+		return base.GetDescription() + "Freezes ememies in an area, dealing " + (int)(damageMod * caster.myStats.Power) + " damage and snaring them for " + duration + " turns.";
 	}
 
 }

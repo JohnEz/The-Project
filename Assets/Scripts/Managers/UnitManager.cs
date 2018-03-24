@@ -194,8 +194,7 @@ public class UnitManager : MonoBehaviour {
 	public void HighlightEffectedTiles(Node target) {
 		if (attackableTiles.Contains (target)) {
 			List<Node> effectedNodes = GetTargetNodes (activeAbility, target);
-			SquareTarget targetType = activeAbility.targets == TargetType.ALLY ? SquareTarget.HELPFULL : SquareTarget.ATTACK;
-			myMap.highlighter.SetEffectedTiles (effectedNodes, targetType);
+			myMap.highlighter.ShowAbilityTiles (effectedNodes, activeAbility);
 		}
 	}
 
@@ -205,11 +204,11 @@ public class UnitManager : MonoBehaviour {
 
 	public void ShowPath(Node targetNode) {
 		MovementPath movementPath = myMap.pathfinder.getPathFromTile (targetNode);
-		myMap.highlighter.SetEffectedTiles (movementPath.path, SquareTarget.UNDEFINED, true);
+		myMap.highlighter.ShowPath (movementPath.path);
 	}
 
 	public bool AttackTile(Node targetNode) {
-		if (!activeAbility.CanTargetTile (selectedUnit, targetNode)) {
+		if (!activeAbility.CanTargetTile (targetNode)) {
 			return false;
 		}
 

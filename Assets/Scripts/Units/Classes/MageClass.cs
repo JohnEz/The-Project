@@ -25,18 +25,18 @@ public class MageClass : UnitClass {
 	}
 
 	// Use this for initialization
-	public override void Initialise (UnitStats casterStats) {
+	public override void Initialise (UnitController caster) {
 		List<EventAction> arcaneBoltActions = new List<EventAction> ();
 		arcaneBoltActions.Add(EventAction.CreateAudioEventAction(Event.CAST_START, arcaneBoltSfxCaster, EventTarget.CASTER));
 		arcaneBoltActions.Add(EventAction.CreateAudioEventAction(Event.CAST_END, arcaneBoltSfxHit, EventTarget.TARGETUNIT));
 		arcaneBoltActions.Add(EventAction.CreateProjectileEventAction(Event.CAST_START, arcaneBoltProjectile, 1200f, 0.7f));
-		abilities.Add(new ArcaneBolt (arcaneBoltActions, casterStats));
+		abilities.Add(new ArcaneBolt (arcaneBoltActions, caster));
 
 		List<EventAction> frostNovaActions = new List<EventAction> ();
 		frostNovaActions.Add(EventAction.CreateAudioEventAction(Event.CAST_START, frostNovaCasterSfx, EventTarget.CASTER));
 		frostNovaActions.Add(EventAction.CreateAudioEventAction(Event.CAST_START, frostNovaAoeSfx, EventTarget.CASTER));
 		frostNovaActions.Add(EventAction.CreateEffectAtLocationEventAction(Event.CAST_START, frostNovaFx, 0.7f));
-		abilities.Add(new FrostNova (frostNovaActions, frostNovaDebuffFx, casterStats));
+		abilities.Add(new FrostNova (frostNovaActions, frostNovaDebuffFx, caster));
 	}
 
 }

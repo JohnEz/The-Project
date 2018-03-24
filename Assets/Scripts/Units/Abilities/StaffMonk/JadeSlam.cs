@@ -6,18 +6,18 @@ public class JadeSlam : BaseAbility {
 
 	float damageMod = 1;
 
-	public JadeSlam (List<EventAction> _eventActions, UnitStats casterStats) : base (_eventActions, casterStats) {
+	public JadeSlam (List<EventAction> _eventActions, UnitController caster) : base (_eventActions, caster) {
 		Name = "Jade Slam";
 	}
 
-	public override void UseAbility (UnitController caster, Node target)
+	public override void UseAbility (Node target)
 	{
-		base.UseAbility (caster, target);
-		AddAbilityTarget (caster, target.myUnit, () => {caster.DealDamageTo(target.myUnit, damageMod);});
+		base.UseAbility (target);
+		AddAbilityTarget (target.myUnit, () => {caster.DealDamageTo(target.myUnit, damageMod);});
 	}
 
 	public override string GetDescription() {
-		return base.GetDescription() + "Slam an enemy with all your might dealing " + (int)(damageMod * casterStats.Power) + " damage.";
+		return base.GetDescription() + "Slam an enemy with all your might dealing " + (int)(damageMod * caster.myStats.Power) + " damage.";
 	}
 
 }

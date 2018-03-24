@@ -6,7 +6,7 @@ public class Rally : BaseAbility {
 
 	int buffDuration = 3;
 
-	public Rally(List<EventAction> _eventActions, UnitStats casterStats) : base (_eventActions, casterStats) {
+	public Rally(List<EventAction> _eventActions, UnitController caster) : base (_eventActions, caster) {
 		targets = TargetType.ALLY;
 		areaOfEffect = AreaOfEffect.AURA;
 		tileTarget = TileTarget.TILE;
@@ -17,9 +17,9 @@ public class Rally : BaseAbility {
 		Name = "Rally";
 	}
 
-	public override void UseAbility (UnitController caster, Node target)
+	public override void UseAbility (Node target)
 	{
-		if (CanHitUnit(caster, target)) {
+		if (CanHitUnit(target)) {
 			caster.AddAbilityTarget (target.myUnit, () => {
 				target.myUnit.ApplyBuff (new Empower (buffDuration));
 				target.myUnit.ApplyBuff (new Momentum (buffDuration));
@@ -27,9 +27,9 @@ public class Rally : BaseAbility {
 		}
 	}
 
-	public override void UseAbility(UnitController caster, List<Node> targets, Node targetedNode) {
-		base.UseAbility (caster, targets, targetedNode);
-		targets.ForEach (target => UseAbility (caster, target));
+	public override void UseAbility(List<Node> targets, Node targetedNode) {
+		base.UseAbility (targets, targetedNode);
+		targets.ForEach (target => UseAbility (target));
 	}
 
 	public override string GetDescription() {

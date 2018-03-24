@@ -7,7 +7,7 @@ public class Cauterize : BaseAbility {
 	float healingMod = 2f;
 	int duration = 3;
 
-	public Cauterize(List<EventAction> _eventActions, UnitStats casterStats) : base (_eventActions, casterStats) {
+	public Cauterize(List<EventAction> _eventActions, UnitController caster) : base (_eventActions, caster) {
 		range = 4;
 		maxCooldown = 1;
 		targets = TargetType.ALLY;
@@ -16,17 +16,17 @@ public class Cauterize : BaseAbility {
 		Name = "Cauterize";
 	}
 
-	public override void UseAbility (UnitController caster, Node target)
+	public override void UseAbility (Node target)
 	{
-		base.UseAbility (caster, target);
-		AddAbilityTarget (caster, target.myUnit, () => {
+		base.UseAbility (target);
+		AddAbilityTarget (target.myUnit, () => {
 			caster.GiveHealingTo(target.myUnit, healingMod);
 			target.myUnit.ApplyBuff(new Burn(duration, caster.myStats.Power));
 		});
 	}
 
 	public override string GetDescription() {
-		return base.GetDescription() + "Close wounds of an ally with fire. Healing them for " + (int)(healingMod * casterStats.Power)  + " but applys a " + duration + " turn burn.";
+		return base.GetDescription() + "Close wounds of an ally with fire. Healing them for " + (int)(healingMod * caster.myStats.Power)  + " but applys a " + duration + " turn burn.";
 	}
 
 }

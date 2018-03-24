@@ -16,7 +16,7 @@ public class UnitClass : MonoBehaviour {
 
 	}
 
-	public virtual void Initialise(UnitStats casterStats) {
+	public virtual void Initialise(UnitController caster) {
 
 	}
 

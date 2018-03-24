@@ -172,7 +172,7 @@ public class Pathfinder : MonoBehaviour {
 		//Need to do a test for the starting tile
 		foreach (Neighbour neighbour in unit.myNode.neighbours) {
 			UnitController targetUnit = neighbour.node.myUnit;
-			if (targetUnit && ability.CanTargetTile (unit, neighbour.node)) {
+			if (targetUnit && ability.CanTargetTile (neighbour.node)) {
 				reachableTiles.attackTiles.Add (neighbour.node);
 				neighbour.node.previous = new Neighbour ();
 				neighbour.node.previous.node = unit.myNode;
@@ -190,7 +190,7 @@ public class Pathfinder : MonoBehaviour {
 						//if its not already highligheted or if the new parent is faster than previous
 						if (!reachableTiles.attackTiles.Contains (neighbour.node) || tile.cost < neighbour.node.previous.node.cost) {
 							UnitController targetUnit = neighbour.node.myUnit;
-							if (targetUnit && ability.CanTargetTile (unit, neighbour.node)) {
+							if (targetUnit && ability.CanTargetTile (neighbour.node)) {
 								neighbour.node.previousMoveNode = tile;
 								neighbour.node.previous = new Neighbour ();
 								neighbour.node.previous.node = tile;

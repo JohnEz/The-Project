@@ -11,10 +11,10 @@ public class CrazedSoulClass : UnitClass {
 	}
 
 	// Use this for initialization
-	public override void Initialise(UnitStats casterStats) {
+	public override void Initialise(UnitController caster) {
 		List<EventAction> dualSlashActions = new List<EventAction> ();
 		dualSlashActions.Add(EventAction.CreateAudioEventAction(Event.CAST_START, abilitySound0, EventTarget.CASTER));
-		abilities.Add(new DualSlash (dualSlashActions, casterStats));
+		abilities.Add(new DualSlash (dualSlashActions, caster));
 	}
 
 }
