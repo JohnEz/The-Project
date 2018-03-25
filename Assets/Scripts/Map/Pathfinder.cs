@@ -95,7 +95,7 @@ public class Pathfinder : MonoBehaviour {
 		List<MovementPath> paths = new List<MovementPath> ();
 		map.resetTiles ();
 		target.neighbours.ForEach (neighbour => {
-			if (neighbour.node.myUnit == null) {
+			if (neighbour.node.myUnit == null && UnitCanStandOnTile(neighbour.node, walkingType)) {
 				paths.Add(FindPath(source, neighbour.node, walkingType, faction));
 			}
 		});

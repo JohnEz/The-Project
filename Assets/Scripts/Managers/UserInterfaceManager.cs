@@ -128,7 +128,7 @@ public class UserInterfaceManager : MonoBehaviour {
 
 	public void ClickedUnselected(Node node) {
 		if (node.myUnit != null) {
-			if (unitManager.UnitAlreadySelected (node.myUnit)) {
+			if (unitManager.UnitAlreadySelected (node.myUnit) && node.myUnit.ActionPoints > 0) {
 				ShowMovement ();
 			} else {
 				SelectUnit (node.myUnit);

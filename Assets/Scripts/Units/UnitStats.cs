@@ -161,6 +161,10 @@ public class UnitStats : MonoBehaviour {
 	}
 
 	public void NewTurn() {
+
+	}
+
+	public void EndTurn() {
 		List<Buff> buffsToRemove = new List<Buff> ();
 
 		Buffs.ForEach ((buff) => {
@@ -173,10 +177,6 @@ public class UnitStats : MonoBehaviour {
 		buffsToRemove.ForEach ((buff) => {
 			RemoveBuff(buff);
 		});
-	}
-
-	public void EndTurn() {
-
 	}
 
 	public Buff FindOldestBuff(bool debuff) {
