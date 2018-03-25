@@ -274,26 +274,29 @@ public class UnitController : MonoBehaviour {
 		abilityTargets.Clear ();
 	}
 
-	public bool TakeDamage(UnitController attacker, int damage, bool ignoreArmour = false) {
+	public bool TakeDamage(UnitController attacker, int damage, bool ignoreArmour = false, bool crit = false) {
 		bool isStillAlive = true;
 
 		//if the damage has a source
 		if (attacker) {
-
+			//this could be used if the character as a reposte etc
 		}
 
-		int modifiedDamage = ignoreArmour ? damage : Mathf.Max(damage - myStats.Armour, 0);
+		int modifiedDamage = ignoreArmour ? damage : Mathf.Max(damage - myStats.DamageReduction, 0);
 
 		//check to see if attack was blocked
 		float blockRoll = Random.value * 100;
-		if (blockRoll <= myStats.Block) {
+		bool blocked = false;
+		if (!crit && blockRoll <= myStats.Block) {
+			blocked = true;
 			modifiedDamage = (int)(modifiedDamage * 0.5f);
 		}
 
 		myStats.SetHealth(myStats.Health - modifiedDamage);
 
+		string combatTextString = blocked ? "Blocked(" + modifiedDamage.ToString () + ")" : modifiedDamage.ToString ();
 		unitCanvasController.UpdateHP (myStats.Health, myStats.MaxHealth);
-		unitCanvasController.CreateDamageText (modifiedDamage.ToString ());
+		unitCanvasController.CreateDamageText (combatTextString);
 
 		if (myStats.Health > 0) {
 			anim.PlayHitAnimation ();
@@ -312,17 +315,19 @@ public class UnitController : MonoBehaviour {
 		return isStillAlive;
 	}
 
-	public bool DealDamageTo(UnitController target, float damage) {
+	public bool DealDamageTo(UnitController target, float damage, bool ignoreArmour = false) {
 
 		float endDamage = myStats.Power * damage;
+		bool crit = false;
 
 		//check to see if damage is a crit
 		float critRoll = Random.value * 100;
 		if (critRoll <= myStats.Crit) {
+			crit = true;
 			endDamage = endDamage * 1.5f;
 		}
 			
-		return target.TakeDamage (this, (int)endDamage);
+		return target.TakeDamage (this, (int)endDamage, ignoreArmour, crit);
 	}
 
 	public bool TakeHealing(UnitController caster, int healing) {

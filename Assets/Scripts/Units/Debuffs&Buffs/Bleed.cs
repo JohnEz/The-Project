@@ -8,7 +8,7 @@ public class Bleed : Buff {
 		maxStack = 5;
 		isDebuff = true;
 		flatMod [(int)Stats.DAMAGE] = (int)(power / 3);
-		icon = "buffBurn";
+		icon = "buffBleed";
 	}
 
 }

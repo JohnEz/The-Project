@@ -22,6 +22,7 @@ public class UnitStats : MonoBehaviour {
 	//scaling consts
 	const int VIT_TO_HP = 10;
 	const int INT_TO_MANA = 10;
+	const float ARMOUR_DAMAGE_REDUCTION = 0.5f;
 
 	//list of buffs and debuffs
 	List<Buff> myBuffs = new List<Buff>();
@@ -99,6 +100,10 @@ public class UnitStats : MonoBehaviour {
 
 	public int Armour {
 		get { return GetModifiedStat(baseArmour, Stats.ARMOUR); }
+	}
+
+	public int DamageReduction {
+		get { return (int)(Armour * ARMOUR_DAMAGE_REDUCTION); }
 	}
 
 	public int MaxHealth {

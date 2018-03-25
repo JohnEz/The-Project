@@ -92,7 +92,7 @@ public class UnitCanvasController : MonoBehaviour {
 		Sprite buffSprite = LoadBuffSprite(buff);
 		GameObject newBuffIcon = Instantiate (buffIconPrefab);
 		Vector3 newPosition = newBuffIcon.transform.position;
-		newPosition.x = -32 + (buffIcons.Count * 17);
+		newPosition.x = -28 + (buffIcons.Count * 25);
 		newBuffIcon.transform.position = newPosition;
 		newBuffIcon.transform.SetParent (transform, false);
 		buffIcons.Add (newBuffIcon);

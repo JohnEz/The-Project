@@ -7,7 +7,7 @@ public class Armour : Buff {
 		name = "Armour";
 		icon = "buffArmour";
 		maxStack = 5;
-		flatMod [(int)Stats.ARMOUR] = 1;
+		percentMod [(int)Stats.ARMOUR] = 1.2f;
 	}
 
 }
