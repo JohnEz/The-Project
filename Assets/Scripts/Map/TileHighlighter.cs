@@ -125,6 +125,7 @@ public class TileHighlighter : MonoBehaviour {
 		myState.highlighted = false;
 		mySpriteRenderer.sprite = GetCurrentHighlight();
 		mySpriteRenderer.color = white;
+		myTarget = SquareTarget.NONE;
 		ClearDecals ();
 	}
 

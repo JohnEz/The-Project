@@ -33,7 +33,7 @@ public class AbilityIconController : MonoBehaviour, IPointerClickHandler, IPoint
 	}
 
 	void Update () {
-		if (onCooldown != myAbility.IsOnCooldown ()) {
+		if (myAbility != null && onCooldown != myAbility.IsOnCooldown ()) {
 			onCooldown = myAbility.IsOnCooldown ();
 			GetComponent<Image> ().color = onCooldown ? fadedColor : Color.white;
 			GetComponentInChildren<Text> ().text = myAbility.cooldown.ToString();
