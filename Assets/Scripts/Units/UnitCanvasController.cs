@@ -3,7 +3,14 @@ using System.Collections;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
+struct CombatText {
+	public string text;
+	public Color colour;
+}
+
 public class UnitCanvasController : MonoBehaviour {
+
+	const float COMBAT_TEXT_THROTTLE = 0.5f;
 
 	public GameObject hpBarPrefab;
 	public GameObject damageTextPrefab;
@@ -13,6 +20,9 @@ public class UnitCanvasController : MonoBehaviour {
 	HpBarController hpBar;
 	Stack<GameObject> actionPoints = new Stack<GameObject>();
 	List<GameObject> buffIcons = new List<GameObject> ();
+	Queue<CombatText> combatTextQueue = new Queue<CombatText>();
+
+	bool canCreateCombatText = true;
 
 	int myTeam;
 
@@ -66,7 +76,13 @@ public class UnitCanvasController : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+		//TODO this is really bad to delete and make these buffs each time
 		UpdateBuffs (GetComponentInParent<UnitStats> ().Buffs);
+		//TODO there might be a better way to not check for this each time as well
+		if (combatTextQueue.Count > 0 && canCreateCombatText) {
+			CombatText combatText = combatTextQueue.Dequeue ();
+			CreateCombatText (combatText.text, combatText.colour);
+		}
 	}
 
 	public void UpdateBuffs(List<Buff> buffs) {
@@ -107,18 +123,40 @@ public class UnitCanvasController : MonoBehaviour {
 	}
 
 	public void CreateDamageText(string damage) {
-		CreateCombatText(damage, new Color(0.8431f, 0.2f, 0.2f));
+		CreateCombatText (damage, new Color (0.8431f, 0.2f, 0.2f));
 	}
 
 	public void CreateHealText(string healing) {
-		CreateCombatText(healing, new Color(0.7294f, 0.9569f, 0.1176f));
+		CreateCombatText (healing, new Color (0.7294f, 0.9569f, 0.1176f));
 	}
 
-	public void CreateCombatText(string text, Color color) {
+	public void CreateBasicText(string healing) {
+		CreateCombatText (healing, new Color (1f, 1f, 1f));
+	}
+
+	public void CreateCombatText(string text, Color colour) {
+		if (canCreateCombatText) {
+			SpawnCombatText (text, colour);
+		} else {
+			CombatText newText;
+			newText.text = text;
+			newText.colour = colour;
+			combatTextQueue.Enqueue (newText);
+		}
+	}
+
+	public void SpawnCombatText(string text, Color color) {
+		canCreateCombatText = false;
 		GameObject newDamageText = Instantiate (damageTextPrefab);
 		newDamageText.GetComponent<Text> ().text = text;
 		newDamageText.GetComponent<Text> ().color = color;
 		newDamageText.transform.SetParent(this.transform);
+		StartCoroutine (AllowCreateCombatText ());
+	}
+
+	IEnumerator AllowCreateCombatText() {
+		yield return new WaitForSeconds (COMBAT_TEXT_THROTTLE);
+		canCreateCombatText = true;
 	}
 
 }

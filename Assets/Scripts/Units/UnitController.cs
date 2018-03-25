@@ -304,9 +304,10 @@ public class UnitController : MonoBehaviour {
 		//check to see if attack was blocked
 		float blockRoll = Random.value * 100;
 		bool blocked = false;
-		if (!crit && blockRoll <= myStats.Block) {
+		if (!ignoreArmour && !crit && blockRoll <= myStats.Block) {
 			blocked = true;
 			modifiedDamage = (int)(modifiedDamage * 0.5f);
+			unitCanvasController.CreateBasicText ("Block");
 		}
 
 		myStats.SetHealth(myStats.Health - modifiedDamage);
