@@ -20,7 +20,6 @@ public class UnitAnimationController : MonoBehaviour {
 		if (anim.GetCurrentAnimatorStateInfo(0).IsName("Attacking") &&
 			anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.95f) {
 			IsAttacking (false);
-			GetComponentInParent<UnitController> ().FinishedAttacking ();
 		}
 
 		if (anim.GetCurrentAnimatorStateInfo(0).IsName("Death") &&
@@ -53,6 +52,7 @@ public class UnitAnimationController : MonoBehaviour {
 	public void IsAttacking(bool attacking) {
 		isAttacking = attacking;
 		GetComponent<Animator> ().SetBool ("isAttacking", attacking);
+		GetComponentInParent<UnitController> ().SetAttackAnimationPlaying (attacking);
 	}
 
 	public void IsSelected(bool selected) {

@@ -135,7 +135,7 @@ public class UnitManager : MonoBehaviour {
 	}
 
 	// shows movement and attack tiles
-	public void ShowActions(UnitController unit = null) {
+	public MovementAndAttackPath ShowActions(UnitController unit = null) {
 		unit = unit == null ? selectedUnit : unit;
 
 		myMap.highlighter.UnhighlightAllTiles ();
@@ -148,6 +148,8 @@ public class UnitManager : MonoBehaviour {
 		myMap.highlighter.HighlightTiles (reachableTiles.movementTiles.basic.Keys.ToList(), SquareTarget.MOVEMENT);
 		myMap.highlighter.HighlightTiles (reachableTiles.movementTiles.extended.Keys.ToList(), SquareTarget.DASH);
 		myMap.highlighter.HighlightTiles (reachableTiles.attackTiles, SquareTarget.ATTACK);
+
+		return reachableTiles;
 	}
 
 	public bool ShowAbility(int ability) {
@@ -207,8 +209,13 @@ public class UnitManager : MonoBehaviour {
 		myMap.highlighter.ShowPath (movementPath.path);
 	}
 
-	public bool AttackTile(Node targetNode) {
-		if (!activeAbility.CanTargetTile (targetNode)) {
+	public bool AttackTile(Node targetNode, BaseAbility ability = null) {
+
+		if (ability == null) {
+			ability = activeAbility;
+		}
+
+		if (ability != null && !ability.CanTargetTile (targetNode)) {
 			return false;
 		}
 
@@ -219,10 +226,10 @@ public class UnitManager : MonoBehaviour {
 
 		Action attackAction = new Action();
 		attackAction.type = ActionType.ATTACK;
-		attackAction.ability = activeAbility;
-		attackAction.nodes = GetTargetNodes(activeAbility, targetNode);
+		attackAction.ability = ability;
+		attackAction.nodes = GetTargetNodes(ability, targetNode);
 
-		selectedUnit.AddAction (attackAction);
+		ability.caster.AddAction (attackAction);
 
 		return true;
 	}

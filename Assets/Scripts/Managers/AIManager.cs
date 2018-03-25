@@ -7,16 +7,16 @@ using System.Linq;
 public class AIManager : MonoBehaviour {
 
 	UnitManager unitManager;
+	TurnManager turnManager;
 
 	List<UnitController> myUnits;
 
 	TileMap myMap;
 
-	Dictionary<UnitController, List<System.Action>> unitActions;
 
 	// Use this for initialization
 	void Start () {
-		unitActions = new Dictionary<UnitController, List<System.Action>> ();
+
 	}
 
 	// Update is called once per frame
@@ -26,6 +26,7 @@ public class AIManager : MonoBehaviour {
 
 	public void Initialise(TileMap map) {
 		unitManager = GetComponent<UnitManager> ();
+		turnManager = GetComponent<TurnManager> ();
 		myMap = map;
 	}
 
@@ -35,13 +36,14 @@ public class AIManager : MonoBehaviour {
 	}
 
 	// NewTurn is called at the start of each of the AIs turns.
-	public void NewTurn(int myPlayerId) {
+	public IEnumerator NewTurn(int myPlayerId) {
 		myUnits = unitManager.Units.Where (unit => unit.myPlayer.id == myPlayerId).ToList ();
-		unitActions.Clear ();
 
 		foreach (UnitController unit in myUnits) {
-			PlanTurn (unit);
+			yield return PlanTurn (unit);
 		}
+
+		turnManager.EndTurn ();
 	}
 
 	public List<MovementPath> FindPathsToEnemies(UnitController unit) {
@@ -49,32 +51,115 @@ public class AIManager : MonoBehaviour {
 
 		foreach (UnitController otherUnit in unitManager.Units) {
 			if (otherUnit.myPlayer.faction != unit.myPlayer.faction) {
-				MovementPath pathToEnemy = myMap.pathfinder.FindPath (unit.myNode, otherUnit.myNode, unit.myStats.walkingType, unit.myPlayer.faction);
-				pathsToEnemies.Add (pathToEnemy);
+				MovementPath pathToEnemy = myMap.pathfinder.FindShortestPathToUnit (unit.myNode, otherUnit.myNode, unit.myStats.walkingType, unit.myPlayer.faction);
+				if (pathToEnemy.movementCost != -1) {
+					pathsToEnemies.Add (pathToEnemy);
+				}
 			}
 		}
 
 		return pathsToEnemies;
 	}
 
-	public void PlanTurn(UnitController unit) {
-		List<System.Action> actions = new List<System.Action> ();
+	public MovementAndAttackPath GetReachableTiles(UnitController unit) {
+		UnitClass unitClass = unit.GetComponent<UnitClass>();
+		MovementAndAttackPath reachableTiles = myMap.pathfinder.findMovementAndAttackTiles (unit, unitClass.abilities [0], unit.myStats.ActionPoints);
+		return reachableTiles;
+	}
+
+	public void PlanTurnLegacy(UnitController unit) {
+		UnitClass unitClass = unit.GetComponent<UnitClass>();
 		unitManager.SelectUnit (unit);
-		List<MovementPath> paths = FindPathsToEnemies (unit);
+		MovementAndAttackPath reachableTiles = GetReachableTiles (unit);
 
-		MovementPath shortestPath = new MovementPath();
-		shortestPath.movementCost = -1;
+		if (reachableTiles.attackTiles.Count > 0) {
+			Node attackTarget = reachableTiles.attackTiles [0];
+			MovementPath currentPath = myMap.pathfinder.getPathFromTile (attackTarget);
 
-		foreach (MovementPath path in paths) {
-			if (shortestPath.movementCost == -1 || path.movementCost < shortestPath.movementCost) {
-				shortestPath = path;
+			reachableTiles.attackTiles.ForEach (attackTile => {
+				MovementPath newPath = myMap.pathfinder.getPathFromTile (attackTile);
+
+				if (newPath.movementCost < currentPath.movementCost) {
+					currentPath = newPath;
+					attackTarget = attackTile;
+				}
+			});
+				
+			unitManager.AttackTile (attackTarget, unitClass.abilities [0]);
+
+			if (currentPath.movementCost-1 > 1) {
+				unitManager.AttackTile (attackTarget, unitClass.abilities [0]);
 			}
+
+		} else {
+			List<MovementPath> paths = FindPathsToEnemies (unit);
+
+			MovementPath shortestPath = new MovementPath();
+			shortestPath.movementCost = -1;
+
+			foreach (MovementPath path in paths) {
+				if (shortestPath.movementCost == -1 || path.movementCost < shortestPath.movementCost) {
+					shortestPath = path;
+				}
+			}
+
+			shortestPath.path.RemoveAt (shortestPath.path.Count - 1);
+
+			unitManager.SetUnitPath (shortestPath);
 		}
 
-		shortestPath.path.RemoveAt (shortestPath.path.Count - 1);
+	}
 
-		bool inRangeToAttack = shortestPath.movementCost <= unit.myStats.Speed;
+	public Dictionary<BaseAbility, List<Node>> GetPotentialAbilityTargets(UnitController unit) {
+		Dictionary<BaseAbility, List<Node>> potentialAbilityTargets = new Dictionary<BaseAbility, List<Node>>();
+		UnitClass unitClass = unit.GetComponent<UnitClass>();
 
+		unitClass.abilities.ForEach (ability => {
+			List<Node> attackableTiles = myMap.pathfinder.FindAttackableTiles (unit.myNode, ability);
 
+			attackableTiles = attackableTiles.Where(tile => ability.CanHitUnit(tile)).ToList();
+
+			potentialAbilityTargets.Add(ability, attackableTiles);
+		});
+
+		return potentialAbilityTargets;
+	}
+
+	public IEnumerator PlanTurn(UnitController unit) {
+		UnitClass unitClass = unit.GetComponent<UnitClass>();
+		//unitManager.SelectUnit (unit);
+
+		while (unit.myStats.ActionPoints > 0) {
+			yield return WaitForWaitingForInput ();
+			unitManager.SelectUnit (unit);
+
+			Dictionary<BaseAbility, List<Node>> potentialAbilityTargets = GetPotentialAbilityTargets(unit);
+
+			if (potentialAbilityTargets [unitClass.abilities [0]].Count > 0) {
+				unitManager.AttackTile (potentialAbilityTargets [unitClass.abilities [0]] [0], unitClass.abilities [0]);
+			} else if (unit.myStats.Speed > 0) {
+				List<MovementPath> paths = FindPathsToEnemies (unit);
+				if (paths.Count > 0) {
+					MovementPath shortestPath = Pathfinder.GetSortestPath (paths);
+					//TODO we need to check if there is a unit on the tile speed away
+					shortestPath.path = shortestPath.path.Take (unit.myStats.Speed * unit.myStats.ActionPoints).ToList ();
+					unitManager.SetUnitPath (shortestPath);
+				} else {
+					//end turn
+					unit.ActionPoints = 0;
+				}
+			} else {
+				//end turn
+				unit.ActionPoints = 0;
+			}
+			unitManager.DeselectUnit ();
+		}
+			
+		yield return WaitForWaitingForInput ();
+
+	}
+
+	public IEnumerator WaitForWaitingForInput() {
+		return new WaitUntil (() => turnManager.CurrentPhase == TurnPhase.WAITING_FOR_INPUT);
 	}
 }

@@ -58,6 +58,9 @@ public class UnitController : MonoBehaviour {
 	Queue<Action> actionQueue = new Queue<Action>();
 	List<ProjectileController> projectiles;
 	Node currentAbilityTarget;
+	int effectsToCreate = 0;
+	bool isAttackAnimationPlaying = false;
+	List<GameObject> abilityEffects = new List<GameObject>();
 
 	// Use this for initialization
 	void Start () {
@@ -212,6 +215,8 @@ public class UnitController : MonoBehaviour {
 		}
 		myNode.myUnit = null;
 		myPath = path;
+		myPath[myPath.Count-1].myUnit = this;
+		myNode = myPath [myPath.Count-1];
 		FaceDirection (myPath [0].previous.direction);
 		SetWalking(true);
 		myManager.UnitStartedMoving ();
@@ -219,8 +224,6 @@ public class UnitController : MonoBehaviour {
 
 	private void FinishWalking() {
 		anim.IsWalking (false);
-		myPath [0].myUnit = this;
-		myNode = myPath [0];
 		RunNextAction (true);
 		myManager.UnitFinishedMoving ();
 	}
@@ -237,20 +240,32 @@ public class UnitController : MonoBehaviour {
 		SetAttacking (true);
 		ActionPoints--;
 		myManager.UnitStartedAttacking ();
+		StartCoroutine (AttackRoutine());
 	}
 
-	public void FinishedAttacking() {
+	public void SetAttackAnimationPlaying(bool isPlaying) {
+		isAttackAnimationPlaying = isPlaying;
+	}
+
+	public IEnumerator AttackRoutine() {
+		//make sure projects have been destroyed
+		yield return new WaitUntil(() => !isAttackAnimationPlaying && projectiles.Count < 1);
 		RunAbilityTargets ();
+
+		//wait for effects to end
+		yield return new WaitUntil(() => effectsToCreate == 0 && abilityEffects.Count < 1);
+
 		ClearAbilityTargets ();
 		currentAbilityTarget = null;
-		RunNextAction (true);
 		myManager.UnitFinishedAttacking ();
+		RunNextAction (true);
 	}
 
 	public void AddAbilityTarget(UnitController target, System.Action ability) {
 		abilityTargets.Add (new AbilityTarget (target, ability));
 	}
 
+	//TODO COME UP WITH A BETTER NAME - means deal damage / show cast events
 	public void RunAbilityTargets() {
 		foreach (AbilityTarget target in abilityTargets) {
 			target.abilityFunction ();
@@ -272,6 +287,8 @@ public class UnitController : MonoBehaviour {
 
 	public void ClearAbilityTargets() {
 		abilityTargets.Clear ();
+		//effectsToCreate = 0;
+		//abilityEffects.Clear ();
 	}
 
 	public bool TakeDamage(UnitController attacker, int damage, bool ignoreArmour = false, bool crit = false) {
@@ -294,9 +311,8 @@ public class UnitController : MonoBehaviour {
 
 		myStats.SetHealth(myStats.Health - modifiedDamage);
 
-		string combatTextString = blocked ? "Blocked(" + modifiedDamage.ToString () + ")" : modifiedDamage.ToString ();
 		unitCanvasController.UpdateHP (myStats.Health, myStats.MaxHealth);
-		unitCanvasController.CreateDamageText (combatTextString);
+		unitCanvasController.CreateDamageText (modifiedDamage.ToString ());
 
 		if (myStats.Health > 0) {
 			anim.PlayHitAnimation ();
@@ -379,24 +395,30 @@ public class UnitController : MonoBehaviour {
 		buff.persistentFx = myEffect;
 	}
 
-	public IEnumerator CreateEffect(GameObject effect, float delay = 0) {
-		yield return new WaitForSeconds (delay);
-		GameObject myEffect =  Instantiate (effect);
-		myEffect.transform.SetParent (transform, false);
+	IEnumerator CreateEffect(GameObject effect, float delay = 0) {
+		return CreateEffectAtLocation (myNode, effect, delay);
 	}
 
-	static IEnumerator CreateEffectAtLocation(Node location, GameObject effect, float delay = 0) {
+	IEnumerator CreateEffectAtLocation(Node location, GameObject effect, float delay = 0) {
 		yield return new WaitForSeconds (delay);
 		GameObject myEffect =  Instantiate (effect);
 		myEffect.transform.SetParent (location.transform, false);
+		myEffect.GetComponent<SpriteFxController> ().Initialise (this);
+		abilityEffects.Add (myEffect);
+		effectsToCreate--;
 	}
 
 	public void CreateEffectWithDelay(GameObject effect, float delay, Node location = null) {
+		effectsToCreate++;
 		if (location != null) {
 			StartCoroutine (CreateEffectAtLocation (location, effect, delay));
 		} else {
 			StartCoroutine (CreateEffect (effect, delay));
 		}
+	}
+
+	public void RemoveEffect(GameObject effectToRemove) {
+		abilityEffects.Remove (effectToRemove);
 	}
 
 	public IEnumerator CreateProjectile(GameObject projectile, Node target, float speed, float delay = 0) {

@@ -79,7 +79,7 @@ public class TurnManager : MonoBehaviour {
 		Player p1 = new Player ();
 		p1.id = 1;
 		p1.name = "Player 2";
-		p1.ai = false;
+		p1.ai = true;
 		p1.faction = 2;
 		players.Add (p1);
 
@@ -109,14 +109,15 @@ public class TurnManager : MonoBehaviour {
 
 		gUIController.StartNewTurn (alliedTurn, objectiveManager.getObjectives(players[playersTurn]));
 
-		if (players [playersTurn].ai) {
-			aiManager.NewTurn (playersTurn);
-		}
-
 		uIManager.StartTurn ();
 
 		// Had error when unit died at turn start
-		cameraManager.MoveToLocation (unitManager.SelectedUnit.myNode);
+		if (!isAiTurn ()) {
+			cameraManager.MoveToLocation (unitManager.SelectedUnit.myNode);
+		} else {
+			StartCoroutine(aiManager.NewTurn (playersTurn));
+		}
+
 	}
 
 	public void EndTurn() {
@@ -169,6 +170,6 @@ public class TurnManager : MonoBehaviour {
 	}
 
 	public bool isAiTurn() {
-		return players [playersTurn].ai;
+		return players != null && players [playersTurn].ai;
 	}
 }

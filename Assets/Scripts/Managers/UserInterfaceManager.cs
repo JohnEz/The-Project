@@ -48,7 +48,12 @@ public class UserInterfaceManager : MonoBehaviour {
 	}
 
 	void UserControls() {
-		if (turnManager.CurrentPhase == TurnPhase.WAITING_FOR_INPUT) {
+
+		if (Input.GetKeyUp ("space")) {
+			turnManager.EndTurn ();
+		}
+
+		if (turnManager.CurrentPhase == TurnPhase.WAITING_FOR_INPUT && !turnManager.isAiTurn()) {
 			if (Input.GetKeyUp ("1")) {
 				ShowAbility (0);
 			}
@@ -58,7 +63,7 @@ public class UserInterfaceManager : MonoBehaviour {
 			}
 
 			if (Input.GetKeyUp ("space")) {
-				turnManager.EndTurn ();
+				//turnManager.EndTurn ();
 			}
 
 			//Cancel (right click)
@@ -140,7 +145,9 @@ public class UserInterfaceManager : MonoBehaviour {
 	}
 
 	public void StartTurn() {
-		SelectNextUnit ();
+		if (!turnManager.isAiTurn ()) {
+			SelectNextUnit ();
+		}
 	}
 
 	public void EndTurn() {

@@ -121,7 +121,7 @@ public class BaseAbility {
 
 	string name = "UNNAMED";
 
-	protected UnitController caster;
+	public UnitController caster;
 
 	public BaseAbility(List<EventAction> _eventActions, UnitController _caster) {
 		eventActions = _eventActions;

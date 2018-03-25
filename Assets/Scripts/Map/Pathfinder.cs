@@ -6,7 +6,7 @@ using System.Linq;
 
 public struct MovementPath {
 	public List<Node> path;
-	public List<Node> dashPath;
+	//public List<Node> dashPath;
 	public int movementCost;
 }
 
@@ -91,11 +91,48 @@ public class Pathfinder : MonoBehaviour {
 		return reachableTiles;
 	}
 
+	public MovementPath FindShortestPathToUnit(Node source, Node target, Walkable walkingType, int faction) {
+		List<MovementPath> paths = new List<MovementPath> ();
+		map.resetTiles ();
+		target.neighbours.ForEach (neighbour => {
+			if (neighbour.node.myUnit == null) {
+				paths.Add(FindPath(source, neighbour.node, walkingType, faction));
+			}
+		});
+
+		/*List<MovementPath> pathsWithoutUnitsAtEnd = paths.Where (movementPath => {
+			return movementPath.movementCost > -1 && 
+				movementPath.path [movementPath.path.Count-1].myUnit == null;
+		}).ToList();*/
+
+
+		//return GetSortestPath (pathsWithoutUnitsAtEnd.Count > 0 ? pathsWithoutUnitsAtEnd : paths);
+		return GetSortestPath (paths);
+	}
+
+	public static MovementPath GetSortestPath(List<MovementPath> paths) {
+		MovementPath shortestPath = new MovementPath();
+		shortestPath.movementCost = -1;
+		bool foundPath = false;
+
+		foreach (MovementPath path in paths) {
+			if (path.movementCost != -1 && (!foundPath || path.movementCost < shortestPath.movementCost)) {
+				shortestPath = path;
+				foundPath = true;
+			}
+		}
+
+		//shortestPath.path.RemoveAt (shortestPath.path.Count - 1);
+
+		return shortestPath;
+	}
+
 	public MovementPath FindPath(Node source, Node target, Walkable walkingType, int faction) {
 		map.resetTiles ();
 
 		List<Node> openList = new List<Node> ();
 		MovementPath path = new MovementPath ();
+		path.movementCost = -1;
 
 		source.cost = 0;
 
