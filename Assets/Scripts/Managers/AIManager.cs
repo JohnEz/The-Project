@@ -61,55 +61,6 @@ public class AIManager : MonoBehaviour {
 		return pathsToEnemies;
 	}
 
-	public MovementAndAttackPath GetReachableTiles(UnitController unit) {
-		UnitClass unitClass = unit.GetComponent<UnitClass>();
-		MovementAndAttackPath reachableTiles = myMap.pathfinder.findMovementAndAttackTiles (unit, unitClass.abilities [0], unit.myStats.ActionPoints);
-		return reachableTiles;
-	}
-
-	public void PlanTurnLegacy(UnitController unit) {
-		UnitClass unitClass = unit.GetComponent<UnitClass>();
-		unitManager.SelectUnit (unit);
-		MovementAndAttackPath reachableTiles = GetReachableTiles (unit);
-
-		if (reachableTiles.attackTiles.Count > 0) {
-			Node attackTarget = reachableTiles.attackTiles [0];
-			MovementPath currentPath = myMap.pathfinder.getPathFromTile (attackTarget);
-
-			reachableTiles.attackTiles.ForEach (attackTile => {
-				MovementPath newPath = myMap.pathfinder.getPathFromTile (attackTile);
-
-				if (newPath.movementCost < currentPath.movementCost) {
-					currentPath = newPath;
-					attackTarget = attackTile;
-				}
-			});
-				
-			unitManager.AttackTile (attackTarget, unitClass.abilities [0]);
-
-			if (currentPath.movementCost-1 > 1) {
-				unitManager.AttackTile (attackTarget, unitClass.abilities [0]);
-			}
-
-		} else {
-			List<MovementPath> paths = FindPathsToEnemies (unit);
-
-			MovementPath shortestPath = new MovementPath();
-			shortestPath.movementCost = -1;
-
-			foreach (MovementPath path in paths) {
-				if (shortestPath.movementCost == -1 || path.movementCost < shortestPath.movementCost) {
-					shortestPath = path;
-				}
-			}
-
-			shortestPath.path.RemoveAt (shortestPath.path.Count - 1);
-
-			unitManager.SetUnitPath (shortestPath);
-		}
-
-	}
-
 	public Dictionary<BaseAbility, List<Node>> GetPotentialAbilityTargets(UnitController unit) {
 		Dictionary<BaseAbility, List<Node>> potentialAbilityTargets = new Dictionary<BaseAbility, List<Node>>();
 		UnitClass unitClass = unit.GetComponent<UnitClass>();

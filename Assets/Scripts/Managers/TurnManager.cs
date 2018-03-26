@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public enum TurnPhase {
 	TURN_STARTING,
@@ -79,7 +80,7 @@ public class TurnManager : MonoBehaviour {
 		Player p1 = new Player ();
 		p1.id = 1;
 		p1.name = "Player 2";
-		p1.ai = false;
+		p1.ai = MatchDetails.VersusAi;
 		p1.faction = 2;
 		players.Add (p1);
 
@@ -124,7 +125,8 @@ public class TurnManager : MonoBehaviour {
 		ChangeState(TurnPhase.TURN_ENDING);
 		unitManager.DeselectUnit();
 		if (objectiveManager.CheckObjectives (players [playersTurn])) {
-			Application.Quit ();
+			MenuSystem.SceneToLoad = Scenes.MAIN_MENU;
+			SceneManager.LoadScene (Scenes.LOADING);
 		} else {
 			unitManager.EndTurn (playersTurn);
 			StartNewTurn ();

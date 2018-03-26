@@ -220,7 +220,9 @@ public class UnitManager : MonoBehaviour {
 		}
 
 		if (targetNode.previousMoveNode) {
-			MovementPath movementPath = myMap.pathfinder.getPathFromTile (targetNode.previousMoveNode);
+			//MovementPath movementPath = myMap.pathfinder.getPathFromTile (targetNode.previousMoveNode);
+			UnitController currentUnit = selectedUnit != null ? selectedUnit : ability.caster;
+			MovementPath movementPath = myMap.pathfinder.FindPath (currentUnit.myNode, targetNode.previousMoveNode, currentUnit.myStats.WalkingType, currentUnit.myPlayer.faction);
 			SetUnitPath (movementPath);
 		}
 

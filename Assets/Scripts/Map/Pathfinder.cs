@@ -237,6 +237,7 @@ public class Pathfinder : MonoBehaviour {
 						}
 					}
 				}
+
 			}
 		}
 		return reachableTiles;

@@ -10,12 +10,14 @@ public class UserInterfaceManager : MonoBehaviour {
 	TurnManager turnManager;
 	UnitManager unitManager;
 	GUIController gUIController;
+	PauseMenuController pauseMenuController;
 
 	// Use this for initialization
 	void Start () {
 		gUIController = GetComponentInChildren<GUIController> ();
 		turnManager = GetComponentInParent<TurnManager> ();
 		unitManager = GetComponentInParent<UnitManager> ();
+		pauseMenuController = GetComponentInChildren<PauseMenuController> ();
 		turnManager.Initialise ();
 	}
 	
@@ -49,8 +51,18 @@ public class UserInterfaceManager : MonoBehaviour {
 
 	void UserControls() {
 
+		//temp for ai
 		if (Input.GetKeyUp ("space")) {
 			turnManager.EndTurn ();
+		}
+
+		//Cancel (right click)
+		if (Input.GetKeyUp (KeyCode.Escape) && !isShowingAbility) {
+			if (PauseMenuController.gameIsPaused) {
+				pauseMenuController.Resume ();
+			} else {
+				pauseMenuController.Pause ();
+			}
 		}
 
 		if (turnManager.CurrentPhase == TurnPhase.WAITING_FOR_INPUT && !turnManager.isAiTurn()) {
@@ -67,7 +79,7 @@ public class UserInterfaceManager : MonoBehaviour {
 			}
 
 			//Cancel (right click)
-			if (Input.GetKeyUp (KeyCode.Escape) || Input.GetMouseButtonUp(1)) {
+			if ((Input.GetMouseButtonUp(1) || Input.GetKeyUp (KeyCode.Escape)) && isShowingAbility) {
 				if (isShowingAbility) {
 					ShowMovement ();
 				}
