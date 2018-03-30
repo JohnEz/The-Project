@@ -22,8 +22,7 @@ public class PauseMenuController : MonoBehaviour
 
 	public void LoadMainMenu () {
 		Resume ();
-		MenuSystem.SceneToLoad = Scenes.MAIN_MENU;
-		SceneManager.LoadScene (Scenes.LOADING);
+		MenuSystem.LoadScene (Scenes.MAIN_MENU);
 	}
 
 	public void ExitGame () {

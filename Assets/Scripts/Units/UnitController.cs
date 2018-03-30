@@ -332,9 +332,9 @@ public class UnitController : MonoBehaviour {
 		return isStillAlive;
 	}
 
-	public bool DealDamageTo(UnitController target, float damage, bool ignoreArmour = false) {
+	public bool DealDamageTo(UnitController target, float damageMod, bool ignoreArmour = false, float flatDamage = 0) {
 
-		float endDamage = myStats.Power * damage;
+		float endDamage = (myStats.Power * damageMod) + flatDamage;
 		bool crit = false;
 
 		//check to see if damage is a crit

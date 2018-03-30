@@ -125,8 +125,7 @@ public class TurnManager : MonoBehaviour {
 		ChangeState(TurnPhase.TURN_ENDING);
 		unitManager.DeselectUnit();
 		if (objectiveManager.CheckObjectives (players [playersTurn])) {
-			MenuSystem.SceneToLoad = Scenes.MAIN_MENU;
-			SceneManager.LoadScene (Scenes.LOADING);
+			MenuSystem.LoadScene (Scenes.MAIN_MENU);
 		} else {
 			unitManager.EndTurn (playersTurn);
 			StartNewTurn ();

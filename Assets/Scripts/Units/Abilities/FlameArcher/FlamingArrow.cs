@@ -2,15 +2,15 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Engulf : BaseAbility {
+public class FlamingArrow : BaseAbility {
 
-	float damageMod = 0.75f;
+	float damageMod = 1f;
 	int duration = 3;
 
-	public Engulf(List<EventAction> _eventActions, UnitController caster) : base (_eventActions, caster) {
-		range = 4;
-		icon = "abilityEngulfController";
-		Name = "Engulf";
+	public FlamingArrow(List<EventAction> _eventActions, UnitController caster) : base (_eventActions, caster) {
+		range = 6;
+		icon = "abilityArcaneBoltController";
+		Name = "Flaming Arrow";
 	}
 
 	public override void UseAbility (Node target)
@@ -25,7 +25,7 @@ public class Engulf : BaseAbility {
 	}
 
 	public override string GetDescription() {
-		return base.GetDescription() + "Burns an enemy for " + (int)(damageMod * caster.myStats.Power) + " and applies a " + duration + " turn burn.";
+		return base.GetDescription() + "Shoots a flaming arrow that burns an enemy for " + (int)(damageMod * caster.myStats.Power) + " and applies a " + duration + " turn burn.";
 	}
 
 }

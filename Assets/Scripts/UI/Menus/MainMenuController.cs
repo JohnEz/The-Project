@@ -16,8 +16,7 @@ public class MainMenuController : MonoBehaviour
 	}
 
 	void LoadArena() {
-		MenuSystem.SceneToLoad = Scenes.ARENA;
-		SceneManager.LoadScene (Scenes.LOADING);
+		MenuSystem.LoadScene (Scenes.ARENA);
 	}
 
 	public void ExitGame () {

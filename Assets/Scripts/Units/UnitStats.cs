@@ -187,13 +187,17 @@ public class UnitStats : MonoBehaviour {
 		return Buffs.FindLast (buff => buff.isDebuff == debuff);
 	}
 
+	public Buff FindBuff (string name) {
+		return Buffs.Find ((buff) => buff.name == name); 
+	}
+
 	public void RemoveBuff(Buff buff, bool withEffects = true) {
 		buff.Remove(withEffects);
 		Buffs.Remove(buff);
 	}
 
 	public bool ApplyBuff(Buff newBuff) {
-		Buff currentBuff = Buffs.Find ((buff) => buff.name == newBuff.name); 
+		Buff currentBuff = FindBuff(newBuff.name); 
 
 		if (currentBuff != null) {
 			int newDuration = Math.Max(currentBuff.duration, newBuff.maxDuration);

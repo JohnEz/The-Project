@@ -1,4 +1,6 @@
-﻿public static class MenuSystem {
+﻿using UnityEngine.SceneManagement;
+
+public static class MenuSystem {
 	private static int sceneToLoad;
 
 	public static int SceneToLoad {
@@ -8,5 +10,10 @@
 		set {
 			sceneToLoad = value;
 		}
+	}
+
+	public static void LoadScene(int scene) {
+		sceneToLoad = scene;
+		SceneManager.LoadScene (Scenes.LOADING);
 	}
 }

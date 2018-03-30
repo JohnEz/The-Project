@@ -7,7 +7,7 @@ public class ArcaneBolt : BaseAbility {
 	float damageMod = 0.75f;
 
 	public ArcaneBolt(List<EventAction> _eventActions, UnitController caster) : base (_eventActions, caster) {
-		range = 6;
+		range = 4;
 		icon = "abilityArcaneBoltController";
 		Name = "Arcane Bolt";
 	}
