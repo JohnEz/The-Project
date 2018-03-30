@@ -20,7 +20,7 @@ public enum AreaOfEffect {
 	AURA
 }
 
-public enum Event {
+public enum AbilityEvent {
 	CAST_START,
 	CAST_END, //called just for the caster after cast
 	HIT //called for each target on hit
@@ -33,11 +33,11 @@ public enum EventTarget {
 }
 
 public struct EventAction {
-	public Event eventTrigger;
+	public AbilityEvent eventTrigger;
 	public EventTarget eventTarget;
 	public System.Action<UnitController, UnitController, Node> action;
 
-	public static EventAction CreateAudioEventAction(Event _eventTrigger, AudioClip audioClip, EventTarget _eventTarget) {
+	public static EventAction CreateAudioEventAction(AbilityEvent _eventTrigger, AudioClip audioClip, EventTarget _eventTarget) {
 		EventAction newEventAction = new EventAction ();
 		newEventAction.eventTrigger = _eventTrigger;
 		newEventAction.eventTarget = _eventTarget;
@@ -58,7 +58,7 @@ public struct EventAction {
 		return newEventAction;
 	}
 
-	public static EventAction CreateEffectEventAction(Event _eventTrigger, GameObject effectObject, EventTarget _eventTarget, float delay = 0) {
+	public static EventAction CreateEffectEventAction(AbilityEvent _eventTrigger, GameObject effectObject, EventTarget _eventTarget, float delay = 0) {
 		EventAction newEventAction = new EventAction ();
 		newEventAction.eventTrigger = _eventTrigger;
 		newEventAction.eventTarget = _eventTarget;
@@ -76,7 +76,7 @@ public struct EventAction {
 		return newEventAction;
 	}
 
-	public static EventAction CreateEffectAtLocationEventAction(Event _eventTrigger, GameObject effectObject, float delay = 0) {
+	public static EventAction CreateEffectAtLocationEventAction(AbilityEvent _eventTrigger, GameObject effectObject, float delay = 0) {
 		EventAction newEventAction = new EventAction ();
 		newEventAction.eventTrigger = _eventTrigger;
 		newEventAction.eventTarget = EventTarget.TARGETEDTILE;
@@ -87,7 +87,7 @@ public struct EventAction {
 		return newEventAction;
 	}
 
-	public static EventAction CreateProjectileEventAction(Event _eventTrigger, GameObject projectileObject, float speed, float delay = 0) {
+	public static EventAction CreateProjectileEventAction(AbilityEvent _eventTrigger, GameObject projectileObject, float speed, float delay = 0) {
 		EventAction newEventAction = new EventAction ();
 		newEventAction.eventTrigger = _eventTrigger;
 		newEventAction.eventTarget = EventTarget.CASTER;
@@ -142,7 +142,7 @@ public class BaseAbility {
 		cooldown = maxCooldown;
 
 		eventActions.ForEach ((eventAction) => {
-			if (eventAction.eventTrigger == Event.CAST_START) {
+			if (eventAction.eventTrigger == AbilityEvent.CAST_START) {
 				eventAction.action(caster, target.myUnit, target);
 			}
 		});
@@ -152,7 +152,7 @@ public class BaseAbility {
 		cooldown = maxCooldown;
 
 		eventActions.ForEach ((eventAction) => {
-			if (eventAction.eventTrigger == Event.CAST_START) {
+			if (eventAction.eventTrigger == AbilityEvent.CAST_START) {
 				if (eventAction.eventTarget == EventTarget.CASTER || eventAction.eventTarget == EventTarget.TARGETEDTILE) {
 					eventAction.action(caster, null, target);
 				} else if (eventAction.eventTarget == EventTarget.TARGETUNIT) {

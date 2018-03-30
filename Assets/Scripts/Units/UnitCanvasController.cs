@@ -59,11 +59,12 @@ public class UnitCanvasController : MonoBehaviour {
 	}
 
 	void AddActionPoint() {
-		GameObject newActionPoint = Instantiate (actionPointPrefab);
-		Vector3 newPosition = newActionPoint.transform.position;
-		newPosition.x = -22 + (actionPoints.Count * 33);
-		newActionPoint.transform.position = newPosition;
-		newActionPoint.transform.SetParent (transform, false);
+		GameObject newActionPoint = Instantiate (actionPointPrefab, transform, false);
+        
+        Vector3 newPosition = newActionPoint.transform.localPosition;
+		newPosition.x = -20 + (actionPoints.Count * 38);
+        newActionPoint.transform.localPosition = newPosition;
+
 		actionPoints.Push(newActionPoint);
 	}
 
@@ -106,11 +107,12 @@ public class UnitCanvasController : MonoBehaviour {
 
 	public void AddBuffIcon(Buff buff) {
 		Sprite buffSprite = LoadBuffSprite(buff);
-		GameObject newBuffIcon = Instantiate (buffIconPrefab);
-		Vector3 newPosition = newBuffIcon.transform.position;
+		GameObject newBuffIcon = Instantiate (buffIconPrefab, transform, false);
+
+		Vector3 newPosition = newBuffIcon.transform.localPosition;
 		newPosition.x = -28 + (buffIcons.Count * 25);
-		newBuffIcon.transform.position = newPosition;
-		newBuffIcon.transform.SetParent (transform, false);
+		newBuffIcon.transform.localPosition = newPosition;
+
 		buffIcons.Add (newBuffIcon);
 
 		if (buffSprite != null) {

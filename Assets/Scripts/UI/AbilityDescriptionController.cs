@@ -12,8 +12,8 @@ public class AbilityDescriptionController : MonoBehaviour
 	}
 
 	public void SetAbility(BaseAbility ability) {
-		transform.FindChild ("Title").GetComponent<Text> ().text = ability.Name;
-		transform.FindChild ("Description").GetComponent<Text> ().text = ability.GetDescription();
+		transform.Find ("Title").GetComponent<Text> ().text = ability.Name;
+		transform.Find ("Description").GetComponent<Text> ().text = ability.GetDescription();
 	}
 	
 	public void ShowWindow() {

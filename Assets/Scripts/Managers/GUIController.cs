@@ -25,8 +25,8 @@ public class GUIController : MonoBehaviour {
 	void Awake() {
 		turnManager = GetComponentInParent<TurnManager> ();
 		uIManager = GetComponentInParent<UserInterfaceManager> ();
-		abilityDescription = transform.FindChild("AbilityDescription").GetComponent<AbilityDescriptionController> ();
-		unitInfo = transform.FindChild("UnitInfo").GetComponent<UnitInfoController> ();
+		abilityDescription = transform.Find("AbilityDescription").GetComponent<AbilityDescriptionController> ();
+		unitInfo = transform.Find("UnitInfo").GetComponent<UnitInfoController> ();
 		unitInfo.HideWindow ();
 	}
 
@@ -52,11 +52,11 @@ public class GUIController : MonoBehaviour {
 		turnText.transform.SetParent (transform);
 		turnText.transform.localPosition = turnTextPrefab.transform.position;
 		turnText.transform.localScale = new Vector3 (1, 1, 1);
-		turnText.transform.FindChild("AllyTurnImage").gameObject.SetActive(ally);
-		turnText.transform.FindChild("EnemyTurnImage").gameObject.SetActive(!ally);
+		turnText.transform.Find("AllyTurnImage").gameObject.SetActive(ally);
+		turnText.transform.Find("EnemyTurnImage").gameObject.SetActive(!ally);
 
 		if (objectivesBody == null) {
-			objectivesBody = transform.FindChild ("ObjectivesBody").GetComponent<Text> ();
+			objectivesBody = transform.Find ("ObjectivesBody").GetComponent<Text> ();
 		}
 		objectivesBody.text = CreateObjectiveText (objectives);
 

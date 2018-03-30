@@ -19,13 +19,13 @@ public class StaffMonkClass : UnitClass {
 	// Use this for initialization
 	public override void Initialise(UnitController caster) {
 		List<EventAction> jadeSlamActions = new List<EventAction> ();
-		jadeSlamActions.Add(EventAction.CreateAudioEventAction(Event.CAST_START, JadeSlamSfxCaster, EventTarget.CASTER));
-		jadeSlamActions.Add(EventAction.CreateAudioEventAction(Event.CAST_END, JadeSlamSfxHit, EventTarget.TARGETUNIT));
+		jadeSlamActions.Add(EventAction.CreateAudioEventAction(AbilityEvent.CAST_START, JadeSlamSfxCaster, EventTarget.CASTER));
+		jadeSlamActions.Add(EventAction.CreateAudioEventAction(AbilityEvent.CAST_END, JadeSlamSfxHit, EventTarget.TARGETUNIT));
 		abilities.Add(new JadeSlam (jadeSlamActions, caster));
 
 		List<EventAction> sacredGroundActions = new List<EventAction> ();
-		sacredGroundActions.Add(EventAction.CreateAudioEventAction(Event.CAST_START, JadeSlamSfxCaster, EventTarget.CASTER));
-		sacredGroundActions.Add(EventAction.CreateEffectAtLocationEventAction(Event.CAST_START, sacredGroundFx));
+		sacredGroundActions.Add(EventAction.CreateAudioEventAction(AbilityEvent.CAST_START, JadeSlamSfxCaster, EventTarget.CASTER));
+		sacredGroundActions.Add(EventAction.CreateEffectAtLocationEventAction(AbilityEvent.CAST_START, sacredGroundFx));
 		abilities.Add(new SacredGround (sacredGroundActions, caster));
 	}
 

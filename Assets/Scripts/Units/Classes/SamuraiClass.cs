@@ -19,15 +19,15 @@ public class SamuraiClass : UnitClass {
 	// Use this for initialization
 	public override void Initialise(UnitController caster) {
 		List<EventAction> omniSlashActions = new List<EventAction> ();
-		omniSlashActions.Add(EventAction.CreateAudioEventAction(Event.CAST_START, samuraiAttack, EventTarget.CASTER));
-		omniSlashActions.Add(EventAction.CreateAudioEventAction(Event.HIT, samuraiAttackHit, EventTarget.TARGETUNIT));
-		omniSlashActions.Add(EventAction.CreateEffectEventAction(Event.CAST_START, slashFx, EventTarget.TARGETUNIT, 0.55f));
+		omniSlashActions.Add(EventAction.CreateAudioEventAction(AbilityEvent.CAST_START, samuraiAttack, EventTarget.CASTER));
+		omniSlashActions.Add(EventAction.CreateAudioEventAction(AbilityEvent.HIT, samuraiAttackHit, EventTarget.TARGETUNIT));
+		omniSlashActions.Add(EventAction.CreateEffectEventAction(AbilityEvent.CAST_START, slashFx, EventTarget.TARGETUNIT, 0.55f));
 		abilities.Add(new OmniSlash (omniSlashActions, caster));
 
 		List<EventAction> cleaveActions = new List<EventAction> ();
-		cleaveActions.Add(EventAction.CreateAudioEventAction(Event.CAST_START, samuraiAttack, EventTarget.CASTER));
-		cleaveActions.Add(EventAction.CreateAudioEventAction(Event.HIT, samuraiAttackHit, EventTarget.TARGETUNIT));
-		cleaveActions.Add(EventAction.CreateEffectEventAction(Event.CAST_START, slashFx, EventTarget.TARGETUNIT, 0.55f));
+		cleaveActions.Add(EventAction.CreateAudioEventAction(AbilityEvent.CAST_START, samuraiAttack, EventTarget.CASTER));
+		cleaveActions.Add(EventAction.CreateAudioEventAction(AbilityEvent.HIT, samuraiAttackHit, EventTarget.TARGETUNIT));
+		cleaveActions.Add(EventAction.CreateEffectEventAction(AbilityEvent.CAST_START, slashFx, EventTarget.TARGETUNIT, 0.55f));
 		abilities.Add(new Cleave (cleaveActions, caster));
 	}
 

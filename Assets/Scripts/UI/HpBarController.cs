@@ -17,7 +17,7 @@ public class HpBarController : MonoBehaviour {
 
 	// Use this for initialization
 	public void Initialize (float maxHp) {
-		hpBar = transform.FindChild("hpBar").GetComponent<Image>();
+		hpBar = transform.Find("hpBar").GetComponent<Image>();
 		currentMax = maxHp;
 		createMarkers (maxHp);
 	}

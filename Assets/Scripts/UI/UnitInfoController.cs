@@ -12,8 +12,8 @@ public class UnitInfoController : MonoBehaviour
 	}
 
 	public void SetUnit(UnitController unit) {
-		transform.FindChild ("Name").GetComponent<Text> ().text = unit.GetComponent<UnitClass>().className;
-		transform.FindChild ("Description").GetComponent<Text> ().text = getUnitStatsString(unit.myStats);
+		transform.Find ("Name").GetComponent<Text> ().text = unit.GetComponent<UnitClass>().className;
+		transform.Find ("Description").GetComponent<Text> ().text = getUnitStatsString(unit.myStats);
 	}
 
 	public void ShowWindow() {

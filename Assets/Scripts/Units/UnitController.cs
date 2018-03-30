@@ -270,14 +270,14 @@ public class UnitController : MonoBehaviour {
 		foreach (AbilityTarget target in abilityTargets) {
 			target.abilityFunction ();
 			activeAbility.eventActions.ForEach ((eventAction) => {
-				if (eventAction.eventTrigger == Event.CAST_END && eventAction.eventTarget == EventTarget.TARGETUNIT) {
+				if (eventAction.eventTrigger == AbilityEvent.CAST_END && eventAction.eventTarget == EventTarget.TARGETUNIT) {
 					eventAction.action(this, target.target, target.target.myNode);
 				}
 			});
 		}
 
 		activeAbility.eventActions.ForEach ((eventAction) => {
-			if (eventAction.eventTrigger == Event.CAST_END) {
+			if (eventAction.eventTrigger == AbilityEvent.CAST_END) {
 				if (eventAction.eventTarget == EventTarget.CASTER || eventAction.eventTarget == EventTarget.TARGETEDTILE) {
 					eventAction.action(this, null, currentAbilityTarget);
 				}
