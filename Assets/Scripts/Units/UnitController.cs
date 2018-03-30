@@ -236,10 +236,10 @@ public class UnitController : MonoBehaviour {
 		} else {
 			ability.UseAbility (targetNodes, currentAbilityTarget);
 		}
-		activeAbility = ability;
+        myManager.UnitStartedAttacking();
+        activeAbility = ability;
 		SetAttacking (true);
 		ActionPoints--;
-		myManager.UnitStartedAttacking ();
 		StartCoroutine (AttackRoutine());
 	}
 
@@ -253,14 +253,16 @@ public class UnitController : MonoBehaviour {
     }
 
     public IEnumerator AttackRoutine() {
-		//make sure projects have been destroyed
-		yield return new WaitUntil(() => getAttackHasLanded() && projectiles.Count < 1);
+        Debug.Log("Running Attack Routine");
+        //make sure projects have been destroyed
+        yield return new WaitUntil(() => getAttackHasLanded() && projectiles.Count < 1);
 		RunAbilityTargets ();
 
 		//wait for effects to end
 		yield return new WaitUntil(() => !getAttackAnimationPlaying() && effectsToCreate == 0 && abilityEffects.Count < 1);
+        Debug.Log("Running clear");
 
-		ClearAbilityTargets ();
+        ClearAbilityTargets ();
 		currentAbilityTarget = null;
 		myManager.UnitFinishedAttacking ();
 		RunNextAction (true);
@@ -272,8 +274,10 @@ public class UnitController : MonoBehaviour {
 
 	//TODO COME UP WITH A BETTER NAME - means deal damage / show cast events
 	public void RunAbilityTargets() {
-		foreach (AbilityTarget target in abilityTargets) {
-			target.abilityFunction ();
+        Debug.Log("Running ability targets");
+        foreach (AbilityTarget target in abilityTargets) {
+            Debug.Log("Target");
+            target.abilityFunction ();
 			activeAbility.eventActions.ForEach ((eventAction) => {
 				if (eventAction.eventTrigger == AbilityEvent.CAST_END && eventAction.eventTarget == EventTarget.TARGETUNIT) {
 					eventAction.action(this, target.target, target.target.myNode);

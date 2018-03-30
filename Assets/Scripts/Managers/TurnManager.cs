@@ -58,7 +58,7 @@ public class TurnManager : MonoBehaviour {
 	void Update () {
 		//check to see if the turn should end
 		if (!checkedPlayerStatus) {
-			if (currentPhase == TurnPhase.WAITING_FOR_INPUT && unitManager.PlayerOutOfActions (playersTurn)) {
+			if (!isAiTurn() && currentPhase == TurnPhase.WAITING_FOR_INPUT && unitManager.PlayerOutOfActions (playersTurn)) {
 				EndTurn ();
 			} else {
 				checkedPlayerStatus = true;
@@ -80,7 +80,8 @@ public class TurnManager : MonoBehaviour {
 		Player p1 = new Player ();
 		p1.id = 1;
 		p1.name = "Player 2";
-		p1.ai = MatchDetails.VersusAi;
+        //p1.ai = MatchDetails.VersusAi;
+        p1.ai = true;
 		p1.faction = 2;
 		players.Add (p1);
 
@@ -150,7 +151,7 @@ public class TurnManager : MonoBehaviour {
 
 	public void FinishStartingTurn() {
 		ChangeState(TurnPhase.WAITING_FOR_INPUT);
-	}
+    }
 
 	public void StartMoving() {
 		ChangeState(TurnPhase.UNIT_MOVING);
@@ -163,12 +164,14 @@ public class TurnManager : MonoBehaviour {
 
 	public void StartAttacking() {
 		ChangeState(TurnPhase.UNIT_ATTACKING);
+        Debug.Log("Turn Manager - Start Attacking");
 	}
 
 	public void FinishedAttacking() {
 		ChangeState(TurnPhase.WAITING_FOR_INPUT);
 		uIManager.FinishedAttacking ();
-	}
+        Debug.Log("Turn Manager - Finished Attacking");
+    }
 
 	public bool isAiTurn() {
 		return players != null && players [playersTurn].ai;

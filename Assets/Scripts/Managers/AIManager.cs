@@ -78,16 +78,19 @@ public class AIManager : MonoBehaviour {
 
 	public IEnumerator PlanTurn(UnitController unit) {
 		UnitClass unitClass = unit.GetComponent<UnitClass>();
-		//unitManager.SelectUnit (unit);
+        //unitManager.SelectUnit (unit);
 
-		while (unit.myStats.ActionPoints > 0) {
+        Debug.Log("AI - Planning turn");
+
+        while (unit.myStats.ActionPoints > 0) {
 			yield return WaitForWaitingForInput ();
 			unitManager.SelectUnit (unit);
 
 			Dictionary<BaseAbility, List<Node>> potentialAbilityTargets = GetPotentialAbilityTargets(unit);
 
 			if (potentialAbilityTargets [unitClass.abilities [0]].Count > 0) {
-				unitManager.AttackTile (potentialAbilityTargets [unitClass.abilities [0]] [0], unitClass.abilities [0]);
+                Debug.Log("AI - attacking tile");
+                unitManager.AttackTile (potentialAbilityTargets [unitClass.abilities [0]] [0], unitClass.abilities [0]);
 			} else if (unit.myStats.Speed > 0) {
 				List<MovementPath> paths = FindPathsToEnemies (unit);
 				if (paths.Count > 0) {

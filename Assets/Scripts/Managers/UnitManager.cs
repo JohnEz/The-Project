@@ -43,9 +43,9 @@ public class UnitManager : MonoBehaviour {
 		//SpawnUnit (0, players[1], 9, 9);
 		//SpawnUnit (1, players[1], 9, 10);
 		SpawnUnit (2, players[1], 11, 15);
-		SpawnUnit (2, players[1], 15, 11);
-		SpawnUnit (2, players[1], 5, 10);
-		SpawnUnit (2, players[1], 10, 5);
+		//SpawnUnit (2, players[1], 15, 11);
+		//SpawnUnit (2, players[1], 5, 10);
+		//SpawnUnit (2, players[1], 10, 5);
 	}
 	
 	// Update is called once per frame
@@ -283,9 +283,16 @@ public class UnitManager : MonoBehaviour {
 
 	public void UnitFinishedAttacking() {
 		TurnManager turnManager = GetComponent<TurnManager> ();
-		turnManager.FinishedAttacking ();
+		
 		RemoveUnits ();
+
+        StartCoroutine(CallActionWithDelay(() => turnManager.FinishedAttacking(), 0.2f));
 	}
+
+    IEnumerator CallActionWithDelay(System.Action action, float seconds) {
+        yield return new WaitForSeconds(seconds);
+        action();
+    }
 
 	public void UnitDied(UnitController unit) {
 		AddUnitToRemove (unit);
