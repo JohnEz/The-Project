@@ -243,17 +243,22 @@ public class UnitController : MonoBehaviour {
 		StartCoroutine (AttackRoutine());
 	}
 
-	public void SetAttackAnimationPlaying(bool isPlaying) {
-		isAttackAnimationPlaying = isPlaying;
-	}
+	public bool getAttackAnimationPlaying() {
+        return GetComponentInChildren<UnitAnimationController>().isAttacking;
+    }
 
-	public IEnumerator AttackRoutine() {
+    public bool getAttackHasLanded()
+    {
+        return GetComponentInChildren<UnitAnimationController>().attackHasLanded;
+    }
+
+    public IEnumerator AttackRoutine() {
 		//make sure projects have been destroyed
-		yield return new WaitUntil(() => !isAttackAnimationPlaying && projectiles.Count < 1);
+		yield return new WaitUntil(() => getAttackHasLanded() && projectiles.Count < 1);
 		RunAbilityTargets ();
 
 		//wait for effects to end
-		yield return new WaitUntil(() => effectsToCreate == 0 && abilityEffects.Count < 1);
+		yield return new WaitUntil(() => !getAttackAnimationPlaying() && effectsToCreate == 0 && abilityEffects.Count < 1);
 
 		ClearAbilityTargets ();
 		currentAbilityTarget = null;

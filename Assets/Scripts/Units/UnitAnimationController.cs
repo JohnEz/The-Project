@@ -5,6 +5,7 @@ public class UnitAnimationController : MonoBehaviour {
 
 	public bool isWalking = false;
 	public bool isAttacking = false;
+    public bool attackHasLanded = false;
 	public bool facingRight = true;
 	public bool isSelected = false;
 
@@ -27,6 +28,12 @@ public class UnitAnimationController : MonoBehaviour {
 			DestroyParentUnit ();
 		}
 	}
+
+    public void AttackHit() {
+
+        //deal damage etc
+        attackHasLanded = true;
+    }
 
 	public void FaceDirection(Vector2 dir) {
 		FaceDirection (dir.x, dir.y);
@@ -51,8 +58,8 @@ public class UnitAnimationController : MonoBehaviour {
 
 	public void IsAttacking(bool attacking) {
 		isAttacking = attacking;
-		GetComponent<Animator> ().SetBool ("isAttacking", attacking);
-		GetComponentInParent<UnitController> ().SetAttackAnimationPlaying (attacking);
+        attackHasLanded = !attacking;
+        GetComponent<Animator> ().SetBool ("isAttacking", attacking);
 	}
 
 	public void IsSelected(bool selected) {

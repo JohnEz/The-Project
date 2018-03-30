@@ -14,15 +14,13 @@ public class HpBarController : MonoBehaviour {
 	private const int markerInterval = 10;
 
 	private float currentMax = 0;
-    private float targetPercent;
+    private float targetPercent = 1;
 
 	// Use this for initialization
 	public void Initialize (float maxHp) {
 		hpBar = transform.Find("hpBar").GetComponent<Image>();
 		currentMax = maxHp;
 		createMarkers (maxHp);
-        hpBar.fillAmount = 1;
-        targetPercent = 1;
     }
 	
 	// Update is called once per frame
@@ -33,7 +31,6 @@ public class HpBarController : MonoBehaviour {
 	}
 
 	public void SetHP(float currentHp, float maxHp) {
-        //hpBar.fillAmount = currentHp / maxHp;
         targetPercent = currentHp / maxHp;
 
 		if (maxHp != currentMax) {
