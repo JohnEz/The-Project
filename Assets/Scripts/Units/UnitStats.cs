@@ -67,7 +67,7 @@ public class UnitStats : MonoBehaviour {
 			percentMods *= buff.GetPercentMod((int)stat);
 		}
 
-		return (int)((baseValue * percentMods) + flatMods);
+		return (int)((baseValue + flatMods) * percentMods );
 	}
 
 	public void SetHealth(int health) {

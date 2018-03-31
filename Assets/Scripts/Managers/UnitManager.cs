@@ -37,15 +37,18 @@ public class UnitManager : MonoBehaviour {
 		units = new List<UnitController> ();
 		unitsToRemove = new List<UnitController> ();
 		myMap = map;
-		SpawnUnit (0, players[0], 11, 11);
-		SpawnUnit (1, players[0], 12, 11);
-		SpawnUnit (2, players[0], 3, 10);
-		SpawnUnit (3, players[1], 9, 9);
-		SpawnUnit (4, players[1], 9, 10);
-		SpawnUnit (5, players[1], 11, 15);
-		SpawnUnit (6, players[1], 15, 11);
-		SpawnUnit (7, players[1], 5, 10);
-		SpawnUnit (2, players[1], 10, 5);
+
+        SpawnUnit(3, players[0], 8, 10);
+        SpawnUnit (6, players[0], 7, 9);
+		SpawnUnit (4, players[0], 6, 10);
+		SpawnUnit (2, players[0], 7, 11);
+        SpawnUnit (2, players[0], 7, 10);
+
+		SpawnUnit (2, players[1], 17, 11);
+		SpawnUnit (0, players[1], 16, 10);
+        SpawnUnit(1, players[1], 17, 9);
+        SpawnUnit (5, players[1], 18, 10);
+		SpawnUnit (7, players[1], 17, 10);
 	}
 	
 	// Update is called once per frame
