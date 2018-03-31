@@ -1,0 +1,17 @@
+﻿{
+	"intro": [
+		"Hello."
+	],
+	"helping": [
+		"I'm helping!"
+	],
+	"helped": [
+		"Thanks."
+	],
+	"attacking": [
+		"Take this!"
+	],
+	"attacked": [
+		"Ouch."
+	]
+}

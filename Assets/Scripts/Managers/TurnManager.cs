@@ -163,13 +163,11 @@ public class TurnManager : MonoBehaviour {
 
 	public void StartAttacking() {
 		ChangeState(TurnPhase.UNIT_ATTACKING);
-        Debug.Log("Turn Manager - Start Attacking");
 	}
 
 	public void FinishedAttacking() {
 		ChangeState(TurnPhase.WAITING_FOR_INPUT);
 		uIManager.FinishedAttacking ();
-        Debug.Log("Turn Manager - Finished Attacking");
     }
 
 	public bool isAiTurn() {

@@ -35,6 +35,7 @@ public class UnitController : MonoBehaviour {
 	UnitCanvasController unitCanvasController;
 	UnitAudioController audioController;
 	UnitClass myClass;
+    UnitDialogController myDialogController;
 
 	[System.NonSerialized]
 	public Vector2 facingDirection;
@@ -79,7 +80,9 @@ public class UnitController : MonoBehaviour {
 		myClass = GetComponent<UnitClass> ();
 		myClass.Initialise (this);
 		projectiles = new List<ProjectileController> ();
-	}
+        myDialogController = GetComponentInChildren<UnitDialogController>();
+
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -240,7 +243,8 @@ public class UnitController : MonoBehaviour {
         activeAbility = ability;
 		SetAttacking (true);
 		ActionPoints--;
-		StartCoroutine (AttackRoutine());
+        myDialogController.Attacking();
+        StartCoroutine (AttackRoutine());
 	}
 
 	public bool getAttackAnimationPlaying() {
@@ -253,14 +257,12 @@ public class UnitController : MonoBehaviour {
     }
 
     public IEnumerator AttackRoutine() {
-        Debug.Log("Running Attack Routine");
         //make sure projects have been destroyed
         yield return new WaitUntil(() => getAttackHasLanded() && projectiles.Count < 1);
 		RunAbilityTargets ();
 
 		//wait for effects to end
 		yield return new WaitUntil(() => !getAttackAnimationPlaying() && effectsToCreate == 0 && abilityEffects.Count < 1);
-        Debug.Log("Running clear");
 
         ClearAbilityTargets ();
 		currentAbilityTarget = null;
@@ -274,9 +276,7 @@ public class UnitController : MonoBehaviour {
 
 	//TODO COME UP WITH A BETTER NAME - means deal damage / show cast events
 	public void RunAbilityTargets() {
-        Debug.Log("Running ability targets");
         foreach (AbilityTarget target in abilityTargets) {
-            Debug.Log("Target");
             target.abilityFunction ();
 			activeAbility.eventActions.ForEach ((eventAction) => {
 				if (eventAction.eventTrigger == AbilityEvent.CAST_END && eventAction.eventTarget == EventTarget.TARGETUNIT) {
@@ -324,12 +324,14 @@ public class UnitController : MonoBehaviour {
 		unitCanvasController.UpdateHP (myStats.Health, myStats.MaxHealth);
 		unitCanvasController.CreateDamageText (modifiedDamage.ToString ());
 
-		if (myStats.Health > 0) {
+        myDialogController.Attacked();
+
+        if (myStats.Health > 0) {
 			anim.PlayHitAnimation ();
 			if (myClass.onHitSfx) {
 				PlayOneShot (myClass.onHitSfx);
 			}
-		} else {
+        } else {
 			anim.PlayDeathAnimation ();
 			if (myClass.onDeathSfx) {
 				PlayOneShot (myClass.onDeathSfx);
@@ -363,7 +365,9 @@ public class UnitController : MonoBehaviour {
 		unitCanvasController.UpdateHP (myStats.Health, myStats.MaxHealth);
 		unitCanvasController.CreateHealText (healing.ToString ());
 
-		return true;
+        myDialogController.Helped();
+
+        return true;
 	}
 
 	public bool GiveHealingTo(UnitController target, float healing) {
@@ -376,7 +380,9 @@ public class UnitController : MonoBehaviour {
 			endHealing = endHealing * 1.5f;
 		}
 
-		return target.TakeHealing (this, (int)endHealing);
+        myDialogController.Helping();
+
+        return target.TakeHealing (this, (int)endHealing);
 	}
 
 	public void ApplyBuff(Buff buff) {
