@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class Combustion : BaseAbility {
 
-	float damageMod = 0.5f;
+	float damageMod = 0.6f;
 	int duration = 3;
 
 	public Combustion(List<EventAction> _eventActions, UnitController caster) : base (_eventActions, caster) {
@@ -18,20 +18,20 @@ public class Combustion : BaseAbility {
 		base.UseAbility (target);
 		AddAbilityTarget (target.myUnit, () => {
 			Buff burnBuff = target.myUnit.myStats.FindBuff("Burn");
-			float burnDamage = 0;
+			int burnCount = 0;
 
 			if (burnBuff != null) {
 				target.myUnit.myStats.RemoveBuff(burnBuff, true);
-				burnDamage = burnBuff.GetFlatMod((int)Stats.DAMAGE) * burnBuff.duration;
+                burnCount = burnBuff.stacks;
 			}
 
-			caster.DealDamageTo(target.myUnit, damageMod, true, burnDamage);
+			caster.DealDamageTo(target.myUnit, damageMod * burnCount, true);
 
 		});
 	}
 
 	public override string GetDescription() {
-		return base.GetDescription() + "Ignites all the burns on a target dealing " + (int)(damageMod * caster.myStats.Power) + " damage plus the remaining damage of the burns.";
+		return base.GetDescription() + "Removes all the burns on a target, ignoring armour, and dealing " + (int)(damageMod * caster.myStats.Power) + " damage times the number of burns";
 	}
 
 }
