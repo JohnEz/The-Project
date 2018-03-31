@@ -8,8 +8,10 @@ public class StaffMonkClass : UnitClass {
 	AudioClip JadeSlamSfxCaster;
 	[SerializeField]
 	AudioClip JadeSlamSfxHit;
+    [SerializeField]
+    GameObject JadeSlamFx;
 
-	[SerializeField]
+    [SerializeField]
 	GameObject sacredGroundFx;
 
 	public StaffMonkClass() {
@@ -20,7 +22,8 @@ public class StaffMonkClass : UnitClass {
 	public override void Initialise(UnitController caster) {
 		List<EventAction> jadeSlamActions = new List<EventAction> ();
 		jadeSlamActions.Add(EventAction.CreateAudioEventAction(AbilityEvent.CAST_START, JadeSlamSfxCaster, EventTarget.CASTER));
-		jadeSlamActions.Add(EventAction.CreateAudioEventAction(AbilityEvent.CAST_END, JadeSlamSfxHit, EventTarget.TARGETUNIT));
+        jadeSlamActions.Add(EventAction.CreateEffectEventAction(AbilityEvent.CAST_END, JadeSlamFx, EventTarget.TARGETUNIT));
+        jadeSlamActions.Add(EventAction.CreateAudioEventAction(AbilityEvent.CAST_END, JadeSlamSfxHit, EventTarget.TARGETUNIT));
 		abilities.Add(new JadeSlam (jadeSlamActions, caster));
 
 		List<EventAction> sacredGroundActions = new List<EventAction> ();

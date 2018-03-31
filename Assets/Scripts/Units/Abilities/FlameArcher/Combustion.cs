@@ -31,7 +31,7 @@ public class Combustion : BaseAbility {
 	}
 
 	public override string GetDescription() {
-		return base.GetDescription() + "Shoots a flaming arrow that burns an enemy for " + (int)(damageMod * caster.myStats.Power) + " and applies a " + duration + " turn burn.";
+		return base.GetDescription() + "Ignites all the burns on a target dealing " + (int)(damageMod * caster.myStats.Power) + " damage plus the remaining damage of the burns.";
 	}
 
 }

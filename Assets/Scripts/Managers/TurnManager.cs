@@ -80,8 +80,7 @@ public class TurnManager : MonoBehaviour {
 		Player p1 = new Player ();
 		p1.id = 1;
 		p1.name = "Player 2";
-        //p1.ai = MatchDetails.VersusAi;
-        p1.ai = true;
+        p1.ai = MatchDetails.VersusAi;
 		p1.faction = 2;
 		players.Add (p1);
 

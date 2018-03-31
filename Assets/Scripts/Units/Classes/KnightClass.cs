@@ -5,9 +5,11 @@ using System.Collections.Generic;
 public class KnightClass : UnitClass {
 	
 	[SerializeField]
-	AudioClip holyStrikeSFx;
+	AudioClip holyStrikeSfx;
+    [SerializeField]
+    GameObject holyStrikeFx;
 
-	[SerializeField]
+    [SerializeField]
 	GameObject rallyFx;
 	[SerializeField]
 	AudioClip rallySfx;
@@ -19,8 +21,9 @@ public class KnightClass : UnitClass {
 	// Use this for initialization
 	public override void Initialise(UnitController caster) {
 		List<EventAction> holyStrikeActions = new List<EventAction> ();
-		holyStrikeActions.Add(EventAction.CreateAudioEventAction(AbilityEvent.CAST_START, holyStrikeSFx, EventTarget.CASTER));
-		abilities.Add(new HolyStrike (holyStrikeActions, caster));
+		holyStrikeActions.Add(EventAction.CreateAudioEventAction(AbilityEvent.CAST_START, holyStrikeSfx, EventTarget.CASTER));
+        holyStrikeActions.Add(EventAction.CreateEffectEventAction(AbilityEvent.CAST_END, holyStrikeFx, EventTarget.TARGETUNIT));
+        abilities.Add(new HolyStrike (holyStrikeActions, caster));
 
 		List<EventAction> rallyActions = new List<EventAction> ();
 		rallyActions.Add(EventAction.CreateAudioEventAction(AbilityEvent.CAST_START, rallySfx, EventTarget.CASTER));

@@ -23,7 +23,7 @@ public class TileMap : MonoBehaviour {
 	public Pathfinder pathfinder;
 	public HighlightManager highlighter;
 
-	float tileSize = 96;
+	float tileSize = 95;
 
 	// Use this for initialization
 	void Start () {

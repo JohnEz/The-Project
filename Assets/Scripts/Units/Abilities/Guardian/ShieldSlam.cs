@@ -8,7 +8,7 @@ public class ShieldSlam : BaseAbility {
 	float damageMod = 0.75f;
 
 	public ShieldSlam(List<EventAction> _eventActions, UnitController caster) : base (_eventActions, caster) {
-		icon = "abilityRallyController";
+		icon = "abilityHolyStrikeController";
 		Name = "Hunker Down";
 	}
 

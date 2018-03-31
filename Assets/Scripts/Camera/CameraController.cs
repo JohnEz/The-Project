@@ -34,15 +34,14 @@ public class CameraController : MonoBehaviour {
 
 	int height;
 
-	void Awake() {
-		//height = Mathf.RoundToInt(TARGET_WIDTH / (float)Screen.width * Screen.height);
-		//Camera.main.orthographicSize = (height / 2f) * currentZoom;
-		//Camera.main.orthographicSize = height / pixelsToUnits / 2f;
-		Camera.main.orthographicSize = Screen.height / pixelsToUnits / 2f;
-	}
+    Vector3 movement = new Vector3();
 
-	// Use this for initialization
-	void Start () {
+	void Awake() {
+        Camera.main.orthographicSize = Screen.height / pixelsToUnits / 2f;
+    }
+
+    // Use this for initialization
+    void Start () {
 
 	}
 
@@ -66,9 +65,22 @@ public class CameraController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		UpdateMovement ();
-		//UpdateZoom ();
-		ClampBounds ();
-	}
+        //UpdateZoom ();
+        ClampBounds();
+    }
+
+    void LateUpdateLegacy() {
+        Vector3 clampedMovement = new Vector3((int)movement.x, (int)movement.y);
+
+        if (clampedMovement.magnitude >= 1.0f) {
+            movement -= clampedMovement;
+            if (clampedMovement != Vector3.zero) {
+                transform.position = new Vector3((int)transform.position.x, (int)transform.position.y, (int)transform.position.z) + clampedMovement;
+            }
+        }
+
+        
+    }
 
 	//updates the position of the camera via keyboard input
 	void UpdateMovement() {
@@ -83,24 +95,24 @@ public class CameraController : MonoBehaviour {
 			transform.position = Vector3.Lerp (transform.position, targetLocation, 6f * Time.deltaTime);
 		} else {
 			//allow user to move camera
-			Vector3 move = new Vector3 (0, 0, 0);
+			movement = new Vector3 (0, 0, 0);
 
 
 			if ((Input.GetKey(KeyCode.W) || (Input.mousePosition.y > Screen.height - BOUNDARY && mouseMovement))) {
-				move += new Vector3(0, 1, 0);
+                movement.y += 1;
 			}
 			if ((Input.GetKey(KeyCode.A) || (Input.mousePosition.x < BOUNDARY && mouseMovement))) {
-				move -= new Vector3(1, 0, 0);
-			}
+                movement.x -= 1;
+            }
 			if ((Input.GetKey(KeyCode.S) || (Input.mousePosition.y < BOUNDARY && mouseMovement))) {
-				move -= new Vector3(0, 1, 0);
-			}
+                movement.y -= 1;
+            }
 			if ((Input.GetKey(KeyCode.D) || (Input.mousePosition.x > Screen.width - BOUNDARY && mouseMovement))) {
-				move += new Vector3(1, 0, 0);
-			}
+                movement.x += 1;
+            }
 
-			move.Normalize ();
-			Vector3 newPos = transform.position + (move * MOVE_SPEED) * Time.deltaTime;
+            movement.Normalize ();
+			Vector3 newPos = transform.position + (movement * MOVE_SPEED) * Time.deltaTime;
 			Vector3 roundPos = new Vector3(RoundToNearestPixel(newPos.x, GetComponent<Camera>()), RoundToNearestPixel(newPos.y, GetComponent<Camera>()), newPos.z);
 
 			transform.position = roundPos;
