@@ -151,22 +151,22 @@ public class UnitStats : MonoBehaviour {
 	}
 
 	public void NewTurn() {
+        List<Buff> buffsToRemove = new List<Buff>();
 
-	}
+        Buffs.ForEach((buff) => {
+            buff.duration--;
+            if (buff.duration <= 0) {
+                buffsToRemove.Add(buff);
+            }
+        });
+
+        buffsToRemove.ForEach((buff) => {
+            RemoveBuff(buff);
+        });
+    }
 
 	public void EndTurn() {
-		List<Buff> buffsToRemove = new List<Buff> ();
 
-		Buffs.ForEach ((buff) => {
-			buff.duration--;
-			if (buff.duration <= 0) {
-				buffsToRemove.Add(buff);
-			}
-		});
-
-		buffsToRemove.ForEach ((buff) => {
-			RemoveBuff(buff);
-		});
 	}
 
 	public Buff FindOldestBuff(bool debuff) {
