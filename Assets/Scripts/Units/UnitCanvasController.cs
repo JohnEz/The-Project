@@ -16,7 +16,9 @@ public class UnitCanvasController : MonoBehaviour {
 	public GameObject damageTextPrefab;
 	public GameObject actionPointPrefab;
 	public GameObject buffIconPrefab;
+    public GameObject staminaBarPrefab;
 
+    StaminaBarController staminaBar;
 	HpBarController hpBar;
 	Stack<GameObject> actionPoints = new Stack<GameObject>();
 	List<GameObject> buffIcons = new List<GameObject> ();
@@ -38,10 +40,13 @@ public class UnitCanvasController : MonoBehaviour {
 	void Start () {
 		UnitController myUnit = GetComponentInParent<UnitController> ();
 		myTeam = myUnit.myPlayer.id;
-		hpBar = Instantiate (hpBarPrefab).GetComponent<HpBarController>();
-		hpBar.transform.SetParent (transform, false);
+		hpBar = Instantiate (hpBarPrefab, transform, false).GetComponent<HpBarController>();
 		hpBar.Initialize (myUnit.myStats.MaxHealth);
 		hpBar.SetHPColor (teamColours [myTeam]);
+
+        staminaBar = Instantiate(staminaBarPrefab, transform, false).GetComponent<StaminaBarController>();
+        staminaBar.Initialize(myUnit.myStats.MaxStamina);
+        staminaBar.SetHPColor(new Color(0.7294f, 0.9569f, 0.1176f));
     }
 
 	public void SetActionPoints (int newActionPoints) {
