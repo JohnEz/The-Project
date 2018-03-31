@@ -4,8 +4,8 @@ using System;
 using System.Collections.Generic;
 
 public enum Stats {
-	VITALITY,
-	INTELLIGENCE,
+	HEALTH,
+	STAMINA,
 	SPEED,
 	POWER,
 	CRIT,
@@ -20,19 +20,17 @@ public enum Stats {
 public class UnitStats : MonoBehaviour {
 
 	//scaling consts
-	const int VIT_TO_HP = 10;
-	const int INT_TO_MANA = 10;
 	const float ARMOUR_DAMAGE_REDUCTION = 0.5f;
 
 	//list of buffs and debuffs
 	List<Buff> myBuffs = new List<Buff>();
 
 	[SerializeField]
-	int baseVitality = 10;
+	int baseHealth = 100;
 	int currentHealth;
 	[SerializeField]
-	int baseIntelligence = 10;
-	int currentMana;
+	int baseStamina = 50;
+	int currentStamina;
 	[SerializeField]
 	int baseSpeed = 3;
 	[SerializeField]
@@ -53,9 +51,9 @@ public class UnitStats : MonoBehaviour {
 	public Walkable walkingType;
 
 	public void Initialise() {
-		//TODO LOAD BASE STATS FROM DATABASE
+		//TODO LOAD BASE STATS FROM DATABASE or scripts
 		currentHealth = MaxHealth;
-		currentMana = MaxMana;
+        currentStamina = MaxStamina;
 	}
 
 	public int GetModifiedStat(int baseValue, Stats stat) {
@@ -74,12 +72,12 @@ public class UnitStats : MonoBehaviour {
 		Health = Mathf.Clamp (health, 0, MaxHealth);
 	}
 
-	public int Vitality {
-		get { return GetModifiedStat(baseVitality, Stats.VITALITY); }
+	public int MaxHealth {
+		get { return GetModifiedStat(baseHealth, Stats.HEALTH); }
 	}
 
-	public int Intelligence {
-		get { return GetModifiedStat(baseIntelligence, Stats.INTELLIGENCE); }
+	public int MaxStamina {
+		get { return GetModifiedStat(baseStamina, Stats.STAMINA); }
 	}
 
 	public int Speed {
@@ -106,22 +104,14 @@ public class UnitStats : MonoBehaviour {
 		get { return (int)(Armour * ARMOUR_DAMAGE_REDUCTION); }
 	}
 
-	public int MaxHealth {
-		get { return Vitality * VIT_TO_HP; }
-	}
-
 	public int Health {
 		get { return currentHealth; }
 		set { currentHealth = value; }
 	}
 
-	public int MaxMana {
-		get { return Intelligence * INT_TO_MANA; }
-	}
-
-	public int Mana {
-		get { return currentMana; }
-		set { currentMana = value; }
+	public int Stamina {
+		get { return currentStamina; }
+		set { currentStamina = value; }
 	}
 
 	public int MaxActionPoints {
