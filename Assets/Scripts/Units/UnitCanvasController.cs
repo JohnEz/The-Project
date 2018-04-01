@@ -46,7 +46,6 @@ public class UnitCanvasController : MonoBehaviour {
 
         staminaBar = Instantiate(staminaBarPrefab, transform, false).GetComponent<StaminaBarController>();
         staminaBar.Initialize(myUnit.myStats.MaxStamina);
-        staminaBar.SetHPColor(new Color(0.7294f, 0.9569f, 0.1176f));
     }
 
 	public void SetActionPoints (int newActionPoints) {

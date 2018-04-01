@@ -7,7 +7,7 @@ public class StaminaBarController : MonoBehaviour {
 
     private float currentMax = 0;
     private float realFillAmount = 1;
-    public float targetPercent = 1;
+    private float targetPercent = 1;
 
     private Color maxStaminaColour = new Color(1,1,1);
     private Color zeroStaminaColour = new Color(1, 0.5f, 0.5f);
@@ -15,8 +15,8 @@ public class StaminaBarController : MonoBehaviour {
 
     // Use this for initialization
     public void Initialize(float maxStamina) {
-        staminaBar = transform.Find("staminaBar").GetComponent<Image>();
         currentMax = maxStamina;
+        staminaBar.color = maxStaminaColour;
     }
 
     // Update is called once per frame
@@ -34,8 +34,6 @@ public class StaminaBarController : MonoBehaviour {
                 highColour = negativeStaminaColour;
             }
 
-            Debug.Log(fillAmount);
-
             staminaBar.fillAmount = fillAmount;
             staminaBar.color = Color.Lerp(zeroStaminaColour, highColour, staminaBar.fillAmount);
         }
@@ -47,9 +45,5 @@ public class StaminaBarController : MonoBehaviour {
         if (currentStamina != currentMax) {
             currentMax = currentStamina;
         }
-    }
-
-    public void SetHPColor(Color color) {
-        staminaBar.color = color;
     }
 }
