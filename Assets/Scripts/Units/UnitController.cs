@@ -105,9 +105,10 @@ public class UnitController : MonoBehaviour {
 	}
 
 	public void EndTurn() {
-		ActionPoints = 0;
-		myStats.EndTurn ();
-	}
+        Stamina += myStats.ConvertActionPointsToStamina();
+        ActionPoints = 0;
+        myStats.EndTurn ();
+    }
 
 	public void Spawn(Player player, Node startNode) {
 		myPlayer = player;

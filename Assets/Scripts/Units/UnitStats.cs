@@ -21,6 +21,7 @@ public class UnitStats : MonoBehaviour {
 
 	//scaling consts
 	const float ARMOUR_DAMAGE_REDUCTION = 0.5f;
+    const int ACTION_POINTS_TO_STAMINA = 2;
 
 	//list of buffs and debuffs
 	List<Buff> myBuffs = new List<Buff>();
@@ -171,8 +172,12 @@ public class UnitStats : MonoBehaviour {
     }
 
 	public void EndTurn() {
-
+        
 	}
+
+    public int ConvertActionPointsToStamina() {
+        return ActionPoints * ACTION_POINTS_TO_STAMINA;
+    }
 
 	public Buff FindOldestBuff(bool debuff) {
 		return Buffs.Find (buff => buff.isDebuff = debuff);
