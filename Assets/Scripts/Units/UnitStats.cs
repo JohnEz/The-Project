@@ -30,7 +30,7 @@ public class UnitStats : MonoBehaviour {
 	int currentHealth;
 	[SerializeField]
 	int baseStamina = 50;
-	int currentStamina;
+	int currentStamina = 0;
 	[SerializeField]
 	int baseSpeed = 3;
 	[SerializeField]
@@ -42,7 +42,7 @@ public class UnitStats : MonoBehaviour {
 	[SerializeField]
 	int baseArmour = 0;
 	int baseActionPoints = 2;
-	int actionPoints;
+	int currentActionPoints = 0;
 
 	[SerializeField]
 	Walkable baseWalkingType = Walkable.Walkable;
@@ -68,11 +68,31 @@ public class UnitStats : MonoBehaviour {
 		return (int)((baseValue + flatMods) * percentMods );
 	}
 
-	public void SetHealth(int health) {
-		Health = Mathf.Clamp (health, 0, MaxHealth);
+    public void SetActionPoints(int actionPoints) {
+        currentActionPoints = Mathf.Clamp(actionPoints, 0, MaxActionPoints);
+    }
+
+    public void SetHealth(int health) {
+		currentHealth = Mathf.Clamp (health, 0, MaxHealth);
 	}
 
-	public int MaxHealth {
+    public void SetStamina(int stamina) {
+        currentStamina = Mathf.Clamp(stamina, -MaxStamina, MaxStamina);
+    }
+
+    public int Health {
+        get { return currentHealth; }
+    }
+
+    public int Stamina {
+        get { return currentStamina; }
+    }
+
+    public int ActionPoints {
+        get { return currentActionPoints; }
+    }
+
+    public int MaxHealth {
 		get { return GetModifiedStat(baseHealth, Stats.HEALTH); }
 	}
 
@@ -104,23 +124,8 @@ public class UnitStats : MonoBehaviour {
 		get { return (int)(Armour * ARMOUR_DAMAGE_REDUCTION); }
 	}
 
-	public int Health {
-		get { return currentHealth; }
-		set { currentHealth = value; }
-	}
-
-	public int Stamina {
-		get { return currentStamina; }
-		set { currentStamina = value; }
-	}
-
-	public int MaxActionPoints {
+    public int MaxActionPoints {
 		get { return GetModifiedStat(baseActionPoints, Stats.AP); }
-	}
-
-	public int ActionPoints {
-		get { return actionPoints; }
-		set { actionPoints = value; }
 	}
 
 	public List<Buff> Buffs {

@@ -155,12 +155,28 @@ public class UnitController : MonoBehaviour {
 	public int ActionPoints {
 		get { return myStats.ActionPoints; }
 		set { 
-			myStats.ActionPoints = value;
-			unitCanvasController.SetActionPoints (value);
+			myStats.SetActionPoints(value);
+			unitCanvasController.SetActionPoints (myStats.ActionPoints);
 		}
 	}
 
-	public void FollowPath() {
+    public int Stamina {
+        get { return myStats.Stamina; }
+        set {
+            myStats.SetStamina(value);
+            unitCanvasController.UpdateStamina(myStats.Stamina, myStats.MaxStamina);
+        }
+    }
+
+    public int Health {
+        get { return myStats.Health; }
+        set {
+            myStats.SetHealth(value);
+            unitCanvasController.UpdateHP(myStats.Health, myStats.MaxHealth);
+        }
+    }
+
+    public void FollowPath() {
 		if (myPath.Count <= 0) {
 			return;
 		}
@@ -214,7 +230,7 @@ public class UnitController : MonoBehaviour {
 		if (path [path.Count - 1].cost > myStats.Speed) {
 			ActionPoints -= 2;
 		} else {
-			ActionPoints--;
+			ActionPoints -= 1;
 		}
 		myNode.myUnit = null;
 		myPath = path;
@@ -242,7 +258,6 @@ public class UnitController : MonoBehaviour {
         myManager.UnitStartedAttacking();
         activeAbility = ability;
 		SetAttacking (true);
-		ActionPoints--;
         myDialogController.Attacking();
         StartCoroutine (AttackRoutine());
 	}
@@ -319,9 +334,7 @@ public class UnitController : MonoBehaviour {
 			unitCanvasController.CreateBasicText ("Block");
 		}
 
-		myStats.SetHealth(myStats.Health - modifiedDamage);
-
-		unitCanvasController.UpdateHP (myStats.Health, myStats.MaxHealth);
+        Health -= modifiedDamage;
 		unitCanvasController.CreateDamageText (modifiedDamage.ToString ());
 
         myDialogController.Attacked();
@@ -360,9 +373,7 @@ public class UnitController : MonoBehaviour {
 
 	public bool TakeHealing(UnitController caster, int healing) {
 
-		myStats.SetHealth(myStats.Health + healing);
-
-		unitCanvasController.UpdateHP (myStats.Health, myStats.MaxHealth);
+        Health += healing;
 		unitCanvasController.CreateHealText (healing.ToString ());
 
         myDialogController.Helped();

@@ -104,6 +104,8 @@ public class BaseAbility {
 	public int maxCooldown = 0;
 	public int cooldown = 0;
 
+    public int staminaCost = 3;
+
 	public int range = 1;
 	public int minRange = 1;
 
@@ -140,8 +142,10 @@ public class BaseAbility {
 
 	public virtual void UseAbility(Node target) {
 		cooldown = maxCooldown;
+        caster.Stamina -= staminaCost;
+        caster.ActionPoints -= 1;
 
-		eventActions.ForEach ((eventAction) => {
+        eventActions.ForEach ((eventAction) => {
 			if (eventAction.eventTrigger == AbilityEvent.CAST_START) {
 				eventAction.action(caster, target.myUnit, target);
 			}
@@ -150,8 +154,10 @@ public class BaseAbility {
 
 	public virtual void UseAbility(List<Node> targets, Node target) {
 		cooldown = maxCooldown;
+        caster.Stamina -= staminaCost;
+        caster.ActionPoints -= 1;
 
-		eventActions.ForEach ((eventAction) => {
+        eventActions.ForEach ((eventAction) => {
 			if (eventAction.eventTrigger == AbilityEvent.CAST_START) {
 				if (eventAction.eventTarget == EventTarget.CASTER || eventAction.eventTarget == EventTarget.TARGETEDTILE) {
 					eventAction.action(caster, null, target);
