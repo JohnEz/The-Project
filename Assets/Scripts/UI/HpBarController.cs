@@ -26,7 +26,7 @@ public class HpBarController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (targetPercent != hpBar.fillAmount) {
-            hpBar.fillAmount = Mathf.Lerp(hpBar.fillAmount, targetPercent, 0.05f);
+            hpBar.fillAmount = Mathf.Lerp(hpBar.fillAmount, targetPercent, 2f * Time.deltaTime);
         }
 	}
 
