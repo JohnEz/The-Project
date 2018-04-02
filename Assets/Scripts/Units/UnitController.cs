@@ -27,8 +27,9 @@ public struct Action {
 public class UnitController : MonoBehaviour {
 
 	public GameObject unitCanvasPrefab;
-	[System.NonSerialized]
-	public UnitStats myStats;
+    // [System.NonSerialized]
+    // public UnitStats myStats;
+    public UnitObject myStats;
 	[System.NonSerialized]
 	public UnitManager myManager;
 	UnitAnimationController anim;
@@ -73,7 +74,7 @@ public class UnitController : MonoBehaviour {
 		unitCanvasController = unitCanvas.GetComponent<UnitCanvasController> ();
 
 		anim = GetComponentInChildren<UnitAnimationController> ();
-		myStats = GetComponent<UnitStats> ();
+		//myStats = GetComponent<UnitStats> ();
 		myStats.Initialise ();
 		audioController = GetComponent<UnitAudioController> ();
 		myClass = GetComponent<UnitClass> ();

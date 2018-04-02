@@ -24,7 +24,7 @@ public class UnitInfoController : MonoBehaviour
 		gameObject.SetActive (false);
 	}
 
-	public string getUnitStatsString(UnitStats stats) {
+	public string getUnitStatsString(UnitObject stats) {
 		string buffsString = "";
 		string debuffsString = "";
 

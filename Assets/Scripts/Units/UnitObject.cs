@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 
+[CreateAssetMenu(fileName = "New Unit", menuName = "Unit")]
 public class UnitObject : ScriptableObject {
 
     public string characterName;
