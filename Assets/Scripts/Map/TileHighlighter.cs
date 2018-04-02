@@ -65,9 +65,6 @@ public class TileHighlighter : MonoBehaviour {
 
 	TileState myState;
 
-	float maxAlpha = 1f;
-	float minAlpha = 1f;
-
 	public SquareTarget myTarget = SquareTarget.NONE;
 
 	SpriteRenderer mySpriteRenderer;
@@ -222,7 +219,6 @@ public class TileHighlighter : MonoBehaviour {
 	}
 
 	public void AddDecal(SquareDecal decal) {
-		Sprite decalSprite;
 		switch(decal) {
 		case SquareDecal.TARGET:
 			CreateDecal(targetDecal);

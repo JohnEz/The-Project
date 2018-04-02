@@ -11,8 +11,8 @@ public class PersistentFxController : MonoBehaviour {
 
 	[SerializeField]
 	AudioClip loopSfx;
-	[SerializeField]
-	float loopSfxDelay = 0f;
+	//[SerializeField]
+	//float loopSfxDelay = 0f;
 
 	[SerializeField]
 	AudioClip disappearSfx;

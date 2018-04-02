@@ -60,7 +60,6 @@ public class UnitController : MonoBehaviour {
 	List<ProjectileController> projectiles;
 	Node currentAbilityTarget;
 	int effectsToCreate = 0;
-	bool isAttackAnimationPlaying = false;
 	List<GameObject> abilityEffects = new List<GameObject>();
 
 	// Use this for initialization
@@ -328,9 +327,7 @@ public class UnitController : MonoBehaviour {
 
 		//check to see if attack was blocked
 		float blockRoll = Random.value * 100;
-		bool blocked = false;
 		if (!ignoreArmour && !crit && blockRoll <= myStats.Block) {
-			blocked = true;
 			modifiedDamage = (int)(modifiedDamage * 0.5f);
 			unitCanvasController.CreateBasicText ("Block");
 		}

@@ -23,7 +23,7 @@ public class CameraController : MonoBehaviour {
 	public float maxX = 100000;
 	public float maxY = 100000;
 
-	float textureSize = 96;
+	float textureSize = 95;
 
 	float currentZoom = 1f;
 	float targetZoom = 1f;
@@ -122,7 +122,7 @@ public class CameraController : MonoBehaviour {
 	void UpdateZoom() {
 		float d = Input.GetAxis("Mouse ScrollWheel");
 
-		float unitsPerPixel = 1f / textureSize;
+		//float unitsPerPixel = 1f / textureSize;
 		bool zoomHasChanged = false;
 
 		Camera cam = GetComponent<Camera> ();

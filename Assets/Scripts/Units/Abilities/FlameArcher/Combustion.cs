@@ -5,7 +5,6 @@ using System.Collections.Generic;
 public class Combustion : BaseAbility {
 
 	float damageMod = 0.6f;
-	int duration = 3;
 
 	public Combustion(List<EventAction> _eventActions, UnitController caster) : base (_eventActions, caster) {
 		range = 6;
