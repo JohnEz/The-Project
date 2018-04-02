@@ -29,6 +29,8 @@ public class UnitController : MonoBehaviour {
 	public GameObject unitCanvasPrefab;
     // [System.NonSerialized]
     // public UnitStats myStats;
+    public UnitObject baseStats;
+    [System.NonSerialized]
     public UnitObject myStats;
 	[System.NonSerialized]
 	public UnitManager myManager;
@@ -74,7 +76,8 @@ public class UnitController : MonoBehaviour {
 		unitCanvasController = unitCanvas.GetComponent<UnitCanvasController> ();
 
 		anim = GetComponentInChildren<UnitAnimationController> ();
-		//myStats = GetComponent<UnitStats> ();
+        //myStats = GetComponent<UnitStats> ();
+        myStats = Instantiate(baseStats);
 		myStats.Initialise ();
 		audioController = GetComponent<UnitAudioController> ();
 		myClass = GetComponent<UnitClass> ();

@@ -26,7 +26,8 @@ public class UnitCanvasController : MonoBehaviour {
 
 	bool canCreateCombatText = true;
 
-	int myTeam;
+    UnitController myUnit;
+    int myTeam;
 
 	Dictionary<string, Sprite[]> buffSprites = new Dictionary<string, Sprite[]>();
 
@@ -38,7 +39,7 @@ public class UnitCanvasController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		UnitController myUnit = GetComponentInParent<UnitController> ();
+		myUnit = GetComponentInParent<UnitController> ();
 		myTeam = myUnit.myPlayer.id;
 		hpBar = Instantiate (hpBarPrefab, transform, false).GetComponent<HpBarController>();
 		hpBar.Initialize (myUnit.myStats.MaxHealth);
@@ -82,7 +83,7 @@ public class UnitCanvasController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		//TODO this is really bad to delete and make these buffs each time
-		UpdateBuffs (GetComponentInParent<UnitStats> ().Buffs);
+		UpdateBuffs (myUnit.myStats.Buffs);
 		//TODO there might be a better way to not check for this each time as well
 		if (combatTextQueue.Count > 0 && canCreateCombatText) {
 			CombatText combatText = combatTextQueue.Dequeue ();

@@ -2,11 +2,26 @@
 using System;
 using System.Collections.Generic;
 
+public enum Stats {
+    HEALTH,
+    STAMINA,
+    SPEED,
+    POWER,
+    CRIT,
+    BLOCK,
+    ARMOUR,
+    AP,
+    DAMAGE,
+    HEALING,
+    MANA
+}
+
 [CreateAssetMenu(fileName = "New Unit", menuName = "Unit")]
 public class UnitObject : ScriptableObject {
 
     public string characterName;
     public string className;
+    public Sprite Icon; //TODO THIS SHOULD PROBABLY BE IN THE CLASS OR SOMETHING
 
     //scaling consts
     const float ARMOUR_DAMAGE_REDUCTION = 0.5f;
