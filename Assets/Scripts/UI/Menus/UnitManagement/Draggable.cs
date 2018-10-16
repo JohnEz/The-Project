@@ -46,6 +46,10 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         AdjustPlaceHolder();
     }
 
+    public void OnDestroy() {
+        Destroy(placeholder);
+    }
+
     public void OnEndDrag(PointerEventData eventData) {
         beingDragged = false;
         targetLocation = eventData.position;
