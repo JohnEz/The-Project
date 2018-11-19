@@ -21,7 +21,7 @@ public enum ActionType {
 public struct Action {
 	public ActionType type;
 	public List<Node> nodes;
-	public BaseAbility ability;
+	public AbilityCardBase ability;
 }
 
 public class UnitController : MonoBehaviour {
@@ -56,8 +56,8 @@ public class UnitController : MonoBehaviour {
 	//Gameplay variables
 	public Player myPlayer;
 
-	//Ability variables
-	BaseAbility activeAbility;
+    //Ability variables
+    AbilityCardBase activeAbility;
 	List<AbilityTarget> abilityTargets = new List<AbilityTarget>();
 	Queue<Action> actionQueue = new Queue<Action>();
 	List<ProjectileController> projectiles;
@@ -251,7 +251,7 @@ public class UnitController : MonoBehaviour {
 		myManager.UnitFinishedMoving ();
 	}
 
-	public void AttackTarget(List<Node> targetNodes, BaseAbility ability) {
+	public void AttackTarget(List<Node> targetNodes, AbilityCardBase ability) {
 		currentAbilityTarget = targetNodes [0];
 		if (ability.areaOfEffect == AreaOfEffect.SINGLE) {
 			ability.UseAbility (currentAbilityTarget);

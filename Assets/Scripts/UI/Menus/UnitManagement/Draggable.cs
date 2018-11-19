@@ -31,9 +31,11 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         beingDragged = true;
         originalParent = transform.parent;
         
+
         CreatePlaceholder();
         
-        transform.SetParent(GameObject.Find("Canvas").transform);
+        // Remove from the hand
+        transform.SetParent(GameObject.Find("GameCanvas").transform);
 
         targetLocation = eventData.position;
 
@@ -53,7 +55,11 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
     public void OnEndDrag(PointerEventData eventData) {
         beingDragged = false;
         targetLocation = eventData.position;
+
+        // Jump back into the hand
         transform.SetParent(originalParent);
+
+        // Place card at correct index in hand
         transform.SetSiblingIndex(placeholder.transform.GetSiblingIndex());
 
         Destroy(placeholder);
@@ -61,6 +67,7 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         GetComponent<CanvasGroup>().blocksRaycasts = true;
     }
 
+    // Creates a placeholder where this card was in the hand
     void CreatePlaceholder() {
         RectTransform myRect = GetComponent<RectTransform>();
 
@@ -88,7 +95,7 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         }
 
         for (int i = 0; i < placeholderParent.childCount; i++) {
-            if (transform.position.y > placeholderParent.GetChild(i).position.y) {
+            if (transform.position.x < placeholderParent.GetChild(i).position.x) {
                 newSiblingIndex = i;
 
                 if (placeholder.transform.GetSiblingIndex() < newSiblingIndex) {

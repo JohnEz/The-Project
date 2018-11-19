@@ -15,9 +15,8 @@ public class UnitManager : MonoBehaviour {
 	GUIController guiController;
 
 	//currentSelect
-	UnitController selectedUnit = null;
-	public UnitController lastSelectedUnit = null;
-	BaseAbility activeAbility = null;
+	UnitController currentPlayerUnit = null;
+    AbilityCardBase activeAbility = null;
 	List<Node> attackableTiles = new List<Node>();
 
 	Node currentlyHoveredNode;
@@ -38,17 +37,10 @@ public class UnitManager : MonoBehaviour {
 		unitsToRemove = new List<UnitController> ();
 		myMap = map;
 
-        SpawnUnit(3, players[0], 8, 10);
-        SpawnUnit (6, players[0], 7, 9);
-		SpawnUnit (4, players[0], 6, 10);
-		SpawnUnit (2, players[0], 7, 11);
-        SpawnUnit (2, players[0], 7, 10);
+        // Load from static file for these?
+        SpawnUnit(7, players[0], 8, 10);
 
-		SpawnUnit (2, players[1], 17, 11);
-		SpawnUnit (0, players[1], 16, 10);
-        SpawnUnit(1, players[1], 17, 9);
-        SpawnUnit (5, players[1], 18, 10);
-		SpawnUnit (7, players[1], 17, 10);
+		SpawnUnit (2, players[1], 17, 10);
 	}
 	
 	// Update is called once per frame
@@ -98,7 +90,6 @@ public class UnitManager : MonoBehaviour {
 	}
 
 	public void EndTurn(int playersTurn) {
-		lastSelectedUnit = null;
 		foreach (UnitController unit in units) {
 			if (unit.myPlayer.id == playersTurn) {
 				unit.EndTurn ();
@@ -106,115 +97,84 @@ public class UnitManager : MonoBehaviour {
 		}
 	}
 
-	public bool UnitAlreadySelected(UnitController unit) {
-		return selectedUnit == unit;
-	}
-
-	public bool SelectUnit(UnitController unit) {
-		if (!UnitAlreadySelected(unit)) {
-			selectedUnit = unit;
-			lastSelectedUnit = unit;
-			selectedUnit.SetSelected (true);
-			myMap.highlighter.HighlightTile (unit.myNode, SquareTarget.NONE);
-			return true;
-		}
-		return false;
-	}
-
-	public void DeselectUnit() {
-		if (selectedUnit != null) {
-			selectedUnit.SetSelected (false);
-			selectedUnit = null;
-			activeAbility = null;
-			attackableTiles = new List<Node> ();
-			myMap.highlighter.UnhighlightAllTiles ();
-		}
-	}
-
-	public UnitController SelectedUnit {
-		get { return selectedUnit; }
-	}
-
 	public ReachableTiles FindReachableTiles(UnitController unit) {
 		return myMap.pathfinder.findReachableTiles (unit.myNode, unit.myStats.Speed, unit.myStats.WalkingType, unit.myPlayer.faction);
 	}
 
-	// shows movement and attack tiles
-	public MovementAndAttackPath ShowActions(UnitController unit = null) {
-		unit = unit == null ? selectedUnit : unit;
+    // TODO this is probably needed for advanced cards but not for basic, fix later
+    // shows movement and attack tiles
+    //public MovementAndAttackPath ShowActions(UnitController unit = null) {
+    //	unit = unit == null ? selectedUnit : unit;
 
-		myMap.highlighter.UnhighlightAllTiles ();
-		myMap.highlighter.HighlightTile (unit.myNode, SquareTarget.NONE);
+    //	myMap.highlighter.UnhighlightAllTiles ();
+    //	myMap.highlighter.HighlightTile (unit.myNode, SquareTarget.NONE);
 
-		UnitClass unitClass = unit.GetComponent<UnitClass>();
-		MovementAndAttackPath reachableTiles = myMap.pathfinder.findMovementAndAttackTiles (unit, unitClass.abilities [0], unit.myStats.ActionPoints);
-		activeAbility = unitClass.abilities[0];
+    //	UnitClass unitClass = unit.GetComponent<UnitClass>();
+    //	MovementAndAttackPath reachableTiles = myMap.pathfinder.findMovementAndAttackTiles (unit, unitClass.abilities [0], unit.myStats.ActionPoints);
+    //	activeAbility = unitClass.abilities[0];
 
-		myMap.highlighter.HighlightTiles (reachableTiles.movementTiles.basic.Keys.ToList(), SquareTarget.MOVEMENT);
-		myMap.highlighter.HighlightTiles (reachableTiles.movementTiles.extended.Keys.ToList(), SquareTarget.DASH);
-		myMap.highlighter.HighlightTiles (reachableTiles.attackTiles, SquareTarget.ATTACK);
+    //	myMap.highlighter.HighlightTiles (reachableTiles.movementTiles.basic.Keys.ToList(), SquareTarget.MOVEMENT);
+    //	myMap.highlighter.HighlightTiles (reachableTiles.movementTiles.extended.Keys.ToList(), SquareTarget.DASH);
+    //	myMap.highlighter.HighlightTiles (reachableTiles.attackTiles, SquareTarget.ATTACK);
 
-		return reachableTiles;
-	}
+    //	return reachableTiles;
+    //}
 
-	public bool ShowAbility(int ability) {
-		UnitClass unitClass;
+    // Shows where the ability can target
+    public bool ShowAbility(AbilityCardBase ability)
+    {
 
-		if (selectedUnit == null) {
-			guiController.ShowErrorMessage ("No unit selected");
-			return false;
-		}
+        if (selectedUnit == null)
+        {
+            guiController.ShowErrorMessage("No unit selected");
+            return false;
+        }
 
-		if (selectedUnit.myStats.ActionPoints <= 0) {
-			guiController.ShowErrorMessage ("Not enough action points");
-			return false;
-		}
+        if (selectedUnit.myStats.ActionPoints <= 0)
+        {
+            guiController.ShowErrorMessage("Not enough action points");
+            return false;
+        }
 
-		unitClass = selectedUnit.GetComponent<UnitClass> ();
+        // TODO this probabily will need to change
+        activeAbility = ability;
 
-		if (!unitClass.HasAbility (ability)) {
-			guiController.ShowErrorMessage ("ERROR: NO ABILITY AT INDEX " + ability);
-			return false;
-		}
+        attackableTiles = myMap.pathfinder.FindAttackableTiles(selectedUnit.myNode, activeAbility);
+        myMap.highlighter.UnhighlightAllTiles();
+        myMap.highlighter.HighlightTile(selectedUnit.myNode, SquareTarget.NONE);
+        SquareTarget targetType = activeAbility.targets == TargetType.ALLY ? SquareTarget.HELPFULL : SquareTarget.ATTACK;
+        myMap.highlighter.HighlightTiles(attackableTiles, targetType);
 
-		activeAbility = unitClass.abilities [ability];
+        if (currentlyHoveredNode != null)
+        {
+            HighlightEffectedTiles(currentlyHoveredNode);
+        }
 
-		if (activeAbility.IsOnCooldown ()) {
-			guiController.ShowErrorMessage ("That ability is still on cooldown");
-			return false;
-		}
+        return true;
+    }
 
-		
-		attackableTiles = myMap.pathfinder.FindAttackableTiles (selectedUnit.myNode, activeAbility);
-		myMap.highlighter.UnhighlightAllTiles ();
-		myMap.highlighter.HighlightTile (selectedUnit.myNode, SquareTarget.NONE);
-		SquareTarget targetType = activeAbility.targets == TargetType.ALLY ? SquareTarget.HELPFULL : SquareTarget.ATTACK;
-		myMap.highlighter.HighlightTiles (attackableTiles, targetType);
-
-		if (currentlyHoveredNode != null) {
-			HighlightEffectedTiles (currentlyHoveredNode);
-		}
-
-		return true;
-	}
-
-	public void HighlightEffectedTiles(Node target) {
+    // Highlight the tiles effected by the ability
+    public void HighlightEffectedTiles(Node target) {
 		if (attackableTiles.Contains (target)) {
 			List<Node> effectedNodes = GetTargetNodes (activeAbility, target);
 			myMap.highlighter.ShowAbilityTiles (effectedNodes, activeAbility);
 		}
 	}
 
+    // TODO i dont know why this is its own fucntion call?
+    // unhighlight all tiles
 	public void UnhiglightEffectedTiles() {
 		myMap.highlighter.ClearEffectedTiles ();
 	}
 
+    // shows the path to the selected node
 	public void ShowPath(Node targetNode) {
 		MovementPath movementPath = myMap.pathfinder.getPathFromTile (targetNode);
 		myMap.highlighter.ShowPath (movementPath.path);
 	}
 
-	public bool AttackTile(Node targetNode, BaseAbility ability = null) {
+    // Uses the specified ability of at the target location
+	public bool AttackTile(Node targetNode, AbilityCardBase ability = null) {
 
 		if (ability == null) {
 			ability = activeAbility;
@@ -241,7 +201,8 @@ public class UnitManager : MonoBehaviour {
 		return true;
 	}
 
-	List<Node> GetTargetNodes(BaseAbility ability, Node targetNode) {
+    // Shows the attackable tiles of the ability
+	List<Node> GetTargetNodes(AbilityCardBase ability, Node targetNode) {
 		List<Node> targetTiles = new List<Node> ();
 		switch (ability.areaOfEffect) {
 		case AreaOfEffect.AURA:
@@ -257,6 +218,7 @@ public class UnitManager : MonoBehaviour {
 		}
 	}
 
+    // Adds a move action to a units queue
 	public void SetUnitPath(MovementPath movementPath) {
 		Action moveAction = new Action();
 		moveAction.type = ActionType.MOVEMENT;
@@ -264,31 +226,37 @@ public class UnitManager : MonoBehaviour {
 		selectedUnit.AddAction (moveAction);
 	}
 
+    // Tells the unit to move to a set node
 	public void MoveToTile(Node targetNode) {
 		MovementPath movementPath = myMap.pathfinder.getPathFromTile (targetNode);
 		SetUnitPath(movementPath);
 	}
 
+    // Called when the unit starts following a path
 	public void UnitStartedMoving() {
 		TurnManager turnManager = GetComponent<TurnManager> ();
 		turnManager.StartMoving ();
 	}
 
+    // Called when a unit has reached the end of its path
 	public void UnitFinishedMoving() {
 		TurnManager turnManager = GetComponent<TurnManager> ();
 		turnManager.FinishedMoving ();
 	}
 
+    // Called at the start of a unit attack
 	public void UnitStartedAttacking() {
 		TurnManager turnManager = GetComponent<TurnManager> ();
 		turnManager.StartAttacking ();
 	}
 
+    // Called when a unit finishes its attack 
 	public void UnitFinishedAttacking() {
 		TurnManager turnManager = GetComponent<TurnManager> ();
 		
 		RemoveUnits ();
 
+        //TODO This seems odd, or at least should be a constant value
         StartCoroutine(CallActionWithDelay(() => turnManager.FinishedAttacking(), 0.2f));
 	}
 
@@ -297,72 +265,13 @@ public class UnitManager : MonoBehaviour {
         action();
     }
 
+    // Called when a unit dies, removes them from the game
 	public void UnitDied(UnitController unit) {
 		AddUnitToRemove (unit);
 	}
 
+    // Check to see if a specified player has run out of moves
 	public bool PlayerOutOfActions(int playerId) {
-		foreach (UnitController unit in units) {
-			if (unit.myPlayer.id == playerId && unit.myStats.ActionPoints > 0) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	public UnitController GetNextUnit (int player, bool withActions = true) {
-		if (selectedUnit == null) {
-			return GetFirstUnit (player, withActions);
-		} else {
-			int startingIndex = units.FindIndex ((unit) => unit == selectedUnit);
-			int currentIndex = (startingIndex + 1) % units.Count;
-
-			while (currentIndex != startingIndex) {
-				UnitController unit = units [currentIndex];
-				if (unit.myPlayer.id == player && 
-					(!withActions || unit.myStats.ActionPoints > 0)) {
-					return unit;
-				}
-				currentIndex = (currentIndex + 1) % units.Count;
-			}
-		}
-
-		return null;
-	}
-
-	public UnitController GetPreviousUnit (int player, bool withActions = true) {
-		if (selectedUnit == null) {
-			return GetFirstUnit (player, withActions);
-		} else {
-			int startingIndex = units.FindIndex ((unit) => unit == selectedUnit);
-			int currentIndex = startingIndex - 1;
-
-			if (currentIndex < 0) {
-				currentIndex = units.Count - 1;
-			}
-
-			while (currentIndex != startingIndex) {
-				UnitController unit = units [currentIndex];
-				if (unit.myPlayer.id == player && 
-					(!withActions || unit.myStats.ActionPoints > 0)) {
-					return unit;
-				}
-
-				currentIndex--;
-				if (currentIndex < 0) {
-					currentIndex = units.Count - 1;
-				}
-			}
-		}
-
-		return null;
-	}
-
-	public UnitController GetFirstUnit(int player, bool withActions = true) {
-		return units.Find ((unit) => {
-			bool belongsToPlayer = unit.myPlayer.id == player;
-			bool hasActions = !withActions || unit.myStats.ActionPoints > 0;
-			return belongsToPlayer && hasActions;
-		});
+		return false;
 	}
 }

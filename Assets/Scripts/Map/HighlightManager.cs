@@ -21,12 +21,12 @@ public class HighlightManager : MonoBehaviour {
 		SetEffectedTiles (effectedTiles, SquareTarget.UNDEFINED, true);
 	}
 
-	public void ShowAbilityTiles(List<Node> effectedTiles, BaseAbility ability) {
+	public void ShowAbilityTiles(List<Node> effectedTiles, AbilityCardBase ability) {
 		SquareTarget targetType = ability.targets == TargetType.ALLY ? SquareTarget.HELPFULL : SquareTarget.ATTACK;
 		SetEffectedTiles (effectedTiles, targetType, false, ability);
 	}
 
-	public void SetEffectedTiles(List<Node> effectedTiles, SquareTarget targetType = SquareTarget.UNDEFINED, bool path = false, BaseAbility ability = null) {
+	public void SetEffectedTiles(List<Node> effectedTiles, SquareTarget targetType = SquareTarget.UNDEFINED, bool path = false, AbilityCardBase ability = null) {
 		ClearEffectedTiles ();
 		int i = 0;
 

@@ -43,11 +43,11 @@ public class UserInterfaceManager : MonoBehaviour {
 		}
 	}
 
-	public void ShowAbility(int index) {
-		if (unitManager.ShowAbility (index)) {
-			SetShowingAbility(index);
-		}
-	}
+	//public void ShowAbility(int index) {
+	//	if (unitManager.ShowAbility (index)) {
+	//		SetShowingAbility(index);
+	//	}
+	//}
 
 	void UserControls() {
 
@@ -66,31 +66,9 @@ public class UserInterfaceManager : MonoBehaviour {
 		}
 
 		if (turnManager.CurrentPhase == TurnPhase.WAITING_FOR_INPUT && !turnManager.isAiTurn()) {
-			if (Input.GetKeyUp ("1")) {
-				ShowAbility (0);
-			}
-
-			if (Input.GetKeyUp ("2")) {
-				ShowAbility (1);
-			}
 
 			if (Input.GetKeyUp ("space")) {
 				//turnManager.EndTurn ();
-			}
-
-			//Cancel (right click)
-			if ((Input.GetMouseButtonUp(1) || Input.GetKeyUp (KeyCode.Escape)) && isShowingAbility) {
-				if (isShowingAbility) {
-					ShowMovement ();
-				}
-			}
-
-			if (Input.GetKeyUp (KeyCode.Tab)) {
-				SelectNextUnit ();
-			}
-
-			if (Input.GetKeyUp(KeyCode.LeftShift)) {
-				SelectPreviousUnit ();
 			}
 		}
 
@@ -139,26 +117,12 @@ public class UserInterfaceManager : MonoBehaviour {
 	}
 
 	public void ClickedUnselected(Node node) {
-		if (node.myUnit != null) {
-			if (unitManager.UnitAlreadySelected (node.myUnit) && node.myUnit.ActionPoints > 0) {
-				ShowMovement ();
-			} else {
-				SelectUnit (node.myUnit);
 
-				if (node.myUnit.myPlayer.id == turnManager.PlayersTurn) {
-					if (node.myUnit.myStats.ActionPoints > 0) {
-						ShowMovement ();
-					}
-				}
-			}
-		} else if (isShowingAbility) {
-			ShowMovement ();
-		}
 	}
 
 	public void StartTurn() {
 		if (!turnManager.isAiTurn ()) {
-			SelectNextUnit ();
+			
 		}
 	}
 
@@ -186,52 +150,19 @@ public class UserInterfaceManager : MonoBehaviour {
 
 	public void FinishedAttacking() {
 		if (!turnManager.isAiTurn ()) {
-			if (!ReselectUnit ()) {
-				SelectNextUnit ();
-				UnshowAbility();
-			}
+
 		}
 	}
 
 	public void FinishedMoving() {
 		if (!turnManager.isAiTurn ()) {
-			if (unitManager.lastSelectedUnit != null && !unitManager.lastSelectedUnit.HasRemainingQueuedActions ()) {
-				if (!ReselectUnit ()) {
-					SelectNextUnit ();
-				}
-			}
+
 		}
 	}
 
-	public void ShowMovement() {
-		UnshowAbility();
-		unitManager.ShowActions ();
-	}
+	//public void ShowMovement() {
+	//	UnshowAbility();
+	//	unitManager.ShowActions ();
+	//}
 
-	public bool ReselectUnit() {
-		if (unitManager.lastSelectedUnit != null && unitManager.lastSelectedUnit.ActionPoints > 0) {
-			SelectUnit (unitManager.lastSelectedUnit);
-			ShowMovement ();
-			return true;
-		}
-		return false;
-	}
-
-	public void SelectNextUnit() {
-		UnitController nextUnit = unitManager.GetNextUnit (turnManager.PlayersTurn);
-		if (nextUnit != null) {
-			GetComponent<CameraManager> ().MoveToLocation (nextUnit.myNode);
-			SelectUnit (nextUnit);
-			ShowMovement ();
-		}
-	}
-
-	public void SelectPreviousUnit() {
-		UnitController nextUnit = unitManager.GetPreviousUnit (turnManager.PlayersTurn);
-		if (nextUnit != null) {
-			GetComponent<CameraManager> ().MoveToLocation (nextUnit.myNode);
-			SelectUnit (nextUnit);
-			ShowMovement ();
-		}
-	}
 }

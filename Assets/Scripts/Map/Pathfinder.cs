@@ -200,7 +200,7 @@ public class Pathfinder : MonoBehaviour {
 		return newPath;
 	}
 
-	public MovementAndAttackPath findMovementAndAttackTiles(UnitController unit, BaseAbility ability, int actions) {
+	public MovementAndAttackPath findMovementAndAttackTiles(UnitController unit, AbilityCardBase ability, int actions) {
 		bool canDash = actions > 1;
 		MovementAndAttackPath reachableTiles;
 		reachableTiles.movementTiles = findReachableTiles (unit.myNode, unit.myStats.Speed, unit.myStats.WalkingType, unit.myPlayer.faction, canDash);
@@ -262,7 +262,7 @@ public class Pathfinder : MonoBehaviour {
 		return levelDifference <= maxDifference + 1;
 	}
 
-	public List<Node> FindAttackableTiles(Node node, BaseAbility ability) {
+	public List<Node> FindAttackableTiles(Node node, AbilityCardBase ability) {
 		switch (ability.areaOfEffect) {
 		case AreaOfEffect.AURA:
 			return FindAOEHitTiles (node, ability);
@@ -276,7 +276,7 @@ public class Pathfinder : MonoBehaviour {
 
 	}
 
-	List<Node> FindSingleTargetTiles(Node node, BaseAbility ability) {
+	List<Node> FindSingleTargetTiles(Node node, AbilityCardBase ability) {
 		List<Node> reachableTiles = findReachableTiles (node, ability.range, Walkable.Flying, -1).basic.Keys.ToList();
 		if (ability.CanTargetSelf) {
 			reachableTiles.Insert (0, node);
@@ -285,7 +285,7 @@ public class Pathfinder : MonoBehaviour {
 		return reachableTiles;
 	}
 
-	List<Node> FindCircleTargetTiles(Node node, BaseAbility ability) {
+	List<Node> FindCircleTargetTiles(Node node, AbilityCardBase ability) {
 		List<Node> reachableTiles = findReachableTiles (node, ability.range, Walkable.Flying, -1).basic.Keys.ToList();
 		if (ability.CanTargetSelf) {
 			reachableTiles.Insert (0, node);
@@ -293,13 +293,13 @@ public class Pathfinder : MonoBehaviour {
 		return reachableTiles;
 	}
 
-	public List<Node> FindAOEHitTiles(Node node, BaseAbility ability) {
+	public List<Node> FindAOEHitTiles(Node node, AbilityCardBase ability) {
 		List<Node> targetTiles = findReachableTiles (node, ability.aoeRange, Walkable.Flying, -1).basic.Keys.ToList();
 		targetTiles.Insert (0, node);
 		return targetTiles;
 	}
 
-	public List<Node> FindCleaveTargetTiles(Node node, BaseAbility ability, Node start) {
+	public List<Node> FindCleaveTargetTiles(Node node, AbilityCardBase ability, Node start) {
 		//TODO write a smarter way of doing this
 		bool attackingHorizontally = start.x != node.x;
 		List<Node> targetTiles = findReachableTiles (node, ability.aoeRange, Walkable.Flying, -1).basic.Keys.ToList();

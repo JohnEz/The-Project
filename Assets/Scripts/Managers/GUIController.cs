@@ -9,7 +9,6 @@ public class GUIController : MonoBehaviour {
 	bool showingTurn = false;
 	GameObject turnText;
 
-	public GameObject abilityIconPrefab;
 	public GameObject errorMessagePrefab;
 
 	TurnManager turnManager;
@@ -19,20 +18,18 @@ public class GUIController : MonoBehaviour {
 	Dictionary<string, RuntimeAnimatorController> abilityIconControllers = new Dictionary<string, RuntimeAnimatorController>();
 
 	Text objectivesBody;
-	AbilityDescriptionController abilityDescription;
 	UnitInfoController unitInfo;
 
 	void Awake() {
 		turnManager = GetComponentInParent<TurnManager> ();
 		uIManager = GetComponentInParent<UserInterfaceManager> ();
-		abilityDescription = transform.Find("AbilityDescription").GetComponent<AbilityDescriptionController> ();
 		unitInfo = transform.Find("UnitInfo").GetComponent<UnitInfoController> ();
 		unitInfo.HideWindow ();
 	}
 
 	// Use this for initialization
 	void Start () {
-		abilityDescription.HideWindow ();
+		
 	}
 
 	// Update is called once per frame
@@ -66,14 +63,11 @@ public class GUIController : MonoBehaviour {
 	}
 
 	public void UnitSelected(UnitController unit) {
-		DisplayUnitAbilities (unit);
 		ShowUnitInfo (unit);
 	}
 
 	public void UnitDeselected() {
-		ClearAbilityIcons ();
 		HideUnitInfo ();
-		HideAbilityDescription ();
 	}
 
 	public void ClearAbilityIcons() {
@@ -82,12 +76,6 @@ public class GUIController : MonoBehaviour {
 			AbilityDeselected(abilityIcons.IndexOf(icon));
 		});
 		abilityIcons.Clear ();
-	}
-
-	public void DisplayUnitAbilities(UnitController unit) {
-		UnitClass unitClass = unit.GetComponent<UnitClass> ();
-
-		unitClass.abilities.ForEach ((ability) => CreateAbilityIcon (ability));
 	}
 
 	public void AbilitySelected(int abilityIndex) {
@@ -100,17 +88,6 @@ public class GUIController : MonoBehaviour {
 		if (abilityIcons.Count > abilityIndex) {
 			abilityIcons [abilityIndex].GetComponent<Animator> ().SetBool("active", false);
 		}
-	}
-
-	public void CreateAbilityIcon(BaseAbility ability) {
-		GameObject newAbilityIcon = Instantiate (abilityIconPrefab);
-		newAbilityIcon.GetComponent<Animator> ().runtimeAnimatorController = LoadRuntimeAnimatorController(ability.icon);
-		Vector3 newPosition = newAbilityIcon.transform.position;
-		newAbilityIcon.transform.SetParent(transform, false);
-		newPosition.x = -35 + (abilityIcons.Count * 70);
-		newAbilityIcon.GetComponent<RectTransform> ().anchoredPosition = newPosition;
-		newAbilityIcon.GetComponent<AbilityIconController> ().Initialize (abilityIcons.Count, ability, uIManager, this);
-		abilityIcons.Add(newAbilityIcon);
 	}
 
 	RuntimeAnimatorController LoadRuntimeAnimatorController(string controller) {
@@ -134,15 +111,6 @@ public class GUIController : MonoBehaviour {
 		newDamageText.GetComponent<Text> ().text = message;
 		newDamageText.GetComponent<Text> ().color = new Color(0.95f, 0.25f, 0.25f);
 		newDamageText.transform.SetParent(this.transform);
-	}
-
-	public void ShowAbilityDescription(BaseAbility ability) {
-		abilityDescription.SetAbility (ability);
-		abilityDescription.ShowWindow ();
-	}
-
-	public void HideAbilityDescription() {
-		abilityDescription.HideWindow ();
 	}
 
 	public void ShowUnitInfo(UnitController unit) {

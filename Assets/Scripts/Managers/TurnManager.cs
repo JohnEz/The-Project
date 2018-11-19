@@ -33,7 +33,7 @@ public class TurnManager : MonoBehaviour {
 	List<Player> players;
 	int playersTurn = -1;
 
-	bool checkedPlayerStatus = true;
+	bool checkedIfTurnShouldEnd = true; 
 
 	// Use this for initialization
 	public void Initialise () {
@@ -57,11 +57,11 @@ public class TurnManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		//check to see if the turn should end
-		if (!checkedPlayerStatus) {
+		if (!checkedIfTurnShouldEnd) {
 			if (!isAiTurn() && currentPhase == TurnPhase.WAITING_FOR_INPUT && unitManager.PlayerOutOfActions (playersTurn)) {
 				EndTurn ();
 			} else {
-				checkedPlayerStatus = true;
+                checkedIfTurnShouldEnd = true;
 			}
 		}
 	}
@@ -76,6 +76,7 @@ public class TurnManager : MonoBehaviour {
 		p0.ai = false;
 		p0.faction = 1;
 		players.Add (p0);
+        // maybe i need to add the unit here?
 
 		Player p1 = new Player ();
 		p1.id = 1;
@@ -106,15 +107,17 @@ public class TurnManager : MonoBehaviour {
 		playersTurn++;
 		playersTurn = playersTurn % players.Count;
 		unitManager.StartTurn (playersTurn);
-		bool alliedTurn = !isAiTurn();
+		bool alliedTurn = !isAiTurn(); // TODO check faction
 
 		gUIController.StartNewTurn (alliedTurn, objectiveManager.getObjectives(players[playersTurn]));
 
 		uIManager.StartTurn ();
 
-		// Had error when unit died at turn start
+		// TODO Had error when unit died at turn start
 		if (!isAiTurn ()) {
-			cameraManager.MoveToLocation (unitManager.SelectedUnit.myNode);
+            if (unitManager.SelectedUnit != null) {
+                cameraManager.MoveToLocation(unitManager.SelectedUnit.myNode);
+            }
 		} else {
 			StartCoroutine(aiManager.NewTurn (playersTurn));
 		}
@@ -145,7 +148,7 @@ public class TurnManager : MonoBehaviour {
 
 	public void ChangeState(TurnPhase newPhase) {
 		currentPhase = newPhase;
-		checkedPlayerStatus = false;
+        checkedIfTurnShouldEnd = false;
 	}
 
 	public void FinishStartingTurn() {

@@ -61,53 +61,53 @@ public class AIManager : MonoBehaviour {
 		return pathsToEnemies;
 	}
 
-	public Dictionary<BaseAbility, List<Node>> GetPotentialAbilityTargets(UnitController unit) {
-		Dictionary<BaseAbility, List<Node>> potentialAbilityTargets = new Dictionary<BaseAbility, List<Node>>();
-		UnitClass unitClass = unit.GetComponent<UnitClass>();
+	public Dictionary<AbilityCardBase, List<Node>> GetPotentialAbilityTargets(UnitController unit) {
+		Dictionary<AbilityCardBase, List<Node>> potentialAbilityTargets = new Dictionary<AbilityCardBase, List<Node>>();
+		//UnitClass unitClass = unit.GetComponent<UnitClass>();
 
-		unitClass.abilities.ForEach (ability => {
-			List<Node> attackableTiles = myMap.pathfinder.FindAttackableTiles (unit.myNode, ability);
+		//unitClass.abilities.ForEach (ability => {
+		//	List<Node> attackableTiles = myMap.pathfinder.FindAttackableTiles (unit.myNode, ability);
 
-			attackableTiles = attackableTiles.Where(tile => ability.CanHitUnit(tile)).ToList();
+		//	attackableTiles = attackableTiles.Where(tile => ability.CanHitUnit(tile)).ToList();
 
-			potentialAbilityTargets.Add(ability, attackableTiles);
-		});
+		//	potentialAbilityTargets.Add(ability, attackableTiles);
+		//});
 
 		return potentialAbilityTargets;
 	}
 
 	public IEnumerator PlanTurn(UnitController unit) {
-		UnitClass unitClass = unit.GetComponent<UnitClass>();
-        //unitManager.SelectUnit (unit);
+		// UnitClass unitClass = unit.GetComponent<UnitClass>();
+        // unitManager.SelectUnit (unit);
 
         Debug.Log("AI - Planning turn");
 
-        while (unit.myStats.ActionPoints > 0) {
-			yield return WaitForWaitingForInput ();
-			unitManager.SelectUnit (unit);
+  //      while (unit.myStats.ActionPoints > 0) {
+		//	yield return WaitForWaitingForInput ();
+		//	unitManager.SelectUnit (unit);
 
-			Dictionary<BaseAbility, List<Node>> potentialAbilityTargets = GetPotentialAbilityTargets(unit);
+		//	Dictionary<BaseAbility, List<Node>> potentialAbilityTargets = GetPotentialAbilityTargets(unit);
 
-			if (potentialAbilityTargets [unitClass.abilities [0]].Count > 0) {
-                Debug.Log("AI - attacking tile");
-                unitManager.AttackTile (potentialAbilityTargets [unitClass.abilities [0]] [0], unitClass.abilities [0]);
-			} else if (unit.myStats.Speed > 0) {
-				List<MovementPath> paths = FindPathsToEnemies (unit);
-				if (paths.Count > 0) {
-					MovementPath shortestPath = Pathfinder.GetSortestPath (paths);
-					//TODO we need to check if there is a unit on the tile speed away
-					shortestPath.path = shortestPath.path.Take (unit.myStats.Speed * unit.myStats.ActionPoints).ToList ();
-					unitManager.SetUnitPath (shortestPath);
-				} else {
-					//end turn
-					unit.ActionPoints = 0;
-				}
-			} else {
-				//end turn
-				unit.ActionPoints = 0;
-			}
-			unitManager.DeselectUnit ();
-		}
+		//	if (potentialAbilityTargets [unitClass.abilities [0]].Count > 0) {
+  //              Debug.Log("AI - attacking tile");
+  //              unitManager.AttackTile (potentialAbilityTargets [unitClass.abilities [0]] [0], unitClass.abilities [0]);
+		//	} else if (unit.myStats.Speed > 0) {
+		//		List<MovementPath> paths = FindPathsToEnemies (unit);
+		//		if (paths.Count > 0) {
+		//			MovementPath shortestPath = Pathfinder.GetSortestPath (paths);
+		//			//TODO we need to check if there is a unit on the tile speed away
+		//			shortestPath.path = shortestPath.path.Take (unit.myStats.Speed * unit.myStats.ActionPoints).ToList ();
+		//			unitManager.SetUnitPath (shortestPath);
+		//		} else {
+		//			//end turn
+		//			unit.ActionPoints = 0;
+		//		}
+		//	} else {
+		//		//end turn
+		//		unit.ActionPoints = 0;
+		//	}
+		//	unitManager.DeselectUnit ();
+		//}
 			
 		yield return WaitForWaitingForInput ();
 
