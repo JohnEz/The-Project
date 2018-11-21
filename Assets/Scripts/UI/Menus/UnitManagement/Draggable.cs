@@ -16,6 +16,7 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
     GameObject placeholder = null;
 
     bool beingDragged = false;
+    public bool droppedOnZone = false;
 
     void Start() {
         
@@ -54,13 +55,17 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
 
     public void OnEndDrag(PointerEventData eventData) {
         beingDragged = false;
-        targetLocation = eventData.position;
+        if (droppedOnZone) {
+            targetLocation = eventData.position;
 
-        // Jump back into the hand
-        transform.SetParent(originalParent);
+            // Jump back into the hand
+            transform.SetParent(originalParent);
 
-        // Place card at correct index in hand
-        transform.SetSiblingIndex(placeholder.transform.GetSiblingIndex());
+            // Place card at correct index in hand
+            transform.SetSiblingIndex(placeholder.transform.GetSiblingIndex());
+
+            droppedOnZone = false;
+        }
 
         Destroy(placeholder);
 

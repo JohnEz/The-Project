@@ -115,9 +115,10 @@ public class TurnManager : MonoBehaviour {
 
 		// TODO Had error when unit died at turn start
 		if (!isAiTurn ()) {
-            if (unitManager.SelectedUnit != null) {
-                cameraManager.MoveToLocation(unitManager.SelectedUnit.myNode);
-            }
+            // TODO this should move to the new players character
+            //if (unitManager.SelectedUnit != null) {
+            //    cameraManager.MoveToLocation(unitManager.SelectedUnit.myNode);
+            //}
 		} else {
 			StartCoroutine(aiManager.NewTurn (playersTurn));
 		}
@@ -126,7 +127,6 @@ public class TurnManager : MonoBehaviour {
 
 	public void EndTurn() {
 		ChangeState(TurnPhase.TURN_ENDING);
-		unitManager.DeselectUnit();
 		if (objectiveManager.CheckObjectives (players [playersTurn])) {
 			MenuSystem.LoadScene (Scenes.MAIN_MENU);
 		} else {

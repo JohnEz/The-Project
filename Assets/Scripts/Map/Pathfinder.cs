@@ -200,48 +200,48 @@ public class Pathfinder : MonoBehaviour {
 		return newPath;
 	}
 
-	public MovementAndAttackPath findMovementAndAttackTiles(UnitController unit, AbilityCardBase ability, int actions) {
-		bool canDash = actions > 1;
-		MovementAndAttackPath reachableTiles;
-		reachableTiles.movementTiles = findReachableTiles (unit.myNode, unit.myStats.Speed, unit.myStats.WalkingType, unit.myPlayer.faction, canDash);
-		reachableTiles.attackTiles = new List<Node> ();
+	//public MovementAndAttackPath findMovementAndAttackTiles(UnitController unit, AttackAction action, int actions) {
+	//	bool canDash = actions > 1;
+	//	MovementAndAttackPath reachableTiles;
+	//	reachableTiles.movementTiles = findReachableTiles (unit.myNode, unit.myStats.Speed, unit.myStats.WalkingType, unit.myPlayer.faction, canDash);
+	//	reachableTiles.attackTiles = new List<Node> ();
 
-		//Need to do a test for the starting tile
-		foreach (Neighbour neighbour in unit.myNode.neighbours) {
-			UnitController targetUnit = neighbour.node.myUnit;
-			if (targetUnit && ability.CanTargetTile (neighbour.node)) {
-				reachableTiles.attackTiles.Add (neighbour.node);
-				neighbour.node.previous = new Neighbour ();
-				neighbour.node.previous.node = unit.myNode;
-				neighbour.node.previous.direction = neighbour.direction;
-				neighbour.node.previous.node.cost = 0;
-			}
-		}
+	//	//Need to do a test for the starting tile
+	//	foreach (Neighbour neighbour in unit.myNode.neighbours) {
+	//		UnitController targetUnit = neighbour.node.myUnit;
+	//		if (targetUnit && action.CanTargetTile (neighbour.node)) {
+	//			reachableTiles.attackTiles.Add (neighbour.node);
+	//			neighbour.node.previous = new Neighbour ();
+	//			neighbour.node.previous.node = unit.myNode;
+	//			neighbour.node.previous.direction = neighbour.direction;
+	//			neighbour.node.previous.node.cost = 0;
+	//		}
+	//	}
 
-		if (actions > 1) {
-			foreach (Node tile in reachableTiles.movementTiles.basic.Keys) {
-				foreach (Neighbour neighbour in tile.neighbours) {
+	//	if (actions > 1) {
+	//		foreach (Node tile in reachableTiles.movementTiles.basic.Keys) {
+	//			foreach (Neighbour neighbour in tile.neighbours) {
 
-					//if its a tile we cant already walk on to
-					if (!reachableTiles.movementTiles.basic.Keys.Contains (neighbour.node)) {
-						//if its not already highligheted or if the new parent is faster than previous
-						if (!reachableTiles.attackTiles.Contains (neighbour.node) || tile.cost < neighbour.node.previous.node.cost) {
-							UnitController targetUnit = neighbour.node.myUnit;
-							if (targetUnit && ability.CanTargetTile (neighbour.node)) {
-								neighbour.node.previousMoveNode = tile;
-								neighbour.node.previous = new Neighbour ();
-								neighbour.node.previous.node = tile;
-								neighbour.node.previous.direction = neighbour.direction;
-								reachableTiles.attackTiles.Add (neighbour.node);
-							}
-						}
-					}
-				}
+	//				//if its a tile we cant already walk on to
+	//				if (!reachableTiles.movementTiles.basic.Keys.Contains (neighbour.node)) {
+	//					//if its not already highligheted or if the new parent is faster than previous
+	//					if (!reachableTiles.attackTiles.Contains (neighbour.node) || tile.cost < neighbour.node.previous.node.cost) {
+	//						UnitController targetUnit = neighbour.node.myUnit;
+	//						if (targetUnit && action.CanTargetTile (neighbour.node)) {
+	//							neighbour.node.previousMoveNode = tile;
+	//							neighbour.node.previous = new Neighbour ();
+	//							neighbour.node.previous.node = tile;
+	//							neighbour.node.previous.direction = neighbour.direction;
+	//							reachableTiles.attackTiles.Add (neighbour.node);
+	//						}
+	//					}
+	//				}
+	//			}
 
-			}
-		}
-		return reachableTiles;
-	}
+	//		}
+	//	}
+	//	return reachableTiles;
+	//}
 
 	public bool isTileWalkable(Node startNode, Node endNode, Walkable walkingType, int faction) {
 		return UnitCanStandOnTile(endNode, walkingType) && !UnitInTheWay(endNode, faction) && UnitCanChangeLevel(startNode, endNode, walkingType);
@@ -262,30 +262,30 @@ public class Pathfinder : MonoBehaviour {
 		return levelDifference <= maxDifference + 1;
 	}
 
-	public List<Node> FindAttackableTiles(Node node, AbilityCardBase ability) {
-		switch (ability.areaOfEffect) {
+	public List<Node> FindAttackableTiles(Node node, AttackAction action) {
+		switch (action.areaOfEffect) {
 		case AreaOfEffect.AURA:
-			return FindAOEHitTiles (node, ability);
+			return FindAOEHitTiles (node, action);
 		case AreaOfEffect.CIRCLE:
 		case AreaOfEffect.CLEAVE:
-			return FindCircleTargetTiles (node, ability);
+			return FindCircleTargetTiles (node, action);
 		case AreaOfEffect.SINGLE:
 		default:
-			return FindSingleTargetTiles(node, ability);
+			return FindSingleTargetTiles(node, action);
 		}
 
 	}
 
-	List<Node> FindSingleTargetTiles(Node node, AbilityCardBase ability) {
-		List<Node> reachableTiles = findReachableTiles (node, ability.range, Walkable.Flying, -1).basic.Keys.ToList();
-		if (ability.CanTargetSelf) {
+	List<Node> FindSingleTargetTiles(Node node, AttackAction action) {
+		List<Node> reachableTiles = findReachableTiles (node, action.range, Walkable.Flying, -1).basic.Keys.ToList();
+		if (action.CanTargetSelf) {
 			reachableTiles.Insert (0, node);
 		}
 		//TODO check to see if the tile is in line of sight
 		return reachableTiles;
 	}
 
-	List<Node> FindCircleTargetTiles(Node node, AbilityCardBase ability) {
+	List<Node> FindCircleTargetTiles(Node node, AttackAction ability) {
 		List<Node> reachableTiles = findReachableTiles (node, ability.range, Walkable.Flying, -1).basic.Keys.ToList();
 		if (ability.CanTargetSelf) {
 			reachableTiles.Insert (0, node);
@@ -293,16 +293,16 @@ public class Pathfinder : MonoBehaviour {
 		return reachableTiles;
 	}
 
-	public List<Node> FindAOEHitTiles(Node node, AbilityCardBase ability) {
-		List<Node> targetTiles = findReachableTiles (node, ability.aoeRange, Walkable.Flying, -1).basic.Keys.ToList();
+	public List<Node> FindAOEHitTiles(Node node, AttackAction action) {
+		List<Node> targetTiles = findReachableTiles (node, action.aoeRange, Walkable.Flying, -1).basic.Keys.ToList();
 		targetTiles.Insert (0, node);
 		return targetTiles;
 	}
 
-	public List<Node> FindCleaveTargetTiles(Node node, AbilityCardBase ability, Node start) {
+	public List<Node> FindCleaveTargetTiles(Node node, AttackAction action, Node start) {
 		//TODO write a smarter way of doing this
 		bool attackingHorizontally = start.x != node.x;
-		List<Node> targetTiles = findReachableTiles (node, ability.aoeRange, Walkable.Flying, -1).basic.Keys.ToList();
+		List<Node> targetTiles = findReachableTiles (node, action.aoeRange, Walkable.Flying, -1).basic.Keys.ToList();
 		List<Node> removeTiles = new List<Node>();
 		targetTiles.Insert (0, node);
 		if (attackingHorizontally) {

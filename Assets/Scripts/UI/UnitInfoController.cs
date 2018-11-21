@@ -12,7 +12,6 @@ public class UnitInfoController : MonoBehaviour
 	}
 
 	public void SetUnit(UnitController unit) {
-		transform.Find ("Name").GetComponent<Text> ().text = unit.GetComponent<UnitClass>().className;
 		transform.Find ("Description").GetComponent<Text> ().text = getUnitStatsString(unit.myStats);
 	}
 
@@ -46,9 +45,7 @@ public class UnitInfoController : MonoBehaviour
 
 		//return $"HP: {stats.Health}/{stats.MaxHealth}\nPower: {stats.Power}\nArmour: {stats.Armour}\nSpeed: {stats.Speed}\nBuffs:\n{buffsString}\nDebuffs:\n{debuffsString}";
 		return "HP: " + stats.Health + "/" + stats.MaxHealth +
-		"\nPower: " + stats.Power +
 		"\nArmour: " + stats.Armour +
-		//"\nSpeed: " + stats.Speed +
 		"\nBuffs:\n" + buffsString +
 		"\nDebuffs:\n" + debuffsString;
 	}

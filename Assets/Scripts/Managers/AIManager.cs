@@ -86,7 +86,7 @@ public class AIManager : MonoBehaviour {
 		//	yield return WaitForWaitingForInput ();
 		//	unitManager.SelectUnit (unit);
 
-		//	Dictionary<BaseAbility, List<Node>> potentialAbilityTargets = GetPotentialAbilityTargets(unit);
+		//	Dictionary<AbilityCardBase, List<Node>> potentialAbilityTargets = GetPotentialAbilityTargets(unit);
 
 		//	if (potentialAbilityTargets [unitClass.abilities [0]].Count > 0) {
   //              Debug.Log("AI - attacking tile");

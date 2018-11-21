@@ -7,7 +7,6 @@ public enum Stats {
     STAMINA,
     SPEED,
     POWER,
-    CRIT,
     BLOCK,
     ARMOUR,
     AP,
@@ -24,7 +23,6 @@ public class UnitObject : ScriptableObject {
     public Sprite Icon; //TODO THIS SHOULD PROBABLY BE IN THE CLASS OR SOMETHING
 
     //scaling consts
-    const float ARMOUR_DAMAGE_REDUCTION = 0.5f;
     const int ACTION_POINTS_TO_STAMINA = 2;
 
     //list of buffs and debuffs
@@ -34,9 +32,6 @@ public class UnitObject : ScriptableObject {
     int currentHealth;
     public int baseStamina = 50;
     int currentStamina = 0;
-    public int baseSpeed = 3;
-    public int basePower = 10;
-    public int baseCrit = 5;
     public int baseBlock = 0;
     public int baseArmour = 0;
     public int baseActionPoints = 2;
@@ -95,28 +90,12 @@ public class UnitObject : ScriptableObject {
         get { return GetModifiedStat(baseStamina, Stats.STAMINA); }
     }
 
-    public int Speed {
-        get { return GetModifiedStat(baseSpeed, Stats.SPEED); }
-    }
-
-    public int Power {
-        get { return GetModifiedStat(basePower, Stats.POWER); }
-    }
-
-    public int Crit {
-        get { return GetModifiedStat(baseCrit, Stats.CRIT); }
-    }
-
     public int Block {
         get { return GetModifiedStat(baseBlock, Stats.BLOCK); }
     }
 
     public int Armour {
         get { return GetModifiedStat(baseArmour, Stats.ARMOUR); }
-    }
-
-    public int DamageReduction {
-        get { return (int)(Armour * ARMOUR_DAMAGE_REDUCTION); }
     }
 
     public int MaxActionPoints {

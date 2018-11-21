@@ -21,7 +21,7 @@ public enum ActionType {
 public struct Action {
 	public ActionType type;
 	public List<Node> nodes;
-	public AbilityCardBase ability;
+	public AttackAction ability;
 }
 
 public class UnitController : MonoBehaviour {
@@ -37,7 +37,6 @@ public class UnitController : MonoBehaviour {
 	UnitAnimationController anim;
 	UnitCanvasController unitCanvasController;
 	UnitAudioController audioController;
-	UnitClass myClass;
     UnitDialogController myDialogController;
 
 	[System.NonSerialized]
@@ -57,7 +56,7 @@ public class UnitController : MonoBehaviour {
 	public Player myPlayer;
 
     //Ability variables
-    AbilityCardBase activeAbility;
+    AttackAction activeAction;
 	List<AbilityTarget> abilityTargets = new List<AbilityTarget>();
 	Queue<Action> actionQueue = new Queue<Action>();
 	List<ProjectileController> projectiles;
@@ -77,11 +76,10 @@ public class UnitController : MonoBehaviour {
 
 		anim = GetComponentInChildren<UnitAnimationController> ();
         //myStats = GetComponent<UnitStats> ();
+        Debug.Log("initialised unit stats");
         myStats = Instantiate(baseStats);
 		myStats.Initialise ();
 		audioController = GetComponent<UnitAudioController> ();
-		myClass = GetComponent<UnitClass> ();
-		myClass.Initialise (this);
 		projectiles = new List<ProjectileController> ();
         myDialogController = GetComponentInChildren<UnitDialogController>();
 
@@ -104,7 +102,6 @@ public class UnitController : MonoBehaviour {
 			(healing) => {this.TakeHealing(null, healing);}
 		);
 		myStats.NewTurn ();
-		myClass.NewTurn ();
 	}
 
 	public void EndTurn() {
@@ -212,18 +209,19 @@ public class UnitController : MonoBehaviour {
 
 	private void RunNextAction(bool removeAction) {
 
-		if (removeAction) {
-			actionQueue.Dequeue ();
+		if (removeAction && actionQueue.Count > 0) {
+            actionQueue.Dequeue ();
 		}
 
 		if (actionQueue.Count >= 1) {
-			Action nextAction = actionQueue.Peek ();
+            Action nextAction = actionQueue.Peek ();
 
 			switch (nextAction.type) {
 			case ActionType.MOVEMENT:
 				SetPath (nextAction.nodes);
 				break;
 			case ActionType.ATTACK:
+                    // TODO fix for cards
 				AttackTarget (nextAction.nodes, nextAction.ability);
 				break;
 			}
@@ -231,11 +229,6 @@ public class UnitController : MonoBehaviour {
 	}
 
 	public void SetPath(List<Node> path) {
-		if (path [path.Count - 1].cost > myStats.Speed) {
-			ActionPoints -= 2;
-		} else {
-			ActionPoints -= 1;
-		}
 		myNode.myUnit = null;
 		myPath = path;
 		myPath[myPath.Count-1].myUnit = this;
@@ -251,22 +244,22 @@ public class UnitController : MonoBehaviour {
 		myManager.UnitFinishedMoving ();
 	}
 
-	public void AttackTarget(List<Node> targetNodes, AbilityCardBase ability) {
-		currentAbilityTarget = targetNodes [0];
-		if (ability.areaOfEffect == AreaOfEffect.SINGLE) {
-			ability.UseAbility (currentAbilityTarget);
-			FaceDirection (GetDirectionToTile(targetNodes[0]));
-		} else {
-			ability.UseAbility (targetNodes, currentAbilityTarget);
-		}
+    public void AttackTarget(List<Node> targetNodes, AttackAction action) {
+        currentAbilityTarget = targetNodes[0];
+        if (action.areaOfEffect == AreaOfEffect.SINGLE) {
+            action.UseAbility(currentAbilityTarget);
+            FaceDirection(GetDirectionToTile(targetNodes[0]));
+        } else {
+            action.UseAbility(targetNodes, currentAbilityTarget);
+        }
         myManager.UnitStartedAttacking();
-        activeAbility = ability;
-		SetAttacking (true);
+        activeAction = action;
+        SetAttacking(true);
         myDialogController.Attacking();
-        StartCoroutine (AttackRoutine());
-	}
+        StartCoroutine(AttackRoutine());
+    }
 
-	public bool getAttackAnimationPlaying() {
+    public bool getAttackAnimationPlaying() {
         return GetComponentInChildren<UnitAnimationController>().isAttacking;
     }
 
@@ -297,20 +290,20 @@ public class UnitController : MonoBehaviour {
 	public void RunAbilityTargets() {
         foreach (AbilityTarget target in abilityTargets) {
             target.abilityFunction ();
-			activeAbility.eventActions.ForEach ((eventAction) => {
-				if (eventAction.eventTrigger == AbilityEvent.CAST_END && eventAction.eventTarget == EventTarget.TARGETUNIT) {
-					eventAction.action(this, target.target, target.target.myNode);
-				}
-			});
+			//activeAbility.eventActions.ForEach ((eventAction) => {
+			//	if (eventAction.eventTrigger == AbilityEvent.CAST_END && eventAction.eventTarget == EventTarget.TARGETUNIT) {
+			//		eventAction.action(this, target.target, target.target.myNode);
+			//	}
+			//});
 		}
 
-		activeAbility.eventActions.ForEach ((eventAction) => {
-			if (eventAction.eventTrigger == AbilityEvent.CAST_END) {
-				if (eventAction.eventTarget == EventTarget.CASTER || eventAction.eventTarget == EventTarget.TARGETEDTILE) {
-					eventAction.action(this, null, currentAbilityTarget);
-				}
-			}
-		});
+		//activeAbility.eventActions.ForEach ((eventAction) => {
+		//	if (eventAction.eventTrigger == AbilityEvent.CAST_END) {
+		//		if (eventAction.eventTarget == EventTarget.CASTER || eventAction.eventTarget == EventTarget.TARGETEDTILE) {
+		//			eventAction.action(this, null, currentAbilityTarget);
+		//		}
+		//	}
+		//});
 	}
 
 	public void ClearAbilityTargets() {
@@ -319,7 +312,7 @@ public class UnitController : MonoBehaviour {
 		//abilityEffects.Clear ();
 	}
 
-	public bool TakeDamage(UnitController attacker, int damage, bool ignoreArmour = false, bool crit = false) {
+	public bool TakeDamage(UnitController attacker, int damage, bool ignoreArmour = false) {
 		bool isStillAlive = true;
 
 		//if the damage has a source
@@ -327,12 +320,12 @@ public class UnitController : MonoBehaviour {
 			//this could be used if the character as a reposte etc
 		}
 
-		int modifiedDamage = ignoreArmour ? damage : Mathf.Max(damage - myStats.DamageReduction, 0);
+         int modifiedDamage = ignoreArmour ? damage : Mathf.Max(damage - myStats.Armour, 0);
 
 		//check to see if attack was blocked
 		float blockRoll = Random.value * 100;
-		if (!ignoreArmour && !crit && blockRoll <= myStats.Block) {
-			modifiedDamage = (int)(modifiedDamage * 0.5f);
+		if (!ignoreArmour && blockRoll <= myStats.Block) {
+			modifiedDamage = (int)(modifiedDamage * 0);
 			unitCanvasController.CreateBasicText ("Block");
 		}
 
@@ -343,14 +336,15 @@ public class UnitController : MonoBehaviour {
 
         if (myStats.Health > 0) {
 			anim.PlayHitAnimation ();
-			if (myClass.onHitSfx) {
-				PlayOneShot (myClass.onHitSfx);
-			}
+            // TODO move these onto the unit stats
+			//if (myClass.onHitSfx) {
+			//	PlayOneShot (myClass.onHitSfx);
+			//}
         } else {
 			anim.PlayDeathAnimation ();
-			if (myClass.onDeathSfx) {
-				PlayOneShot (myClass.onDeathSfx);
-			}
+			//if (myClass.onDeathSfx) {
+			//	PlayOneShot (myClass.onDeathSfx);
+			//}
 			myManager.UnitDied (this);
 			isStillAlive = false;
 		}
@@ -358,19 +352,8 @@ public class UnitController : MonoBehaviour {
 		return isStillAlive;
 	}
 
-	public bool DealDamageTo(UnitController target, float damageMod, bool ignoreArmour = false, float flatDamage = 0) {
-
-		float endDamage = (myStats.Power * damageMod) + flatDamage;
-		bool crit = false;
-
-		//check to see if damage is a crit
-		float critRoll = Random.value * 100;
-		if (critRoll <= myStats.Crit) {
-			crit = true;
-			endDamage = endDamage * 1.5f;
-		}
-			
-		return target.TakeDamage (this, (int)endDamage, ignoreArmour, crit);
+	public bool DealDamageTo(UnitController target, int damage, bool ignoreArmour = false) {
+		return target.TakeDamage (this, damage, ignoreArmour);
 	}
 
 	public bool TakeHealing(UnitController caster, int healing) {
@@ -385,13 +368,7 @@ public class UnitController : MonoBehaviour {
 
 	public bool GiveHealingTo(UnitController target, float healing) {
 
-		float endHealing = myStats.Power * healing;
-
-		//check to see if damage is a crit
-		float critRoll = Random.value * 100;
-		if (critRoll <= myStats.Crit) {
-			endHealing = endHealing * 1.5f;
-		}
+		float endHealing = healing;
 
         myDialogController.Helping();
 

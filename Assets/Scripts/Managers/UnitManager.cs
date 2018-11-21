@@ -16,7 +16,7 @@ public class UnitManager : MonoBehaviour {
 
 	//currentSelect
 	UnitController currentPlayerUnit = null;
-    AbilityCardBase activeAbility = null;
+    AttackAction activeAbility = null;
 	List<Node> attackableTiles = new List<Node>();
 
 	Node currentlyHoveredNode;
@@ -38,7 +38,7 @@ public class UnitManager : MonoBehaviour {
 		myMap = map;
 
         // Load from static file for these?
-        SpawnUnit(7, players[0], 8, 10);
+        SpawnUnit(7, players[0], 16, 10);
 
 		SpawnUnit (2, players[1], 17, 10);
 	}
@@ -83,6 +83,8 @@ public class UnitManager : MonoBehaviour {
 	public void StartTurn(int playersTurn) {
 		foreach (UnitController unit in units) {
 			if (unit.myPlayer.id == playersTurn) {
+                // TODO sort player selection as this is a bad hack
+                currentPlayerUnit = unit;
 				unit.NewTurn ();
 			}
 		}
@@ -97,9 +99,9 @@ public class UnitManager : MonoBehaviour {
 		}
 	}
 
-	public ReachableTiles FindReachableTiles(UnitController unit) {
-		return myMap.pathfinder.findReachableTiles (unit.myNode, unit.myStats.Speed, unit.myStats.WalkingType, unit.myPlayer.faction);
-	}
+    public void CardPlayed(AbilityCardBase card) {
+        
+    }
 
     // TODO this is probably needed for advanced cards but not for basic, fix later
     // shows movement and attack tiles
@@ -120,29 +122,42 @@ public class UnitManager : MonoBehaviour {
     //	return reachableTiles;
     //}
 
+    public void ShowMoveAction(int moveDistance, Walkable walkingType) {
+        if (currentPlayerUnit == null) {
+            throw new System.Exception("Current player not selected!");
+        }
+
+        ReachableTiles walkingTiles = myMap.pathfinder.findReachableTiles(currentPlayerUnit.myNode, moveDistance, walkingType, currentPlayerUnit.myPlayer.faction);
+        myMap.highlighter.HighlightTiles(walkingTiles.basic.Keys.ToList(), SquareTarget.MOVEMENT);
+    }
+
+    public void ClearMovementTiles() {
+        myMap.highlighter.UnhighlightTiles();
+    }
+
     // Shows where the ability can target
-    public bool ShowAbility(AbilityCardBase ability)
+    public bool ShowAttackAction(AttackAction action)
     {
 
-        if (selectedUnit == null)
+        if (currentPlayerUnit == null)
         {
-            guiController.ShowErrorMessage("No unit selected");
+            guiController.ShowErrorMessage("Player doesn't have a character?!");
             return false;
         }
 
-        if (selectedUnit.myStats.ActionPoints <= 0)
-        {
-            guiController.ShowErrorMessage("Not enough action points");
-            return false;
-        }
+        //if (currentPlayerUnit.myStats.ActionPoints <= 0)
+        //{
+        //    guiController.ShowErrorMessage("Not enough action points");
+        //    return false;
+        //}
 
-        // TODO this probabily will need to change
-        activeAbility = ability;
+        action.caster = currentPlayerUnit;
+        activeAbility = action;
 
-        attackableTiles = myMap.pathfinder.FindAttackableTiles(selectedUnit.myNode, activeAbility);
+        attackableTiles = myMap.pathfinder.FindAttackableTiles(currentPlayerUnit.myNode, action);
         myMap.highlighter.UnhighlightAllTiles();
-        myMap.highlighter.HighlightTile(selectedUnit.myNode, SquareTarget.NONE);
-        SquareTarget targetType = activeAbility.targets == TargetType.ALLY ? SquareTarget.HELPFULL : SquareTarget.ATTACK;
+        myMap.highlighter.HighlightTile(currentPlayerUnit.myNode, SquareTarget.NONE);
+        SquareTarget targetType = action.targets == TargetType.ALLY ? SquareTarget.HELPFULL : SquareTarget.ATTACK;
         myMap.highlighter.HighlightTiles(attackableTiles, targetType);
 
         if (currentlyHoveredNode != null)
@@ -174,43 +189,42 @@ public class UnitManager : MonoBehaviour {
 	}
 
     // Uses the specified ability of at the target location
-	public bool AttackTile(Node targetNode, AbilityCardBase ability = null) {
+	public bool AttackTile(Node targetNode, AttackAction attackAction = null) {
 
-		if (ability == null) {
-			ability = activeAbility;
+		if (attackAction == null) {
+            attackAction = activeAbility;
 		}
 
-		if (ability != null && !ability.CanTargetTile (targetNode)) {
-			return false;
-		}
+        if (attackAction != null && !attackAction.CanTargetTile(targetNode)) {
+            return false;
+        }
 
-		if (targetNode.previousMoveNode) {
-			//MovementPath movementPath = myMap.pathfinder.getPathFromTile (targetNode.previousMoveNode);
-			UnitController currentUnit = selectedUnit != null ? selectedUnit : ability.caster;
-			MovementPath movementPath = myMap.pathfinder.FindPath (currentUnit.myNode, targetNode.previousMoveNode, currentUnit.myStats.WalkingType, currentUnit.myPlayer.faction);
+        if (targetNode.previousMoveNode) {
+            //MovementPath movementPath = myMap.pathfinder.getPathFromTile (targetNode.previousMoveNode);
+			MovementPath movementPath = myMap.pathfinder.FindPath (currentPlayerUnit.myNode, targetNode.previousMoveNode, currentPlayerUnit.myStats.WalkingType, currentPlayerUnit.myPlayer.faction);
 			SetUnitPath (movementPath);
 		}
 
-		Action attackAction = new Action();
-		attackAction.type = ActionType.ATTACK;
-		attackAction.ability = ability;
-		attackAction.nodes = GetTargetNodes(ability, targetNode);
+		Action action = new Action();
+        action.type = ActionType.ATTACK;
+        action.ability = attackAction;
+        action.nodes = GetTargetNodes(attackAction, targetNode);
 
-		ability.caster.AddAction (attackAction);
+        currentPlayerUnit.AddAction (action);
 
-		return true;
+        return true;
 	}
 
     // Shows the attackable tiles of the ability
-	List<Node> GetTargetNodes(AbilityCardBase ability, Node targetNode) {
+	List<Node> GetTargetNodes(AttackAction action, Node targetNode) {
 		List<Node> targetTiles = new List<Node> ();
-		switch (ability.areaOfEffect) {
+		switch (action.areaOfEffect) {
 		case AreaOfEffect.AURA:
 			return attackableTiles;
 		case AreaOfEffect.CIRCLE:
-			return myMap.pathfinder.FindAOEHitTiles(targetNode, ability);
+			return myMap.pathfinder.FindAOEHitTiles(targetNode, action);
 		case AreaOfEffect.CLEAVE:
-			return myMap.pathfinder.FindCleaveTargetTiles(targetNode, ability, selectedUnit.myNode);
+			return myMap.pathfinder.FindCleaveTargetTiles(targetNode, action, currentPlayerUnit.myNode);
 		case AreaOfEffect.SINGLE:
 		default:
 			targetTiles.Add (targetNode);
@@ -223,7 +237,7 @@ public class UnitManager : MonoBehaviour {
 		Action moveAction = new Action();
 		moveAction.type = ActionType.MOVEMENT;
 		moveAction.nodes = movementPath.path;
-		selectedUnit.AddAction (moveAction);
+        currentPlayerUnit.AddAction (moveAction);
 	}
 
     // Tells the unit to move to a set node

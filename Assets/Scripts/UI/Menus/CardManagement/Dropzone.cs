@@ -33,6 +33,7 @@ public class Dropzone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
 
         if (draggedItem != null) {
             draggedItem.originalParent = transform;
+            draggedItem.droppedOnZone = true;
         }
     }
 }

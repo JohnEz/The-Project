@@ -21,12 +21,12 @@ public class HighlightManager : MonoBehaviour {
 		SetEffectedTiles (effectedTiles, SquareTarget.UNDEFINED, true);
 	}
 
-	public void ShowAbilityTiles(List<Node> effectedTiles, AbilityCardBase ability) {
-		SquareTarget targetType = ability.targets == TargetType.ALLY ? SquareTarget.HELPFULL : SquareTarget.ATTACK;
-		SetEffectedTiles (effectedTiles, targetType, false, ability);
+	public void ShowAbilityTiles(List<Node> effectedTiles, AttackAction action) {
+		SquareTarget targetType = action.targets == TargetType.ALLY ? SquareTarget.HELPFULL : SquareTarget.ATTACK;
+		SetEffectedTiles (effectedTiles, targetType, false, action);
 	}
 
-	public void SetEffectedTiles(List<Node> effectedTiles, SquareTarget targetType = SquareTarget.UNDEFINED, bool path = false, AbilityCardBase ability = null) {
+	public void SetEffectedTiles(List<Node> effectedTiles, SquareTarget targetType = SquareTarget.UNDEFINED, bool path = false, AttackAction action = null) {
 		ClearEffectedTiles ();
 		int i = 0;
 
@@ -38,7 +38,7 @@ public class HighlightManager : MonoBehaviour {
 			}
 			highlighter.SetHighlighted (true);
 
-			if (tile.myUnit != null && ability != null && ability.CanHitUnit(tile)) {
+			if (tile.myUnit != null && action != null && action.CanHitUnit(tile)) {
 				highlighter.AddDecal(SquareDecal.TARGET);
 			}
 			if (path) {

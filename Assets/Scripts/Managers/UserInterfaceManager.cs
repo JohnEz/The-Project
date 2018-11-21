@@ -4,13 +4,15 @@ using UnityEngine.UI;
 
 public class UserInterfaceManager : MonoBehaviour {
 
-	int showingAbility = -1;
-
 	//Managers
 	TurnManager turnManager;
 	UnitManager unitManager;
 	GUIController gUIController;
 	PauseMenuController pauseMenuController;
+
+    AbilityCardBase activeCard = null;
+    int currentActionIndex = 0;
+    bool cardPlayed = false;
 
 	// Use this for initialization
 	void Start () {
@@ -26,21 +28,20 @@ public class UserInterfaceManager : MonoBehaviour {
 		UserControls ();
 	}
 
-	public bool isShowingAbility {
-		get { return showingAbility > -1; }
-	}
+	public void ShowCard(AbilityCardBase card) {
+		UnshowCard ();
+        activeCard = card;
 
-	public void SetShowingAbility(int abilityIndex) {
-		UnshowAbility ();
-		showingAbility = abilityIndex;
-		gUIController.AbilitySelected (abilityIndex);
-	}
+        if (!cardPlayed) {
+            activeCard = card;
+            ShowAction();
+        }
+    }
 
-	public void UnshowAbility() {
-		if (isShowingAbility) {
-			gUIController.AbilityDeselected (showingAbility);
-			showingAbility = -1;
-		}
+	public void UnshowCard() {
+		if (activeCard) {
+            unitManager.ClearMovementTiles();
+        }
 	}
 
 	//public void ShowAbility(int index) {
@@ -57,12 +58,17 @@ public class UserInterfaceManager : MonoBehaviour {
 		}
 
 		//Cancel (right click)
-		if (Input.GetKeyUp (KeyCode.Escape) && !isShowingAbility) {
-			if (PauseMenuController.gameIsPaused) {
-				pauseMenuController.Resume ();
-			} else {
-				pauseMenuController.Pause ();
-			}
+		if (Input.GetKeyUp (KeyCode.Escape)) {
+            if (cardPlayed) {
+                cardPlayed = false;
+                UnshowCard();
+            } else {
+                if (PauseMenuController.gameIsPaused) {
+                    pauseMenuController.Resume();
+                } else {
+                    pauseMenuController.Pause();
+                }
+            }
 		}
 
 		if (turnManager.CurrentPhase == TurnPhase.WAITING_FOR_INPUT && !turnManager.isAiTurn()) {
@@ -76,7 +82,7 @@ public class UserInterfaceManager : MonoBehaviour {
 
 	public void TileHovered(Node node, SquareTarget target) {
 		unitManager.CurrentlyHoveredNode = node;
-		if (isShowingAbility && (target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL)) {
+		if (cardPlayed && (target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL)) {
 			unitManager.HighlightEffectedTiles (node);
 		} else if (target == SquareTarget.MOVEMENT || target == SquareTarget.DASH || ((target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL) && node.previousMoveNode != null)) {
 			unitManager.ShowPath (node);
@@ -112,8 +118,7 @@ public class UserInterfaceManager : MonoBehaviour {
 
 	public void ClickedMovement(Node node) {
 		unitManager.MoveToTile (node);
-		UnshowAbility();
-		DeselectUnit ();
+		UnshowCard();
 	}
 
 	public void ClickedUnselected(Node node) {
@@ -130,34 +135,66 @@ public class UserInterfaceManager : MonoBehaviour {
 
 	}
 
-	public void SelectUnit(UnitController unit) {
-		DeselectUnit();
-		unitManager.SelectUnit (unit);
-		gUIController.UnitSelected (unit);
-	}
+    public void CardHovered(AbilityCardBase card) {
+        if (!cardPlayed) {
+            ShowCard(card);
+        }
+    }
 
-	public void DeselectUnit () {
-		unitManager.DeselectUnit ();
-		gUIController.UnitDeselected ();
-	}
+    public void CardUnhovered() {
+        // if there isnt a played card, clear the display
+        if (!cardPlayed) {
+            UnshowCard();
+            activeCard = null;
+        }
+    }
 
-	public void ClickedAttack(Node node) {
+    public void CardPlayed(AbilityCardBase card) {
+        ShowCard(card);
+        cardPlayed = true;
+    }
+
+    public void ClickedAttack(Node node) {
 		if (unitManager.AttackTile (node)) {
-			DeselectUnit ();
-			UnshowAbility();
+			UnshowCard();
 		}
 	}
+
+    public bool ShowAction() {
+        if (activeCard && currentActionIndex < activeCard.Actions.Count) {
+            CardAction currentAction = activeCard.Actions[currentActionIndex];
+
+            if (currentAction.GetType() == typeof(MoveAction)) {
+                MoveAction moveAction = (MoveAction)currentAction;
+                unitManager.ShowMoveAction(moveAction.distance, moveAction.walkingType);
+            } else if (typeof(AttackAction).IsAssignableFrom(currentAction.GetType())) {
+                AttackAction attackAction = (AttackAction)currentAction;
+                unitManager.ShowAttackAction(attackAction);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public void FinishedAction() {
+        currentActionIndex++;
+        if (!ShowAction()) {
+            activeCard = null;
+            cardPlayed = false;
+            currentActionIndex = 0;
+        }
+    }
 
 	public void FinishedAttacking() {
 		if (!turnManager.isAiTurn ()) {
-
-		}
+            FinishedAction();
+        }
 	}
 
 	public void FinishedMoving() {
 		if (!turnManager.isAiTurn ()) {
-
-		}
+            FinishedAction();
+        }
 	}
 
 	//public void ShowMovement() {
