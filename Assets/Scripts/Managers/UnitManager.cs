@@ -31,16 +31,11 @@ public class UnitManager : MonoBehaviour {
 
 	}
 
-	public void Initialise(List<Player> players, TileMap map) {
+	public void Initialise(TileMap map) {
 		guiController = GetComponentInChildren<GUIController> ();
 		units = new List<UnitController> ();
 		unitsToRemove = new List<UnitController> ();
 		myMap = map;
-
-        // Load from static file for these?
-        SpawnUnit(7, players[0], 16, 10);
-
-		SpawnUnit (2, players[1], 17, 10);
 	}
 	
 	// Update is called once per frame
@@ -52,7 +47,7 @@ public class UnitManager : MonoBehaviour {
 		get { return units; }
 	}
 
-	public void SpawnUnit(int unit, Player player, int x, int y) {
+	public UnitController SpawnUnit(int unit, Player player, int x, int y) {
 		GameObject newUnit = (GameObject)Instantiate (unitPrefabs [unit], myMap.getPositionOfNode (x, y), Quaternion.identity);
 		newUnit.transform.parent = myMap.transform;
 
@@ -65,7 +60,12 @@ public class UnitManager : MonoBehaviour {
 		unitController.myManager = this;
 		unitController.Initialise ();
 		units.Add (unitController);
-	}
+
+        player.myCharacter = unitController;
+
+        return unitController;
+
+    }
 
 	public void AddUnitToRemove(UnitController unit) {
 		unit.myNode.myUnit = null;
@@ -80,20 +80,20 @@ public class UnitManager : MonoBehaviour {
 		unitsToRemove.Clear ();
 	}
 
-	public void StartTurn(int playersTurn) {
+	public void StartTurn(Player player) {
 		foreach (UnitController unit in units) {
-			if (unit.myPlayer.id == playersTurn) {
+			if (unit.myPlayer.id == player.id) {
                 // TODO sort player selection as this is a bad hack
-                currentPlayerUnit = unit;
+                currentPlayerUnit = player.myCharacter;
 				unit.NewTurn ();
 			}
 		}
 		RemoveUnits ();
 	}
 
-	public void EndTurn(int playersTurn) {
+	public void EndTurn(Player player) {
 		foreach (UnitController unit in units) {
-			if (unit.myPlayer.id == playersTurn) {
+			if (unit.myPlayer.id == player.id) {
 				unit.EndTurn ();
 			}
 		}

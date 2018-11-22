@@ -29,24 +29,29 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
     }
 
     public void OnBeginDrag(PointerEventData eventData) {
-        beingDragged = true;
-        originalParent = transform.parent;
+        UserInterfaceManager uiManager = GameObject.Find("Game Controller").GetComponent<UserInterfaceManager>();
+        if (uiManager.CanPlayCard()) {
+            beingDragged = true;
+            originalParent = transform.parent;
         
-
-        CreatePlaceholder();
+            CreatePlaceholder();
         
-        // Remove from the hand
-        transform.SetParent(GameObject.Find("GameCanvas").transform);
+            // Remove from the hand
+            transform.SetParent(GameObject.Find("GameCanvas").transform);
 
-        targetLocation = eventData.position;
+            targetLocation = eventData.position;
 
-        GetComponent<CanvasGroup>().blocksRaycasts = false;
+            GetComponent<CanvasGroup>().blocksRaycasts = false;
+        }
     }
 
     public void OnDrag(PointerEventData eventData) {
-        targetLocation = eventData.position;
+        UserInterfaceManager uiManager = GameObject.Find("Game Controller").GetComponent<UserInterfaceManager>();
+        if (uiManager.CanPlayCard()) {
+            targetLocation = eventData.position;
 
-        AdjustPlaceHolder();
+            AdjustPlaceHolder();
+        }
     }
 
     public void OnDestroy() {
@@ -54,22 +59,25 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
     }
 
     public void OnEndDrag(PointerEventData eventData) {
-        beingDragged = false;
-        if (droppedOnZone) {
-            targetLocation = eventData.position;
+        UserInterfaceManager uiManager = GameObject.Find("Game Controller").GetComponent<UserInterfaceManager>();
+        if (uiManager.CanPlayCard()) {
+            beingDragged = false;
+            if (droppedOnZone) {
+                targetLocation = eventData.position;
 
-            // Jump back into the hand
-            transform.SetParent(originalParent);
+                // Jump back into the hand
+                transform.SetParent(originalParent);
 
-            // Place card at correct index in hand
-            transform.SetSiblingIndex(placeholder.transform.GetSiblingIndex());
+                // Place card at correct index in hand
+                transform.SetSiblingIndex(placeholder.transform.GetSiblingIndex());
 
-            droppedOnZone = false;
+                droppedOnZone = false;
+            }
+
+            Destroy(placeholder);
+
+            GetComponent<CanvasGroup>().blocksRaycasts = true;
         }
-
-        Destroy(placeholder);
-
-        GetComponent<CanvasGroup>().blocksRaycasts = true;
     }
 
     // Creates a placeholder where this card was in the hand

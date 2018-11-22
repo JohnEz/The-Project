@@ -41,6 +41,9 @@ public class UnitObject : ScriptableObject {
 
     public Walkable walkingType;
 
+    public AudioClip onHitSfx;
+    public AudioClip onDeathSfx;
+
     public void Initialise() {
         currentHealth = MaxHealth;
         currentStamina = MaxStamina;

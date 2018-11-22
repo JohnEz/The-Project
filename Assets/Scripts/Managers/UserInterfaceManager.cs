@@ -9,6 +9,7 @@ public class UserInterfaceManager : MonoBehaviour {
 	UnitManager unitManager;
 	GUIController gUIController;
 	PauseMenuController pauseMenuController;
+    PlayerManager playerManager;
 
     AbilityCardBase activeCard = null;
     int currentActionIndex = 0;
@@ -19,8 +20,10 @@ public class UserInterfaceManager : MonoBehaviour {
 		gUIController = GetComponentInChildren<GUIController> ();
 		turnManager = GetComponentInParent<TurnManager> ();
 		unitManager = GetComponentInParent<UnitManager> ();
-		pauseMenuController = GetComponentInChildren<PauseMenuController> ();
-		turnManager.Initialise ();
+        playerManager = GetComponentInParent<PlayerManager>();
+        pauseMenuController = GetComponentInChildren<PauseMenuController> ();
+
+        turnManager.Initialise ();
 	}
 	
 	// Update is called once per frame
@@ -44,18 +47,16 @@ public class UserInterfaceManager : MonoBehaviour {
         }
 	}
 
-	//public void ShowAbility(int index) {
-	//	if (unitManager.ShowAbility (index)) {
-	//		SetShowingAbility(index);
-	//	}
-	//}
-
 	void UserControls() {
 
 		//temp for ai
 		if (Input.GetKeyUp ("space")) {
 			turnManager.EndTurn ();
 		}
+
+        if (Input.GetKeyUp(KeyCode.E)) {
+            turnManager.GetCurrentPlayer().myDeck.DrawCard();
+        }
 
 		//Cancel (right click)
 		if (Input.GetKeyUp (KeyCode.Escape)) {
@@ -134,6 +135,10 @@ public class UserInterfaceManager : MonoBehaviour {
 	public void EndTurn() {
 
 	}
+
+    public bool CanPlayCard() {
+        return !cardPlayed;
+    }
 
     public void CardHovered(AbilityCardBase card) {
         if (!cardPlayed) {

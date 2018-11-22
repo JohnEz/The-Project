@@ -12,6 +12,8 @@ public class CardDisplay : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     public Image artworkImage;
     public Text descriptionText;
 
+    public Player myPlayer;
+
     public void OnBeginDrag(PointerEventData eventData) {
         //throw new System.NotImplementedException();
     }
@@ -25,10 +27,11 @@ public class CardDisplay : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     }
 
     public void OnEndDrag(PointerEventData eventData) {
+        UserInterfaceManager uiManager = GameObject.Find("Game Controller").GetComponent<UserInterfaceManager>();
         Draggable dragCompoment = GetComponent<Draggable>();
 
         // if it was not dropped back into the hand
-        if (!dragCompoment.droppedOnZone) {
+        if (!dragCompoment.droppedOnZone && uiManager.CanPlayCard()) {
             CardPlayed();
         }
     }

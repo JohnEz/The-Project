@@ -11,13 +11,6 @@ public enum TurnPhase {
 	TURN_ENDING
 }
 
-public struct Player {
-	public int id;
-	public string name;
-	public bool ai;
-	public int faction;
-}
-
 public class TurnManager : MonoBehaviour {
 
 	UserInterfaceManager uIManager;
@@ -27,28 +20,29 @@ public class TurnManager : MonoBehaviour {
 	CameraManager cameraManager;
 	TileMap map;
 	ObjectiveManager objectiveManager;
+    PlayerManager playerManager;
 
 	TurnPhase currentPhase = TurnPhase.TURN_STARTING;
 
-	List<Player> players;
 	int playersTurn = -1;
 
 	bool checkedIfTurnShouldEnd = true; 
 
 	// Use this for initialization
 	public void Initialise () {
-		AddPlayers ();
 		uIManager = GetComponentInChildren<UserInterfaceManager> ();
 		gUIController = GetComponentInChildren<GUIController> ();
 		map = GetComponentInChildren<TileMap> ();
 		map.Initialise ();
 		unitManager = GetComponent<UnitManager> ();
-		unitManager.Initialise (players, map);
+		unitManager.Initialise (map);
 		aiManager = GetComponent<AIManager> ();
 		aiManager.Initialise (map);
 		cameraManager = GetComponent<CameraManager> ();
 		cameraManager.Initialise ();
-		objectiveManager = GetComponent<ObjectiveManager> ();
+        playerManager = GetComponent<PlayerManager>();
+        AddPlayers();
+        objectiveManager = GetComponent<ObjectiveManager> ();
 		objectiveManager.Initialise ();
 		AddObjectives ();
 		StartNewTurn ();
@@ -68,24 +62,17 @@ public class TurnManager : MonoBehaviour {
 
 	//TEMP
 	void AddPlayers() {
-		players = new List<Player> ();
+        playerManager.AddPlayer(1, "Jonesy");
 
-		Player p0 = new Player ();
-		p0.id = 0;
-		p0.name = "Player 1";
-		p0.ai = false;
-		p0.faction = 1;
-		players.Add (p0);
-        // maybe i need to add the unit here?
+        if (MatchDetails.VersusAi) {
+            playerManager.AddAiPlayer(2);
+        } else {
+            playerManager.AddPlayer(2, "Jimmy");
+        }
 
-		Player p1 = new Player ();
-		p1.id = 1;
-		p1.name = "Player 2";
-        p1.ai = MatchDetails.VersusAi;
-		p1.faction = 2;
-		players.Add (p1);
-
-	}
+        unitManager.SpawnUnit(7, playerManager.GetPlayer(0), 16, 10);
+        unitManager.SpawnUnit(2, playerManager.GetPlayer(1), 17, 10);
+    }
 
 	//TEMP
 	void AddObjectives() {
@@ -93,23 +80,26 @@ public class TurnManager : MonoBehaviour {
 		objective.optional = false;
 		objective.text = "Kill all enemies!";
 		objective.type = ObjectiveType.ANNIHILATION;
-		objectiveManager.AddObjective (players[0], objective);
+		objectiveManager.AddObjective (playerManager.GetPlayer(0), objective);
 
 		Objective objective2 = new Objective ();
 		objective2.optional = false;
 		objective2.text = "Kill all enemies!";
 		objective2.type = ObjectiveType.ANNIHILATION;
-		objectiveManager.AddObjective (players[1], objective2);
+		objectiveManager.AddObjective (playerManager.GetPlayer(1), objective2);
 	}
 
 	public void StartNewTurn() {
 		ChangeState(TurnPhase.TURN_STARTING);
 		playersTurn++;
-		playersTurn = playersTurn % players.Count;
-		unitManager.StartTurn (playersTurn);
+		playersTurn = playersTurn % playerManager.GetNumberOfPlayers();
+        Player currentPlayersTurn = GetCurrentPlayer();
+        unitManager.StartTurn (currentPlayersTurn);
 		bool alliedTurn = !isAiTurn(); // TODO check faction
 
-		gUIController.StartNewTurn (alliedTurn, objectiveManager.getObjectives(players[playersTurn]));
+		gUIController.StartNewTurn (alliedTurn, objectiveManager.getObjectives(currentPlayersTurn));
+
+        playerManager.StartNewTurn(currentPlayersTurn);
 
 		uIManager.StartTurn ();
 
@@ -127,10 +117,12 @@ public class TurnManager : MonoBehaviour {
 
 	public void EndTurn() {
 		ChangeState(TurnPhase.TURN_ENDING);
-		if (objectiveManager.CheckObjectives (players [playersTurn])) {
+        Player currentPlayersTurn = GetCurrentPlayer();
+
+        if (objectiveManager.CheckObjectives (currentPlayersTurn)) {
 			MenuSystem.LoadScene (Scenes.MAIN_MENU);
 		} else {
-			unitManager.EndTurn (playersTurn);
+			unitManager.EndTurn (currentPlayersTurn);
 			StartNewTurn ();
 			uIManager.EndTurn ();
 		}
@@ -145,6 +137,10 @@ public class TurnManager : MonoBehaviour {
 		get { return playersTurn; }
 		set { playersTurn = value; }
 	}
+
+    public Player GetCurrentPlayer() {
+        return playerManager.GetPlayer(playersTurn);
+    }
 
 	public void ChangeState(TurnPhase newPhase) {
 		currentPhase = newPhase;
@@ -174,6 +170,6 @@ public class TurnManager : MonoBehaviour {
     }
 
 	public bool isAiTurn() {
-		return players != null && players [playersTurn].ai;
+		return GetCurrentPlayer().ai;
 	}
 }

@@ -290,21 +290,21 @@ public class UnitController : MonoBehaviour {
 	public void RunAbilityTargets() {
         foreach (AbilityTarget target in abilityTargets) {
             target.abilityFunction ();
-			//activeAbility.eventActions.ForEach ((eventAction) => {
-			//	if (eventAction.eventTrigger == AbilityEvent.CAST_END && eventAction.eventTarget == EventTarget.TARGETUNIT) {
-			//		eventAction.action(this, target.target, target.target.myNode);
-			//	}
-			//});
-		}
+            activeAction.eventActions.ForEach((eventAction) => {
+                if (eventAction.eventTrigger == AbilityEvent.CAST_END && eventAction.eventTarget == EventTarget.TARGETUNIT) {
+                    eventAction.action(this, target.target, target.target.myNode);
+                }
+            });
+        }
 
-		//activeAbility.eventActions.ForEach ((eventAction) => {
-		//	if (eventAction.eventTrigger == AbilityEvent.CAST_END) {
-		//		if (eventAction.eventTarget == EventTarget.CASTER || eventAction.eventTarget == EventTarget.TARGETEDTILE) {
-		//			eventAction.action(this, null, currentAbilityTarget);
-		//		}
-		//	}
-		//});
-	}
+        activeAction.eventActions.ForEach((eventAction) => {
+            if (eventAction.eventTrigger == AbilityEvent.CAST_END) {
+                if (eventAction.eventTarget == EventTarget.CASTER || eventAction.eventTarget == EventTarget.TARGETEDTILE) {
+                    eventAction.action(this, null, currentAbilityTarget);
+                }
+            }
+        });
+    }
 
 	public void ClearAbilityTargets() {
 		abilityTargets.Clear ();
@@ -337,15 +337,15 @@ public class UnitController : MonoBehaviour {
         if (myStats.Health > 0) {
 			anim.PlayHitAnimation ();
             // TODO move these onto the unit stats
-			//if (myClass.onHitSfx) {
-			//	PlayOneShot (myClass.onHitSfx);
-			//}
+            if (myStats.onHitSfx) {
+                PlayOneShot(myStats.onHitSfx);
+            }
         } else {
 			anim.PlayDeathAnimation ();
-			//if (myClass.onDeathSfx) {
-			//	PlayOneShot (myClass.onDeathSfx);
-			//}
-			myManager.UnitDied (this);
+            if (myStats.onDeathSfx) {
+                PlayOneShot(myStats.onDeathSfx);
+            }
+            myManager.UnitDied (this);
 			isStillAlive = false;
 		}
 			
