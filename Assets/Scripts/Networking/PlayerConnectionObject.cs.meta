@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: c26c66ece27c9414b9a4c8e0aae8ef13
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - deckPrefab: {instanceID: 0}
+  - handPrefab: {fileID: 1296379691386692, guid: f9bb50419372dc34582cde1652a283c9,
+      type: 2}
+  - myCharacter: {instanceID: 0}
+  - myDeck: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

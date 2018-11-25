@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraManager : MonoBehaviour {
-
-	public CameraController cam;
+    CameraController camera;
 
 	TileMap map;
 
@@ -14,8 +13,9 @@ public class CameraManager : MonoBehaviour {
 
 	public void Initialise() {
 		map = GetComponentInChildren<TileMap> ();
+        camera = GameObject.Find("Main Camera").GetComponent<CameraController>();
 
-		cam.Initialise (map);
+        camera.Initialise (map);
 	}
 	
 	// Update is called once per frame
@@ -24,7 +24,7 @@ public class CameraManager : MonoBehaviour {
 	}
 
 	public void MoveToLocation(Vector2 location) {
-		cam.MoveToTarget (location);
+		camera.MoveToTarget (location);
 	}
 
 	public void MoveToLocation(Node node) {

@@ -7,9 +7,9 @@ public class UserInterfaceManager : MonoBehaviour {
 	//Managers
 	TurnManager turnManager;
 	UnitManager unitManager;
-	GUIController gUIController;
+	//GUIController gUIController;
 	PauseMenuController pauseMenuController;
-    PlayerManager playerManager;
+    //PlayerManager playerManager;
 
     AbilityCardBase activeCard = null;
     int currentActionIndex = 0;
@@ -17,18 +17,19 @@ public class UserInterfaceManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		gUIController = GetComponentInChildren<GUIController> ();
+		//gUIController = GetComponentInChildren<GUIController> ();
 		turnManager = GetComponentInParent<TurnManager> ();
 		unitManager = GetComponentInParent<UnitManager> ();
-        playerManager = GetComponentInParent<PlayerManager>();
+        //playerManager = GetComponentInParent<PlayerManager>();
         pauseMenuController = GetComponentInChildren<PauseMenuController> ();
 
+        Debug.Log("Starting turn manager");
         turnManager.Initialise ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		UserControls ();
+        UserControls ();
 	}
 
 	public void ShowCard(AbilityCardBase card) {
@@ -55,7 +56,7 @@ public class UserInterfaceManager : MonoBehaviour {
 		}
 
         if (Input.GetKeyUp(KeyCode.E)) {
-            turnManager.GetCurrentPlayer().myDeck.DrawCard();
+            //turnManager.GetCurrentPlayer().myDeck.DrawCard();
         }
 
 		//Cancel (right click)

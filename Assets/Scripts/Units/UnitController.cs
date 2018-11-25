@@ -53,7 +53,7 @@ public class UnitController : MonoBehaviour {
 	public Node myNode;
 
 	//Gameplay variables
-	public Player myPlayer;
+	public PlayerData myPlayer;
 
     //Ability variables
     AttackAction activeAction;
@@ -70,18 +70,18 @@ public class UnitController : MonoBehaviour {
 	}
 
 	public void Initialise() {
-		GameObject unitCanvas = Instantiate (unitCanvasPrefab);
-		unitCanvas.transform.SetParent (transform, false);
-		unitCanvasController = unitCanvas.GetComponent<UnitCanvasController> ();
+		//GameObject unitCanvas = Instantiate (unitCanvasPrefab);
+		//unitCanvas.transform.SetParent (transform, false);
+		//unitCanvasController = unitCanvas.GetComponent<UnitCanvasController> ();
 
-		anim = GetComponentInChildren<UnitAnimationController> ();
+		//anim = GetComponentInChildren<UnitAnimationController> ();
         //myStats = GetComponent<UnitStats> ();
-        Debug.Log("initialised unit stats");
-        myStats = Instantiate(baseStats);
-		myStats.Initialise ();
-		audioController = GetComponent<UnitAudioController> ();
-		projectiles = new List<ProjectileController> ();
-        myDialogController = GetComponentInChildren<UnitDialogController>();
+        //Debug.Log("initialised unit stats");
+        //myStats = Instantiate(baseStats);
+		//myStats.Initialise ();
+		//audioController = GetComponent<UnitAudioController> ();
+		//projectiles = new List<ProjectileController> ();
+        //myDialogController = GetComponentInChildren<UnitDialogController>();
 
     }
 	
@@ -90,7 +90,11 @@ public class UnitController : MonoBehaviour {
 		FollowPath ();
 	}
 
-	public bool HasRemainingQueuedActions() {
+    public void Spawn(Node startNode) {
+        myNode = startNode;
+    }
+
+    public bool HasRemainingQueuedActions() {
 		return actionQueue.Count > 0;
 	}
 
@@ -110,7 +114,7 @@ public class UnitController : MonoBehaviour {
         myStats.EndTurn ();
     }
 
-	public void Spawn(Player player, Node startNode) {
+	public void SpawnLEGACY(PlayerData player, Node startNode) {
 		myPlayer = player;
 		myNode = startNode;
 	}

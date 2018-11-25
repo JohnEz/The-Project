@@ -12,19 +12,16 @@ public class GUIController : MonoBehaviour {
 	public GameObject errorMessagePrefab;
 
 	TurnManager turnManager;
-	UserInterfaceManager uIManager;
+	//UserInterfaceManager uIManager;
 
 	List<GameObject> abilityIcons = new List<GameObject>();
 	Dictionary<string, RuntimeAnimatorController> abilityIconControllers = new Dictionary<string, RuntimeAnimatorController>();
 
 	Text objectivesBody;
-	UnitInfoController unitInfo;
 
 	void Awake() {
 		turnManager = GetComponentInParent<TurnManager> ();
-		uIManager = GetComponentInParent<UserInterfaceManager> ();
-		unitInfo = transform.Find("UnitInfo").GetComponent<UnitInfoController> ();
-		unitInfo.HideWindow ();
+		//uIManager = GetComponentInParent<UserInterfaceManager> ();
 	}
 
 	// Use this for initialization
@@ -114,11 +111,11 @@ public class GUIController : MonoBehaviour {
 	}
 
 	public void ShowUnitInfo(UnitController unit) {
-		unitInfo.SetUnit (unit);
-		unitInfo.ShowWindow ();
+		//unitInfo.SetUnit (unit);
+		//unitInfo.ShowWindow ();
 	}
 
 	public void HideUnitInfo() {
-		unitInfo.HideWindow ();
+	//	unitInfo.HideWindow ();
 	}
 }

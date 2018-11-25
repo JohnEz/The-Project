@@ -2,11 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.Networking;
 
-public class UnitManager : MonoBehaviour {
+public class UnitManager : NetworkBehaviour {
 
-	List<UnitController> units;
-	List<UnitController> unitsToRemove;
+    public static UnitManager singleton;
+
+	List<UnitController> units = new List<UnitController>();
+	List<UnitController> unitsToRemove = new List<UnitController>();
 
 	public GameObject[] unitPrefabs;
 
@@ -21,33 +24,50 @@ public class UnitManager : MonoBehaviour {
 
 	Node currentlyHoveredNode;
 
-	public Node CurrentlyHoveredNode {
-		get { return currentlyHoveredNode; }
-		set { currentlyHoveredNode = value; }
-	}
-
-	// Use this for initialization
-	void Start () {
-
-	}
+    private void Awake() {
+        singleton = this;
+    }
 
 	public void Initialise(TileMap map) {
-		guiController = GetComponentInChildren<GUIController> ();
-		units = new List<UnitController> ();
-		unitsToRemove = new List<UnitController> ();
+		//guiController = GetComponentInChildren<GUIController> ();
 		myMap = map;
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
 	}
 
 	public List<UnitController> Units {
 		get { return units; }
 	}
 
-	public UnitController SpawnUnit(int unit, Player player, int x, int y) {
+    // COMMANDs
+    /////////////////////////////
+
+    [Command]
+    public void CmdSpawnUnit(int unitId, int x, int y) {
+        GameObject newUnit = Instantiate(unitPrefabs[unitId], myMap.getPositionOfNode(x, y), Quaternion.identity);
+
+        Node startingNode = myMap.getNode(x, y);
+        UnitController unitController = newUnit.GetComponent<UnitController>();
+
+        startingNode.myUnit = unitController;
+        unitController.Spawn(startingNode);
+        unitController.FaceDirection(Vector2.down);
+        unitController.Initialise();
+        units.Add(unitController);
+
+        NetworkServer.SpawnWithClientAuthority(newUnit, connectionToClient);
+    }
+
+    // SERVERs
+    /////////////////////////////
+
+    // LEGACY
+    /////////////////////////////
+
+    public Node CurrentlyHoveredNode {
+        get { return currentlyHoveredNode; }
+        set { currentlyHoveredNode = value; }
+    }
+
+    public UnitController SpawnUnit(int unit, PlayerData player, int x, int y) {
 		GameObject newUnit = (GameObject)Instantiate (unitPrefabs [unit], myMap.getPositionOfNode (x, y), Quaternion.identity);
 		newUnit.transform.parent = myMap.transform;
 
@@ -55,7 +75,7 @@ public class UnitManager : MonoBehaviour {
 		UnitController unitController = newUnit.GetComponent<UnitController> ();
 
 		startingNode.myUnit = unitController;
-		unitController.Spawn(player, startingNode);
+		unitController.SpawnLEGACY(player, startingNode);
 		unitController.FaceDirection (Vector2.down);
 		unitController.myManager = this;
 		unitController.Initialise ();
@@ -80,7 +100,7 @@ public class UnitManager : MonoBehaviour {
 		unitsToRemove.Clear ();
 	}
 
-	public void StartTurn(Player player) {
+	public void StartTurn(PlayerData player) {
 		foreach (UnitController unit in units) {
 			if (unit.myPlayer.id == player.id) {
                 // TODO sort player selection as this is a bad hack
@@ -91,7 +111,7 @@ public class UnitManager : MonoBehaviour {
 		RemoveUnits ();
 	}
 
-	public void EndTurn(Player player) {
+	public void EndTurn(PlayerData player) {
 		foreach (UnitController unit in units) {
 			if (unit.myPlayer.id == player.id) {
 				unit.EndTurn ();

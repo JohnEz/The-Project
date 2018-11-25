@@ -1,72 +1,54 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Networking;
 
-public class Player {
-    public int id;
-    public string name;
-    public bool ai;
-    public int faction;
-
-    public Queue<AbilityCardBase> deck = new Queue<AbilityCardBase>();
-    List<AbilityCardBase> hand = new List<AbilityCardBase>();
-    public Stack<AbilityCardBase> discard = new Stack<AbilityCardBase>();
-
-    // Physical world objects
-    public UnitController myCharacter;
-    //public Hand myHand;
-    public Deck myDeck;
-}
-
-public class PlayerManager : MonoBehaviour {
+public class PlayerManager : NetworkBehaviour {
     // TODO this should be loaded in
     [SerializeField]
     List<AbilityCardBase> startingCards = new List<AbilityCardBase>();
 
-    List<Player> players = new List<Player>();
+    public List<PlayerData> players = new List<PlayerData>();
 
-    public GameObject player1Hand;
-    public GameObject player1Deck;
+    public int humanCount = 0;
+    //int cpuCount = 0;
 
-    public GameObject player2Hand;
-    public GameObject player2Deck;
-
-    int humanCount = 0;
-    int cpuCount = 0;
-
-    public void AddPlayer(int faction, string name = null) {
+    public void AddPlayer(short id) {
         humanCount++;
-        Player newPlayer = new Player();
+
+        PlayerData newPlayer = new PlayerData();
         newPlayer.id = players.Count;
-        newPlayer.name = name != null ? name : string.Format("Player %s", humanCount);
+        newPlayer.playerName = string.Format("Player %s", humanCount);
         newPlayer.ai = false;
-        newPlayer.faction = faction;
+        newPlayer.faction = 1;
         newPlayer.deck = CreateDeck(startingCards);
 
-        // TODO i need to clean this up and let it scale probably
-        if (humanCount == 1) {
-            //newPlayer.myHand = player1Hand.GetComponent<Hand>();
-            newPlayer.myDeck = player1Deck.GetComponent<Deck>();
-            player1Deck.GetComponent<Deck>().SetPlayer(newPlayer);
-        } else {
-            //newPlayer.myHand = player2Hand.GetComponent<Hand>();
-            newPlayer.myDeck = player2Deck.GetComponent<Deck>();
-            player2Deck.GetComponent<Deck>().SetPlayer(newPlayer);
-        }
+        //// TODO i need to clean this up and let it scale probably
+        //if (humanCount == 1) {
+        //    //newPlayer.myHand = player1Hand.GetComponent<Hand>();
+        //    newPlayer.myDeck = player1Deck.GetComponent<Deck>();
+        //    player1Deck.GetComponent<Deck>().SetPlayer(newPlayer);
+        //} else {
+        //    //newPlayer.myHand = player2Hand.GetComponent<Hand>();
+        //    newPlayer.myDeck = player2Deck.GetComponent<Deck>();
+        //    player2Deck.GetComponent<Deck>().SetPlayer(newPlayer);
+        //}
 
+        Debug.Log("Added player: " + id + " at index: " + players.Count);
         players.Add(newPlayer);
+        
     }
 
-    public void AddAiPlayer(int faction, string name = null) {
-        cpuCount++;
-        Player newPlayer = new Player();
-        newPlayer.id = players.Count;
-        newPlayer.name = name != null ? name : string.Format("CPU %s", cpuCount);
-        newPlayer.ai = true;
-        newPlayer.faction = faction;
-        newPlayer.deck = CreateDeck(startingCards);
-        players.Add(newPlayer);
-    }
+    //public void AddAiPlayer(int faction, string name = null) {
+    //    cpuCount++;
+    //    Player newPlayer = new Player();
+    //    newPlayer.id = players.Count;
+    //    newPlayer.name = name != null ? name : string.Format("CPU %s", cpuCount);
+    //    newPlayer.ai = true;
+    //    newPlayer.faction = faction;
+    //    newPlayer.deck = CreateDeck(startingCards);
+    //    players.Add(newPlayer);
+    //}
 
 
     private Queue<AbilityCardBase> CreateDeck(List<AbilityCardBase> _startingCards) {
@@ -83,15 +65,17 @@ public class PlayerManager : MonoBehaviour {
         StartNewTurn(GetPlayer(playerId));
     }
 
-    public void StartNewTurn(Player player) {
-        player.myDeck.DrawCard(5);
+    public void StartNewTurn(PlayerData player) {
+        //player.myDeck.DrawCard();
     }
 
     public int GetNumberOfPlayers() {
         return players.Count;
     }
 
-    public Player GetPlayer(int playerId) {
+    public PlayerData GetPlayer(int playerId) {
         return players[playerId];
     }
+
+    //NETWORKING
 }

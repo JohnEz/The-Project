@@ -15,7 +15,7 @@ public struct Objective {
 public class ObjectiveManager : MonoBehaviour
 {
 
-	private Dictionary<Player, List<Objective>> objectives = new Dictionary<Player, List<Objective>>();
+	private Dictionary<PlayerData, List<Objective>> objectives = new Dictionary<PlayerData, List<Objective>>();
 	private UnitManager unitManager;
 
 	// Use this for initialization
@@ -23,11 +23,11 @@ public class ObjectiveManager : MonoBehaviour
 		unitManager = GetComponent<UnitManager> ();
 	}
 
-	public List<Objective> getObjectives(Player player) {
+	public List<Objective> getObjectives(PlayerData player) {
 		return objectives [player];
 	}
 
-	public void AddObjective(Player player, Objective objective) {
+	public void AddObjective(PlayerData player, Objective objective) {
 		if (!objectives.ContainsKey (player)) {
 			List<Objective> newObjectives = new List<Objective> ();
 			newObjectives.Add (objective);
@@ -41,7 +41,7 @@ public class ObjectiveManager : MonoBehaviour
 
 	}
 
-	public bool CheckObjectives(Player player) {
+	public bool CheckObjectives(PlayerData player) {
 		if (objectives.ContainsKey (player)) {
 			List<Objective> playerObjectives = objectives [player];
 
@@ -66,7 +66,7 @@ public class ObjectiveManager : MonoBehaviour
 		return false;
 	}
 
-	private bool Annihilation(Player player) {
+	private bool Annihilation(PlayerData player) {
 		List<UnitController> units = unitManager.Units;
 
 		foreach (UnitController unit in units) {
