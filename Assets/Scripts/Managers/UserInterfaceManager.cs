@@ -4,36 +4,37 @@ using UnityEngine.UI;
 
 public class UserInterfaceManager : MonoBehaviour {
 
+    public static UserInterfaceManager singleton;
+
 	//Managers
-	TurnManager turnManager;
-	UnitManager unitManager;
-	//GUIController gUIController;
 	PauseMenuController pauseMenuController;
-    //PlayerManager playerManager;
 
     AbilityCardBase activeCard = null;
     int currentActionIndex = 0;
     bool cardPlayed = false;
 
-	// Use this for initialization
-	void Start () {
-		//gUIController = GetComponentInChildren<GUIController> ();
-		turnManager = GetComponentInParent<TurnManager> ();
-		unitManager = GetComponentInParent<UnitManager> ();
-        //playerManager = GetComponentInParent<PlayerManager>();
-        pauseMenuController = GetComponentInChildren<PauseMenuController> ();
+    private void Awake() {
+        singleton = this;
+    }
 
-        Debug.Log("Starting turn manager");
-        turnManager.Initialise ();
+    // Use this for initialization
+    void Start () {
+		////gUIController = GetComponentInChildren<GUIController> ();
+		//turnManager = GetComponentInParent<TurnManager> ();
+  //      //playerManager = GetComponentInParent<PlayerManager>();
+  //      pauseMenuController = GetComponentInChildren<PauseMenuController> ();
+
+  //      Debug.Log("Starting turn manager");
+  //      turnManager.Initialise ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        UserControls ();
+        //UserControls ();
 	}
 
 	public void ShowCard(AbilityCardBase card) {
-		UnshowCard ();
+        UnshowCard();
         activeCard = card;
 
         if (!cardPlayed) {
@@ -43,84 +44,84 @@ public class UserInterfaceManager : MonoBehaviour {
     }
 
 	public void UnshowCard() {
-		if (activeCard) {
-            unitManager.ClearMovementTiles();
+        if (activeCard) {
+            UnitManager.singleton.ClearMovementTiles();
         }
-	}
+    }
 
 	void UserControls() {
 
-		//temp for ai
-		if (Input.GetKeyUp ("space")) {
-			turnManager.EndTurn ();
-		}
+		////temp for ai
+		//if (Input.GetKeyUp ("space")) {
+		//	turnManager.EndTurn ();
+		//}
 
-        if (Input.GetKeyUp(KeyCode.E)) {
-            //turnManager.GetCurrentPlayer().myDeck.DrawCard();
-        }
+  //      if (Input.GetKeyUp(KeyCode.E)) {
+  //          //turnManager.GetCurrentPlayer().myDeck.DrawCard();
+  //      }
 
-		//Cancel (right click)
-		if (Input.GetKeyUp (KeyCode.Escape)) {
-            if (cardPlayed) {
-                cardPlayed = false;
-                UnshowCard();
-            } else {
-                if (PauseMenuController.gameIsPaused) {
-                    pauseMenuController.Resume();
-                } else {
-                    pauseMenuController.Pause();
-                }
-            }
-		}
+		////Cancel (right click)
+		//if (Input.GetKeyUp (KeyCode.Escape)) {
+  //          if (cardPlayed) {
+  //              cardPlayed = false;
+  //              UnshowCard();
+  //          } else {
+  //              if (PauseMenuController.gameIsPaused) {
+  //                  pauseMenuController.Resume();
+  //              } else {
+  //                  pauseMenuController.Pause();
+  //              }
+  //          }
+		//}
 
-		if (turnManager.CurrentPhase == TurnPhase.WAITING_FOR_INPUT && !turnManager.isAiTurn()) {
+		//if (turnManager.CurrentPhase == TurnPhase.WAITING_FOR_INPUT && !turnManager.isAiTurn()) {
 
-			if (Input.GetKeyUp ("space")) {
-				//turnManager.EndTurn ();
-			}
-		}
+		//	if (Input.GetKeyUp ("space")) {
+		//		//turnManager.EndTurn ();
+		//	}
+		//}
 
 	}
 
 	public void TileHovered(Node node, SquareTarget target) {
-		unitManager.CurrentlyHoveredNode = node;
-		if (cardPlayed && (target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL)) {
-			unitManager.HighlightEffectedTiles (node);
-		} else if (target == SquareTarget.MOVEMENT || target == SquareTarget.DASH || ((target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL) && node.previousMoveNode != null)) {
-			unitManager.ShowPath (node);
-		}
+		//unitManager.CurrentlyHoveredNode = node;
+		//if (cardPlayed && (target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL)) {
+		//	unitManager.HighlightEffectedTiles (node);
+		//} else if (target == SquareTarget.MOVEMENT || target == SquareTarget.DASH || ((target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL) && node.previousMoveNode != null)) {
+		//	unitManager.ShowPath (node);
+		//}
 	}
 
 	public void TileExit(Node node, SquareTarget target) {
-		unitManager.CurrentlyHoveredNode = null;
-		unitManager.UnhiglightEffectedTiles ();
+		//unitManager.CurrentlyHoveredNode = null;
+		//unitManager.UnhiglightEffectedTiles ();
 	}
 
 	public void TileClicked(Node node, SquareTarget target) {
 
-		if (turnManager.CurrentPhase == TurnPhase.WAITING_FOR_INPUT && !turnManager.isAiTurn()) {
-			switch (target) {
-			case SquareTarget.HELPFULL:
-			case SquareTarget.ATTACK:
-				ClickedAttack (node);
-				break;
-			case SquareTarget.DASH:
-			case SquareTarget.MOVEMENT:
-				ClickedMovement (node);
-				break;
-			case SquareTarget.NONE: 
-			default:
-				ClickedUnselected (node);
-				break;
-			}
+		//if (turnManager.CurrentPhase == TurnPhase.WAITING_FOR_INPUT && !turnManager.isAiTurn()) {
+		//	switch (target) {
+		//	case SquareTarget.HELPFULL:
+		//	case SquareTarget.ATTACK:
+		//		ClickedAttack (node);
+		//		break;
+		//	case SquareTarget.DASH:
+		//	case SquareTarget.MOVEMENT:
+		//		ClickedMovement (node);
+		//		break;
+		//	case SquareTarget.NONE: 
+		//	default:
+		//		ClickedUnselected (node);
+		//		break;
+		//	}
 
-		}
+		//}
 
 	}
 
 	public void ClickedMovement(Node node) {
-		unitManager.MoveToTile (node);
-		UnshowCard();
+		//unitManager.MoveToTile (node);
+		//UnshowCard();
 	}
 
 	public void ClickedUnselected(Node node) {
@@ -128,9 +129,9 @@ public class UserInterfaceManager : MonoBehaviour {
 	}
 
 	public void StartTurn() {
-		if (!turnManager.isAiTurn ()) {
+		//if (!turnManager.isAiTurn ()) {
 			
-		}
+		//}
 	}
 
 	public void EndTurn() {
@@ -156,14 +157,14 @@ public class UserInterfaceManager : MonoBehaviour {
     }
 
     public void CardPlayed(AbilityCardBase card) {
-        ShowCard(card);
-        cardPlayed = true;
+        //ShowCard(card);
+        //cardPlayed = true;
     }
 
     public void ClickedAttack(Node node) {
-		if (unitManager.AttackTile (node)) {
-			UnshowCard();
-		}
+		//if (unitManager.AttackTile (node)) {
+		//	UnshowCard();
+		//}
 	}
 
     public bool ShowAction() {
@@ -172,10 +173,10 @@ public class UserInterfaceManager : MonoBehaviour {
 
             if (currentAction.GetType() == typeof(MoveAction)) {
                 MoveAction moveAction = (MoveAction)currentAction;
-                unitManager.ShowMoveAction(moveAction.distance, moveAction.walkingType);
+                UnitManager.singleton.ShowMoveAction(moveAction.distance, moveAction.walkingType);
             } else if (typeof(AttackAction).IsAssignableFrom(currentAction.GetType())) {
                 AttackAction attackAction = (AttackAction)currentAction;
-                unitManager.ShowAttackAction(attackAction);
+                UnitManager.singleton.ShowAttackAction(attackAction);
             }
             return true;
         }
@@ -183,24 +184,24 @@ public class UserInterfaceManager : MonoBehaviour {
     }
 
     public void FinishedAction() {
-        currentActionIndex++;
-        if (!ShowAction()) {
-            activeCard = null;
-            cardPlayed = false;
-            currentActionIndex = 0;
-        }
+        //currentActionIndex++;
+        //if (!ShowAction()) {
+        //    activeCard = null;
+        //    cardPlayed = false;
+        //    currentActionIndex = 0;
+        //}
     }
 
 	public void FinishedAttacking() {
-		if (!turnManager.isAiTurn ()) {
-            FinishedAction();
-        }
+		//if (!turnManager.isAiTurn ()) {
+  //          FinishedAction();
+  //      }
 	}
 
 	public void FinishedMoving() {
-		if (!turnManager.isAiTurn ()) {
-            FinishedAction();
-        }
+		//if (!turnManager.isAiTurn ()) {
+  //          FinishedAction();
+  //      }
 	}
 
 	//public void ShowMovement() {

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Networking;
 
 public struct AbilityTarget {
 	public UnitController target;
@@ -24,7 +25,7 @@ public struct Action {
 	public AttackAction ability;
 }
 
-public class UnitController : MonoBehaviour {
+public class UnitController : NetworkBehaviour {
 
 	public GameObject unitCanvasPrefab;
     // [System.NonSerialized]
@@ -53,7 +54,8 @@ public class UnitController : MonoBehaviour {
 	public Node myNode;
 
 	//Gameplay variables
-	public PlayerData myPlayer;
+    [SyncVar]
+	public int myPlayerId;
 
     //Ability variables
     AttackAction activeAction;
@@ -69,30 +71,25 @@ public class UnitController : MonoBehaviour {
 
 	}
 
-	public void Initialise() {
-		//GameObject unitCanvas = Instantiate (unitCanvasPrefab);
-		//unitCanvas.transform.SetParent (transform, false);
-		//unitCanvasController = unitCanvas.GetComponent<UnitCanvasController> ();
+	public void Initialise(int playerId) {
+        //GameObject unitCanvas = Instantiate (unitCanvasPrefab);
+        //unitCanvas.transform.SetParent (transform, false);
+        //unitCanvasController = unitCanvas.GetComponent<UnitCanvasController> ();
 
-		//anim = GetComponentInChildren<UnitAnimationController> ();
+        //anim = GetComponentInChildren<UnitAnimationController> ();
         //myStats = GetComponent<UnitStats> ();
         //Debug.Log("initialised unit stats");
         //myStats = Instantiate(baseStats);
-		//myStats.Initialise ();
-		//audioController = GetComponent<UnitAudioController> ();
-		//projectiles = new List<ProjectileController> ();
+        //myStats.Initialise ();
+        //audioController = GetComponent<UnitAudioController> ();
+        //projectiles = new List<ProjectileController> ();
         //myDialogController = GetComponentInChildren<UnitDialogController>();
-
     }
 	
 	// Update is called once per frame
 	void Update () {
 		FollowPath ();
 	}
-
-    public void Spawn(Node startNode) {
-        myNode = startNode;
-    }
 
     public bool HasRemainingQueuedActions() {
 		return actionQueue.Count > 0;
@@ -115,8 +112,8 @@ public class UnitController : MonoBehaviour {
     }
 
 	public void SpawnLEGACY(PlayerData player, Node startNode) {
-		myPlayer = player;
-		myNode = startNode;
+		//myPlayer = player;
+		//myNode = startNode;
 	}
 
 	public void DestroySelf() {

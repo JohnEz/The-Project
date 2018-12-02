@@ -69,7 +69,9 @@ public class AttackAction : CardAction {
         }
 
         bool hasTarget = targetNode.myUnit != null;
-        bool isEnemy = hasTarget && targetNode.myUnit.myPlayer.faction != caster.myPlayer.faction;
+        int targetFaction = GameManager.singleton.players[targetNode.myUnit.myPlayerId].faction;
+        int casterFaction = GameManager.singleton.players[caster.myPlayerId].faction;
+        bool isEnemy = hasTarget && targetFaction != casterFaction;
 
         switch (targets) {
             case TargetType.ENEMY:

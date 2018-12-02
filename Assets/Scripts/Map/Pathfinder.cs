@@ -252,7 +252,11 @@ public class Pathfinder : MonoBehaviour {
 	}
 
 	public bool UnitInTheWay(Node node, int faction) {
-		return node.myUnit != null && node.myUnit.myPlayer.faction != faction && faction != -1;
+        if (node.myUnit != null) {
+            int unitFaction = GameManager.singleton.players[node.myUnit.myPlayerId].faction;
+            return faction != -1 && unitFaction != faction;
+        }
+        return false;
 	}
 
 	public bool UnitCanChangeLevel(Node startNode, Node endNode, Walkable walkingType) {

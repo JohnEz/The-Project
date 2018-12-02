@@ -39,7 +39,6 @@ public class CardManager : NetworkBehaviour {
 
     [Server]
     public void ServerSetupDeck(int playerId) {
-        Debug.Log("Setup Deck for player " + playerId);
         if (playerId == 0) {
             p1Deck.SetupDeck();
         } else {

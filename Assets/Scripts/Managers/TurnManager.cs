@@ -191,6 +191,12 @@ public class TurnManager : NetworkBehaviour {
 		return GetCurrentPlayer().ai;
 	}
 
+    private void ChangePlayerTurn(int newTurn) {
+        // TODO playersTurn is updated by syncvar and client call, this isnt great
+        playersTurn = newTurn;
+        currentTurnPlayer = GameManager.singleton.players[newTurn];
+        UnitManager.singleton.StartTurn(newTurn);
+    }
 
     // NETWORKING
     ///////////////////////////////
@@ -201,6 +207,11 @@ public class TurnManager : NetworkBehaviour {
     [ClientRpc]
     private void RpcGameState(TurnPhase newPhase, string message) {
         ClientHandleState(newPhase, message);
+    }
+
+    [ClientRpc]
+    private void RpcChangePlayerTurn(int newTurn) {
+        ChangePlayerTurn(newTurn);
     }
 
     // SERVER
@@ -234,11 +245,11 @@ public class TurnManager : NetworkBehaviour {
             currentTurnPlayer.RpcYourTurn(false);
         }
         playersTurn++;
+
         playersTurn = playersTurn % GameManager.singleton.players.Count;
-        currentTurnPlayer = GameManager.singleton.players[playersTurn];
+        ServerChangePlayerTurn(playersTurn);
         currentTurnPlayer.RpcYourTurn(true);
 
-        Debug.Log("Drawing cards for player " + playersTurn);
         currentTurnPlayer.CmdDrawCard();
         currentTurnPlayer.CmdDrawCard();
         currentTurnPlayer.CmdDrawCard();
@@ -254,6 +265,12 @@ public class TurnManager : NetworkBehaviour {
         Debug.Log("Server Enter state:" + newPhase);
         currentPhase = newPhase;
         RpcGameState(newPhase, message);
+    }
+
+    [Server]
+    void ServerChangePlayerTurn(int newTurn) {
+        ChangePlayerTurn(newTurn);
+        RpcChangePlayerTurn(newTurn);
     }
 
     // CLIENT

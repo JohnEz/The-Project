@@ -40,7 +40,7 @@ public class UnitCanvasController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		myUnit = GetComponentInParent<UnitController> ();
-		myTeam = myUnit.myPlayer.id;
+        myTeam = myUnit.myPlayerId;
 		hpBar = Instantiate (hpBarPrefab, transform, false).GetComponent<HpBarController>();
 		hpBar.Initialize (myUnit.myStats.MaxHealth);
 		hpBar.SetHPColor (teamColours [myTeam]);

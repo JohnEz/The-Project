@@ -13,7 +13,7 @@ public class UnitManager : NetworkBehaviour {
 
 	public GameObject[] unitPrefabs;
 
-	TileMap myMap;
+	public TileMap myMap;
 
 	GUIController guiController;
 
@@ -37,27 +37,39 @@ public class UnitManager : NetworkBehaviour {
 		get { return units; }
 	}
 
+    public GameObject SpawnUnit(int unitId, int x, int y, int playerId) {
+        Node startingNode = myMap.getNode(x, y);
+        GameObject newUnit = Instantiate(unitPrefabs[unitId], myMap.getPositionOfNode(startingNode), Quaternion.identity);
+
+        UnitController unitController = newUnit.GetComponent<UnitController>();
+
+        startingNode.SetMyUnit(unitController);
+        unitController.myNode = startingNode;
+        unitController.FaceDirection(Vector2.down);
+        unitController.myPlayerId = playerId;
+        units.Add(unitController);
+
+        return newUnit;
+    }
+
+    public void StartTurn(int playersTurn) {
+        currentPlayerUnit = units.Find(unit => unit.myPlayerId == playersTurn);
+        //RemoveUnits();
+    }
+
+    public void EndTurn(int playersTurn) {
+        //currentPlayerUnit.EndTurn();
+    }
+
     // COMMANDs
     /////////////////////////////
 
-    [Command]
-    public void CmdSpawnUnit(int unitId, int x, int y) {
-        GameObject newUnit = Instantiate(unitPrefabs[unitId], myMap.getPositionOfNode(x, y), Quaternion.identity);
 
-        Node startingNode = myMap.getNode(x, y);
-        UnitController unitController = newUnit.GetComponent<UnitController>();
-
-        startingNode.myUnit = unitController;
-        unitController.Spawn(startingNode);
-        unitController.FaceDirection(Vector2.down);
-        unitController.Initialise();
-        units.Add(unitController);
-
-        NetworkServer.SpawnWithClientAuthority(newUnit, connectionToClient);
-    }
 
     // SERVERs
     /////////////////////////////
+
+
 
     // LEGACY
     /////////////////////////////
@@ -65,26 +77,6 @@ public class UnitManager : NetworkBehaviour {
     public Node CurrentlyHoveredNode {
         get { return currentlyHoveredNode; }
         set { currentlyHoveredNode = value; }
-    }
-
-    public UnitController SpawnUnit(int unit, PlayerData player, int x, int y) {
-		GameObject newUnit = (GameObject)Instantiate (unitPrefabs [unit], myMap.getPositionOfNode (x, y), Quaternion.identity);
-		newUnit.transform.parent = myMap.transform;
-
-		Node startingNode = myMap.getNode (x, y);
-		UnitController unitController = newUnit.GetComponent<UnitController> ();
-
-		startingNode.myUnit = unitController;
-		unitController.SpawnLEGACY(player, startingNode);
-		unitController.FaceDirection (Vector2.down);
-		unitController.myManager = this;
-		unitController.Initialise ();
-		units.Add (unitController);
-
-        player.myCharacter = unitController;
-
-        return unitController;
-
     }
 
 	public void AddUnitToRemove(UnitController unit) {
@@ -100,24 +92,7 @@ public class UnitManager : NetworkBehaviour {
 		unitsToRemove.Clear ();
 	}
 
-	public void StartTurn(PlayerData player) {
-		foreach (UnitController unit in units) {
-			if (unit.myPlayer.id == player.id) {
-                // TODO sort player selection as this is a bad hack
-                currentPlayerUnit = player.myCharacter;
-				unit.NewTurn ();
-			}
-		}
-		RemoveUnits ();
-	}
 
-	public void EndTurn(PlayerData player) {
-		foreach (UnitController unit in units) {
-			if (unit.myPlayer.id == player.id) {
-				unit.EndTurn ();
-			}
-		}
-	}
 
     public void CardPlayed(AbilityCardBase card) {
         
@@ -147,7 +122,9 @@ public class UnitManager : NetworkBehaviour {
             throw new System.Exception("Current player not selected!");
         }
 
-        ReachableTiles walkingTiles = myMap.pathfinder.findReachableTiles(currentPlayerUnit.myNode, moveDistance, walkingType, currentPlayerUnit.myPlayer.faction);
+        PlayerConnectionObject player = GameManager.singleton.players[currentPlayerUnit.myPlayerId];
+
+        ReachableTiles walkingTiles = myMap.pathfinder.findReachableTiles(currentPlayerUnit.myNode, moveDistance, walkingType, player.faction);
         myMap.highlighter.HighlightTiles(walkingTiles.basic.Keys.ToList(), SquareTarget.MOVEMENT);
     }
 
@@ -219,18 +196,18 @@ public class UnitManager : NetworkBehaviour {
             return false;
         }
 
-        if (targetNode.previousMoveNode) {
-            //MovementPath movementPath = myMap.pathfinder.getPathFromTile (targetNode.previousMoveNode);
-			MovementPath movementPath = myMap.pathfinder.FindPath (currentPlayerUnit.myNode, targetNode.previousMoveNode, currentPlayerUnit.myStats.WalkingType, currentPlayerUnit.myPlayer.faction);
-			SetUnitPath (movementPath);
-		}
+  //      if (targetNode.previousMoveNode) {
+  //          //MovementPath movementPath = myMap.pathfinder.getPathFromTile (targetNode.previousMoveNode);
+		//	MovementPath movementPath = myMap.pathfinder.FindPath (currentPlayerUnit.myNode, targetNode.previousMoveNode, currentPlayerUnit.myStats.WalkingType, currentPlayerUnit.myPlayer.faction);
+		//	SetUnitPath (movementPath);
+		//}
 
-		Action action = new Action();
-        action.type = ActionType.ATTACK;
-        action.ability = attackAction;
-        action.nodes = GetTargetNodes(attackAction, targetNode);
+		//Action action = new Action();
+  //      action.type = ActionType.ATTACK;
+  //      action.ability = attackAction;
+  //      action.nodes = GetTargetNodes(attackAction, targetNode);
 
-        currentPlayerUnit.AddAction (action);
+  //      currentPlayerUnit.AddAction (action);
 
         return true;
 	}

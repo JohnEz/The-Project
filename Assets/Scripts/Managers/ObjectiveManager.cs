@@ -69,11 +69,11 @@ public class ObjectiveManager : MonoBehaviour
 	private bool Annihilation(PlayerData player) {
 		List<UnitController> units = unitManager.Units;
 
-		foreach (UnitController unit in units) {
-			if (unit.myPlayer.faction != player.faction) {
-				return false;
-			}
-		}
+		//foreach (UnitController unit in units) {
+		//	if (unit.myPlayer.faction != player.faction) {
+		//		return false;
+		//	}
+		//}
 
 		return true;
 	}

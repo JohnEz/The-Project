@@ -31,13 +31,18 @@ public class PlayerConnectionObject : NetworkBehaviour {
 
     public List<CardId> handCards = new List<CardId>();
 
+    public int faction = 0;
+
     private void Start() {
         if (!isLocalPlayer) {
             return;
         }
 
         CmdCreateDeck();
-        UnitManager.singleton.CmdSpawnUnit(0, 2, 3);
+
+        // TODO probably move this
+        Vector2 spawnLocation = GameManager.singleton.spawnLocations[playerId];
+        CmdSpawnUnit(0, (int)spawnLocation.x, (int)spawnLocation.y, playerId);
     }
 
     public override void OnStartServer() {
@@ -105,6 +110,13 @@ public class PlayerConnectionObject : NetworkBehaviour {
         ServerEndTurn();
     }
 
+    [Command]
+    public void CmdSpawnUnit(int unitId, int x, int y, int playerId) {
+        GameObject spawnedUnit = UnitManager.singleton.SpawnUnit(unitId, x, y, playerId);
+
+        ServerSpawnObjectWithAuthority(spawnedUnit);
+    }
+
     // SERVERs
     ////////////////////
 
@@ -123,6 +135,13 @@ public class PlayerConnectionObject : NetworkBehaviour {
     [Server]
     public void ServerEndTurn() {
         TurnManager.singleton.ServerEndTurn();
+    }
+
+    [Server]
+    public void ServerSpawnObjectWithAuthority(GameObject go) {
+        Debug.LogError("Server spawning unit");
+        NetworkServer.SpawnWithClientAuthority(go, connectionToClient);
+        Debug.LogError(go.name + " spawned!");
     }
 
     // CLIENT RPCs

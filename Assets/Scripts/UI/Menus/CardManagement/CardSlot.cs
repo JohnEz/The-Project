@@ -54,7 +54,6 @@ public class CardSlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
     }
 
     public void OnEndDrag(PointerEventData eventData) {
-        //UserInterfaceManager uiManager = GameObject.Find("Game Controller").GetComponent<UserInterfaceManager>();
         Draggable dragCompoment = GetComponent<Draggable>();
 
         // if it was not dropped back into the hand
@@ -65,13 +64,11 @@ public class CardSlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
     }
 
     public void OnPointerEnter(PointerEventData eventData) {
-        //UserInterfaceManager uiManager = GameObject.Find("Game Controller").GetComponent<UserInterfaceManager>();
-        //uiManager.CardHovered(ability);
+        UserInterfaceManager.singleton.CardHovered(myAbilityCard);
     }
 
     public void OnPointerExit(PointerEventData eventData) {
-        //UserInterfaceManager uiManager = GameObject.Find("Game Controller").GetComponent<UserInterfaceManager>();
-        //uiManager.CardUnhovered();
+        UserInterfaceManager.singleton.CardUnhovered();
     }
 
     void Start()

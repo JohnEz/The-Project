@@ -37,26 +37,26 @@ public class AIManager : MonoBehaviour {
 
 	// NewTurn is called at the start of each of the AIs turns.
 	public IEnumerator NewTurn(int myPlayerId) {
-		myUnits = unitManager.Units.Where (unit => unit.myPlayer.id == myPlayerId).ToList ();
+        myUnits = unitManager.Units.Where(unit => unit.myPlayerId == myPlayerId).ToList();
 
-		foreach (UnitController unit in myUnits) {
-			yield return PlanTurn (unit);
-		}
+        foreach (UnitController unit in myUnits) {
+            yield return PlanTurn(unit);
+        }
 
-		turnManager.EndTurn ();
-	}
+        turnManager.EndTurn();
+    }
 
 	public List<MovementPath> FindPathsToEnemies(UnitController unit) {
 		List<MovementPath> pathsToEnemies = new List<MovementPath> ();
 
-		foreach (UnitController otherUnit in unitManager.Units) {
-			if (otherUnit.myPlayer.faction != unit.myPlayer.faction) {
-				MovementPath pathToEnemy = myMap.pathfinder.FindShortestPathToUnit (unit.myNode, otherUnit.myNode, unit.myStats.walkingType, unit.myPlayer.faction);
-				if (pathToEnemy.movementCost != -1) {
-					pathsToEnemies.Add (pathToEnemy);
-				}
-			}
-		}
+		//foreach (UnitController otherUnit in unitManager.Units) {
+		//	if (otherUnit.myPlayer.faction != unit.myPlayer.faction) {
+		//		MovementPath pathToEnemy = myMap.pathfinder.FindShortestPathToUnit (unit.myNode, otherUnit.myNode, unit.myStats.walkingType, unit.myPlayer.faction);
+		//		if (pathToEnemy.movementCost != -1) {
+		//			pathsToEnemies.Add (pathToEnemy);
+		//		}
+		//	}
+		//}
 
 		return pathsToEnemies;
 	}

@@ -15,6 +15,9 @@ public class GameManager : NetworkBehaviour {
 
     public PlayerSlot[] playerSlots = new PlayerSlot[2];
 
+    //TEMP
+    public Vector2[] spawnLocations = new Vector2[2];
+
     TileMap map;
     CameraManager cameraManager;
 
@@ -84,4 +87,5 @@ public class GameManager : NetworkBehaviour {
     public void UiEndTurn() {
         localPlayer.CmdEndTurn();
     }
+
 }
