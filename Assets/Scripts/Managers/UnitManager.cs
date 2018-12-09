@@ -18,7 +18,7 @@ public class UnitManager : NetworkBehaviour {
 	GUIController guiController;
 
 	//currentSelect
-	UnitController currentPlayerUnit = null;
+	//UnitController currentPlayerUnit = null;
     AttackAction activeAbility = null;
 	List<Node> attackableTiles = new List<Node>();
 
@@ -47,18 +47,22 @@ public class UnitManager : NetworkBehaviour {
         unitController.myNode = startingNode;
         unitController.FaceDirection(Vector2.down);
         unitController.myPlayerId = playerId;
-        units.Add(unitController);
+        //units.Add(unitController);
 
         return newUnit;
     }
 
     public void StartTurn(int playersTurn) {
-        currentPlayerUnit = units.Find(unit => unit.myPlayerId == playersTurn);
+        //currentPlayerUnit = units.Find(unit => unit.myPlayerId == playersTurn);
         //RemoveUnits();
     }
 
     public void EndTurn(int playersTurn) {
         //currentPlayerUnit.EndTurn();
+    }
+
+    public UnitController GetPlayerUnit(int playerId) {
+        return units.Find(unit => unit.myPlayerId == playerId); ;
     }
 
     // COMMANDs
@@ -117,14 +121,14 @@ public class UnitManager : NetworkBehaviour {
     //	return reachableTiles;
     //}
 
-    public void ShowMoveAction(int moveDistance, Walkable walkingType) {
-        if (currentPlayerUnit == null) {
-            throw new System.Exception("Current player not selected!");
+    public void ShowMoveAction(UnitController unit, int moveDistance, Walkable walkingType) {
+        if (unit == null) {
+            throw new System.Exception("Passed null unit!");
         }
 
-        PlayerConnectionObject player = GameManager.singleton.players[currentPlayerUnit.myPlayerId];
+        PlayerConnectionObject player = GameManager.singleton.players[unit.myPlayerId];
 
-        ReachableTiles walkingTiles = myMap.pathfinder.findReachableTiles(currentPlayerUnit.myNode, moveDistance, walkingType, player.faction);
+        ReachableTiles walkingTiles = myMap.pathfinder.findReachableTiles(unit.myNode, moveDistance, walkingType, player.faction);
         myMap.highlighter.HighlightTiles(walkingTiles.basic.Keys.ToList(), SquareTarget.MOVEMENT);
     }
 
@@ -133,13 +137,10 @@ public class UnitManager : NetworkBehaviour {
     }
 
     // Shows where the ability can target
-    public bool ShowAttackAction(AttackAction action)
-    {
+    public bool ShowAttackAction(UnitController unit, AttackAction action) {
 
-        if (currentPlayerUnit == null)
-        {
-            guiController.ShowErrorMessage("Player doesn't have a character?!");
-            return false;
+        if (unit == null) {
+            throw new System.Exception("Passed null unit!");
         }
 
         //if (currentPlayerUnit.myStats.ActionPoints <= 0)
@@ -148,27 +149,27 @@ public class UnitManager : NetworkBehaviour {
         //    return false;
         //}
 
-        action.caster = currentPlayerUnit;
+        action.caster = unit;
         activeAbility = action;
 
-        attackableTiles = myMap.pathfinder.FindAttackableTiles(currentPlayerUnit.myNode, action);
+        attackableTiles = myMap.pathfinder.FindAttackableTiles(unit.myNode, action);
         myMap.highlighter.UnhighlightAllTiles();
-        myMap.highlighter.HighlightTile(currentPlayerUnit.myNode, SquareTarget.NONE);
+        myMap.highlighter.HighlightTile(unit.myNode, SquareTarget.NONE);
         SquareTarget targetType = action.targets == TargetType.ALLY ? SquareTarget.HELPFULL : SquareTarget.ATTACK;
         myMap.highlighter.HighlightTiles(attackableTiles, targetType);
 
         if (currentlyHoveredNode != null)
         {
-            HighlightEffectedTiles(currentlyHoveredNode);
+            HighlightEffectedTiles(unit, currentlyHoveredNode);
         }
 
         return true;
     }
 
     // Highlight the tiles effected by the ability
-    public void HighlightEffectedTiles(Node target) {
+    public void HighlightEffectedTiles(UnitController unit, Node target) {
 		if (attackableTiles.Contains (target)) {
-			List<Node> effectedNodes = GetTargetNodes (activeAbility, target);
+			List<Node> effectedNodes = GetTargetNodes (unit, activeAbility, target);
 			myMap.highlighter.ShowAbilityTiles (effectedNodes, activeAbility);
 		}
 	}
@@ -213,7 +214,7 @@ public class UnitManager : NetworkBehaviour {
 	}
 
     // Shows the attackable tiles of the ability
-	List<Node> GetTargetNodes(AttackAction action, Node targetNode) {
+	List<Node> GetTargetNodes(UnitController unit, AttackAction action, Node targetNode) {
 		List<Node> targetTiles = new List<Node> ();
 		switch (action.areaOfEffect) {
 		case AreaOfEffect.AURA:
@@ -221,7 +222,7 @@ public class UnitManager : NetworkBehaviour {
 		case AreaOfEffect.CIRCLE:
 			return myMap.pathfinder.FindAOEHitTiles(targetNode, action);
 		case AreaOfEffect.CLEAVE:
-			return myMap.pathfinder.FindCleaveTargetTiles(targetNode, action, currentPlayerUnit.myNode);
+			return myMap.pathfinder.FindCleaveTargetTiles(targetNode, action, unit.myNode);
 		case AreaOfEffect.SINGLE:
 		default:
 			targetTiles.Add (targetNode);
@@ -230,17 +231,17 @@ public class UnitManager : NetworkBehaviour {
 	}
 
     // Adds a move action to a units queue
-	public void SetUnitPath(MovementPath movementPath) {
+	public void SetUnitPath(UnitController unit, MovementPath movementPath) {
 		Action moveAction = new Action();
 		moveAction.type = ActionType.MOVEMENT;
 		moveAction.nodes = movementPath.path;
-        currentPlayerUnit.AddAction (moveAction);
+        unit.AddAction (moveAction);
 	}
 
     // Tells the unit to move to a set node
-	public void MoveToTile(Node targetNode) {
+	public void MoveToTile(UnitController unit, Node targetNode) {
 		MovementPath movementPath = myMap.pathfinder.getPathFromTile (targetNode);
-		SetUnitPath(movementPath);
+		SetUnitPath(unit, movementPath);
 	}
 
     // Called when the unit starts following a path

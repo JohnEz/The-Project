@@ -3,5 +3,5 @@ using System.Collections;
 
 public class NetworkConstants {
 
-    public static int MAX_PLAYERS = 1;
+    public static int MAX_PLAYERS = 2;
 }

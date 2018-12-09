@@ -43,6 +43,10 @@ public class PlayerConnectionObject : NetworkBehaviour {
         // TODO probably move this
         Vector2 spawnLocation = GameManager.singleton.spawnLocations[playerId];
         CmdSpawnUnit(0, (int)spawnLocation.x, (int)spawnLocation.y, playerId);
+
+        if (!isServer) {
+            GameManager.singleton.players.Add(this);
+        }
     }
 
     public override void OnStartServer() {

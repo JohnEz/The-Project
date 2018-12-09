@@ -64,7 +64,7 @@ public class CardSlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
     }
 
     public void OnPointerEnter(PointerEventData eventData) {
-        UserInterfaceManager.singleton.CardHovered(myAbilityCard);
+        UserInterfaceManager.singleton.CardHovered(myPlayer.playerId, myAbilityCard);
     }
 
     public void OnPointerExit(PointerEventData eventData) {

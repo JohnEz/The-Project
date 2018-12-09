@@ -33,13 +33,14 @@ public class UserInterfaceManager : MonoBehaviour {
         //UserControls ();
 	}
 
-	public void ShowCard(AbilityCardBase card) {
+	public void ShowCard(int owningPlayerId, AbilityCardBase card) {
         UnshowCard();
         activeCard = card;
 
         if (!cardPlayed) {
             activeCard = card;
-            ShowAction();
+            UnitController playerUnit = UnitManager.singleton.GetPlayerUnit(owningPlayerId);
+            ShowAction(playerUnit);
         }
     }
 
@@ -142,9 +143,9 @@ public class UserInterfaceManager : MonoBehaviour {
         return !cardPlayed;
     }
 
-    public void CardHovered(AbilityCardBase card) {
+    public void CardHovered(int owningPlayerId, AbilityCardBase card) {
         if (!cardPlayed) {
-            ShowCard(card);
+            ShowCard(owningPlayerId, card);
         }
     }
 
@@ -167,16 +168,16 @@ public class UserInterfaceManager : MonoBehaviour {
 		//}
 	}
 
-    public bool ShowAction() {
+    public bool ShowAction(UnitController unit) {
         if (activeCard && currentActionIndex < activeCard.Actions.Count) {
             CardAction currentAction = activeCard.Actions[currentActionIndex];
 
             if (currentAction.GetType() == typeof(MoveAction)) {
                 MoveAction moveAction = (MoveAction)currentAction;
-                UnitManager.singleton.ShowMoveAction(moveAction.distance, moveAction.walkingType);
+                UnitManager.singleton.ShowMoveAction(unit, moveAction.distance, moveAction.walkingType);
             } else if (typeof(AttackAction).IsAssignableFrom(currentAction.GetType())) {
                 AttackAction attackAction = (AttackAction)currentAction;
-                UnitManager.singleton.ShowAttackAction(attackAction);
+                UnitManager.singleton.ShowAttackAction(unit, attackAction);
             }
             return true;
         }

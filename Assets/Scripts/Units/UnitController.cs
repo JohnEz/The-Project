@@ -50,8 +50,8 @@ public class UnitController : NetworkBehaviour {
 
 	//Pathfinding
 	List<Node> myPath = new List<Node>();
-	[System.NonSerialized]
 	public Node myNode;
+
 
 	//Gameplay variables
     [SyncVar]
@@ -66,9 +66,8 @@ public class UnitController : NetworkBehaviour {
 	int effectsToCreate = 0;
 	List<GameObject> abilityEffects = new List<GameObject>();
 
-	// Use this for initialization
 	void Start () {
-
+        UnitManager.singleton.Units.Add(this);
 	}
 
 	public void Initialise(int playerId) {
