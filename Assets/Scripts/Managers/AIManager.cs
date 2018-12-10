@@ -78,37 +78,47 @@ public class AIManager : MonoBehaviour {
 	public IEnumerator PlanTurn(UnitController unit) {
         Debug.Log("AI - Planning turn");
 
-        yield return WaitForWaitingForInput();
+        bool hasEndedTurn = false;
+        bool hasAttacked = false;
+        bool hasMoved = false;
 
-        Dictionary<AttackAction, List<Node>> potentialAbilityTargets = GetPotentialAbilityTargets(unit);
+        while (!hasEndedTurn) {
+            yield return WaitForWaitingForInput();
 
-        AttackAction firstAttack = unit.myStats.Attacks[0];
+            Dictionary<AttackAction, List<Node>> potentialAbilityTargets = GetPotentialAbilityTargets(unit);
 
-        // if the first ability has 1 or more available targets
-        if (potentialAbilityTargets[firstAttack].Count > 0) {
-            Debug.Log("AI - attacking tile");
-            // gets the first target of the first ability
-            Node targetTile = potentialAbilityTargets[firstAttack][0];
-            UnitManager.singleton.AttackTile(unit, targetTile, firstAttack);
-        } else if (unit.myStats.Speed > 0) {
-            // if the unit can move
+            AttackAction firstAttack = unit.myStats.Attacks[0];
 
-            // find paths to all enemies
-            List<MovementPath> paths = FindPathsToEnemies(unit);
+            // if the first ability has 1 or more available targets
+            if (!hasAttacked && potentialAbilityTargets[firstAttack].Count > 0) {
+                Debug.Log("AI - attacking tile");
+                // gets the first target of the first ability
+                Node targetTile = potentialAbilityTargets[firstAttack][0];
+                UnitManager.singleton.AttackTile(unit, targetTile, firstAttack);
+                hasAttacked = true;
+            } else if (!hasMoved && unit.myStats.Speed > 0) {
+                // if the unit can move
 
-            // if there is a valid path
-            if (paths.Count > 0) {
-                // finds the shortest path out of all the paths
-                MovementPath shortestPath = Pathfinder.GetSortestPath(paths);
-                //TODO we need to check if there is a unit on the tile speed away
-                shortestPath.path = shortestPath.path.Take(unit.myStats.Speed).ToList();
-                UnitManager.singleton.SetUnitPath(unit, shortestPath);
+                // find paths to all enemies
+                List<MovementPath> paths = FindPathsToEnemies(unit);
+
+                // if there is a valid path
+                if (paths.Count > 0) {
+                    // finds the shortest path out of all the paths
+                    MovementPath shortestPath = Pathfinder.GetSortestPath(paths);
+                    //TODO we need to check if there is a unit on the tile speed away
+                    shortestPath.path = shortestPath.path.Take(unit.myStats.Speed).ToList();
+                    UnitManager.singleton.SetUnitPath(unit, shortestPath);
+                } else {
+                    //no options available
+                    //end unit turn
+                }
+                hasMoved = true;
             } else {
-                //no options available
-                //end unit turn
+                hasEndedTurn = true;
             }
-        }
 
+        }
         yield return WaitForWaitingForInput ();
 
 	}
