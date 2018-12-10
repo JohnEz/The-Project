@@ -61,55 +61,55 @@ public class AIManager : MonoBehaviour {
 		return pathsToEnemies;
 	}
 
-	public Dictionary<AbilityCardBase, List<Node>> GetPotentialAbilityTargets(UnitController unit) {
-		Dictionary<AbilityCardBase, List<Node>> potentialAbilityTargets = new Dictionary<AbilityCardBase, List<Node>>();
-		//UnitClass unitClass = unit.GetComponent<UnitClass>();
+	public Dictionary<AttackAction, List<Node>> GetPotentialAbilityTargets(UnitController unit) {
+		Dictionary<AttackAction, List<Node>> potentialAbilityTargets = new Dictionary<AttackAction, List<Node>>();
 
-		//unitClass.abilities.ForEach (ability => {
-		//	List<Node> attackableTiles = myMap.pathfinder.FindAttackableTiles (unit.myNode, ability);
+        unit.myStats.Attacks.ForEach(attackAction => {
+            List<Node> attackableTiles = myMap.pathfinder.FindAttackableTiles(unit.myNode, attackAction);
 
-		//	attackableTiles = attackableTiles.Where(tile => ability.CanHitUnit(tile)).ToList();
+            attackableTiles = attackableTiles.Where(tile => attackAction.CanHitUnit(tile)).ToList();
 
-		//	potentialAbilityTargets.Add(ability, attackableTiles);
-		//});
+            potentialAbilityTargets.Add(attackAction, attackableTiles);
+        });
 
-		return potentialAbilityTargets;
+        return potentialAbilityTargets;
 	}
 
 	public IEnumerator PlanTurn(UnitController unit) {
-		// UnitClass unitClass = unit.GetComponent<UnitClass>();
-        // unitManager.SelectUnit (unit);
-
         Debug.Log("AI - Planning turn");
 
-  //      while (unit.myStats.ActionPoints > 0) {
-		//	yield return WaitForWaitingForInput ();
-		//	unitManager.SelectUnit (unit);
+        yield return WaitForWaitingForInput();
 
-		//	Dictionary<AbilityCardBase, List<Node>> potentialAbilityTargets = GetPotentialAbilityTargets(unit);
+        Dictionary<AttackAction, List<Node>> potentialAbilityTargets = GetPotentialAbilityTargets(unit);
 
-		//	if (potentialAbilityTargets [unitClass.abilities [0]].Count > 0) {
-  //              Debug.Log("AI - attacking tile");
-  //              unitManager.AttackTile (potentialAbilityTargets [unitClass.abilities [0]] [0], unitClass.abilities [0]);
-		//	} else if (unit.myStats.Speed > 0) {
-		//		List<MovementPath> paths = FindPathsToEnemies (unit);
-		//		if (paths.Count > 0) {
-		//			MovementPath shortestPath = Pathfinder.GetSortestPath (paths);
-		//			//TODO we need to check if there is a unit on the tile speed away
-		//			shortestPath.path = shortestPath.path.Take (unit.myStats.Speed * unit.myStats.ActionPoints).ToList ();
-		//			unitManager.SetUnitPath (shortestPath);
-		//		} else {
-		//			//end turn
-		//			unit.ActionPoints = 0;
-		//		}
-		//	} else {
-		//		//end turn
-		//		unit.ActionPoints = 0;
-		//	}
-		//	unitManager.DeselectUnit ();
-		//}
-			
-		yield return WaitForWaitingForInput ();
+        AttackAction firstAttack = unit.myStats.Attacks[0];
+
+        // if the first ability has 1 or more available targets
+        if (potentialAbilityTargets[firstAttack].Count > 0) {
+            Debug.Log("AI - attacking tile");
+            // gets the first target of the first ability
+            Node targetTile = potentialAbilityTargets[firstAttack][0];
+            UnitManager.singleton.AttackTile(unit, targetTile, firstAttack);
+        } else if (unit.myStats.Speed > 0) {
+            // if the unit can move
+
+            // find paths to all enemies
+            List<MovementPath> paths = FindPathsToEnemies(unit);
+
+            // if there is a valid path
+            if (paths.Count > 0) {
+                // finds the shortest path out of all the paths
+                MovementPath shortestPath = Pathfinder.GetSortestPath(paths);
+                //TODO we need to check if there is a unit on the tile speed away
+                shortestPath.path = shortestPath.path.Take(unit.myStats.Speed).ToList();
+                UnitManager.singleton.SetUnitPath(unit, shortestPath);
+            } else {
+                //no options available
+                //end unit turn
+            }
+        }
+
+        yield return WaitForWaitingForInput ();
 
 	}
 

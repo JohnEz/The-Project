@@ -80,7 +80,7 @@ public class UserInterfaceManager : MonoBehaviour {
 	public void TileHovered(Node node, SquareTarget target) {
 		UnitManager.singleton.CurrentlyHoveredNode = node;
 		if (cardPlayed && (target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL)) {
-			UnitManager.singleton.HighlightEffectedTiles (node);
+			UnitManager.singleton.HighlightEffectedTiles (activeCard.caster, node);
 		} else if (target == SquareTarget.MOVEMENT || target == SquareTarget.DASH || ((target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL) && node.previousMoveNode != null)) {
 			UnitManager.singleton.ShowPath (node);
 		}
@@ -114,7 +114,7 @@ public class UserInterfaceManager : MonoBehaviour {
 	}
 
 	public void ClickedMovement(Node node) {
-		UnitManager.singleton.MoveToTile (node);
+		UnitManager.singleton.MoveToTile (activeCard.caster, node);
 		UnshowCard();
 	}
 
@@ -156,7 +156,7 @@ public class UserInterfaceManager : MonoBehaviour {
     }
 
     public void ClickedAttack(Node node) {
-		if (UnitManager.singleton.AttackTile (node)) {
+		if (UnitManager.singleton.AttackTile (activeCard.caster, node)) {
 			UnshowCard();
 		}
 	}
@@ -167,10 +167,10 @@ public class UserInterfaceManager : MonoBehaviour {
 
             if (currentAction.GetType() == typeof(MoveAction)) {
                 MoveAction moveAction = (MoveAction)currentAction;
-                UnitManager.singleton.ShowMoveAction(moveAction.distance, moveAction.walkingType);
+                UnitManager.singleton.ShowMoveAction(activeCard.caster, moveAction.distance, moveAction.walkingType);
             } else if (typeof(AttackAction).IsAssignableFrom(currentAction.GetType())) {
                 AttackAction attackAction = (AttackAction)currentAction;
-                UnitManager.singleton.ShowAttackAction(attackAction);
+                UnitManager.singleton.ShowAttackAction(activeCard.caster, attackAction);
             }
             return true;
         }

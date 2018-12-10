@@ -27,10 +27,10 @@ public class Deck : MonoBehaviour {
         if (myPlayer.deck.Count > 0) {
             AbilityCardBase drawnCardAbility = myPlayer.deck.Dequeue();
             GameObject cardObject = Instantiate(cardPrefab, hand);
-            cardObject.GetComponent<CardDisplay>().ability = drawnCardAbility;
+            cardObject.GetComponent<CardDisplay>().ability = Instantiate(drawnCardAbility);
             cardObject.GetComponent<CardDisplay>().myPlayer = myPlayer;
         } else {
-            Debug.Log("No cards left to draw");
+            //todo when deck is fully drawn
         }
     }
 

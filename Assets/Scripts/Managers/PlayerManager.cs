@@ -33,7 +33,7 @@ public class PlayerManager : MonoBehaviour {
         singleton = this;
     }
 
-    public void AddPlayer(int faction, Queue<AbilityCardBase> deck, string name = null) {
+    public Player AddPlayer(int faction, Queue<AbilityCardBase> deck, string name = null) {
         humanCount++;
         Player newPlayer = new Player();
         newPlayer.id = players.Count;
@@ -50,9 +50,11 @@ public class PlayerManager : MonoBehaviour {
         }
 
         players.Add(newPlayer);
+
+        return newPlayer;
     }
 
-    public void AddAiPlayer(int faction, string name = null) {
+    public Player AddAiPlayer(int faction, string name = null) {
         cpuCount++;
         Player newPlayer = new Player();
         newPlayer.id = players.Count;
@@ -60,6 +62,7 @@ public class PlayerManager : MonoBehaviour {
         newPlayer.ai = true;
         newPlayer.faction = faction;
         players.Add(newPlayer);
+        return newPlayer;
     }
 
     public void StartNewTurn(int playerId) {
@@ -67,7 +70,9 @@ public class PlayerManager : MonoBehaviour {
     }
 
     public void StartNewTurn(Player player) {
-        player.myDeck.DrawCard(5);
+        if (!player.ai) {
+            player.myDeck.DrawCard(5);
+        }
     }
 
     public int GetNumberOfPlayers() {

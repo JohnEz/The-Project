@@ -14,6 +14,13 @@ public class CardDisplay : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
 
     public Player myPlayer;
 
+    void Start() {
+        nameText.text = ability.name;
+        artworkImage.sprite = ability.icon;
+        descriptionText.text = ability.GetDescription();
+        ability.caster = myPlayer.myCharacter;
+    }
+
     public void OnBeginDrag(PointerEventData eventData) {
         //throw new System.NotImplementedException();
     }
@@ -53,14 +60,4 @@ public class CardDisplay : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         UserInterfaceManager uiManager = GameObject.Find("Game Controller").GetComponent<UserInterfaceManager>();
         uiManager.CardUnhovered();
     }
-
-    void Start()
-    {
-        nameText.text = ability.name;
-        artworkImage.sprite = ability.icon;
-        descriptionText.text = ability.GetDescription();
-    }
-
-
-
 }

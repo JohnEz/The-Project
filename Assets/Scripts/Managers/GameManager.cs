@@ -30,15 +30,16 @@ public class GameManager : MonoBehaviour {
 
     //TEMP
     void AddPlayers() {
-        PlayerManager.singleton.AddPlayer(1, CardManager.singleton.CreateDeck(), "Jonesy");
+        Player humanPlayer = PlayerManager.singleton.AddPlayer(1, CardManager.singleton.CreateDeck(), "Jonesy");
 
         if (MatchDetails.VersusAi) {
-            PlayerManager.singleton.AddAiPlayer(2);
+            Player cpuPlayer = PlayerManager.singleton.AddAiPlayer(2);
         } else {
-            PlayerManager.singleton.AddPlayer(2, CardManager.singleton.CreateDeck(), "Jimmy");
+            Player humanPlayer2 = PlayerManager.singleton.AddPlayer(2, CardManager.singleton.CreateDeck(), "Jimmy");
         }
 
-        UnitManager.singleton.SpawnUnit(7, PlayerManager.singleton.GetPlayer(0), 16, 10);
+        humanPlayer.myCharacter = UnitManager.singleton.SpawnUnit(7, PlayerManager.singleton.GetPlayer(0), 16, 10);
+
         UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(1), 17, 10);
     }
 

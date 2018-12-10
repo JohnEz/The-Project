@@ -2,27 +2,31 @@
 using System.Collections;
 using System.Collections.Generic;
 
-[CreateAssetMenu(fileName = "New Ability", menuName = "Card/BaseCard")]
+[CreateAssetMenu(fileName = "New Ability", menuName = "Card/New Card")]
 public class AbilityCardBase : ScriptableObject {
 
     public new string name = "UNNAMED";
     public string description = "No description set!";
     public Sprite icon;
 
-    public List<CardAction> myActions = new List<CardAction>(0);
+    public List<CardAction> baseActions = new List<CardAction>(0);
+
+    [HideInInspector]
+    public List<CardAction> instansiatedActions = new List<CardAction>(0);
 
     public int staminaCost = 3;
 
     public UnitController caster;
 
-    public AbilityCardBase(List<EventAction> _eventActions, UnitController _caster)
-    {
-        caster = _caster;
+    public void Awake() {
+        baseActions.ForEach(action => {
+            instansiatedActions.Add(Instantiate(action));
+        });
     }
 
     public List<CardAction> Actions
     {
-        get { return myActions; }
+        get { return instansiatedActions; }
     }
 
     public string Name
