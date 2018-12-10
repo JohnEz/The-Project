@@ -6,16 +6,18 @@ using System.Linq;
 
 public class AIManager : MonoBehaviour {
 
-	UnitManager unitManager;
-	TurnManager turnManager;
+    public static AIManager singleton;
 
 	List<UnitController> myUnits;
 
 	TileMap myMap;
 
+    private void Awake() {
+        singleton = this;
+    }
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
 
 	}
 
@@ -25,8 +27,6 @@ public class AIManager : MonoBehaviour {
 	}
 
 	public void Initialise(TileMap map) {
-		unitManager = GetComponent<UnitManager> ();
-		turnManager = GetComponent<TurnManager> ();
 		myMap = map;
 	}
 
@@ -37,19 +37,19 @@ public class AIManager : MonoBehaviour {
 
 	// NewTurn is called at the start of each of the AIs turns.
 	public IEnumerator NewTurn(int myPlayerId) {
-		myUnits = unitManager.Units.Where (unit => unit.myPlayer.id == myPlayerId).ToList ();
+		myUnits = UnitManager.singleton.Units.Where (unit => unit.myPlayer.id == myPlayerId).ToList ();
 
 		foreach (UnitController unit in myUnits) {
 			yield return PlanTurn (unit);
 		}
 
-		turnManager.EndTurn ();
+		TurnManager.singleton.EndTurn ();
 	}
 
 	public List<MovementPath> FindPathsToEnemies(UnitController unit) {
 		List<MovementPath> pathsToEnemies = new List<MovementPath> ();
 
-		foreach (UnitController otherUnit in unitManager.Units) {
+		foreach (UnitController otherUnit in UnitManager.singleton.Units) {
 			if (otherUnit.myPlayer.faction != unit.myPlayer.faction) {
 				MovementPath pathToEnemy = myMap.pathfinder.FindShortestPathToUnit (unit.myNode, otherUnit.myNode, unit.myStats.walkingType, unit.myPlayer.faction);
 				if (pathToEnemy.movementCost != -1) {
@@ -114,6 +114,6 @@ public class AIManager : MonoBehaviour {
 	}
 
 	public IEnumerator WaitForWaitingForInput() {
-		return new WaitUntil (() => turnManager.CurrentPhase == TurnPhase.WAITING_FOR_INPUT);
+		return new WaitUntil (() => TurnManager.singleton.CurrentPhase == TurnPhase.WAITING_FOR_INPUT);
 	}
 }

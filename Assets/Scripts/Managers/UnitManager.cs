@@ -5,14 +5,14 @@ using System.Linq;
 
 public class UnitManager : MonoBehaviour {
 
+    public static UnitManager singleton;
+
 	List<UnitController> units;
 	List<UnitController> unitsToRemove;
 
 	public GameObject[] unitPrefabs;
 
 	TileMap myMap;
-
-	GUIController guiController;
 
 	//currentSelect
 	UnitController currentPlayerUnit = null;
@@ -21,7 +21,11 @@ public class UnitManager : MonoBehaviour {
 
 	Node currentlyHoveredNode;
 
-	public Node CurrentlyHoveredNode {
+    private void Awake() {
+        singleton = this;
+    }
+
+    public Node CurrentlyHoveredNode {
 		get { return currentlyHoveredNode; }
 		set { currentlyHoveredNode = value; }
 	}
@@ -32,7 +36,6 @@ public class UnitManager : MonoBehaviour {
 	}
 
 	public void Initialise(TileMap map) {
-		guiController = GetComponentInChildren<GUIController> ();
 		units = new List<UnitController> ();
 		unitsToRemove = new List<UnitController> ();
 		myMap = map;
@@ -141,7 +144,7 @@ public class UnitManager : MonoBehaviour {
 
         if (currentPlayerUnit == null)
         {
-            guiController.ShowErrorMessage("Player doesn't have a character?!");
+            GUIController.singleton.ShowErrorMessage("Player doesn't have a character?!");
             return false;
         }
 

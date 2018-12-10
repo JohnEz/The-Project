@@ -4,11 +4,17 @@ using UnityEngine;
 
 public class CameraManager : MonoBehaviour {
 
+    public static CameraManager singleton;
+
 	public CameraController cam;
 
 	TileMap map;
 
-	void Start () {
+    private void Awake() {
+        singleton = this;
+    }
+
+    void Start () {
 
 	}
 

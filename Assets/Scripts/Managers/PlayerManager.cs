@@ -19,39 +19,34 @@ public class Player {
 }
 
 public class PlayerManager : MonoBehaviour {
-    // TODO this should be loaded in
-    [SerializeField]
-    List<AbilityCardBase> startingCards = new List<AbilityCardBase>();
+    public static PlayerManager singleton;
 
     List<Player> players = new List<Player>();
 
     public GameObject player1Hand;
     public GameObject player1Deck;
 
-    public GameObject player2Hand;
-    public GameObject player2Deck;
-
     int humanCount = 0;
     int cpuCount = 0;
 
-    public void AddPlayer(int faction, string name = null) {
+    private void Awake() {
+        singleton = this;
+    }
+
+    public void AddPlayer(int faction, Queue<AbilityCardBase> deck, string name = null) {
         humanCount++;
         Player newPlayer = new Player();
         newPlayer.id = players.Count;
         newPlayer.name = name != null ? name : string.Format("Player %s", humanCount);
         newPlayer.ai = false;
         newPlayer.faction = faction;
-        newPlayer.deck = CreateDeck(startingCards);
+        newPlayer.deck = deck;
 
         // TODO i need to clean this up and let it scale probably
         if (humanCount == 1) {
             //newPlayer.myHand = player1Hand.GetComponent<Hand>();
             newPlayer.myDeck = player1Deck.GetComponent<Deck>();
             player1Deck.GetComponent<Deck>().SetPlayer(newPlayer);
-        } else {
-            //newPlayer.myHand = player2Hand.GetComponent<Hand>();
-            newPlayer.myDeck = player2Deck.GetComponent<Deck>();
-            player2Deck.GetComponent<Deck>().SetPlayer(newPlayer);
         }
 
         players.Add(newPlayer);
@@ -64,19 +59,7 @@ public class PlayerManager : MonoBehaviour {
         newPlayer.name = name != null ? name : string.Format("CPU %s", cpuCount);
         newPlayer.ai = true;
         newPlayer.faction = faction;
-        newPlayer.deck = CreateDeck(startingCards);
         players.Add(newPlayer);
-    }
-
-
-    private Queue<AbilityCardBase> CreateDeck(List<AbilityCardBase> _startingCards) {
-        Queue<AbilityCardBase> newDeck = new Queue<AbilityCardBase>();
-
-        startingCards.ForEach(card => {
-            newDeck.Enqueue(card);
-        });
-
-        return newDeck;
     }
 
     public void StartNewTurn(int playerId) {
