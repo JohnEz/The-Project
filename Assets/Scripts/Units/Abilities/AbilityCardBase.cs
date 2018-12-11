@@ -12,13 +12,14 @@ public class AbilityCardBase : ScriptableObject {
     public List<CardAction> baseActions = new List<CardAction>(0);
 
     [HideInInspector]
-    public List<CardAction> instansiatedActions = new List<CardAction>(0);
+    public List<CardAction> instansiatedActions;
 
-    public int staminaCost = 3;
+    public int staminaCost = 1;
 
     public UnitController caster;
 
     public void Awake() {
+        instansiatedActions = new List<CardAction>(0);
         baseActions.ForEach(action => {
             instansiatedActions.Add(Instantiate(action));
         });

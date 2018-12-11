@@ -87,16 +87,18 @@ public class AIManager : MonoBehaviour {
 
             Dictionary<AttackAction, List<Node>> potentialAbilityTargets = GetPotentialAbilityTargets(unit);
 
+            bool hasAvailableTargets = potentialAbilityTargets.Where(keyValuePair => keyValuePair.Value.Count > 0).ToList().Count > 0;
+
             AttackAction firstAttack = unit.myStats.Attacks[0];
 
             // if the first ability has 1 or more available targets
-            if (!hasAttacked && potentialAbilityTargets[firstAttack].Count > 0) {
+            if (!hasAttacked && hasAvailableTargets) {
                 Debug.Log("AI - attacking tile");
                 // gets the first target of the first ability
                 Node targetTile = potentialAbilityTargets[firstAttack][0];
                 UnitManager.singleton.AttackTile(unit, targetTile, firstAttack);
                 hasAttacked = true;
-            } else if (!hasMoved && unit.myStats.Speed > 0) {
+            } else if (!hasMoved && !hasAvailableTargets && unit.myStats.Speed > 0) {
                 // if the unit can move
 
                 // find paths to all enemies

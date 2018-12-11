@@ -28,30 +28,48 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         }
     }
 
-    public void OnBeginDrag(PointerEventData eventData) {
-        UserInterfaceManager uiManager = GameObject.Find("Game Controller").GetComponent<UserInterfaceManager>();
-        if (uiManager.CanPlayCard()) {
-            beingDragged = true;
-            originalParent = transform.parent;
-        
-            CreatePlaceholder();
-        
-            // Remove from the hand
-            transform.SetParent(GameObject.Find("GameCanvas").transform);
-
-            targetLocation = eventData.position;
-
-            GetComponent<CanvasGroup>().blocksRaycasts = false;
+    private bool CanInterractWithCard() {
+        // check players turn
+        if (TurnManager.singleton.GetCurrentPlayer() != GetComponent<CardDisplay>().myPlayer) {
+            GUIController.singleton.ShowErrorMessage("You already have a card played");
+            return false;
         }
+
+        // check can play card
+        if (!UserInterfaceManager.singleton.CanPlayCard()) {
+            GUIController.singleton.ShowErrorMessage("You already have a card played");
+            return false;
+        }
+
+        return true;
+    }
+
+    public void OnBeginDrag(PointerEventData eventData) {
+        if (!CanInterractWithCard()) {
+            return;
+        }
+
+        beingDragged = true;
+        originalParent = transform.parent;
+        
+        CreatePlaceholder();
+        
+        // Remove from the hand
+        transform.SetParent(GameObject.Find("GameCanvas").transform);
+
+        targetLocation = eventData.position;
+
+        GetComponent<CanvasGroup>().blocksRaycasts = false;
     }
 
     public void OnDrag(PointerEventData eventData) {
-        UserInterfaceManager uiManager = GameObject.Find("Game Controller").GetComponent<UserInterfaceManager>();
-        if (uiManager.CanPlayCard()) {
-            targetLocation = eventData.position;
-
-            AdjustPlaceHolder();
+        if (!CanInterractWithCard()) {
+            return;
         }
+
+        targetLocation = eventData.position;
+
+        AdjustPlaceHolder();
     }
 
     public void OnDestroy() {
@@ -59,25 +77,16 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
     }
 
     public void OnEndDrag(PointerEventData eventData) {
-        UserInterfaceManager uiManager = GameObject.Find("Game Controller").GetComponent<UserInterfaceManager>();
-        if (uiManager.CanPlayCard()) {
-            beingDragged = false;
-            if (droppedOnZone) {
-                targetLocation = eventData.position;
-
-                // Jump back into the hand
-                transform.SetParent(originalParent);
-
-                // Place card at correct index in hand
-                transform.SetSiblingIndex(placeholder.transform.GetSiblingIndex());
-
-                droppedOnZone = false;
-            }
-
-            Destroy(placeholder);
-
-            GetComponent<CanvasGroup>().blocksRaycasts = true;
+        if (!beingDragged) {
+            return;
         }
+
+        beingDragged = false;
+        ReturnToParent(eventData.position);
+
+        droppedOnZone = false;
+
+        GetComponent<CanvasGroup>().blocksRaycasts = true;
     }
 
     // Creates a placeholder where this card was in the hand
@@ -120,5 +129,17 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         }
 
         placeholder.transform.SetSiblingIndex(newSiblingIndex);
+    }
+
+    public void ReturnToParent(Vector2 position) {
+        targetLocation = position;
+
+        // Jump back into the hand
+        transform.SetParent(originalParent);
+
+        // Place card at correct index in hand
+        transform.SetSiblingIndex(placeholder.transform.GetSiblingIndex());
+
+        Destroy(placeholder);
     }
 }
