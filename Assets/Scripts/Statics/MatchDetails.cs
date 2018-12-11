@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 public static class MatchDetails {
-	private static bool versusAi = false;
+	private static bool versusAi = true;
     private static string mapName = "";
     private static int unitLimit = 4;
     private static List<UnitObject> playerRoster = new List<UnitObject>();

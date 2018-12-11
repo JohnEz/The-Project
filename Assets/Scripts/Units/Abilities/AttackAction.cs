@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 
-[CreateAssetMenu(fileName = "New Attack Action", menuName = "Card/AttackAction")]
 public class AttackAction : CardAction {
 
     public int range = 1;

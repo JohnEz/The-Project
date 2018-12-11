@@ -10,8 +10,6 @@ public class VisualEffectEventAction : EventAction {
     // Use this for initialization
     public VisualEffectEventAction() : base() {
         action = (UnitController caster, UnitController target, Node targetedTile) => {
-            Debug.Log("running visual effect " + effectObject.name);
-            Debug.Log("Target = " + eventTarget);
             switch (eventTarget) {
                 case EventTarget.CASTER:
                     caster.CreateEffectWithDelay(effectObject, delay);

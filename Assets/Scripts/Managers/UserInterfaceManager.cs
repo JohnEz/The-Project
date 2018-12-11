@@ -4,26 +4,22 @@ using UnityEngine.UI;
 
 public class UserInterfaceManager : MonoBehaviour {
 
+    public static UserInterfaceManager singleton;
+
 	//Managers
-	TurnManager turnManager;
-	UnitManager unitManager;
-	GUIController gUIController;
 	PauseMenuController pauseMenuController;
-    PlayerManager playerManager;
 
     AbilityCardBase activeCard = null;
     int currentActionIndex = 0;
     bool cardPlayed = false;
 
-	// Use this for initialization
-	void Start () {
-		gUIController = GetComponentInChildren<GUIController> ();
-		turnManager = GetComponentInParent<TurnManager> ();
-		unitManager = GetComponentInParent<UnitManager> ();
-        playerManager = GetComponentInParent<PlayerManager>();
-        pauseMenuController = GetComponentInChildren<PauseMenuController> ();
+    private void Awake() {
+        singleton = this;
+    }
 
-        turnManager.Initialise ();
+    // Use this for initialization
+    void Start () {
+
 	}
 	
 	// Update is called once per frame
@@ -43,7 +39,7 @@ public class UserInterfaceManager : MonoBehaviour {
 
 	public void UnshowCard() {
 		if (activeCard) {
-            unitManager.ClearMovementTiles();
+            UnitManager.singleton.ClearMovementTiles();
         }
 	}
 
@@ -51,11 +47,11 @@ public class UserInterfaceManager : MonoBehaviour {
 
 		//temp for ai
 		if (Input.GetKeyUp ("space")) {
-			turnManager.EndTurn ();
+			TurnManager.singleton.EndTurn ();
 		}
 
         if (Input.GetKeyUp(KeyCode.E)) {
-            turnManager.GetCurrentPlayer().myDeck.DrawCard();
+            TurnManager.singleton.GetCurrentPlayer().myDeck.DrawCard();
         }
 
 		//Cancel (right click)
@@ -72,7 +68,7 @@ public class UserInterfaceManager : MonoBehaviour {
             }
 		}
 
-		if (turnManager.CurrentPhase == TurnPhase.WAITING_FOR_INPUT && !turnManager.isAiTurn()) {
+		if (TurnManager.singleton.CurrentPhase == TurnPhase.WAITING_FOR_INPUT && !TurnManager.singleton.isAiTurn()) {
 
 			if (Input.GetKeyUp ("space")) {
 				//turnManager.EndTurn ();
@@ -82,22 +78,22 @@ public class UserInterfaceManager : MonoBehaviour {
 	}
 
 	public void TileHovered(Node node, SquareTarget target) {
-		unitManager.CurrentlyHoveredNode = node;
+		UnitManager.singleton.CurrentlyHoveredNode = node;
 		if (cardPlayed && (target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL)) {
-			unitManager.HighlightEffectedTiles (node);
+			UnitManager.singleton.HighlightEffectedTiles (activeCard.caster, node);
 		} else if (target == SquareTarget.MOVEMENT || target == SquareTarget.DASH || ((target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL) && node.previousMoveNode != null)) {
-			unitManager.ShowPath (node);
+			UnitManager.singleton.ShowPath (node);
 		}
 	}
 
 	public void TileExit(Node node, SquareTarget target) {
-		unitManager.CurrentlyHoveredNode = null;
-		unitManager.UnhiglightEffectedTiles ();
+		UnitManager.singleton.CurrentlyHoveredNode = null;
+		UnitManager.singleton.UnhiglightEffectedTiles ();
 	}
 
 	public void TileClicked(Node node, SquareTarget target) {
 
-		if (turnManager.CurrentPhase == TurnPhase.WAITING_FOR_INPUT && !turnManager.isAiTurn()) {
+		if (TurnManager.singleton.CurrentPhase == TurnPhase.WAITING_FOR_INPUT && !TurnManager.singleton.isAiTurn()) {
 			switch (target) {
 			case SquareTarget.HELPFULL:
 			case SquareTarget.ATTACK:
@@ -118,7 +114,7 @@ public class UserInterfaceManager : MonoBehaviour {
 	}
 
 	public void ClickedMovement(Node node) {
-		unitManager.MoveToTile (node);
+		UnitManager.singleton.MoveToTile (activeCard.caster, node);
 		UnshowCard();
 	}
 
@@ -127,7 +123,7 @@ public class UserInterfaceManager : MonoBehaviour {
 	}
 
 	public void StartTurn() {
-		if (!turnManager.isAiTurn ()) {
+		if (!TurnManager.singleton.isAiTurn ()) {
 			
 		}
 	}
@@ -160,7 +156,7 @@ public class UserInterfaceManager : MonoBehaviour {
     }
 
     public void ClickedAttack(Node node) {
-		if (unitManager.AttackTile (node)) {
+		if (UnitManager.singleton.AttackTile (activeCard.caster, node)) {
 			UnshowCard();
 		}
 	}
@@ -171,10 +167,10 @@ public class UserInterfaceManager : MonoBehaviour {
 
             if (currentAction.GetType() == typeof(MoveAction)) {
                 MoveAction moveAction = (MoveAction)currentAction;
-                unitManager.ShowMoveAction(moveAction.distance, moveAction.walkingType);
+                UnitManager.singleton.ShowMoveAction(activeCard.caster, moveAction.distance, moveAction.walkingType);
             } else if (typeof(AttackAction).IsAssignableFrom(currentAction.GetType())) {
                 AttackAction attackAction = (AttackAction)currentAction;
-                unitManager.ShowAttackAction(attackAction);
+                UnitManager.singleton.ShowAttackAction(activeCard.caster, attackAction);
             }
             return true;
         }
@@ -191,13 +187,13 @@ public class UserInterfaceManager : MonoBehaviour {
     }
 
 	public void FinishedAttacking() {
-		if (!turnManager.isAiTurn ()) {
+		if (!TurnManager.singleton.isAiTurn ()) {
             FinishedAction();
         }
 	}
 
 	public void FinishedMoving() {
-		if (!turnManager.isAiTurn ()) {
+		if (!TurnManager.singleton.isAiTurn ()) {
             FinishedAction();
         }
 	}

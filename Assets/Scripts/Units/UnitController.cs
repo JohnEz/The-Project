@@ -27,8 +27,6 @@ public struct Action {
 public class UnitController : MonoBehaviour {
 
 	public GameObject unitCanvasPrefab;
-    // [System.NonSerialized]
-    // public UnitStats myStats;
     public UnitObject baseStats;
     [System.NonSerialized]
     public UnitObject myStats;
@@ -75,10 +73,9 @@ public class UnitController : MonoBehaviour {
 		unitCanvasController = unitCanvas.GetComponent<UnitCanvasController> ();
 
 		anim = GetComponentInChildren<UnitAnimationController> ();
-        //myStats = GetComponent<UnitStats> ();
         Debug.Log("initialised unit stats");
         myStats = Instantiate(baseStats);
-		myStats.Initialise ();
+		myStats.Initialise (this);
 		audioController = GetComponent<UnitAudioController> ();
 		projectiles = new List<ProjectileController> ();
         myDialogController = GetComponentInChildren<UnitDialogController>();
@@ -95,8 +92,6 @@ public class UnitController : MonoBehaviour {
 	}
 
 	public void NewTurn() {
-		//TODO i dont like the fact that unitstats cant set action points because of ui
-		ActionPoints = myStats.MaxActionPoints;
 		myStats.ApplyStartingTurnBuffs (
 			(damage) => {this.TakeDamage(null, damage, true);}, 
 			(healing) => {this.TakeHealing(null, healing);}
@@ -105,8 +100,6 @@ public class UnitController : MonoBehaviour {
 	}
 
 	public void EndTurn() {
-        Stamina += myStats.ConvertActionPointsToStamina();
-        ActionPoints = 0;
         myStats.EndTurn ();
     }
 
@@ -150,15 +143,7 @@ public class UnitController : MonoBehaviour {
     }
 
 	public void RemoveTurn() {
-		ActionPoints = 0;
-	}
 
-	public int ActionPoints {
-		get { return myStats.ActionPoints; }
-		set { 
-			myStats.SetActionPoints(value);
-			unitCanvasController.SetActionPoints (myStats.ActionPoints);
-		}
 	}
 
     public int Stamina {

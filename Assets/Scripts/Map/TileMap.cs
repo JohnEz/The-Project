@@ -12,7 +12,6 @@ public class PrefabDictionaryEntry
 
 public class TileMap : MonoBehaviour {
 
-
 	int mapWidth;
 	int mapHeight;
 	Node[] tiles;

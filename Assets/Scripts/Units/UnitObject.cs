@@ -34,19 +34,29 @@ public class UnitObject : ScriptableObject {
     int currentStamina = 0;
     public int baseBlock = 0;
     public int baseArmour = 0;
-    public int baseActionPoints = 2;
-    int currentActionPoints = 0;
-
-    public Walkable baseWalkingType = Walkable.Walkable;
-
-    public Walkable walkingType;
 
     public AudioClip onHitSfx;
     public AudioClip onDeathSfx;
 
-    public void Initialise() {
+    //Stats for AI
+    public Walkable baseWalkingType = Walkable.Walkable;
+    public Walkable walkingType;
+
+    public int baseSpeed = 3;
+
+    public List<AttackAction> baseAttacks;
+    [HideInInspector]
+    public List<AttackAction> instantiatedAttacks;
+
+    public void Initialise(UnitController myUnit) {
         currentHealth = MaxHealth;
         currentStamina = MaxStamina;
+
+        baseAttacks.ForEach(attack => {
+            AttackAction instantaitedAttack = Instantiate(attack);
+            instantaitedAttack.caster = myUnit;
+            instantiatedAttacks.Add(instantaitedAttack);
+        });
     }
 
     public int GetModifiedStat(int baseValue, Stats stat) {
@@ -61,8 +71,8 @@ public class UnitObject : ScriptableObject {
         return (int)((baseValue + flatMods) * percentMods);
     }
 
-    public void SetActionPoints(int actionPoints) {
-        currentActionPoints = Mathf.Clamp(actionPoints, 0, MaxActionPoints);
+    public List<AttackAction> Attacks {
+        get { return instantiatedAttacks; }
     }
 
     public void SetHealth(int health) {
@@ -81,10 +91,6 @@ public class UnitObject : ScriptableObject {
         get { return currentStamina; }
     }
 
-    public int ActionPoints {
-        get { return currentActionPoints; }
-    }
-
     public int MaxHealth {
         get { return GetModifiedStat(baseHealth, Stats.HEALTH); }
     }
@@ -101,8 +107,8 @@ public class UnitObject : ScriptableObject {
         get { return GetModifiedStat(baseArmour, Stats.ARMOUR); }
     }
 
-    public int MaxActionPoints {
-        get { return GetModifiedStat(baseActionPoints, Stats.AP); }
+    public int Speed {
+        get { return GetModifiedStat(baseSpeed, Stats.SPEED); }
     }
 
     public List<Buff> Buffs {
@@ -149,10 +155,6 @@ public class UnitObject : ScriptableObject {
 
     public void EndTurn() {
 
-    }
-
-    public int ConvertActionPointsToStamina() {
-        return ActionPoints * ACTION_POINTS_TO_STAMINA;
     }
 
     public Buff FindOldestBuff(bool debuff) {

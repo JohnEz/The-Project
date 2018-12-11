@@ -5,14 +5,13 @@ using System.Collections.Generic;
 
 public class GUIController : MonoBehaviour {
 
+    public static GUIController singleton;
+
 	public GameObject turnTextPrefab;
 	bool showingTurn = false;
 	GameObject turnText;
 
 	public GameObject errorMessagePrefab;
-
-	TurnManager turnManager;
-	UserInterfaceManager uIManager;
 
 	List<GameObject> abilityIcons = new List<GameObject>();
 	Dictionary<string, RuntimeAnimatorController> abilityIconControllers = new Dictionary<string, RuntimeAnimatorController>();
@@ -21,8 +20,7 @@ public class GUIController : MonoBehaviour {
 	UnitInfoController unitInfo;
 
 	void Awake() {
-		turnManager = GetComponentInParent<TurnManager> ();
-		uIManager = GetComponentInParent<UserInterfaceManager> ();
+        singleton = this;
 		unitInfo = transform.Find("UnitInfo").GetComponent<UnitInfoController> ();
 		unitInfo.HideWindow ();
 	}
@@ -37,7 +35,7 @@ public class GUIController : MonoBehaviour {
 		//TODO this should probably be some sort of timer so there is less of a chance the user can get stuck
 		if (showingTurn) {
 			if (turnText == null) {
-				turnManager.FinishStartingTurn ();
+				TurnManager.singleton.FinishStartingTurn ();
 				showingTurn = false;
 			}
 		}

@@ -14,13 +14,11 @@ public class UnitCanvasController : MonoBehaviour {
 
 	public GameObject hpBarPrefab;
 	public GameObject damageTextPrefab;
-	public GameObject actionPointPrefab;
 	public GameObject buffIconPrefab;
     public GameObject staminaBarPrefab;
 
     StaminaBarController staminaBar;
 	HpBarController hpBar;
-	Stack<GameObject> actionPoints = new Stack<GameObject>();
 	List<GameObject> buffIcons = new List<GameObject> ();
 	Queue<CombatText> combatTextQueue = new Queue<CombatText>();
 
@@ -48,37 +46,6 @@ public class UnitCanvasController : MonoBehaviour {
         staminaBar = Instantiate(staminaBarPrefab, transform, false).GetComponent<StaminaBarController>();
         staminaBar.Initialize(myUnit.myStats.MaxStamina);
     }
-
-	public void SetActionPoints (int newActionPoints) {
-		if (newActionPoints > actionPoints.Count) {
-			int difference = newActionPoints - actionPoints.Count;
-			for (int i = 0; i < difference; i++) {
-				AddActionPoint ();
-			}
-		} else if (newActionPoints < actionPoints.Count) {
-			int difference = actionPoints.Count - newActionPoints;
-			for (int i = 0; i < difference; i++) {
-				RemoveActionPoint ();
-			}
-		}
-	}
-
-	void AddActionPoint() {
-		GameObject newActionPoint = Instantiate (actionPointPrefab, transform, false);
-        
-        Vector3 newPosition = newActionPoint.transform.localPosition;
-		newPosition.x = -20 + (actionPoints.Count * 38);
-        newActionPoint.transform.localPosition = newPosition;
-
-		actionPoints.Push(newActionPoint);
-	}
-
-	void RemoveActionPoint() {
-		if (actionPoints.Count > 0) {
-			GameObject removeObject = actionPoints.Pop ();
-			Destroy (removeObject);
-		}
-	}
 
 	// Update is called once per frame
 	void Update () {

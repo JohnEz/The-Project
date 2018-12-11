@@ -13,46 +13,30 @@ public enum TurnPhase {
 
 public class TurnManager : MonoBehaviour {
 
-	UserInterfaceManager uIManager;
-	GUIController gUIController;
-	UnitManager unitManager;
-	AIManager aiManager;
-	CameraManager cameraManager;
+    public static TurnManager singleton;
+
 	TileMap map;
-	ObjectiveManager objectiveManager;
-    PlayerManager playerManager;
 
 	TurnPhase currentPhase = TurnPhase.TURN_STARTING;
 
 	int playersTurn = -1;
 
-	bool checkedIfTurnShouldEnd = true; 
+	bool checkedIfTurnShouldEnd = true;
 
-	// Use this for initialization
-	public void Initialise () {
-		uIManager = GetComponentInChildren<UserInterfaceManager> ();
-		gUIController = GetComponentInChildren<GUIController> ();
-		map = GetComponentInChildren<TileMap> ();
-		map.Initialise ();
-		unitManager = GetComponent<UnitManager> ();
-		unitManager.Initialise (map);
-		aiManager = GetComponent<AIManager> ();
-		aiManager.Initialise (map);
-		cameraManager = GetComponent<CameraManager> ();
-		cameraManager.Initialise ();
-        playerManager = GetComponent<PlayerManager>();
-        AddPlayers();
-        objectiveManager = GetComponent<ObjectiveManager> ();
-		objectiveManager.Initialise ();
-		AddObjectives ();
-		StartNewTurn ();
-	}
+    private void Awake() {
+        singleton = this;
+    }
+
+    // Use this for initialization
+    public void Initialise(TileMap _map) {
+        map = _map;
+    }
 	
 	// Update is called once per frame
 	void Update () {
 		//check to see if the turn should end
 		if (!checkedIfTurnShouldEnd) {
-			if (!isAiTurn() && currentPhase == TurnPhase.WAITING_FOR_INPUT && unitManager.PlayerOutOfActions (playersTurn)) {
+			if (!isAiTurn() && currentPhase == TurnPhase.WAITING_FOR_INPUT && UnitManager.singleton.PlayerOutOfActions (playersTurn)) {
 				EndTurn ();
 			} else {
                 checkedIfTurnShouldEnd = true;
@@ -60,48 +44,19 @@ public class TurnManager : MonoBehaviour {
 		}
 	}
 
-	//TEMP
-	void AddPlayers() {
-        playerManager.AddPlayer(1, "Jonesy");
-
-        if (MatchDetails.VersusAi) {
-            playerManager.AddAiPlayer(2);
-        } else {
-            playerManager.AddPlayer(2, "Jimmy");
-        }
-
-        unitManager.SpawnUnit(7, playerManager.GetPlayer(0), 16, 10);
-        unitManager.SpawnUnit(2, playerManager.GetPlayer(1), 17, 10);
-    }
-
-	//TEMP
-	void AddObjectives() {
-		Objective objective = new Objective ();
-		objective.optional = false;
-		objective.text = "Kill all enemies!";
-		objective.type = ObjectiveType.ANNIHILATION;
-		objectiveManager.AddObjective (playerManager.GetPlayer(0), objective);
-
-		Objective objective2 = new Objective ();
-		objective2.optional = false;
-		objective2.text = "Kill all enemies!";
-		objective2.type = ObjectiveType.ANNIHILATION;
-		objectiveManager.AddObjective (playerManager.GetPlayer(1), objective2);
-	}
-
 	public void StartNewTurn() {
 		ChangeState(TurnPhase.TURN_STARTING);
 		playersTurn++;
-		playersTurn = playersTurn % playerManager.GetNumberOfPlayers();
+		playersTurn = playersTurn % PlayerManager.singleton.GetNumberOfPlayers();
         Player currentPlayersTurn = GetCurrentPlayer();
-        unitManager.StartTurn (currentPlayersTurn);
+        UnitManager.singleton.StartTurn (currentPlayersTurn);
 		bool alliedTurn = !isAiTurn(); // TODO check faction
 
-		gUIController.StartNewTurn (alliedTurn, objectiveManager.getObjectives(currentPlayersTurn));
+		GUIController.singleton.StartNewTurn (alliedTurn, ObjectiveManager.singleton.getObjectives(currentPlayersTurn));
 
-        playerManager.StartNewTurn(currentPlayersTurn);
+        PlayerManager.singleton.StartNewTurn(currentPlayersTurn);
 
-		uIManager.StartTurn ();
+		UserInterfaceManager.singleton.StartTurn ();
 
 		// TODO Had error when unit died at turn start
 		if (!isAiTurn ()) {
@@ -110,7 +65,7 @@ public class TurnManager : MonoBehaviour {
             //    cameraManager.MoveToLocation(unitManager.SelectedUnit.myNode);
             //}
 		} else {
-			StartCoroutine(aiManager.NewTurn (playersTurn));
+			StartCoroutine(AIManager.singleton.NewTurn (playersTurn));
 		}
 
 	}
@@ -119,12 +74,12 @@ public class TurnManager : MonoBehaviour {
 		ChangeState(TurnPhase.TURN_ENDING);
         Player currentPlayersTurn = GetCurrentPlayer();
 
-        if (objectiveManager.CheckObjectives (currentPlayersTurn)) {
+        if (ObjectiveManager.singleton.CheckObjectives (currentPlayersTurn)) {
 			MenuSystem.LoadScene (Scenes.MAIN_MENU);
 		} else {
-			unitManager.EndTurn (currentPlayersTurn);
+			UnitManager.singleton.EndTurn (currentPlayersTurn);
 			StartNewTurn ();
-			uIManager.EndTurn ();
+			UserInterfaceManager.singleton.EndTurn ();
 		}
 	}
 
@@ -139,7 +94,7 @@ public class TurnManager : MonoBehaviour {
 	}
 
     public Player GetCurrentPlayer() {
-        return playerManager.GetPlayer(playersTurn);
+        return PlayerManager.singleton.GetPlayer(playersTurn);
     }
 
 	public void ChangeState(TurnPhase newPhase) {
@@ -157,7 +112,7 @@ public class TurnManager : MonoBehaviour {
 
 	public void FinishedMoving() {
 		ChangeState(TurnPhase.WAITING_FOR_INPUT);
-		uIManager.FinishedMoving ();
+		UserInterfaceManager.singleton.FinishedMoving ();
 	}
 
 	public void StartAttacking() {
@@ -166,7 +121,7 @@ public class TurnManager : MonoBehaviour {
 
 	public void FinishedAttacking() {
 		ChangeState(TurnPhase.WAITING_FOR_INPUT);
-		uIManager.FinishedAttacking ();
+        UserInterfaceManager.singleton.FinishedAttacking ();
     }
 
 	public bool isAiTurn() {
