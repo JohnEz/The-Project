@@ -34,30 +34,25 @@ public class CardDisplay : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     }
 
     public void OnEndDrag(PointerEventData eventData) {
-        UserInterfaceManager uiManager = GameObject.Find("Game Controller").GetComponent<UserInterfaceManager>();
         Draggable dragCompoment = GetComponent<Draggable>();
 
         // if it was not dropped back into the hand
-        if (!dragCompoment.droppedOnZone && uiManager.CanPlayCard()) {
+        if (!dragCompoment.droppedOnZone && UserInterfaceManager.singleton.CanPlayCard()) {
             CardPlayed();
         }
     }
 
     private void CardPlayed() {
-        UserInterfaceManager uiManager = GameObject.Find("Game Controller").GetComponent<UserInterfaceManager>();
-        uiManager.CardPlayed(ability);
-
-        Destroy(this.gameObject);
+        UserInterfaceManager.singleton.CardPlayed(this);
+        gameObject.SetActive(false);
     }
 
 
     public void OnPointerEnter(PointerEventData eventData) {
-        UserInterfaceManager uiManager = GameObject.Find("Game Controller").GetComponent<UserInterfaceManager>();
-        uiManager.CardHovered(ability);
+        UserInterfaceManager.singleton.CardHovered(this);
     }
 
     public void OnPointerExit(PointerEventData eventData) {
-        UserInterfaceManager uiManager = GameObject.Find("Game Controller").GetComponent<UserInterfaceManager>();
-        uiManager.CardUnhovered();
+        UserInterfaceManager.singleton.CardUnhovered();
     }
 }

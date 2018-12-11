@@ -73,7 +73,6 @@ public class UnitController : MonoBehaviour {
 		unitCanvasController = unitCanvas.GetComponent<UnitCanvasController> ();
 
 		anim = GetComponentInChildren<UnitAnimationController> ();
-        Debug.Log("initialised unit stats");
         myStats = Instantiate(baseStats);
 		myStats.Initialise (this);
 		audioController = GetComponent<UnitAudioController> ();
@@ -151,6 +150,7 @@ public class UnitController : MonoBehaviour {
         set {
             myStats.SetStamina(value);
             unitCanvasController.UpdateStamina(myStats.Stamina, myStats.MaxStamina);
+            GUIController.singleton.UpdateStamina(myStats.Stamina);
         }
     }
 

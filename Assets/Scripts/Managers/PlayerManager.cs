@@ -29,6 +29,9 @@ public class PlayerManager : MonoBehaviour {
     int humanCount = 0;
     int cpuCount = 0;
 
+    //TODO i dont like this, can we store it in a player as local player or current player?
+    public Player mainPlayer;
+
     private void Awake() {
         singleton = this;
     }
@@ -48,6 +51,8 @@ public class PlayerManager : MonoBehaviour {
             newPlayer.myDeck = player1Deck.GetComponent<Deck>();
             player1Deck.GetComponent<Deck>().SetPlayer(newPlayer);
         }
+
+        mainPlayer = newPlayer;
 
         players.Add(newPlayer);
 

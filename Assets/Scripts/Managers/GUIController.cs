@@ -16,13 +16,13 @@ public class GUIController : MonoBehaviour {
 	List<GameObject> abilityIcons = new List<GameObject>();
 	Dictionary<string, RuntimeAnimatorController> abilityIconControllers = new Dictionary<string, RuntimeAnimatorController>();
 
+    public Text staminaText;
+
 	Text objectivesBody;
-	UnitInfoController unitInfo;
 
 	void Awake() {
         singleton = this;
-		unitInfo = transform.Find("UnitInfo").GetComponent<UnitInfoController> ();
-		unitInfo.HideWindow ();
+        staminaText = GameObject.Find("ActionPointFrame").GetComponentInChildren<Text>();
 	}
 
 	// Use this for initialization
@@ -60,14 +60,6 @@ public class GUIController : MonoBehaviour {
 
 	}
 
-	public void UnitSelected(UnitController unit) {
-		ShowUnitInfo (unit);
-	}
-
-	public void UnitDeselected() {
-		HideUnitInfo ();
-	}
-
 	public void ClearAbilityIcons() {
 		abilityIcons.ForEach ((icon) => {
 			Destroy (icon.gameObject);
@@ -96,6 +88,10 @@ public class GUIController : MonoBehaviour {
 		return abilityIconControllers [controller];
 	}
 
+    public void UpdateStamina(int newStamina) {
+        staminaText.text = newStamina.ToString();
+    }
+
 	string CreateObjectiveText(List<Objective> objectives) {
 		string constructedObjectiveText = "";
 		foreach (Objective objective in objectives) {
@@ -109,14 +105,5 @@ public class GUIController : MonoBehaviour {
 		newDamageText.GetComponent<Text> ().text = message;
 		newDamageText.GetComponent<Text> ().color = new Color(0.95f, 0.25f, 0.25f);
 		newDamageText.transform.SetParent(this.transform);
-	}
-
-	public void ShowUnitInfo(UnitController unit) {
-		unitInfo.SetUnit (unit);
-		unitInfo.ShowWindow ();
-	}
-
-	public void HideUnitInfo() {
-		unitInfo.HideWindow ();
 	}
 }

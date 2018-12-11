@@ -2,6 +2,12 @@
 using System.Collections;
 using UnityEngine.UI;
 
+public enum CardState {
+    NONE,
+    PLAYED,
+    INVOKED
+}
+
 public class UserInterfaceManager : MonoBehaviour {
 
     public static UserInterfaceManager singleton;
@@ -9,9 +15,9 @@ public class UserInterfaceManager : MonoBehaviour {
 	//Managers
 	PauseMenuController pauseMenuController;
 
-    AbilityCardBase activeCard = null;
+    CardDisplay activeCard = null;
     int currentActionIndex = 0;
-    bool cardPlayed = false;
+    CardState cardState = CardState.NONE;
 
     private void Awake() {
         singleton = this;
@@ -27,11 +33,11 @@ public class UserInterfaceManager : MonoBehaviour {
 		UserControls ();
 	}
 
-	public void ShowCard(AbilityCardBase card) {
+	public void ShowCard(CardDisplay card) {
 		UnshowCard ();
         activeCard = card;
 
-        if (!cardPlayed) {
+        if (cardState == CardState.NONE) {
             activeCard = card;
             ShowAction();
         }
@@ -42,6 +48,11 @@ public class UserInterfaceManager : MonoBehaviour {
             UnitManager.singleton.ClearMovementTiles();
         }
 	}
+
+    // When the user clicked an action from the card
+    public void CardInvoked() {
+        cardState = CardState.INVOKED;
+    }
 
 	void UserControls() {
 
@@ -56,8 +67,9 @@ public class UserInterfaceManager : MonoBehaviour {
 
 		//Cancel (right click)
 		if (Input.GetKeyUp (KeyCode.Escape)) {
-            if (cardPlayed) {
-                cardPlayed = false;
+            if (cardState == CardState.PLAYED) {
+                cardState = CardState.NONE;
+                activeCard.gameObject.SetActive(true);
                 UnshowCard();
             } else {
                 if (PauseMenuController.gameIsPaused) {
@@ -79,8 +91,8 @@ public class UserInterfaceManager : MonoBehaviour {
 
 	public void TileHovered(Node node, SquareTarget target) {
 		UnitManager.singleton.CurrentlyHoveredNode = node;
-		if (cardPlayed && (target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL)) {
-			UnitManager.singleton.HighlightEffectedTiles (activeCard.caster, node);
+		if (cardState != CardState.NONE && (target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL)) {
+			UnitManager.singleton.HighlightEffectedTiles (activeCard.ability.caster, node);
 		} else if (target == SquareTarget.MOVEMENT || target == SquareTarget.DASH || ((target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL) && node.previousMoveNode != null)) {
 			UnitManager.singleton.ShowPath (node);
 		}
@@ -113,10 +125,18 @@ public class UserInterfaceManager : MonoBehaviour {
 
 	}
 
-	public void ClickedMovement(Node node) {
-		UnitManager.singleton.MoveToTile (activeCard.caster, node);
+    public void ClickedAttack(Node node) {
+        if (UnitManager.singleton.AttackTile(activeCard.ability.caster, node)) {
+            UnshowCard();
+            CardInvoked();
+        }
+    }
+
+    public void ClickedMovement(Node node) {
+		UnitManager.singleton.MoveToTile (activeCard.ability.caster, node);
 		UnshowCard();
-	}
+        CardInvoked();
+    }
 
 	public void ClickedUnselected(Node node) {
 
@@ -133,44 +153,38 @@ public class UserInterfaceManager : MonoBehaviour {
 	}
 
     public bool CanPlayCard() {
-        return !cardPlayed;
+        return cardState == CardState.NONE;
     }
 
-    public void CardHovered(AbilityCardBase card) {
-        if (!cardPlayed) {
+    public void CardHovered(CardDisplay card) {
+        if (CanPlayCard()) {
             ShowCard(card);
         }
     }
 
     public void CardUnhovered() {
         // if there isnt a played card, clear the display
-        if (!cardPlayed) {
+        if (cardState == CardState.NONE) {
             UnshowCard();
             activeCard = null;
         }
     }
 
-    public void CardPlayed(AbilityCardBase card) {
+    public void CardPlayed(CardDisplay card) {
         ShowCard(card);
-        cardPlayed = true;
+        cardState = CardState.PLAYED;
+        TurnManager.singleton.GetCurrentPlayer().myCharacter.Stamina -= 1;
     }
 
-    public void ClickedAttack(Node node) {
-		if (UnitManager.singleton.AttackTile (activeCard.caster, node)) {
-			UnshowCard();
-		}
-	}
-
     public bool ShowAction() {
-        if (activeCard && currentActionIndex < activeCard.Actions.Count) {
-            CardAction currentAction = activeCard.Actions[currentActionIndex];
-
+        if (activeCard && currentActionIndex < activeCard.ability.Actions.Count) {
+            CardAction currentAction = activeCard.ability.Actions[currentActionIndex];
             if (currentAction.GetType() == typeof(MoveAction)) {
                 MoveAction moveAction = (MoveAction)currentAction;
-                UnitManager.singleton.ShowMoveAction(activeCard.caster, moveAction.distance, moveAction.walkingType);
+                UnitManager.singleton.ShowMoveAction(activeCard.ability.caster, moveAction.distance, moveAction.walkingType);
             } else if (typeof(AttackAction).IsAssignableFrom(currentAction.GetType())) {
                 AttackAction attackAction = (AttackAction)currentAction;
-                UnitManager.singleton.ShowAttackAction(activeCard.caster, attackAction);
+                UnitManager.singleton.ShowAttackAction(activeCard.ability.caster, attackAction);
             }
             return true;
         }
@@ -180,8 +194,9 @@ public class UserInterfaceManager : MonoBehaviour {
     public void FinishedAction() {
         currentActionIndex++;
         if (!ShowAction()) {
+            Destroy(activeCard.gameObject);
             activeCard = null;
-            cardPlayed = false;
+            cardState = CardState.NONE;
             currentActionIndex = 0;
         }
     }
@@ -197,10 +212,5 @@ public class UserInterfaceManager : MonoBehaviour {
             FinishedAction();
         }
 	}
-
-	//public void ShowMovement() {
-	//	UnshowAbility();
-	//	unitManager.ShowActions ();
-	//}
 
 }

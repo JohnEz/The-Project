@@ -34,13 +34,17 @@ public class GameManager : MonoBehaviour {
 
         if (MatchDetails.VersusAi) {
             Player cpuPlayer = PlayerManager.singleton.AddAiPlayer(2);
+            Player cpuPlayer2 = PlayerManager.singleton.AddAiPlayer(1);
         } else {
             Player humanPlayer2 = PlayerManager.singleton.AddPlayer(2, CardManager.singleton.CreateDeck(), "Jimmy");
         }
 
-        humanPlayer.myCharacter = UnitManager.singleton.SpawnUnit(7, PlayerManager.singleton.GetPlayer(0), 16, 10);
+        humanPlayer.myCharacter = UnitManager.singleton.SpawnUnit(7, PlayerManager.singleton.GetPlayer(0), 10, 10);
+
+        UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(2), 12, 10);
 
         UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(1), 17, 10);
+        UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(1), 16, 9);
     }
 
     //TEMP
@@ -56,5 +60,11 @@ public class GameManager : MonoBehaviour {
         objective2.text = "Kill all enemies!";
         objective2.type = ObjectiveType.ANNIHILATION;
         ObjectiveManager.singleton.AddObjective(PlayerManager.singleton.GetPlayer(1), objective2);
+
+        Objective objective3 = new Objective();
+        objective2.optional = false;
+        objective2.text = "Kill all enemies!";
+        objective2.type = ObjectiveType.ANNIHILATION;
+        ObjectiveManager.singleton.AddObjective(PlayerManager.singleton.GetPlayer(2), objective2);
     }
 }
