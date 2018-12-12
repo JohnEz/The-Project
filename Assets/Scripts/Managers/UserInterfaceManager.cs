@@ -45,7 +45,8 @@ public class UserInterfaceManager : MonoBehaviour {
 
 	public void UnshowCard() {
 		if (activeCard) {
-            UnitManager.singleton.ClearMovementTiles();
+            HighlightManager.singleton.UnhighlightTiles();
+            HighlightManager.singleton.ClearEffectedTiles();
         }
 	}
 

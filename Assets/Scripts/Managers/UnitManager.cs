@@ -131,11 +131,7 @@ public class UnitManager : MonoBehaviour {
         }
 
         ReachableTiles walkingTiles = myMap.pathfinder.findReachableTiles(unit.myNode, moveDistance, walkingType, unit.myPlayer.faction);
-        myMap.highlighter.HighlightTiles(walkingTiles.basic.Keys.ToList(), SquareTarget.MOVEMENT);
-    }
-
-    public void ClearMovementTiles() {
-        myMap.highlighter.UnhighlightTiles();
+        HighlightManager.singleton.HighlightTiles(walkingTiles.basic.Keys.ToList(), SquareTarget.MOVEMENT);
     }
 
     // Shows where the ability can target
@@ -158,10 +154,10 @@ public class UnitManager : MonoBehaviour {
         activeAbility = action;
 
         attackableTiles = myMap.pathfinder.FindAttackableTiles(unit.myNode, action);
-        myMap.highlighter.UnhighlightAllTiles();
-        myMap.highlighter.HighlightTile(unit.myNode, SquareTarget.NONE);
+        HighlightManager.singleton.UnhighlightAllTiles();
+        HighlightManager.singleton.HighlightTile(unit.myNode, SquareTarget.NONE);
         SquareTarget targetType = action.targets == TargetType.ALLY ? SquareTarget.HELPFULL : SquareTarget.ATTACK;
-        myMap.highlighter.HighlightTiles(attackableTiles, targetType);
+        HighlightManager.singleton.HighlightTiles(attackableTiles, targetType);
 
         if (currentlyHoveredNode != null)
         {
@@ -175,20 +171,20 @@ public class UnitManager : MonoBehaviour {
     public void HighlightEffectedTiles(UnitController unit, Node target) {
 		if (attackableTiles.Contains (target)) {
 			List<Node> effectedNodes = GetTargetNodes (unit, activeAbility, target);
-			myMap.highlighter.ShowAbilityTiles (effectedNodes, activeAbility);
+            HighlightManager.singleton.ShowAbilityTiles (effectedNodes, activeAbility);
 		}
 	}
 
     // TODO i dont know why this is its own fucntion call?
     // unhighlight all tiles
 	public void UnhiglightEffectedTiles() {
-		myMap.highlighter.ClearEffectedTiles ();
+        HighlightManager.singleton.ClearEffectedTiles ();
 	}
 
     // shows the path to the selected node
 	public void ShowPath(Node targetNode) {
 		MovementPath movementPath = myMap.pathfinder.getPathFromTile (targetNode);
-		myMap.highlighter.ShowPath (movementPath.path);
+        HighlightManager.singleton.ShowPath (movementPath.path);
 	}
 
     // Uses the specified ability of at the target location

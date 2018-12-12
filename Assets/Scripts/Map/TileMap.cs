@@ -20,7 +20,6 @@ public class TileMap : MonoBehaviour {
 	public GameObject tileTemplate;
 
 	public Pathfinder pathfinder;
-	public HighlightManager highlighter;
 
 	float tileSize = 95;
 
@@ -37,7 +36,6 @@ public class TileMap : MonoBehaviour {
 	public void Initialise() {
 		pathfinder = GetComponent<Pathfinder> ();
 		pathfinder.Initialise ();
-		highlighter = GetComponent<HighlightManager> ();
 		LevelLoader lLoader = GetComponent<LevelLoader> ();
 		lLoader.Initialise ();
 		GenerateMap (lLoader.GetLevel(0));

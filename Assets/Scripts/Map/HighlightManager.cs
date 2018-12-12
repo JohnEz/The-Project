@@ -3,12 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class HighlightManager : MonoBehaviour {
+    public static HighlightManager singleton;
 
 	List<Node> currentlyHighlighted = new List<Node>();
 	List<Node> currentlyEffected = new List<Node>();
 
-	// Use this for initialization
-	void Start () {
+    private void Awake() {
+        singleton = this;
+    }
+
+    // Use this for initialization
+    void Start () {
 	
 	}
 	
@@ -30,9 +35,7 @@ public class HighlightManager : MonoBehaviour {
 		ClearEffectedTiles ();
 		int i = 0;
 
-        bool addedPathHighlights = false;
-
-		effectedTiles.ForEach ((tile) => {
+        effectedTiles.ForEach ((tile) => {
 			TileHighlighter highlighter = tile.GetComponentInChildren<TileHighlighter> ();
 			highlighter.SetEffected(true);
 			if (targetType != SquareTarget.UNDEFINED) {
@@ -49,16 +52,11 @@ public class HighlightManager : MonoBehaviour {
 				Vector2 previousDirection = tile.previous.direction;
 
 				highlighter.CreateArrowDecal(previousDirection, nextDirection);
-                addedPathHighlights = true;
 
             }
 			currentlyEffected.Add(tile);
 			i++;
 		});
-
-        if (addedPathHighlights) {
-            Debug.Log("Path count: " + currentlyEffected.Count);
-        }
 
 	}
 
