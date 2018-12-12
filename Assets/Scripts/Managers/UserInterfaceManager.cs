@@ -25,7 +25,7 @@ public class UserInterfaceManager : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-
+        pauseMenuController = GetComponent<PauseMenuController>();
 	}
 	
 	// Update is called once per frame
