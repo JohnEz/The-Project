@@ -70,13 +70,18 @@ public class PlayerManager : MonoBehaviour {
         return newPlayer;
     }
 
+    public void StartGame() {
+        // Draw starting Hand
+        mainPlayer.myDeck.DrawCard(4);
+    }
+
     public void StartNewTurn(int playerId) {
         StartNewTurn(GetPlayer(playerId));
     }
 
     public void StartNewTurn(Player player) {
         if (!player.ai) {
-            player.myDeck.DrawCard(5);
+            player.myDeck.DrawCard(2);
         }
     }
 
@@ -85,6 +90,11 @@ public class PlayerManager : MonoBehaviour {
     }
 
     public Player GetPlayer(int playerId) {
+        if (playerId < 0 || playerId > players.Count) {
+            Debug.Log("asked for player: " + playerId);
+            Debug.Log("When i only have " + players.Count + " players");
+        }
+        
         return players[playerId];
     }
 }

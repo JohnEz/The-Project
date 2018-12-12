@@ -44,6 +44,12 @@ public class TurnManager : MonoBehaviour {
 		}
 	}
 
+    public void StartGame() {
+        PlayerManager.singleton.StartGame();
+
+        StartNewTurn();
+    }
+
 	public void StartNewTurn() {
 		ChangeState(TurnPhase.TURN_STARTING);
 		playersTurn++;

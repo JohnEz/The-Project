@@ -62,10 +62,6 @@ public class UserInterfaceManager : MonoBehaviour {
 			TurnManager.singleton.EndTurn ();
 		}
 
-        if (Input.GetKeyUp(KeyCode.E)) {
-            TurnManager.singleton.GetCurrentPlayer().myDeck.DrawCard();
-        }
-
 		//Cancel (right click)
 		if (Input.GetKeyUp (KeyCode.Escape)) {
             if (cardState == CardState.PLAYED) {
@@ -174,7 +170,7 @@ public class UserInterfaceManager : MonoBehaviour {
     public void CardPlayed(CardDisplay card) {
         ShowCard(card);
         cardState = CardState.PLAYED;
-        TurnManager.singleton.GetCurrentPlayer().myCharacter.Stamina -= 1;
+        TurnManager.singleton.GetCurrentPlayer().myCharacter.Stamina -= card.ability.staminaCost;
     }
 
     public bool ShowAction() {

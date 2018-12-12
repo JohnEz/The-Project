@@ -3,11 +3,11 @@ using System.Collections;
 
 public class Burn : Buff {
 
-	public Burn(int maxDuration, int power) : base (maxDuration) {
+	public Burn(int maxDuration, int damage) : base (maxDuration) {
 		name = "Burn";
 		maxStack = 5;
 		isDebuff = true;
-		flatMod [(int)Stats.DAMAGE] = (int)(power / 4);
+		flatMod [(int)Stats.DAMAGE] = damage;
 		icon = "buffBurn";
 	}
 
