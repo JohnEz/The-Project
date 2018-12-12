@@ -108,8 +108,14 @@ public class AIManager : MonoBehaviour {
                 if (paths.Count > 0) {
                     // finds the shortest path out of all the paths
                     MovementPath shortestPath = Pathfinder.GetSortestPath(paths);
-                    //TODO we need to check if there is a unit on the tile speed away
                     shortestPath.path = shortestPath.path.Take(unit.myStats.Speed).ToList();
+
+                    // if there is a unit on the final node
+                    if (shortestPath.path.Last().myUnit != null) {
+                        //remove that node
+                        shortestPath.path.Remove(shortestPath.path.Last());
+                    }
+
                     UnitManager.singleton.SetUnitPath(unit, shortestPath);
                 } else {
                     //no options available
