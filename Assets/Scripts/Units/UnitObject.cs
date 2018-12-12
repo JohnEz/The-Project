@@ -80,7 +80,8 @@ public class UnitObject : ScriptableObject {
     }
 
     public void SetStamina(int stamina) {
-        currentStamina = Mathf.Clamp(stamina, -MaxStamina, MaxStamina);
+        //currentStamina = Mathf.Clamp(stamina, -MaxStamina, MaxStamina);
+        currentStamina = Mathf.Clamp(stamina, 0, MaxStamina);
     }
 
     public int Health {

@@ -96,6 +96,7 @@ public class UnitController : MonoBehaviour {
 			(healing) => {this.TakeHealing(null, healing);}
 		);
 		myStats.NewTurn ();
+        Stamina = myStats.MaxStamina;
 	}
 
 	public void EndTurn() {

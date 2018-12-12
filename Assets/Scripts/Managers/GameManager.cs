@@ -17,14 +17,18 @@ public class GameManager : MonoBehaviour {
         map = GetComponentInChildren<TileMap>();
         map.Initialise();
 
-
         UnitManager.singleton.Initialise(map);
         AIManager.singleton.Initialise(map);
         CameraManager.singleton.Initialise();
 
-        //TEMPS this should be loaded
+        //TEMP this should be loaded
         AddPlayers();
         AddObjectives();
+
+        Invoke("StartGame", 2.0f);
+    }
+
+    void StartGame() {
         TurnManager.singleton.StartNewTurn();
     }
 

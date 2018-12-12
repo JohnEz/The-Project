@@ -99,7 +99,7 @@ public class UnitCanvasController : MonoBehaviour {
     public void UpdateStamina(int currentStamina, int maxStamina) {
         staminaBar.SetStamina(currentStamina, maxStamina);
     }
-
+    
     public void CreateDamageText(string damage) {
 		CreateCombatText (damage, new Color (0.8431f, 0.2f, 0.2f));
 	}

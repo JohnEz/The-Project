@@ -30,6 +30,8 @@ public class HighlightManager : MonoBehaviour {
 		ClearEffectedTiles ();
 		int i = 0;
 
+        bool addedPathHighlights = false;
+
 		effectedTiles.ForEach ((tile) => {
 			TileHighlighter highlighter = tile.GetComponentInChildren<TileHighlighter> ();
 			highlighter.SetEffected(true);
@@ -46,12 +48,17 @@ public class HighlightManager : MonoBehaviour {
 				//Vector2 previousDirection = i > 0 ? tile.previous.direction : new Vector2(0, 0);
 				Vector2 previousDirection = tile.previous.direction;
 
-				highlighter.CreateArrowDecal(previousDirection, nextDirection); 
-			}
+				highlighter.CreateArrowDecal(previousDirection, nextDirection);
+                addedPathHighlights = true;
+
+            }
 			currentlyEffected.Add(tile);
 			i++;
 		});
 
+        if (addedPathHighlights) {
+            Debug.Log("Path count: " + currentlyEffected.Count);
+        }
 
 	}
 

@@ -21,6 +21,36 @@ public class CardDisplay : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         ability.caster = myPlayer.myCharacter;
     }
 
+    public bool CanInterractWithCard(bool displayErrors = true) {
+        // check players turn
+        if (TurnManager.singleton.GetCurrentPlayer() != GetComponent<CardDisplay>().myPlayer) {
+            if (displayErrors) {
+                GUIController.singleton.ShowErrorMessage("You already have a card played");
+            }
+            return false;
+        }
+
+        // check can play card
+        if (!UserInterfaceManager.singleton.CanPlayCard()) {
+            if (displayErrors) {
+                GUIController.singleton.ShowErrorMessage("You already have a card played");
+            }
+            return false;
+        }
+
+        // if i have the stamina for it
+        AbilityCardBase ability = GetComponent<CardDisplay>().ability;
+        if (ability.staminaCost > ability.caster.Stamina) {
+            if (displayErrors) {
+                GUIController.singleton.ShowErrorMessage("Not enough Stamina");
+            }
+            return false;
+        }
+
+
+        return true;
+    }
+
     public void OnBeginDrag(PointerEventData eventData) {
         //throw new System.NotImplementedException();
     }
@@ -37,7 +67,7 @@ public class CardDisplay : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         Draggable dragCompoment = GetComponent<Draggable>();
 
         // if it was not dropped back into the hand
-        if (!dragCompoment.droppedOnZone && UserInterfaceManager.singleton.CanPlayCard()) {
+        if (!dragCompoment.droppedOnZone && CanInterractWithCard(false)) {
             CardPlayed();
         }
     }

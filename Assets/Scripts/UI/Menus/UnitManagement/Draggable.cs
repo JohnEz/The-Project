@@ -28,24 +28,8 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         }
     }
 
-    private bool CanInterractWithCard() {
-        // check players turn
-        if (TurnManager.singleton.GetCurrentPlayer() != GetComponent<CardDisplay>().myPlayer) {
-            GUIController.singleton.ShowErrorMessage("You already have a card played");
-            return false;
-        }
-
-        // check can play card
-        if (!UserInterfaceManager.singleton.CanPlayCard()) {
-            GUIController.singleton.ShowErrorMessage("You already have a card played");
-            return false;
-        }
-
-        return true;
-    }
-
     public void OnBeginDrag(PointerEventData eventData) {
-        if (!CanInterractWithCard()) {
+        if (!GetComponent<CardDisplay>().CanInterractWithCard()) {
             return;
         }
 
@@ -63,7 +47,7 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
     }
 
     public void OnDrag(PointerEventData eventData) {
-        if (!CanInterractWithCard()) {
+        if (!GetComponent<CardDisplay>().CanInterractWithCard(false)) {
             return;
         }
 
