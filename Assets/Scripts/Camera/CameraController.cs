@@ -28,7 +28,7 @@ public class CameraController : MonoBehaviour {
 	float currentZoom = 1f;
 	float targetZoom = 1f;
 
-	int pixelsToUnits = 1;
+	int pixelsToUnits = 2;
 
 	bool mouseMovement = false;
 

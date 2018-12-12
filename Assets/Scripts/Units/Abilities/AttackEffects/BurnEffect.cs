@@ -2,7 +2,7 @@
 using System.Collections;
 
 [CreateAssetMenu(fileName = "New Attack Action", menuName = "Card/Attack/Burn")]
-public class Dot : AttackEffect {
+public class BurnEffect : AttackEffect {
 
     public int damage = 1;
 
