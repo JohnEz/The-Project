@@ -17,6 +17,7 @@ public class SceneLoader : MonoBehaviour
 		AsyncOperation operation = SceneManager.LoadSceneAsync (sceneIndex);
 
 		while (!operation.isDone) {
+            //Load progress
 			Debug.Log (operation.progress);
 
 			yield return null;

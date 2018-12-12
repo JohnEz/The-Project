@@ -59,5 +59,9 @@ public class Node : MonoBehaviour {
 		previous = new Neighbour();
 		previousMoveNode = null;
 	}
+
+    public override string ToString() {
+        return string.Format("[ X: {0} Y: {1} MyUnit: {2} ]", x, y, myUnit != null ? myUnit.name : "None");
+    }
 }
 

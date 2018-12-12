@@ -34,6 +34,29 @@ public class Pathfinder : MonoBehaviour {
 	
 	}
 
+    public static List<Node> CleanPath(List<Node> path, Node startingNode) {
+        List<Node> cleanedPath = new List<Node>();
+
+        Node previousNode = startingNode;
+
+        path.ForEach(node => {
+            Neighbour previousNeighbour = new Neighbour();
+            previousNeighbour.node = previousNode;
+            previousNeighbour.direction = DirectionToNode(node, previousNode);
+            node.previous = previousNeighbour;
+
+            previousNode = node;
+            cleanedPath.Add(node);
+
+        });
+
+        return cleanedPath;
+    }
+
+    public static Vector2 DirectionToNode(Node from, Node to) {
+        return new Vector2(Math.Sign(from.x - to.x), Math.Sign(to.y - from.y));
+    }
+
 	public ReachableTiles findReachableTiles(Node startNode, float distance, Walkable walkingType, int faction, bool canDash = false) {
 		map.resetTiles ();
 

@@ -76,8 +76,6 @@ public class AIManager : MonoBehaviour {
 	}
 
 	public IEnumerator PlanTurn(UnitController unit) {
-        Debug.Log("AI - Planning turn");
-
         bool hasEndedTurn = false;
         bool hasAttacked = false;
         bool hasMoved = false;
@@ -93,9 +91,9 @@ public class AIManager : MonoBehaviour {
 
             // if the first ability has 1 or more available targets
             if (!hasAttacked && hasAvailableTargets) {
-                Debug.Log("AI - attacking tile");
                 // gets the first target of the first ability
                 Node targetTile = potentialAbilityTargets[firstAttack][0];
+                //Debug.Log("AI - attacking tile: " + targetTile);
                 UnitManager.singleton.AttackTile(unit, targetTile, firstAttack);
                 hasAttacked = true;
             } else if (!hasMoved && !hasAvailableTargets && unit.myStats.Speed > 0) {
@@ -110,16 +108,25 @@ public class AIManager : MonoBehaviour {
                     MovementPath shortestPath = Pathfinder.GetSortestPath(paths);
                     shortestPath.path = shortestPath.path.Take(unit.myStats.Speed).ToList();
 
+                    //Debug.Log("I want to move to node: " + shortestPath.path.Last());
+
                     // if there is a unit on the final node
                     if (shortestPath.path.Last().myUnit != null) {
                         //remove that node
                         shortestPath.path.Remove(shortestPath.path.Last());
                     }
 
+                    //Debug.Log("I am moving to node: " + shortestPath.path.Last());
+
+                    // We need to refind the path to this node or clean up the path
+                    // this is because the path neighbours could have been overriten
+                    // path should not use any none static node data in future
+                    shortestPath.path = Pathfinder.CleanPath(shortestPath.path, unit.myNode);
+
                     UnitManager.singleton.SetUnitPath(unit, shortestPath);
                 } else {
-                    //no options available
-                    //end unit turn
+                    // no options available
+                    // end unit turn
                 }
                 hasMoved = true;
             } else {

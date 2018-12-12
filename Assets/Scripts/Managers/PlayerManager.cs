@@ -90,11 +90,6 @@ public class PlayerManager : MonoBehaviour {
     }
 
     public Player GetPlayer(int playerId) {
-        if (playerId < 0 || playerId > players.Count) {
-            Debug.Log("asked for player: " + playerId);
-            Debug.Log("When i only have " + players.Count + " players");
-        }
-        
         return players[playerId];
     }
 }

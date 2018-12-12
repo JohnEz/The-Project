@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public struct AbilityTarget {
 	public UnitController target;
@@ -165,15 +166,15 @@ public class UnitController : MonoBehaviour {
 
     public void FollowPath() {
 		if (myPath.Count <= 0) {
-			return;
+            return;
 		}
 
 		float distanceToNode = Vector3.Distance (myPath[0].transform.position, transform.position);
 
-		if (distanceToNode - (WALKSPEED * Time.deltaTime) > CLOSE_ENOUGH_TO_TILE) {
-			transform.position = transform.position + ((Vector3)facingDirection * WALKSPEED * Time.deltaTime);
-		} else {
-			transform.position = myPath [0].transform.position;
+        if (distanceToNode - (WALKSPEED * Time.deltaTime) > CLOSE_ENOUGH_TO_TILE) {
+            transform.position = transform.position + ((Vector3)facingDirection * WALKSPEED * Time.deltaTime);
+        } else {
+            transform.position = myPath [0].transform.position;
 			if (myPath.Count > 1) {
 				FaceDirection (myPath [1].previous.direction);
 			} else {
@@ -186,6 +187,7 @@ public class UnitController : MonoBehaviour {
 	public bool AddAction(Action action) {
 		actionQueue.Enqueue (action);
 
+        // Why did i do this?
 		if (actionQueue.Count == 1) {
 			RunNextAction (false);
 		}
