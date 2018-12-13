@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler {
+public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler {
 
     const float DRAG_SPEED = 25F;
     const float MIN_DISTANCE = 1f;
@@ -28,18 +28,35 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         }
     }
 
+    public void OnPointerEnter(PointerEventData eventData) {
+        // TODO make sure the player isnt dragging another card
+        if (beingDragged) {
+            return;
+        }
+
+        originalParent = transform.parent;
+
+        CreatePlaceholder();
+
+        // Remove from the hand
+        transform.SetParent(GameObject.Find("GameCanvas").transform);
+
+    }
+
+    public void OnPointerExit(PointerEventData eventData) {
+        if (beingDragged && placeholder != null) {
+            return;
+        }
+
+        ReturnToParent(eventData.position);
+    }
+
     public void OnBeginDrag(PointerEventData eventData) {
         if (!GetComponent<CardDisplay>().CanInterractWithCard()) {
             return;
         }
 
         beingDragged = true;
-        originalParent = transform.parent;
-        
-        CreatePlaceholder();
-        
-        // Remove from the hand
-        transform.SetParent(GameObject.Find("GameCanvas").transform);
 
         targetLocation = eventData.position;
 
