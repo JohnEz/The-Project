@@ -4,8 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 public class Deck : MonoBehaviour {
-    public GameObject cardPrefab;
-    public Transform hand;
+    public Hand hand;
 
     Player myPlayer;
 
@@ -27,11 +26,7 @@ public class Deck : MonoBehaviour {
     private void DrawCard() {
         if (myPlayer.deck.Count > 0) {
             AbilityCardBase drawnCardAbility = GetTopCard();
-            GameObject cardObject = Instantiate(cardPrefab, hand);
-            cardObject.GetComponent<CardDisplay>().ability = Instantiate(drawnCardAbility);
-            cardObject.GetComponent<CardDisplay>().myPlayer = myPlayer;
-        } else {
-            //todo when deck is fully drawn
+            hand.AddCardToHand(drawnCardAbility);
         }
     }
 

@@ -14,18 +14,25 @@ public class CardDisplay : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     public Text staminaText;
 
     public Player myPlayer;
+    public Hand myHand;
 
     void Start() {
         nameText.text = ability.name;
         artworkImage.sprite = ability.icon;
         descriptionText.text = ability.GetDescription();
         staminaText.text = ability.staminaCost.ToString();
-        ability.caster = myPlayer.myCharacter;
+
+        if (myPlayer != null) {
+            ability.caster = myPlayer.myCharacter;
+        } else {
+            Debug.LogError("Card was started without player set!");
+        }
+        
     }
 
     public bool CanInterractWithCard(bool displayErrors = true) {
         // check players turn
-        if (TurnManager.singleton.GetCurrentPlayer() != GetComponent<CardDisplay>().myPlayer) {
+        if (TurnManager.singleton.GetCurrentPlayer() != myPlayer) {
             if (displayErrors) {
                 GUIController.singleton.ShowErrorMessage("You already have a card played");
             }
@@ -51,6 +58,10 @@ public class CardDisplay : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
 
 
         return true;
+    }
+
+    public void OnDestroy() {
+        myHand.CardDestroyed(gameObject);
     }
 
     public void OnBeginDrag(PointerEventData eventData) {

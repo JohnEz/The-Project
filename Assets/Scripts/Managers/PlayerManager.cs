@@ -50,6 +50,7 @@ public class PlayerManager : MonoBehaviour {
             //newPlayer.myHand = player1Hand.GetComponent<Hand>();
             newPlayer.myDeck = player1Deck.GetComponent<Deck>();
             player1Deck.GetComponent<Deck>().SetPlayer(newPlayer);
+            player1Hand.GetComponent<Hand>().SetPlayer(newPlayer);
         }
 
         mainPlayer = newPlayer;
