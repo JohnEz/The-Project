@@ -58,16 +58,14 @@ public class UserInterfaceManager : MonoBehaviour {
 	void UserControls() {
 
 		//temp for ai
-		if (Input.GetKeyUp ("space")) {
-			TurnManager.singleton.EndTurn ();
-		}
+		//if (Input.GetKeyUp ("space")) {
+		//	TurnManager.singleton.EndTurn ();
+		//}
 
 		//Cancel (right click)
 		if (Input.GetKeyUp (KeyCode.Escape)) {
             if (cardState == CardState.PLAYED) {
-                cardState = CardState.NONE;
-                activeCard.gameObject.SetActive(true);
-                UnshowCard();
+                CancelCurrentCard();
             } else {
                 if (PauseMenuController.gameIsPaused) {
                     pauseMenuController.Resume();
@@ -80,11 +78,18 @@ public class UserInterfaceManager : MonoBehaviour {
 		if (TurnManager.singleton.CurrentPhase == TurnPhase.WAITING_FOR_INPUT && !TurnManager.singleton.isAiTurn()) {
 
 			if (Input.GetKeyUp ("space")) {
-				//turnManager.EndTurn ();
-			}
+                TurnManager.singleton.EndTurn();
+            }
 		}
 
 	}
+
+    public void CancelCurrentCard() {
+        cardState = CardState.NONE;
+        activeCard.gameObject.SetActive(true);
+        PlayerManager.singleton.mainPlayer.myCharacter.Stamina += activeCard.ability.staminaCost;
+        UnshowCard();
+    }
 
 	public void TileHovered(Node node, SquareTarget target) {
 		UnitManager.singleton.CurrentlyHoveredNode = node;

@@ -71,7 +71,7 @@ public class AIManager : MonoBehaviour {
 
                 // if there is a valid path
                 if (paths.Count > 0) {
-                    MoveShortestPathToEnemy(unit, paths);
+                    MoveShortestPath(unit, paths);
                 } else {
                     // no options available
                     // end unit turn
@@ -103,12 +103,14 @@ public class AIManager : MonoBehaviour {
             } else if (unit.myStats.Speed > 0) {
                 // if the unit can move
 
-                // find paths to all enemies
-                List<MovementPath> paths = FindPathsToEnemies(unit);
+                // find all the nodes i can attack an enemy from
+                List<Node> attackNodes = FindPossibleAttackNodes(unit, firstAttack);
+                // find all the paths to these attack nodes
+                List<MovementPath> paths = FindShortestPathsToNodes(unit, attackNodes);
 
                 // if there is a valid path
                 if (paths.Count > 0) {
-                    MoveShortestPathToEnemy(unit, paths);
+                    MoveShortestPath(unit, paths);
                 } else {
                     // no options available
                     // end unit turn
@@ -123,21 +125,57 @@ public class AIManager : MonoBehaviour {
 
     }
 
+    // Finds all tiles that can attack an enemy
+    public List<Node> FindPossibleAttackNodes(UnitController unit, AttackAction attackAction) {
+        List<Node> attackNodes = new List<Node>();
+
+        UnitManager.singleton.Units.ForEach(otherUnit => {
+            if (attackAction.CanHitUnit(otherUnit.myNode)) {
+
+                List<Node> nodesToAttackFrom = myMap.pathfinder.FindAttackableTiles(otherUnit.myNode, attackAction);
+
+                nodesToAttackFrom.ForEach(attackNode => {
+                    if (attackNode.myUnit == null || attackNode.myUnit == unit) {
+                        attackNodes.Add(attackNode);
+                    }
+                });
+                
+            }
+        });
+
+        return attackNodes;
+    }
+
+    public List<MovementPath> FindShortestPathsToNodes(UnitController unit, List<Node> targetNodes) {
+        List<MovementPath> pathsToNodes = new List<MovementPath>();
+
+        targetNodes.ForEach(targetNode => {
+            MovementPath pathToNode = myMap.pathfinder.FindPath(unit.myNode, targetNode, unit.myStats.walkingType, unit.myPlayer.faction);
+            if (pathToNode.movementCost != -1) {
+                pathsToNodes.Add(pathToNode);
+            }
+        });
+
+        return pathsToNodes;
+    }
+
+        // finds finds the shortest path to all enemies
     public List<MovementPath> FindPathsToEnemies(UnitController unit) {
         List<MovementPath> pathsToEnemies = new List<MovementPath>();
 
-        foreach (UnitController otherUnit in UnitManager.singleton.Units) {
+        UnitManager.singleton.Units.ForEach(otherUnit => {
             if (otherUnit.myPlayer.faction != unit.myPlayer.faction) {
                 MovementPath pathToEnemy = myMap.pathfinder.FindShortestPathToUnit(unit.myNode, otherUnit.myNode, unit.myStats.walkingType, unit.myPlayer.faction);
                 if (pathToEnemy.movementCost != -1) {
                     pathsToEnemies.Add(pathToEnemy);
                 }
             }
-        }
+        });
 
         return pathsToEnemies;
     }
 
+    // Finds all units currently attackable from the units tile
     public Dictionary<AttackAction, List<Node>> GetPotentialAbilityTargets(UnitController unit) {
         Dictionary<AttackAction, List<Node>> potentialAbilityTargets = new Dictionary<AttackAction, List<Node>>();
 
@@ -158,9 +196,9 @@ public class AIManager : MonoBehaviour {
         UnitManager.singleton.AttackTile(unit, targetTile, attack);
     }
 
-    public void MoveShortestPathToEnemy(UnitController unit, List<MovementPath> pathsToEnemies) {
+    public void MoveShortestPath(UnitController unit, List<MovementPath> paths) {
         // finds the shortest path out of all the paths
-        MovementPath shortestPath = Pathfinder.GetSortestPath(pathsToEnemies);
+        MovementPath shortestPath = Pathfinder.GetSortestPath(paths);
         shortestPath.path = shortestPath.path.Take(unit.myStats.Speed).ToList();
 
         //Debug.Log("I want to move to node: " + shortestPath.path.Last());

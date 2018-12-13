@@ -47,8 +47,8 @@ public class GameManager : MonoBehaviour {
 
         UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(2), 12, 10);
 
-        UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(1), 17, 10);
         UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(1), 16, 9);
+        UnitManager.singleton.SpawnUnit(6, PlayerManager.singleton.GetPlayer(1), 17, 10);
         UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(1), 16, 11);
     }
 
