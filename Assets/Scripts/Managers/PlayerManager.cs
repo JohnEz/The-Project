@@ -8,7 +8,7 @@ public class Player {
     public bool ai;
     public int faction;
 
-    public Queue<AbilityCardBase> deck = new Queue<AbilityCardBase>();
+    public List<AbilityCardBase> deck = new List<AbilityCardBase>();
     List<AbilityCardBase> hand = new List<AbilityCardBase>();
     public Stack<AbilityCardBase> discard = new Stack<AbilityCardBase>();
 
@@ -36,7 +36,7 @@ public class PlayerManager : MonoBehaviour {
         singleton = this;
     }
 
-    public Player AddPlayer(int faction, Queue<AbilityCardBase> deck, string name = null) {
+    public Player AddPlayer(int faction, List<AbilityCardBase> deck, string name = null) {
         humanCount++;
         Player newPlayer = new Player();
         newPlayer.id = players.Count;
@@ -72,6 +72,7 @@ public class PlayerManager : MonoBehaviour {
 
     public void StartGame() {
         // Draw starting Hand
+        mainPlayer.myDeck.Shuffle();
         mainPlayer.myDeck.DrawCard(4);
     }
 

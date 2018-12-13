@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Deck : MonoBehaviour {
@@ -25,7 +26,7 @@ public class Deck : MonoBehaviour {
 
     private void DrawCard() {
         if (myPlayer.deck.Count > 0) {
-            AbilityCardBase drawnCardAbility = myPlayer.deck.Dequeue();
+            AbilityCardBase drawnCardAbility = GetTopCard();
             GameObject cardObject = Instantiate(cardPrefab, hand);
             cardObject.GetComponent<CardDisplay>().ability = Instantiate(drawnCardAbility);
             cardObject.GetComponent<CardDisplay>().myPlayer = myPlayer;
@@ -34,7 +35,23 @@ public class Deck : MonoBehaviour {
         }
     }
 
-    public void Shuffle() {
+    // note this removes it from the deck, maybe we need a peek?
+    private AbilityCardBase GetTopCard() {
+        AbilityCardBase topCard = myPlayer.deck.Last();
+        myPlayer.deck.RemoveAt(myPlayer.deck.Count - 1);
+        return topCard;
+    }
 
+    public void Shuffle() {
+        List<AbilityCardBase> tmp = new List<AbilityCardBase>();
+
+        int max = myPlayer.deck.Count;
+        while (max > 0) {
+            int offset = UnityEngine.Random.Range(0, max);
+            tmp.Add(myPlayer.deck[offset]);
+            myPlayer.deck.RemoveAt(offset);
+            max -= 1;
+        }
+        myPlayer.deck = tmp;
     }
 }

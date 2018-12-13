@@ -5,7 +5,7 @@ public static class MatchDetails {
     private static string mapName = "";
     private static int unitLimit = 4;
     private static List<UnitObject> playerRoster = new List<UnitObject>();
-
+    private static List<string> playerDeck = new List<string>();
 
 	public static bool VersusAi {
 		get {
@@ -40,6 +40,15 @@ public static class MatchDetails {
         }
         set {
             playerRoster = value;
+        }
+    }
+
+    public static List<string> PlayerDeck {
+        get {
+            return playerDeck;
+        }
+        set {
+            playerDeck = value;
         }
     }
 }
