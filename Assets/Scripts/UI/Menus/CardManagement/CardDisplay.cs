@@ -11,6 +11,7 @@ public class CardDisplay : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     public Text nameText;
     public Image artworkImage;
     public Text descriptionText;
+    public Text staminaText;
 
     public Player myPlayer;
 
@@ -18,6 +19,7 @@ public class CardDisplay : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         nameText.text = ability.name;
         artworkImage.sprite = ability.icon;
         descriptionText.text = ability.GetDescription();
+        staminaText.text = ability.staminaCost.ToString();
         ability.caster = myPlayer.myCharacter;
     }
 
