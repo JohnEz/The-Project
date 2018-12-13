@@ -4,7 +4,7 @@ public static class BasicDecks {
 
     public static List<string> elementalistDeck = new List<string> {
         "Fireball",
-        "Fireball",
+        "Stone Skin",
         "Mana Bolt",
         "Mana Bolt",
         "Mana Bolt",
@@ -14,7 +14,7 @@ public static class BasicDecks {
         "Walk",
         "Walk",
         "Fireball",
-        "Fireball",
+        "Stone Skin",
         "Mana Bolt",
         "Mana Bolt",
         "Mana Bolt",
@@ -24,7 +24,7 @@ public static class BasicDecks {
         "Walk",
         "Walk",
         "Fireball",
-        "Fireball",
+        "Stone Skin",
         "Mana Bolt",
         "Mana Bolt",
         "Mana Bolt",

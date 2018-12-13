@@ -47,7 +47,7 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
     }
 
     public void OnDrag(PointerEventData eventData) {
-        if (!GetComponent<CardDisplay>().CanInterractWithCard(false)) {
+        if (!GetComponent<CardDisplay>().CanInterractWithCard(false) || !beingDragged) {
             return;
         }
 

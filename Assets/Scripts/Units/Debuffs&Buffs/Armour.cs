@@ -3,11 +3,11 @@ using System.Collections;
 
 public class Armour : Buff {
 
-	public Armour(int maxDuration) : base (maxDuration) {
+	public Armour(int maxDuration, int armour) : base (maxDuration) {
 		name = "Armour";
 		icon = "buffArmour";
 		maxStack = 5;
-		percentMod [(int)Stats.ARMOUR] = 1.2f;
+		flatMod [(int)Stats.ARMOUR] = armour;
 	}
 
 }
