@@ -38,7 +38,6 @@ public class UserInterfaceManager : MonoBehaviour {
         activeCard = card;
 
         if (cardState == CardState.NONE) {
-            activeCard = card;
             ShowAction();
         }
     }
@@ -173,29 +172,43 @@ public class UserInterfaceManager : MonoBehaviour {
     }
 
     public void CardPlayed(CardDisplay card) {
-        ShowCard(card);
+        UnshowCard();
         cardState = CardState.PLAYED;
         TurnManager.singleton.GetCurrentPlayer().myCharacter.Stamina -= card.ability.staminaCost;
+        activeCard = card;
+        RunNextCardAction();
     }
 
-    public bool ShowAction() {
+    public bool RunNextCardAction() {
         if (activeCard && currentActionIndex < activeCard.ability.Actions.Count) {
             CardAction currentAction = activeCard.ability.Actions[currentActionIndex];
-            if (currentAction.GetType() == typeof(MoveAction)) {
-                MoveAction moveAction = (MoveAction)currentAction;
-                UnitManager.singleton.ShowMoveAction(activeCard.ability.caster, moveAction.distance, moveAction.walkingType);
-            } else if (typeof(AttackAction).IsAssignableFrom(currentAction.GetType())) {
-                AttackAction attackAction = (AttackAction)currentAction;
-                UnitManager.singleton.ShowAttackAction(activeCard.ability.caster, attackAction);
+            if (currentAction.GetType() == typeof(MoveAction) || typeof(AttackAction).IsAssignableFrom(currentAction.GetType())) {
+                ShowAction();
+            } else if (currentAction.GetType() == typeof(DrawCardAction)) {
+                DrawCardAction drawAction = (DrawCardAction)currentAction;
+                activeCard.myPlayer.myDeck.DrawCard(drawAction.cardsToDraw);
+                FinishedAction();
             }
             return true;
         }
+
         return false;
+    }
+
+    public void ShowAction() {
+        CardAction currentAction = activeCard.ability.Actions[currentActionIndex];
+        if (currentAction.GetType() == typeof(MoveAction)) {
+            MoveAction moveAction = (MoveAction)currentAction;
+            UnitManager.singleton.ShowMoveAction(activeCard.ability.caster, moveAction.distance, moveAction.walkingType);
+        } else if (typeof(AttackAction).IsAssignableFrom(currentAction.GetType())) {
+            AttackAction attackAction = (AttackAction)currentAction;
+            UnitManager.singleton.ShowAttackAction(activeCard.ability.caster, attackAction);
+        }
     }
 
     public void FinishedAction() {
         currentActionIndex++;
-        if (!ShowAction()) {
+        if (!RunNextCardAction()) {
             Destroy(activeCard.gameObject);
             activeCard = null;
             cardState = CardState.NONE;
