@@ -11,6 +11,7 @@ public class CardDisplay : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     public Text nameText;
     public Image artworkImage;
     public Text descriptionText;
+    public CardDescriptionController descriptionController;
     public Text staminaText;
 
     public Player myPlayer;
@@ -19,7 +20,8 @@ public class CardDisplay : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     void Start() {
         nameText.text = ability.name;
         artworkImage.sprite = ability.icon;
-        descriptionText.text = ability.GetDescription();
+        //descriptionText.text = ability.GetDescription();
+        descriptionController.SetDescription(ability);
         staminaText.text = ability.staminaCost.ToString();
 
         if (myPlayer != null) {
