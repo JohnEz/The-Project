@@ -42,6 +42,11 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         }
     }
 
+    public void SetDragged(bool isBeingDragged) {
+        beingDragged = isBeingDragged;
+        CardManager.singleton.currentlyDraggedCard = isBeingDragged ? this : null;
+    }
+
     public void SetTargetPosition(Vector3 target) {
         targetLocation = new Vector3(target.x, target.y - (GetComponent<RectTransform>().rect.height/4), target.z);
     }
@@ -51,9 +56,13 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         GetComponent<RectTransform>().localScale = targetScale;
     }
 
+    public bool CanHoverCard() {
+        return CardManager.singleton.currentlyDraggedCard == null || CardManager.singleton.currentlyDraggedCard == this;
+    }
+
     public void OnPointerEnter(PointerEventData eventData) {
         // TODO make sure the player isnt dragging another card
-        if (beingDragged) {
+        if (beingDragged || !CanHoverCard()) {
             return;
         }
 
@@ -67,7 +76,7 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
     }
 
     public void OnPointerExit(PointerEventData eventData) {
-        if (beingDragged && placeholder != null) {
+        if (beingDragged || placeholder == null || !CanHoverCard()) {
             return;
         }
 
@@ -80,7 +89,7 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
             return;
         }
 
-        beingDragged = true;
+        SetDragged(true);
 
         SetTargetPosition(eventData.position);
 
@@ -106,7 +115,7 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
             return;
         }
 
-        beingDragged = false;
+        SetDragged(false);
         ReturnToParent(eventData.position);
 
         droppedOnZone = false;

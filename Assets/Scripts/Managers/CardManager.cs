@@ -11,6 +11,8 @@ public class CardManager : MonoBehaviour {
     [HideInInspector]
     public Dictionary<string, AbilityCardBase> cards = new Dictionary<string, AbilityCardBase>();
 
+    public Draggable currentlyDraggedCard;
+
     private void Awake() {
         singleton = this;
         AbilityCardBase[] loadedCards = Resources.LoadAll<AbilityCardBase>("Cards");
