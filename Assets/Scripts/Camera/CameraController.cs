@@ -1,6 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+public enum CameraMoveState {
+    FREE,
+    MOVING_TO_LOCATION,
+    FOLLOWING_UNIT
+}
+
 public class CameraController : MonoBehaviour {
 
 	const float MOVE_SPEED = 1200; //speed the camera moves
@@ -15,10 +21,11 @@ public class CameraController : MonoBehaviour {
 	public float mapWidth = 0;
 	public float mapHeight = 0;
 
-	public bool movingToDestination = false;
+	public CameraMoveState movementState = CameraMoveState.FREE;
 	Vector3 targetLocation;
+    Transform followTarget;
 
-	public float minX = -100000;
+    public float minX = -100000;
 	public float minY = -100000;
 	public float maxX = 100000;
 	public float maxY = 100000;
@@ -35,6 +42,8 @@ public class CameraController : MonoBehaviour {
 	int height;
 
     Vector3 movement = new Vector3();
+
+
 
 	void Awake() {
         Camera.main.orthographicSize = Screen.height / pixelsToUnits / 2f;
@@ -85,38 +94,42 @@ public class CameraController : MonoBehaviour {
 	//updates the position of the camera via keyboard input
 	void UpdateMovement() {
 
-		//if the camera is moving to a destination
-		if (movingToDestination) {
-
-			if (Vector3.Distance (transform.position, targetLocation) < 2f) {
-				movingToDestination = false;
-			}
-			//Smoothly animate towards the correct location
-			transform.position = Vector3.Lerp (transform.position, targetLocation, 6f * Time.deltaTime);
-		} else {
-			//allow user to move camera
-			movement = new Vector3 (0, 0, 0);
+        // TODO make a switch statement
+        if (movementState == CameraMoveState.FREE) {
+            //allow user to move camera
+            movement = new Vector3(0, 0, 0);
 
 
-			if ((Input.GetKey(KeyCode.W) || (Input.mousePosition.y > Screen.height - BOUNDARY && mouseMovement))) {
+            if ((Input.GetKey(KeyCode.W) || (Input.mousePosition.y > Screen.height - BOUNDARY && mouseMovement))) {
                 movement.y += 1;
-			}
-			if ((Input.GetKey(KeyCode.A) || (Input.mousePosition.x < BOUNDARY && mouseMovement))) {
+            }
+            if ((Input.GetKey(KeyCode.A) || (Input.mousePosition.x < BOUNDARY && mouseMovement))) {
                 movement.x -= 1;
             }
-			if ((Input.GetKey(KeyCode.S) || (Input.mousePosition.y < BOUNDARY && mouseMovement))) {
+            if ((Input.GetKey(KeyCode.S) || (Input.mousePosition.y < BOUNDARY && mouseMovement))) {
                 movement.y -= 1;
             }
-			if ((Input.GetKey(KeyCode.D) || (Input.mousePosition.x > Screen.width - BOUNDARY && mouseMovement))) {
+            if ((Input.GetKey(KeyCode.D) || (Input.mousePosition.x > Screen.width - BOUNDARY && mouseMovement))) {
                 movement.x += 1;
             }
 
-            movement.Normalize ();
-			Vector3 newPos = transform.position + (movement * MOVE_SPEED) * Time.deltaTime;
-			Vector3 roundPos = new Vector3(RoundToNearestPixel(newPos.x, GetComponent<Camera>()), RoundToNearestPixel(newPos.y, GetComponent<Camera>()), newPos.z);
+            movement.Normalize();
+            Vector3 newPos = transform.position + (movement * MOVE_SPEED) * Time.deltaTime;
+            Vector3 roundPos = new Vector3(RoundToNearestPixel(newPos.x, GetComponent<Camera>()), RoundToNearestPixel(newPos.y, GetComponent<Camera>()), newPos.z);
 
-			transform.position = roundPos;
-		}
+            transform.position = roundPos;
+        } else if (movementState == CameraMoveState.FOLLOWING_UNIT || movementState == CameraMoveState.MOVING_TO_LOCATION) {
+            if (movementState == CameraMoveState.MOVING_TO_LOCATION && Vector3.Distance(transform.position, targetLocation) < 2f) {
+                movementState = CameraMoveState.FREE;
+                return;
+            }
+
+            Vector3 moveLocation = movementState == CameraMoveState.MOVING_TO_LOCATION ? targetLocation : new Vector3(followTarget.position.x, followTarget.position.y, transform.position.z);
+
+            //Smoothly animate towards the correct location
+            transform.position = Vector3.Lerp(transform.position, moveLocation, 6f * Time.deltaTime);
+        }
+
 	}
 
 	void UpdateZoom() {
@@ -156,7 +169,10 @@ public class CameraController : MonoBehaviour {
 	}
 
 	public void MoveToTarget(Vector2 pos) {
-		movingToDestination = true;
+        Debug.Log("moving to " + pos);
+
+        movementState = CameraMoveState.MOVING_TO_LOCATION;
+        followTarget = null;
 		Vector3 clampedTarget = GetClampedPosition (pos);
 		//Vector3 clampedTarget = pos;
 		targetLocation = new Vector3(RoundToNearestPixel(clampedTarget.x, GetComponent<Camera>()), RoundToNearestPixel(clampedTarget.y, GetComponent<Camera>()), transform.position.z);
@@ -180,4 +196,9 @@ public class CameraController : MonoBehaviour {
 		clampedPosition.y = Mathf.Clamp (clampedPosition.y, minY, maxY);
 		return clampedPosition;
 	}
+
+    public void FollowTarget(Transform target) {
+        movementState = CameraMoveState.FOLLOWING_UNIT;
+        followTarget = target;
+    }
 }

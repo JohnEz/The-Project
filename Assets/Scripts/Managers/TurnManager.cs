@@ -56,7 +56,7 @@ public class TurnManager : MonoBehaviour {
 		playersTurn = playersTurn % PlayerManager.singleton.GetNumberOfPlayers();
         Player currentPlayersTurn = GetCurrentPlayer();
         UnitManager.singleton.StartTurn (currentPlayersTurn);
-		bool alliedTurn = !isAiTurn(); // TODO check faction
+		bool alliedTurn = PlayerManager.singleton.mainPlayer.faction == currentPlayersTurn.faction;
 
 		GUIController.singleton.StartNewTurn (alliedTurn, ObjectiveManager.singleton.getObjectives(currentPlayersTurn));
 
@@ -64,17 +64,16 @@ public class TurnManager : MonoBehaviour {
 
 		UserInterfaceManager.singleton.StartTurn ();
 
-		// TODO Had error when unit died at turn start
-		if (!isAiTurn ()) {
-            // TODO this should move to the new players character
-            //if (unitManager.SelectedUnit != null) {
-            //    cameraManager.MoveToLocation(unitManager.SelectedUnit.myNode);
-            //}
-		} else {
-			StartCoroutine(AIManager.singleton.NewTurn (playersTurn));
-		}
 
-	}
+
+        // TODO Had error when unit died at turn start
+        if (isAiTurn ()) {
+			StartCoroutine(AIManager.singleton.NewTurn (playersTurn));
+		} else if (currentPlayersTurn.myCharacter != null) {
+            CameraManager.singleton.MoveToLocation(currentPlayersTurn.myCharacter.myNode);
+        }
+
+    }
 
 	public void EndTurn() {
 		ChangeState(TurnPhase.TURN_ENDING);

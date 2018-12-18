@@ -40,7 +40,8 @@ public class AIManager : MonoBehaviour {
 		myUnits = UnitManager.singleton.Units.Where (unit => unit.myPlayer.id == myPlayerId).ToList ();
 
 		foreach (UnitController unit in myUnits) {
-			yield return PlanTurnTwoActions(unit);
+            CameraManager.singleton.FollowTarget(unit.transform);
+            yield return PlanTurnTwoActions(unit);
 		}
 
 		TurnManager.singleton.EndTurn ();

@@ -37,19 +37,20 @@ public class GameManager : MonoBehaviour {
         Player humanPlayer = PlayerManager.singleton.AddPlayer(1, CardManager.singleton.LoadDeck(BasicDecks.elementalistDeck), "Jonesy");
 
         if (MatchDetails.VersusAi) {
-            Player cpuPlayer = PlayerManager.singleton.AddAiPlayer(2);
-            Player cpuPlayer2 = PlayerManager.singleton.AddAiPlayer(1);
+            Player cpuPlayer = PlayerManager.singleton.AddAiPlayer(1);
+            Player cpuPlayer2 = PlayerManager.singleton.AddAiPlayer(2);
         } else {
             Player humanPlayer2 = PlayerManager.singleton.AddPlayer(2, CardManager.singleton.CreateDeck(), "Jimmy");
         }
 
         humanPlayer.myCharacter = UnitManager.singleton.SpawnUnit(5, PlayerManager.singleton.GetPlayer(0), 10, 10);
 
-        UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(2), 12, 10);
+        UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(1), 12, 9);
+        UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(1), 12, 11);
 
-        UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(1), 16, 9);
-        UnitManager.singleton.SpawnUnit(6, PlayerManager.singleton.GetPlayer(1), 17, 10);
-        UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(1), 16, 11);
+        UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(2), 16, 9);
+        UnitManager.singleton.SpawnUnit(6, PlayerManager.singleton.GetPlayer(2), 17, 10);
+        UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(2), 16, 11);
     }
 
     //TEMP
@@ -70,6 +71,6 @@ public class GameManager : MonoBehaviour {
         objective2.optional = false;
         objective2.text = "Kill all enemies!";
         objective2.type = ObjectiveType.ANNIHILATION;
-        ObjectiveManager.singleton.AddObjective(PlayerManager.singleton.GetPlayer(2), objective2);
+        ObjectiveManager.singleton.AddObjective(PlayerManager.singleton.GetPlayer(2), objective3);
     }
 }
