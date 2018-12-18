@@ -41,8 +41,8 @@ public class ActionDescriptionController : MonoBehaviour {
         int armour = 0;
 
         attack.attackEffects.ForEach(effect => {
-            if (effect.GetType() == typeof(DealXDamage)) {
-                DealXDamage damageEffect = (DealXDamage)effect;
+            if (effect.GetType() == typeof(DamageEffect)) {
+                DamageEffect damageEffect = (DamageEffect)effect;
                 damage += damageEffect.damage;
             }
         });

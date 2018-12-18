@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[CreateAssetMenu(fileName = "New Attack Action", menuName = "Card/Attack/Deal X Damage")]
-public class DealXDamage : AttackEffect {
+[CreateAssetMenu(fileName = "New Attack Action", menuName = "Card/Attack/Damage")]
+public class DamageEffect : AttackEffect {
 
     public int damage = 1;
 
