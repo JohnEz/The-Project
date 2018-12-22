@@ -209,7 +209,6 @@ public class UnitController : MonoBehaviour {
 				SetPath (nextAction.nodes);
 				break;
 			case ActionType.ATTACK:
-                    // TODO fix for cards
 				AttackTarget (nextAction.nodes, nextAction.ability);
 				break;
 			}

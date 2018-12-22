@@ -94,18 +94,24 @@ public class AIManager : MonoBehaviour {
             yield return WaitForWaitingForInput();
 
             Dictionary<AttackAction, List<Node>> potentialAbilityTargets = GetPotentialAbilityTargets(unit);
-            bool hasAvailableTargets = potentialAbilityTargets.Where(keyValuePair => keyValuePair.Value.Count > 0).ToList().Count > 0;
-            AttackAction firstAttack = unit.myStats.Attacks[0];
+            Dictionary<AttackAction, List<Node>> filteredPotentialAbilityTargets = potentialAbilityTargets.Where(keyValuePair => keyValuePair.Value.Count > 0).ToDictionary(i => i.Key, i => i.Value);
+
+            bool hasAvailableTargets = filteredPotentialAbilityTargets.Keys.Count > 0;
 
             // if the first ability has 1 or more available targets
             if (hasAvailableTargets) {
-                AttackTile(unit, potentialAbilityTargets[firstAttack][0], firstAttack);
+
+                // TODO THIS IS DUMB
+                int chosenAttackIndex = Random.Range(0, filteredPotentialAbilityTargets.Keys.Count);
+                AttackAction chosenAttack = filteredPotentialAbilityTargets.Keys.ToArray()[chosenAttackIndex];
+
+                AttackTile(unit, filteredPotentialAbilityTargets[chosenAttack][0], chosenAttack);
                 actionPoints--;
             } else if (unit.myStats.Speed > 0) {
                 // if the unit can move
 
                 // find all the nodes i can attack an enemy from
-                List<Node> attackNodes = FindPossibleAttackNodes(unit, firstAttack);
+                List<Node> attackNodes = FindPossibleAttackNodes(unit, null);
                 // find all the paths to these attack nodes
                 List<MovementPath> paths = FindShortestPathsToNodes(unit, attackNodes);
 
@@ -127,24 +133,27 @@ public class AIManager : MonoBehaviour {
     }
 
     // Finds all tiles that can attack an enemy
-    public List<Node> FindPossibleAttackNodes(UnitController unit, AttackAction attackAction) {
+    public List<Node> FindPossibleAttackNodes(UnitController unit, AttackAction attackAction2) {
         List<Node> attackNodes = new List<Node>();
 
         UnitManager.singleton.Units.ForEach(otherUnit => {
-            if (attackAction.CanHitUnit(otherUnit.myNode)) {
+            unit.myStats.Attacks.ForEach(attackAction => {
+                if (attackAction.CanHitUnit(otherUnit.myNode)) {
 
-                List<Node> nodesToAttackFrom = myMap.pathfinder.FindAttackableTiles(otherUnit.myNode, attackAction);
+                    List<Node> nodesToAttackFrom = myMap.pathfinder.FindAttackableTiles(otherUnit.myNode, attackAction);
 
-                // This isnt needed anymore but better safe than sorry i guess
-                List<Node> filteredNodesToAttackFrom = nodesToAttackFrom.Where(node => Pathfinder.UnitCanStandOnTile(node, unit.myStats.WalkingType)).ToList();
+                    // This isnt needed anymore but better safe than sorry i guess
+                    List<Node> filteredNodesToAttackFrom = nodesToAttackFrom.Where(node => Pathfinder.UnitCanStandOnTile(node, unit.myStats.WalkingType)).ToList();
 
-                filteredNodesToAttackFrom.ForEach(attackNode => {
-                    if (attackNode.myUnit == null || attackNode.myUnit == unit) {
-                        attackNodes.Add(attackNode);
-                    }
-                });
-                
-            }
+                    filteredNodesToAttackFrom.ForEach(attackNode => {
+                        if (attackNode.myUnit == null || attackNode.myUnit == unit) {
+                            attackNodes.Add(attackNode);
+                        }
+                    });
+
+                }
+            });
+
         });
 
         return attackNodes;
@@ -184,6 +193,10 @@ public class AIManager : MonoBehaviour {
         Dictionary<AttackAction, List<Node>> potentialAbilityTargets = new Dictionary<AttackAction, List<Node>>();
 
         unit.myStats.Attacks.ForEach(attackAction => {
+            if (attackAction.IsOnCooldown()) {
+                return;
+            }
+
             List<Node> attackableTiles = myMap.pathfinder.FindAttackableTiles(unit.myNode, attackAction);
 
             attackableTiles = attackableTiles.Where(tile => attackAction.CanHitUnit(tile)).ToList();

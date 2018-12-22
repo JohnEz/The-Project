@@ -18,6 +18,29 @@ public class AttackAction : CardAction {
 
     public List<AttackEffect> attackEffects = new List<AttackEffect>(0);
 
+    // AI Variables
+    private int cooldown;
+    public int maxCooldown = 1;
+
+    public bool CanTargetSelf {
+        get { return canTargetSelf; }
+        set { canTargetSelf = value; }
+    }
+
+    public int Cooldown {
+        get { return cooldown; }
+        set { cooldown = value; }
+    }
+
+    public int MaxCooldown {
+        get { return maxCooldown; }
+        set { maxCooldown = value; }
+    }
+
+    public bool IsOnCooldown() {
+        return cooldown > 0;
+    }
+
     private void AbilityEffectUnit(UnitController target) {
         attackEffects.ForEach(attackEffect => {
             AddAbilityTarget(target.myNode, () => {
@@ -39,6 +62,7 @@ public class AttackAction : CardAction {
         OnUseSingleEventActions(target);
         AbilityEffectUnit(target.myUnit);
         AbilityEffectNode(target);
+        Cooldown = MaxCooldown;
     }
 
     // AOE on use
@@ -51,6 +75,7 @@ public class AttackAction : CardAction {
                 AbilityEffectUnit(node.myUnit);
             }
         });
+        Cooldown = MaxCooldown;
     }
 
     private void OnUseSingleEventActions(Node target) {
@@ -112,10 +137,5 @@ public class AttackAction : CardAction {
             default:
                 return false;
         }
-    }
-
-    public bool CanTargetSelf {
-        get { return canTargetSelf; }
-        set { canTargetSelf = value; }
     }
 }

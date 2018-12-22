@@ -11,4 +11,8 @@ public class AttackEffect : ScriptableObject {
 
     }
 
+    public virtual string ToDescription() {
+        return null;
+    }
+
 }

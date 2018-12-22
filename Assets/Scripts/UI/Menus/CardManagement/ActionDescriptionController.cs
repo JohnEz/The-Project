@@ -36,14 +36,38 @@ public class ActionDescriptionController : MonoBehaviour {
 
     }
 
+    // TODO these should be moved to the actions themselves if its possible
     private void SetAttackAction(AttackAction attack) {
         int damage = 0;
         int armour = 0;
+
+        if (attack.attackEffects.Exists(effect => effect.GetType() == typeof(BurnEffect))) {
+            buffImage.gameObject.SetActive(true);
+            buffImage.sprite = burnImage;
+        }
 
         attack.attackEffects.ForEach(effect => {
             if (effect.GetType() == typeof(DamageEffect)) {
                 DamageEffect damageEffect = (DamageEffect)effect;
                 damage += damageEffect.damage;
+            }
+        });
+
+        string stackString = null;
+
+        attack.attackEffects.ForEach(effect => {
+            if (effect.GetType() == typeof(DamagePerStackEffect)) {
+                DamagePerStackEffect damageEffect = (DamagePerStackEffect)effect;
+                stackString = damageEffect.ToDescription();
+            }
+        });
+
+        string multiplyerString = null;
+
+        attack.attackEffects.ForEach(effect => {
+            if (effect.GetType() == typeof(DamageWithMultiplier)) {
+                DamageWithMultiplier damageEffect = (DamageWithMultiplier)effect;
+                multiplyerString = damageEffect.ToDescription();
             }
         });
 
@@ -54,10 +78,7 @@ public class ActionDescriptionController : MonoBehaviour {
             }
         });
 
-        if (attack.attackEffects.Exists(effect => effect.GetType() == typeof(BurnEffect))) {
-            buffImage.gameObject.SetActive(true);
-            buffImage.sprite = burnImage;
-        }
+
 
         if (damage > 0) {
             actionText.text = "Attack " + damage;

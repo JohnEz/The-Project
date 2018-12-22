@@ -142,6 +142,12 @@ public class UnitObject : ScriptableObject {
     public void NewTurn() {
         List<Buff> buffsToRemove = new List<Buff>();
 
+        Attacks.ForEach(attack => {
+            if (attack.IsOnCooldown()) {
+                attack.Cooldown--;
+            }
+        });
+
         Buffs.ForEach((buff) => {
             buff.duration--;
             if (buff.duration <= 0) {
