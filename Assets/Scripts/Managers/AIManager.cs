@@ -135,7 +135,10 @@ public class AIManager : MonoBehaviour {
 
                 List<Node> nodesToAttackFrom = myMap.pathfinder.FindAttackableTiles(otherUnit.myNode, attackAction);
 
-                nodesToAttackFrom.ForEach(attackNode => {
+                // This isnt needed anymore but better safe than sorry i guess
+                List<Node> filteredNodesToAttackFrom = nodesToAttackFrom.Where(node => Pathfinder.UnitCanStandOnTile(node, unit.myStats.WalkingType)).ToList();
+
+                filteredNodesToAttackFrom.ForEach(attackNode => {
                     if (attackNode.myUnit == null || attackNode.myUnit == unit) {
                         attackNodes.Add(attackNode);
                     }

@@ -80,7 +80,7 @@ public class Pathfinder : MonoBehaviour {
 
 				foreach (Neighbour neighbour in node.neighbours) {
 					
-					if (neighbour.node != startNode && isTileWalkable(node, neighbour.node, walkingType, faction)) {
+					if (neighbour.node != startNode && IsTileWalkable(node, neighbour.node, walkingType, faction)) {
 						float totalCost = node.cost + neighbour.node.moveCost;
 
 						if (totalCost <= maxDistance) {
@@ -150,6 +150,7 @@ public class Pathfinder : MonoBehaviour {
 		return shortestPath;
 	}
 
+    // this finds the path ONTO a tile
 	public MovementPath FindPath(Node source, Node target, Walkable walkingType, int faction) {
 		map.resetTiles ();
 
@@ -166,7 +167,6 @@ public class Pathfinder : MonoBehaviour {
 			//find the current lowest cost tile
 			Node currentNode = null;
 			foreach (Node n in openList) {
-				// TODO this may need is walkable check, but i think it can be done in adding neighbours
 				if (currentNode == null || n.Value < currentNode.Value) {
 					currentNode = n;
 				}
@@ -179,7 +179,8 @@ public class Pathfinder : MonoBehaviour {
 			openList.Remove (currentNode);
 
 			foreach (Neighbour neighbour in currentNode.neighbours) {
-				if ((neighbour.node != source && (isTileWalkable(currentNode, neighbour.node, walkingType, faction)) || (neighbour.node == target && UnitCanChangeLevel(currentNode, neighbour.node, walkingType)))) {
+                if (neighbour.node != source && IsTileWalkable(currentNode, neighbour.node, walkingType, faction)) {
+				//if ((neighbour.node != source && (IsTileWalkable(currentNode, neighbour.node, walkingType, faction)) || (neighbour.node == target && UnitCanChangeLevel(currentNode, neighbour.node, walkingType)))) {
 					float totalCost = currentNode.cost + neighbour.node.moveCost;
 
 					if (neighbour.node.cost > totalCost) {
@@ -266,19 +267,19 @@ public class Pathfinder : MonoBehaviour {
 	//	return reachableTiles;
 	//}
 
-	public bool isTileWalkable(Node startNode, Node endNode, Walkable walkingType, int faction) {
+	public static bool IsTileWalkable(Node startNode, Node endNode, Walkable walkingType, int faction) {
 		return UnitCanStandOnTile(endNode, walkingType) && !UnitInTheWay(endNode, faction) && UnitCanChangeLevel(startNode, endNode, walkingType);
 	}
 
-	public bool UnitCanStandOnTile(Node node, Walkable walkingType) {
+	public static bool UnitCanStandOnTile(Node node, Walkable walkingType) {
 		return node.walkable <= walkingType;
 	}
 
-	public bool UnitInTheWay(Node node, int faction) {
+	public static bool UnitInTheWay(Node node, int faction) {
 		return node.myUnit != null && node.myUnit.myPlayer.faction != faction && faction != -1;
 	}
 
-	public bool UnitCanChangeLevel(Node startNode, Node endNode, Walkable walkingType) {
+	public static bool UnitCanChangeLevel(Node startNode, Node endNode, Walkable walkingType) {
 		int levelDifference = Math.Abs(startNode.level - endNode.level);
 		int maxDifference = (int)walkingType;
 
