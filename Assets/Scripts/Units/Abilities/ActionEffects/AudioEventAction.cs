@@ -11,10 +11,14 @@ public class AudioEventAction : EventAction {
         action = (UnitController caster, UnitController target, Node targetedTile) => {
             switch (eventTarget) {
                 case EventTarget.CASTER:
-                    caster.PlayOneShot(audioClip);
+                    if (caster != null) {
+                        caster.PlayOneShot(audioClip);
+                    }
                     break;
                 case EventTarget.TARGETUNIT:
-                    target.PlayOneShot(audioClip);
+                    if (target != null) {
+                        target.PlayOneShot(audioClip);
+                    }
                     break;
                 case EventTarget.TARGETEDTILE:
                     //TODO ADD SOUNDEFFECT TO NODE

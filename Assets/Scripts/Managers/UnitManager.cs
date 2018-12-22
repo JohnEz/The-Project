@@ -51,26 +51,29 @@ public class UnitManager : MonoBehaviour {
 	}
 
 	public UnitController SpawnUnit(int unit, Player player, int x, int y) {
-		GameObject newUnit = (GameObject)Instantiate (unitPrefabs [unit], myMap.getPositionOfNode (x, y), Quaternion.identity);
-		newUnit.transform.parent = myMap.transform;
+        return SpawnUnit(unitPrefabs[unit], player, x, y);
+    }
 
-		Node startingNode = myMap.getNode (x, y);
-		UnitController unitController = newUnit.GetComponent<UnitController> ();
+    public UnitController SpawnUnit(GameObject unit, Player player, int x, int y) {
+        GameObject newUnit = (GameObject)Instantiate(unit, myMap.getPositionOfNode(x, y), Quaternion.identity);
+        newUnit.transform.parent = myMap.transform;
 
-		startingNode.myUnit = unitController;
-		unitController.Spawn(player, startingNode);
-		unitController.FaceDirection (Vector2.down);
-		unitController.myManager = this;
-		unitController.Initialise ();
-		units.Add (unitController);
+        Node startingNode = myMap.getNode(x, y);
+        UnitController unitController = newUnit.GetComponent<UnitController>();
+
+        startingNode.myUnit = unitController;
+        unitController.Spawn(player, startingNode);
+        unitController.FaceDirection(Vector2.down);
+        unitController.myManager = this;
+        unitController.Initialise();
+        units.Add(unitController);
 
         player.myCharacter = unitController;
 
         return unitController;
-
     }
 
-	public void AddUnitToRemove(UnitController unit) {
+    public void AddUnitToRemove(UnitController unit) {
 		unit.myNode.myUnit = null;
 		unitsToRemove.Add (unit);
 	}

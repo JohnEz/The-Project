@@ -169,8 +169,6 @@ public class CameraController : MonoBehaviour {
 	}
 
 	public void MoveToTarget(Vector2 pos) {
-        Debug.Log("moving to " + pos);
-
         movementState = CameraMoveState.MOVING_TO_LOCATION;
         followTarget = null;
 		Vector3 clampedTarget = GetClampedPosition (pos);

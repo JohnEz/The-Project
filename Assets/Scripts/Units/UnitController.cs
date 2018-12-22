@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 
 public struct AbilityTarget {
-	public UnitController target;
+	public Node targetNode;
 	public System.Action abilityFunction;
 
-	public AbilityTarget(UnitController _target, System.Action _ability) {
-		target = _target;
+	public AbilityTarget(Node _targetNode, System.Action _ability) {
+        targetNode = _targetNode;
 		abilityFunction = _ability;
 	}
 }
@@ -270,17 +270,17 @@ public class UnitController : MonoBehaviour {
 		RunNextAction (true);
 	}
 
-	public void AddAbilityTarget(UnitController target, System.Action ability) {
-		abilityTargets.Add (new AbilityTarget (target, ability));
+	public void AddAbilityTarget(Node targetNode, System.Action ability) {
+		abilityTargets.Add (new AbilityTarget (targetNode, ability));
 	}
 
 	//TODO COME UP WITH A BETTER NAME - means deal damage / show cast events
 	public void RunAbilityTargets() {
-        foreach (AbilityTarget target in abilityTargets) {
-            target.abilityFunction ();
+        foreach (AbilityTarget abilityTarget in abilityTargets) {
+            abilityTarget.abilityFunction ();
             activeAction.eventActions.ForEach((eventAction) => {
                 if (eventAction.eventTrigger == AbilityEvent.CAST_END && eventAction.eventTarget == EventTarget.TARGETUNIT) {
-                    eventAction.action(this, target.target, target.target.myNode);
+                    eventAction.action(this, abilityTarget.targetNode.myUnit, abilityTarget.targetNode);
                 }
             });
         }
@@ -378,6 +378,12 @@ public class UnitController : MonoBehaviour {
 			}
 		}
 	}
+
+    public void Summon(Node targetNode, GameObject unitPrefab) {
+        // TODO work out a clean way of getting allied player
+        Player owningPlayer = myPlayer.ai ? myPlayer : PlayerManager.singleton.GetPlayer(1);
+        UnitManager.singleton.SpawnUnit(unitPrefab, owningPlayer, targetNode.x, targetNode.y);
+    }
 
 	public void PlayOneShot(AudioClip sound) {
 		audioController.PlayOneShot (sound);

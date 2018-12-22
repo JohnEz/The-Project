@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
+// type of units the ability effects
 public enum TargetType
 {
     ENEMY,
@@ -9,12 +10,15 @@ public enum TargetType
     UNIT //both enemies and allies
 }
 
+// type of object that must be the center of the attack
 public enum TileTarget
 {
     TILE,
-    UNIT
+    UNIT,
+    EMPTY_TILE
 }
 
+// type of area of effect
 public enum AreaOfEffect
 {
     SINGLE,
@@ -64,8 +68,8 @@ public class CardAction : ScriptableObject {
 
     public UnitController caster;
 
-    public void AddAbilityTarget(UnitController target, System.Action ability) {
-        caster.AddAbilityTarget(target, ability);
+    public void AddAbilityTarget(Node targetNode, System.Action ability) {
+        caster.AddAbilityTarget(targetNode, ability);
     }
 
 }

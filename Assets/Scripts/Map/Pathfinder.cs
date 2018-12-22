@@ -304,16 +304,16 @@ public class Pathfinder : MonoBehaviour {
 		if (action.CanTargetSelf) {
 			reachableTiles.Insert (0, node);
 		}
-		//TODO check to see if the tile is in line of sight
+        //TODO check to see if the tile is in line of sight
 		return reachableTiles;
 	}
 
-	List<Node> FindCircleTargetTiles(Node node, AttackAction ability) {
-		List<Node> reachableTiles = findReachableTiles (node, ability.range, Walkable.Flying, -1).basic.Keys.ToList();
-		if (ability.CanTargetSelf) {
+	List<Node> FindCircleTargetTiles(Node node, AttackAction action) {
+		List<Node> reachableTiles = findReachableTiles (node, action.range, Walkable.Flying, -1).basic.Keys.ToList();
+		if (action.CanTargetSelf) {
 			reachableTiles.Insert (0, node);
 		}
-		return reachableTiles;
+		return reachableTiles.Where(tile => action.CanTargetTile(tile)).ToList();
 	}
 
 	public List<Node> FindAOEHitTiles(Node node, AttackAction action) {

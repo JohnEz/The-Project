@@ -79,4 +79,27 @@ public static class BasicDecks {
         "Walk"
     };
 
+    public static List<string> summonerElementalist = new List<string> {
+        "Summon Imp",
+        "Summon Imp",
+        "Summon Imp",
+        "Summon Imp",
+        "Summon Imp",
+        "Arcane Pulse",
+        "Arcane Pulse",
+        "Arcane Pulse",
+        "Arcane Pulse",
+        "Arcane Pulse",
+        "Walk",
+        "Walk",
+        "Walk",
+        "Walk",
+        "Walk",
+        "Walk",
+        "Walk",
+        "Walk",
+        "Walk",
+        "Walk"
+    };
+
 }

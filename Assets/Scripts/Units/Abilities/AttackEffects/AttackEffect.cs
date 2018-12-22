@@ -7,4 +7,8 @@ public class AttackEffect : ScriptableObject {
 
     }
 
+    public virtual void AbilityEffect(UnitController caster, Node targetNode) {
+
+    }
+
 }

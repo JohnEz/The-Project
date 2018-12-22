@@ -18,10 +18,18 @@ public class AttackAction : CardAction {
 
     public List<AttackEffect> attackEffects = new List<AttackEffect>(0);
 
-    private void AbilityEffect(UnitController target) {
+    private void AbilityEffectUnit(UnitController target) {
         attackEffects.ForEach(attackEffect => {
-            AddAbilityTarget(target, () => {
+            AddAbilityTarget(target.myNode, () => {
                 attackEffect.AbilityEffect(caster, target);
+            });
+        });
+    }
+
+    private void AbilityEffectNode(Node targetNode) {
+        attackEffects.ForEach(attackEffect => {
+            AddAbilityTarget(targetNode, () => {
+                attackEffect.AbilityEffect(caster, targetNode);
             });
         });
     }
@@ -29,16 +37,18 @@ public class AttackAction : CardAction {
     // Single target on use
     public virtual void UseAbility(Node target) {
         OnUseSingleEventActions(target);
-        AbilityEffect(target.myUnit);
+        AbilityEffectUnit(target.myUnit);
+        AbilityEffectNode(target);
     }
 
     // AOE on use
     public virtual void UseAbility(List<Node> effectedNodes, Node target) {
         OnUseAOEEventActions(effectedNodes, target);
 
+        AbilityEffectNode(target);
         effectedNodes.ForEach(node => {
             if (CanHitUnit(node)) {
-                AbilityEffect(node.myUnit);
+                AbilityEffectUnit(node.myUnit);
             }
         });
     }
@@ -73,6 +83,10 @@ public class AttackAction : CardAction {
 
     public bool CanTargetTile(Node targetNode) {
         if (tileTarget == TileTarget.UNIT && !CanHitUnit(targetNode)) {
+            return false;
+        }
+
+        if (tileTarget == TileTarget.EMPTY_TILE && targetNode.myUnit != null) {
             return false;
         }
 
