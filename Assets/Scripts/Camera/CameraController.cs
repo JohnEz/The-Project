@@ -25,17 +25,21 @@ public class CameraController : MonoBehaviour {
 	Vector3 targetLocation;
     Transform followTarget;
 
+    [HideInInspector]
     public float minX = -100000;
-	public float minY = -100000;
-	public float maxX = 100000;
-	public float maxY = 100000;
+    [HideInInspector]
+    public float minY = -100000;
+    [HideInInspector]
+    public float maxX = 100000;
+    [HideInInspector]
+    public float maxY = 100000;
 
 	float textureSize = 95;
 
 	float currentZoom = 1f;
 	float targetZoom = 1f;
 
-	int pixelsToUnits = 1;
+	public int pixelsToUnits = 1;
 
 	bool mouseMovement = false;
 
