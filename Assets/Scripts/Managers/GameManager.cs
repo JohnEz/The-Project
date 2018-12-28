@@ -44,6 +44,7 @@ public class GameManager : MonoBehaviour {
         }
 
         humanPlayer.myCharacter = UnitManager.singleton.SpawnUnit(5, PlayerManager.singleton.GetPlayer(0), 12, 10);
+        CameraManager.singleton.JumpToLocation(humanPlayer.myCharacter.myNode);
 
         UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(1), 12, 9);
         UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(1), 12, 11);

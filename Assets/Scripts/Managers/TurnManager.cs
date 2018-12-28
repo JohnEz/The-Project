@@ -19,7 +19,7 @@ public class TurnManager : MonoBehaviour {
 
 	TileMap map;
 
-	TurnPhase currentPhase = TurnPhase.TURN_STARTING;
+	TurnPhase currentPhase = TurnPhase.GAME_STARTING;
 
 	int playersTurn = -1;
 
@@ -82,6 +82,7 @@ public class TurnManager : MonoBehaviour {
         Player currentPlayersTurn = GetCurrentPlayer();
 
         if (ObjectiveManager.singleton.CheckObjectives (currentPlayersTurn)) {
+            ChangeState(TurnPhase.GAME_OVER);
             GUIController.singleton.GameOver(GetCurrentPlayer() == PlayerManager.singleton.mainPlayer);
 		} else {
 			UnitManager.singleton.EndTurn (currentPlayersTurn);

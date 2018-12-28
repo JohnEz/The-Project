@@ -37,6 +37,10 @@ public class CameraManager : MonoBehaviour {
 		MoveToLocation (map.getPositionOfNode(node));
 	}
 
+    public void JumpToLocation(Node node) {
+        cam.JumpToLocation(map.getPositionOfNode(node));
+    }
+
     public void FollowTarget(Transform target) {
         cam.FollowTarget(target);
     }

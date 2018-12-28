@@ -180,6 +180,10 @@ public class CameraController : MonoBehaviour {
 		targetLocation = new Vector3(RoundToNearestPixel(clampedTarget.x, GetComponent<Camera>()), RoundToNearestPixel(clampedTarget.y, GetComponent<Camera>()), transform.position.z);
 	}
 
+    public void JumpToLocation(Vector2 location) {
+        transform.position = new Vector3(location.x, location.y, transform.position.z);
+    }
+
 	public static float RoundToNearestPixel(float unityUnits, Camera viewingCamera)
 	{
 		float valueInPixels = (Screen.height / (viewingCamera.orthographicSize * 2)) * unityUnits;
