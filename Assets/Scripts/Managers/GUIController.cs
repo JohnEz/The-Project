@@ -18,14 +18,19 @@ public class GUIController : MonoBehaviour {
 	Dictionary<string, RuntimeAnimatorController> abilityIconControllers = new Dictionary<string, RuntimeAnimatorController>();
 
     [HideInInspector]
-    public Text staminaText;
-
+    GameObject startMenu;
+    GameObject playerHand;
+    GameObject staminaPoints;
 	Text objectivesBody;
 
 	void Awake() {
         singleton = this;
-        staminaText = GameObject.Find("ActionPointFrame").GetComponentInChildren<Text>();
-	}
+        startMenu = GameObject.Find("StartMenu");
+        playerHand = GameObject.Find("Player1Hand");
+        playerHand.SetActive(false);
+        staminaPoints = GameObject.Find("StaminaPointsFrame");
+        staminaPoints.SetActive(false);
+    }
 
 	// Use this for initialization
 	void Start () {
@@ -42,6 +47,17 @@ public class GUIController : MonoBehaviour {
 			}
 		}
 	}
+
+    public void BtnStartGame() {
+        startMenu.SetActive(false);
+        playerHand.SetActive(true);
+        staminaPoints.SetActive(true);
+        Invoke("StartGame", 0.5f);
+    }
+
+    void StartGame() {
+        GameManager.singleton.StartGame();
+    }
 
     public void GameOver(bool playerWon) {
         GameObject go = Instantiate(endGameMenuPrefab, transform);
@@ -102,7 +118,7 @@ public class GUIController : MonoBehaviour {
 	}
 
     public void UpdateStamina(int newStamina) {
-        staminaText.text = newStamina.ToString();
+        staminaPoints.GetComponentInChildren<Text>().text = newStamina.ToString();
     }
 
 	string CreateObjectiveText(List<Objective> objectives) {

@@ -24,11 +24,9 @@ public class GameManager : MonoBehaviour {
         //TEMP this should be loaded
         AddPlayers();
         AddObjectives();
-
-        Invoke("StartGame", 2.0f);
     }
 
-    void StartGame() {
+    public void StartGame() {
         TurnManager.singleton.StartGame();
     }
 
