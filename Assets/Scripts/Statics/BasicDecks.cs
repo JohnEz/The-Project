@@ -3,7 +3,10 @@
 public static class BasicDecks {
 
     public static List<string> testDeck = new List<string> {
-        "Test Card"
+        "Test Card",
+        "Test Card",
+        "Test Card",
+        "Walk",
     };
 
     public static List<string> elementalistDeck = new List<string> {

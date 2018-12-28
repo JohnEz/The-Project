@@ -43,7 +43,7 @@ public class GameManager : MonoBehaviour {
             Player humanPlayer2 = PlayerManager.singleton.AddPlayer(2, CardManager.singleton.CreateDeck(), "Jimmy");
         }
 
-        humanPlayer.myCharacter = UnitManager.singleton.SpawnUnit(5, PlayerManager.singleton.GetPlayer(0), 14, 10);
+        humanPlayer.myCharacter = UnitManager.singleton.SpawnUnit(5, PlayerManager.singleton.GetPlayer(0), 12, 10);
 
         UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(1), 12, 9);
         UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(1), 12, 11);

@@ -2,13 +2,18 @@
 using System.Collections;
 using UnityEngine.SceneManagement;
 
-public class PauseMenuController : MonoBehaviour
-{
+public class PauseMenuController : MonoBehaviour {
+    public static PauseMenuController singleton;
+
 	public static bool gameIsPaused = false;
 
 	public GameObject pauseMenuUI;
 
-	public void Pause () {
+    public void Awake() {
+        singleton = this;
+    }
+
+    public void Pause () {
 		Time.timeScale = 0f;
 		gameIsPaused = true;
 		pauseMenuUI.SetActive (true);

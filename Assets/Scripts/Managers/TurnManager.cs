@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
 public enum TurnPhase {
+    GAME_STARTING,
 	TURN_STARTING,
 	WAITING_FOR_INPUT,
 	UNIT_MOVING,
 	UNIT_ATTACKING,
-	TURN_ENDING
+	TURN_ENDING,
+    GAME_OVER
 }
 
 public class TurnManager : MonoBehaviour {
@@ -80,7 +82,7 @@ public class TurnManager : MonoBehaviour {
         Player currentPlayersTurn = GetCurrentPlayer();
 
         if (ObjectiveManager.singleton.CheckObjectives (currentPlayersTurn)) {
-			MenuSystem.LoadScene (Scenes.MAIN_MENU);
+            GUIController.singleton.GameOver(GetCurrentPlayer() == PlayerManager.singleton.mainPlayer);
 		} else {
 			UnitManager.singleton.EndTurn (currentPlayersTurn);
 			StartNewTurn ();
