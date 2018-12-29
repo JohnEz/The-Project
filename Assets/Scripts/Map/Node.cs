@@ -14,9 +14,9 @@ public enum Walkable {
 
 public class Node : MonoBehaviour {
 
-	[System.NonSerialized]
+	//[System.NonSerialized]
 	public int x;
-	[System.NonSerialized]
+	//[System.NonSerialized]
 	public int y;
 
 	[System.NonSerialized]

@@ -41,15 +41,18 @@ public class GameManager : MonoBehaviour {
             Player humanPlayer2 = PlayerManager.singleton.AddPlayer(2, CardManager.singleton.CreateDeck(), "Jimmy");
         }
 
-        humanPlayer.myCharacter = UnitManager.singleton.SpawnUnit(5, PlayerManager.singleton.GetPlayer(0), 12, 10);
+        humanPlayer.myCharacter = UnitManager.singleton.SpawnUnit(5, PlayerManager.singleton.GetPlayer(0), 1, 9);
         CameraManager.singleton.JumpToLocation(humanPlayer.myCharacter.myNode);
 
-        UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(1), 12, 9);
-        UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(1), 12, 11);
+        UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(1), 1, 8);
+        UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(1), 1, 10);
 
-        UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(2), 16, 9);
-        UnitManager.singleton.SpawnUnit(6, PlayerManager.singleton.GetPlayer(2), 17, 10);
-        UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(2), 16, 11);
+        UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(2), 5, 8);
+        UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(2), 5, 9);
+        UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(2), 5, 10);
+
+        UnitManager.singleton.SpawnUnit(6, PlayerManager.singleton.GetPlayer(2), 14, 8);
+        UnitManager.singleton.SpawnUnit(6, PlayerManager.singleton.GetPlayer(2), 14, 10);
     }
 
     //TEMP

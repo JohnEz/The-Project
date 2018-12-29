@@ -21,7 +21,7 @@ public class TileMap : MonoBehaviour {
 
 	public Pathfinder pathfinder;
 
-	float tileSize = 95;
+	float tileSize = 128;
 
 	// Use this for initialization
 	void Start () {
@@ -36,10 +36,45 @@ public class TileMap : MonoBehaviour {
 	public void Initialise() {
 		pathfinder = GetComponent<Pathfinder> ();
 		pathfinder.Initialise ();
-		LevelLoader lLoader = GetComponent<LevelLoader> ();
-		lLoader.Initialise ();
-		GenerateMap (lLoader.GetLevel(0));
+
+        LevelLoaderJson lLoaderJson = GetComponent<LevelLoaderJson>();
+        lLoaderJson.Initialise();
+        GenerateMapJson(lLoaderJson.loadedLevel);
+        CalculateNeighbours();
+
+        //LevelLoader lLoader = GetComponent<LevelLoader> ();
+		//lLoader.Initialise ();
+		//GenerateMap (lLoader.GetLevel(0));
 	}
+
+    void GenerateMapJson(MapData data) {
+        tiles = new Node[data.width * data.height];
+
+        mapWidth = data.width;
+        mapHeight = data.height;
+
+        //Generate empty nodes
+        for (int i = 0; i < tiles.Length; ++i) {
+            Quaternion rot = basicNode.transform.rotation;
+            int x = i % data.width;
+            int y = i / data.width;
+
+            Vector3 pos = new Vector3(x * tileSize, -y * tileSize, 0);
+
+            GameObject baseNode = Instantiate(basicNode, pos, rot);
+            baseNode.transform.parent = this.transform;
+
+            baseNode.GetComponentInChildren<TileHighlighter>().Initialise();
+
+            tiles[i] = baseNode.GetComponent<Node>();
+            tiles[i].x = x;
+            tiles[i].y = y;
+            tiles[i].walkable = data.walkableList[i];
+            tiles[i].level = 0;
+            tiles[i].moveCost = 1;
+        }
+    }
+
 
 	void GenerateMap(Level level) {
 		tiles = new Node[level.maxSizeX * level.maxSizeY];
@@ -77,7 +112,7 @@ public class TileMap : MonoBehaviour {
 
 					GameObject visual = (GameObject)Instantiate (tileTemplate, pos, rot);
 
-					visual.GetComponent<SpriteRenderer> ().sprite = level.textures [id];
+					//visual.GetComponent<SpriteRenderer> ().sprite = level.textures [id];
 
 					visual.transform.parent = tiles [i].transform;
 
@@ -116,9 +151,9 @@ public class TileMap : MonoBehaviour {
 		for (int i = 0; i < tiles.Length; ++i) {
 
 			x = i % mapWidth;
-			y = i / mapHeight;
+			y = i / mapWidth;
 
-			getNode (x, y).neighbours = new List<Neighbour>();
+            getNode (x, y).neighbours = new List<Neighbour>();
 
 			//set all neighbours
 			if (x > 0) {

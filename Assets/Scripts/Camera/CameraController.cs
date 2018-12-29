@@ -34,7 +34,7 @@ public class CameraController : MonoBehaviour {
     [HideInInspector]
     public float maxY = 100000;
 
-	float textureSize = 95;
+	float textureSize = 127;
 
 	float currentZoom = 1f;
 	float targetZoom = 1f;
@@ -79,7 +79,7 @@ public class CameraController : MonoBehaviour {
 	void Update () {
 		UpdateMovement ();
         //UpdateZoom ();
-        ClampBounds();
+        //ClampBounds();
     }
 
     void LateUpdateLegacy() {
