@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,7 +14,7 @@ public class ActionDescriptionController : MonoBehaviour {
     public Sprite burnImage;
 
     public Image actionImage;
-    public Text actionText;
+    public TextMeshProUGUI actionText;
     //public Text quantityText;
     public Image buffImage;
 
@@ -110,7 +111,7 @@ public class ActionDescriptionController : MonoBehaviour {
         if (displaySubText) {
             subText.SetActive(true);
             // Remove last \n at the end
-            subText.GetComponentInChildren<Text>().text = subTextString.Substring(0, subTextString.Length-1);
+            subText.GetComponentInChildren<TextMeshProUGUI>().text = subTextString.Substring(0, subTextString.Length-1);
         }
     }
 

@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using TMPro;
 
 public class CardDisplay : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IDragHandler, IEndDragHandler {
 
     public AbilityCardBase ability;
 
-    public Text nameText;
+    public TextMeshProUGUI nameText;
     public Image artworkImage;
     public Text descriptionText;
     public CardDescriptionController descriptionController;
-    public Text staminaText;
+    public TextMeshProUGUI staminaText;
 
     public Player myPlayer;
     public Hand myHand;

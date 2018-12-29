@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using TMPro;
 
 public class GUIController : MonoBehaviour {
 
@@ -21,7 +22,7 @@ public class GUIController : MonoBehaviour {
     GameObject startMenu;
     GameObject playerHand;
     GameObject staminaPoints;
-	Text objectivesBody;
+    TextMeshProUGUI objectivesBody;
 
 	void Awake() {
         singleton = this;
@@ -80,7 +81,7 @@ public class GUIController : MonoBehaviour {
 		turnText.transform.Find("EnemyTurnImage").gameObject.SetActive(!ally);
 
 		if (objectivesBody == null) {
-			objectivesBody = transform.Find ("ObjectivesBody").GetComponent<Text> ();
+			objectivesBody = transform.Find ("ObjectivesBody").GetComponent<TextMeshProUGUI> ();
 		}
 		objectivesBody.text = CreateObjectiveText (objectives);
 
@@ -118,7 +119,7 @@ public class GUIController : MonoBehaviour {
 	}
 
     public void UpdateStamina(int newStamina) {
-        staminaPoints.GetComponentInChildren<Text>().text = newStamina.ToString();
+        staminaPoints.GetComponentInChildren<TextMeshProUGUI>().text = newStamina.ToString();
     }
 
 	string CreateObjectiveText(List<Objective> objectives) {
