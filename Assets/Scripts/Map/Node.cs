@@ -12,11 +12,16 @@ public enum Walkable {
 	Impassable
 }
 
+public enum LineOfSight {
+    Full,
+    Blocked
+}
+
 public class Node : MonoBehaviour {
 
-	//[System.NonSerialized]
+	[System.NonSerialized]
 	public int x;
-	//[System.NonSerialized]
+	[System.NonSerialized]
 	public int y;
 
 	[System.NonSerialized]
@@ -29,6 +34,7 @@ public class Node : MonoBehaviour {
 	public float dist = 0;
 	public float moveCost = 1;
 	public Walkable walkable;
+    public LineOfSight lineOfSight = LineOfSight.Full;
 	public int level = 0;
 
 	//Game engine variables

@@ -300,21 +300,22 @@ public class Pathfinder : MonoBehaviour {
 
 	}
 
-	List<Node> FindSingleTargetTiles(Node node, AttackAction action) {
-		List<Node> reachableTiles = findReachableTiles (node, action.range, Walkable.Flying, -1).basic.Keys.ToList();
+	List<Node> FindSingleTargetTiles(Node startNode, AttackAction action) {
+		List<Node> reachableTiles = findReachableTiles (startNode, action.range, Walkable.Flying, -1).basic.Keys.ToList();
 		if (action.CanTargetSelf) {
-			reachableTiles.Insert (0, node);
+			reachableTiles.Insert (0, startNode);
 		}
         //TODO check to see if the tile is in line of sight
+
+        reachableTiles = reachableTiles.FindAll(node => HasLineOfSight(startNode, node));
+
 		return reachableTiles;
 	}
 
-	List<Node> FindCircleTargetTiles(Node node, AttackAction action) {
-		List<Node> reachableTiles = findReachableTiles (node, action.range, Walkable.Flying, -1).basic.Keys.ToList();
-		if (action.CanTargetSelf) {
-			reachableTiles.Insert (0, node);
-		}
-		return reachableTiles.Where(tile => action.CanTargetTile(tile)).ToList();
+	List<Node> FindCircleTargetTiles(Node startNode, AttackAction action) {
+        List<Node> reachableTiles = FindSingleTargetTiles(startNode, action);
+
+        return reachableTiles.Where(tile => action.CanTargetTile(tile)).ToList();
 	}
 
 	public List<Node> FindAOEHitTiles(Node node, AttackAction action) {
@@ -349,5 +350,64 @@ public class Pathfinder : MonoBehaviour {
 
 		return targetTiles;
 	}
+
+    public bool HasLineOfSight(Node start, Node end) {
+        if (start == end) {
+            return true;
+        }
+
+        int deltaX = Mathf.Abs(end.x - start.x);
+        int deltaY = Mathf.Abs(end.y - start.y);
+        int x = start.x;
+        int y = start.y;
+
+        // find out which way the x and y should be stepping for the line (ie. up or down)
+        int stepX = start.x < end.x ? 1 : -1;
+        int stepY = start.y < end.y ? 1 : -1;
+
+        bool isSteep = deltaY > deltaX;
+
+        int delta = isSteep ? 2 * deltaX - deltaY : 2 * deltaY - deltaX;
+
+        int count = 0;
+
+        //Debug.Log("Start:" + start.ToString());
+        //Debug.Log("End:" + end.ToString());
+
+        //Debug.Log("deltaX:" + deltaX);
+        //Debug.Log("deltaY:" + deltaY);
+
+        //while we are not at the end node and (safety) we havent gone past it 
+        while ((x != end.x || y != end.y) && count < deltaX + deltaY) {
+            count++;
+
+            //Debug.Log("D: " + D);
+
+            if (delta > 0) {
+                if (isSteep) {
+                    x += stepX;
+                    delta -= 2 * deltaY;
+                } else {
+                    y += stepY;
+                    delta -= 2 * deltaX;
+                }
+            }
+
+            if (isSteep) {
+                y += stepY;
+                delta += 2 * deltaX;
+            } else {
+                x += stepX;
+                delta += 2 * deltaY;
+            }
+            //Debug.Log(map.getNode(x, y).ToString());
+
+            if (map.getNode(x, y).lineOfSight != LineOfSight.Full) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 		
 }

@@ -41,6 +41,8 @@ public class CameraController : MonoBehaviour {
 
 	public int pixelsToUnits = 1;
 
+    int cardBuffer = 384; // how much the cards take up at the bottom of the screen
+
 	bool mouseMovement = false;
 
 	int height;
@@ -71,7 +73,7 @@ public class CameraController : MonoBehaviour {
 
 		minX = RoundToNearestPixel(horzExtent - (0.5f * textureSize), GetComponent<Camera>());
 		maxX = RoundToNearestPixel(mapWidth - horzExtent - (0.5f * textureSize), GetComponent<Camera>());
-		minY = RoundToNearestPixel(vertExtent + (0.5f * textureSize) - mapHeight, GetComponent<Camera>());
+		minY = RoundToNearestPixel(vertExtent + (0.5f * textureSize) - mapHeight - cardBuffer, GetComponent<Camera>());
 		maxY = RoundToNearestPixel(-vertExtent + (0.5f * textureSize), GetComponent<Camera>());
 	}
 

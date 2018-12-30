@@ -17,7 +17,7 @@ public class TiledMap {
     public int height;
     public bool infinite;
 
-    public Layer[] layers;
+    public List<Layer> layers;
 
     public int nextLayerId;
     public int nextObjectId;
@@ -38,7 +38,8 @@ public struct MapData {
     public string name;
     public int width;
     public int height;
-    public Walkable[] walkableList;
+    public Walkable[] walkableData;
+    public LineOfSight[] lineOfSightData;
 }
 
 public class LevelLoaderJson : MonoBehaviour {
@@ -71,37 +72,51 @@ public class LevelLoaderJson : MonoBehaviour {
         loadedLevel.width = loadedData.width;
         loadedLevel.height = loadedData.height;
 
-        loadedLevel.walkableList = CreateWalkableMap();
+        loadedLevel.walkableData = CreateWalkableMap();
+        loadedLevel.lineOfSightData = CreateLineOfSightMap();
     }
 
     public Walkable[] CreateWalkableMap() {
         Walkable[] walkableArray = new Walkable[loadedData.height * loadedData.width];
 
-        Layer walkableLayer = null;
-
-        foreach(Layer layer in loadedData.layers) {
-            if (layer.name.Equals("Walkable")) {
-                walkableLayer = layer;
-            }
-        }
+        Layer walkableLayer = loadedData.layers.Find(layer => layer.name.Equals("Walkable"));
 
         if (walkableLayer == null) {
             Debug.LogError("No walkable layer found");
-        }
-
-        for (int i=0; i < walkableLayer.data.Length; i++) {
-            switch (walkableLayer.data[i]) {
-                default:
-                case 2: walkableArray[i] = Walkable.Walkable;
-                    break;
-                case 4: walkableArray[i] = Walkable.Flying;
-                    break;
-                case 6: walkableArray[i] = Walkable.Impassable;
-                    break;
+        } else {
+            for (int i = 0; i < walkableLayer.data.Length; i++) {
+                switch (walkableLayer.data[i]) {
+                    default:
+                    case 2:
+                        walkableArray[i] = Walkable.Walkable;
+                        break;
+                    case 4:
+                        walkableArray[i] = Walkable.Flying;
+                        break;
+                    case 6:
+                        walkableArray[i] = Walkable.Impassable;
+                        break;
+                }
             }
         }
 
         return walkableArray;
+    }
+
+    public LineOfSight[] CreateLineOfSightMap() {
+        LineOfSight[] losArray = new LineOfSight[loadedData.height * loadedData.width];
+
+        Layer losLayer = loadedData.layers.Find(layer => layer.name.Equals("LineOfSight"));
+
+        if (losLayer == null) {
+            Debug.LogError("No line of sight layer found");
+        } else {
+            for (int i = 0; i < losLayer.data.Length; i++) {
+                //TODO change to switch with more values
+                losArray[i] = losLayer.data[i] > 0 ? LineOfSight.Blocked : LineOfSight.Full;
+            }
+        }
+        return losArray;
     }
 
     public void LoadTiledData() {

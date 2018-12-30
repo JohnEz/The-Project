@@ -69,7 +69,8 @@ public class TileMap : MonoBehaviour {
             tiles[i] = baseNode.GetComponent<Node>();
             tiles[i].x = x;
             tiles[i].y = y;
-            tiles[i].walkable = data.walkableList[i];
+            tiles[i].walkable = data.walkableData[i];
+            tiles[i].lineOfSight = data.lineOfSightData[i];
             tiles[i].level = 0;
             tiles[i].moveCost = 1;
         }
