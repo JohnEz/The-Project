@@ -34,7 +34,7 @@ public class CameraController : MonoBehaviour {
     [HideInInspector]
     public float maxY = 100000;
 
-	float textureSize = 127;
+	float textureSize = 128;
 
 	float currentZoom = 1f;
 	float targetZoom = 1f;
@@ -70,8 +70,8 @@ public class CameraController : MonoBehaviour {
 		float horzExtent = vertExtent * Screen.width / Screen.height;
 
 		minX = RoundToNearestPixel(horzExtent - (0.5f * textureSize), GetComponent<Camera>());
-		maxX = RoundToNearestPixel(mapHeight - horzExtent - (0.5f * textureSize), GetComponent<Camera>());
-		minY = RoundToNearestPixel(vertExtent + (0.5f * textureSize) - mapWidth, GetComponent<Camera>());
+		maxX = RoundToNearestPixel(mapWidth - horzExtent - (0.5f * textureSize), GetComponent<Camera>());
+		minY = RoundToNearestPixel(vertExtent + (0.5f * textureSize) - mapHeight, GetComponent<Camera>());
 		maxY = RoundToNearestPixel(-vertExtent + (0.5f * textureSize), GetComponent<Camera>());
 	}
 
@@ -79,7 +79,7 @@ public class CameraController : MonoBehaviour {
 	void Update () {
 		UpdateMovement ();
         //UpdateZoom ();
-        //ClampBounds();
+        ClampBounds();
     }
 
     void LateUpdateLegacy() {
