@@ -32,14 +32,10 @@ public class GameManager : MonoBehaviour {
 
     //TEMP
     void AddPlayers() {
-        Player humanPlayer = PlayerManager.singleton.AddPlayer(1, CardManager.singleton.LoadDeck(BasicDecks.elementalistDeck), "Jonesy");
+        Player humanPlayer = PlayerManager.singleton.AddPlayer(GameDetails.PlayerCharacter, CardManager.singleton.LoadDeck(GameDetails.PlayerDeck), "Jonesy");
 
-        if (MatchDetails.VersusAi) {
-            //Player cpuPlayer = PlayerManager.singleton.AddAiPlayer(1);
-            Player cpuPlayer2 = PlayerManager.singleton.AddAiPlayer(2);
-        } else {
-            Player humanPlayer2 = PlayerManager.singleton.AddPlayer(2, CardManager.singleton.CreateDeck(), "Jimmy");
-        }
+        //Player cpuPlayer = PlayerManager.singleton.AddAiPlayer(1);
+        Player cpuPlayer2 = PlayerManager.singleton.AddAiPlayer(2);
 
         humanPlayer.myCharacter = UnitManager.singleton.SpawnUnit(5, PlayerManager.singleton.GetPlayer(0), 1, 9);
         CameraManager.singleton.JumpToLocation(humanPlayer.myCharacter.myNode);

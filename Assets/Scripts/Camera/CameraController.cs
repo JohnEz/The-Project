@@ -133,6 +133,7 @@ public class CameraController : MonoBehaviour {
             Vector3 moveLocation = movementState == CameraMoveState.MOVING_TO_LOCATION ? targetLocation : new Vector3(followTarget.position.x, followTarget.position.y, transform.position.z);
 
             //Smoothly animate towards the correct location
+            // TODO move hardcoded value
             transform.position = Vector3.Lerp(transform.position, moveLocation, 6f * Time.deltaTime);
         }
 

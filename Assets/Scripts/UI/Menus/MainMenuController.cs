@@ -5,21 +5,12 @@ using UnityEngine.SceneManagement;
 public class MainMenuController : MonoBehaviour
 {
 
-	public void PlayGameAI () {
-		MatchDetails.VersusAi = true;
-		LoadArena ();
+	public void Play () {
+        transform.parent.Find("PlayMenu").gameObject.SetActive(true);
+        gameObject.SetActive(false);
 	}
 
-	public void PlayGameVersus () {
-		MatchDetails.VersusAi = false;
-		LoadArena ();
-	}
-
-	void LoadArena() {
-		MenuSystem.LoadScene (Scenes.ARENA);
-	}
-
-	public void ExitGame () {
+	public void Exit () {
 		Application.Quit ();
 	}
 }

@@ -14,13 +14,13 @@ public class UnitSlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
 
         if (unitCard != null) {
             if (myUnit != null) {
-                MatchDetails.PlayerRoster.Remove(myUnit);
+                //MatchDetails.PlayerRoster.Remove(myUnit);
             }
 
             myUnit = unitCard.myUnit;
             Destroy(unitCard.gameObject);
             LoadUnit(myUnit);
-            MatchDetails.PlayerRoster.Add(myUnit);
+            //MatchDetails.PlayerRoster.Add(myUnit);
         }
     }
 
