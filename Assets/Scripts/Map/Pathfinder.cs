@@ -80,7 +80,7 @@ public class Pathfinder : MonoBehaviour {
 
 				foreach (Neighbour neighbour in node.neighbours) {
 					
-					if (neighbour.node != startNode && IsTileWalkable(node, neighbour.node, walkingType, faction)) {
+					if (neighbour.node != startNode && IsTileWalkable(node, neighbour.node, walkingType, faction) && !neighbour.hasDoor) {
 						float totalCost = node.cost + neighbour.node.moveCost;
 
 						if (totalCost <= maxDistance) {
@@ -179,8 +179,7 @@ public class Pathfinder : MonoBehaviour {
 			openList.Remove (currentNode);
 
 			foreach (Neighbour neighbour in currentNode.neighbours) {
-                if (neighbour.node != source && IsTileWalkable(currentNode, neighbour.node, walkingType, faction)) {
-				//if ((neighbour.node != source && (IsTileWalkable(currentNode, neighbour.node, walkingType, faction)) || (neighbour.node == target && UnitCanChangeLevel(currentNode, neighbour.node, walkingType)))) {
+                if (neighbour.node != source && IsTileWalkable(currentNode, neighbour.node, walkingType, faction) && !neighbour.hasDoor) {
 					float totalCost = currentNode.cost + neighbour.node.moveCost;
 
 					if (neighbour.node.cost > totalCost) {
@@ -280,7 +279,7 @@ public class Pathfinder : MonoBehaviour {
 	}
 
 	public static bool UnitCanChangeLevel(Node startNode, Node endNode, Walkable walkingType) {
-		int levelDifference = Math.Abs(startNode.level - endNode.level);
+		int levelDifference = Math.Abs(startNode.height - endNode.height);
 		int maxDifference = (int)walkingType;
 
 		return levelDifference <= maxDifference + 1;
@@ -305,7 +304,6 @@ public class Pathfinder : MonoBehaviour {
 		if (action.CanTargetSelf) {
 			reachableTiles.Insert (0, startNode);
 		}
-        //TODO check to see if the tile is in line of sight
 
         reachableTiles = reachableTiles.FindAll(node => HasLineOfSight(startNode, node));
 
@@ -360,6 +358,7 @@ public class Pathfinder : MonoBehaviour {
         int deltaY = Mathf.Abs(end.y - start.y);
         int x = start.x;
         int y = start.y;
+        Node previousNode = start;
 
         // find out which way the x and y should be stepping for the line (ie. up or down)
         int stepX = start.x < end.x ? 1 : -1;
@@ -402,12 +401,25 @@ public class Pathfinder : MonoBehaviour {
             }
             //Debug.Log(map.getNode(x, y).ToString());
 
-            if (map.getNode(x, y).lineOfSight != LineOfSight.Full) {
+            // TODO potentially move this to its own function
+            Node nextNode = map.getNode(x, y);
+            Neighbour neighbourBetweenNodes = previousNode.neighbours.Find(neighbour => neighbour.node == nextNode);
+
+            //Debug.Log(neighbourBetweenNodes.ToString());
+
+            if (neighbourBetweenNodes == null) {
+                //Debug.Log("No neighbour found between nodes");
+            }
+
+            if (map.getNode(x, y).lineOfSight != LineOfSight.Full || (neighbourBetweenNodes != null && neighbourBetweenNodes.hasDoor)) {
                 return false;
             }
+
+            previousNode = nextNode;
         }
 
         return true;
     }
+
 		
 }

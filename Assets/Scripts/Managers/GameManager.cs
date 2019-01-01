@@ -32,10 +32,10 @@ public class GameManager : MonoBehaviour {
 
     //TEMP
     void AddPlayers() {
-        Player humanPlayer = PlayerManager.singleton.AddPlayer(1, CardManager.singleton.LoadDeck(BasicDecks.fireElementalist), "Jonesy");
+        Player humanPlayer = PlayerManager.singleton.AddPlayer(1, CardManager.singleton.LoadDeck(BasicDecks.iceElementalist), "Jonesy");
 
         if (MatchDetails.VersusAi) {
-            Player cpuPlayer = PlayerManager.singleton.AddAiPlayer(1);
+            //Player cpuPlayer = PlayerManager.singleton.AddAiPlayer(1);
             Player cpuPlayer2 = PlayerManager.singleton.AddAiPlayer(2);
         } else {
             Player humanPlayer2 = PlayerManager.singleton.AddPlayer(2, CardManager.singleton.CreateDeck(), "Jimmy");
@@ -43,16 +43,22 @@ public class GameManager : MonoBehaviour {
 
         humanPlayer.myCharacter = UnitManager.singleton.SpawnUnit(5, PlayerManager.singleton.GetPlayer(0), 1, 9);
         CameraManager.singleton.JumpToLocation(humanPlayer.myCharacter.myNode);
+        map.pathfinder.HasLineOfSight(map.getNode(6, 9), map.getNode(7, 9));
 
-        UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(1), 1, 8);
-        UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(1), 1, 10);
+        //UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(1), 1, 8);
+        //UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(1), 1, 10);
 
-        UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(2), 5, 8);
-        UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(2), 5, 9);
-        UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(2), 5, 10);
+        UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(1), 5, 8);
+        UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(1), 5, 9);
+        UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(1), 5, 10);
 
-        UnitManager.singleton.SpawnUnit(6, PlayerManager.singleton.GetPlayer(2), 14, 8);
-        UnitManager.singleton.SpawnUnit(6, PlayerManager.singleton.GetPlayer(2), 14, 10);
+        UnitManager.singleton.SpawnUnit(6, PlayerManager.singleton.GetPlayer(1), 14, 8);
+        UnitManager.singleton.SpawnUnit(6, PlayerManager.singleton.GetPlayer(1), 14, 10);
+
+        UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(1), 10, 2);
+        UnitManager.singleton.SpawnUnit(6, PlayerManager.singleton.GetPlayer(1), 11, 1);
+        UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(1), 12, 2);
+        
     }
 
     //TEMP
@@ -69,10 +75,10 @@ public class GameManager : MonoBehaviour {
         objective2.type = ObjectiveType.ANNIHILATION;
         ObjectiveManager.singleton.AddObjective(PlayerManager.singleton.GetPlayer(1), objective2);
 
-        Objective objective3 = new Objective();
-        objective2.optional = false;
-        objective2.text = "Kill all enemies!";
-        objective2.type = ObjectiveType.ANNIHILATION;
-        ObjectiveManager.singleton.AddObjective(PlayerManager.singleton.GetPlayer(2), objective3);
+        //Objective objective3 = new Objective();
+        //objective2.optional = false;
+        //objective2.text = "Kill all enemies!";
+        //objective2.type = ObjectiveType.ANNIHILATION;
+        //ObjectiveManager.singleton.AddObjective(PlayerManager.singleton.GetPlayer(2), objective3);
     }
 }

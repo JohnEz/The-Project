@@ -11,7 +11,7 @@ public class HpBarController : MonoBehaviour {
 
 	private List<GameObject> hpMarkers = new List<GameObject>();
 
-	private const int markerInterval = 10;
+	private const int HP_MARKER_INTERVAL = 1;
 
 	private float currentMax = 0;
     private float targetPercent = 1;
@@ -45,7 +45,7 @@ public class HpBarController : MonoBehaviour {
 	}
 
 	public void createMarkers(float maxHp) {
-		int numberOfMarkers = (int)(maxHp / markerInterval);
+		int numberOfMarkers = (int)(maxHp / HP_MARKER_INTERVAL);
 		float increment = hpBar.rectTransform.rect.width / (numberOfMarkers);
 
 		for (int i = 0; i < numberOfMarkers-1; i++) {

@@ -16,8 +16,9 @@ public class TileMap : MonoBehaviour {
 	int mapHeight;
 	Node[] tiles;
 
-	public GameObject basicNode;
-	public GameObject tileTemplate;
+	public GameObject basicNodePrefab;
+	public GameObject tileTemplatePrefab;
+    public GameObject doorPrefab;
 
 	public Pathfinder pathfinder;
 
@@ -55,13 +56,13 @@ public class TileMap : MonoBehaviour {
 
         //Generate empty nodes
         for (int i = 0; i < tiles.Length; ++i) {
-            Quaternion rot = basicNode.transform.rotation;
+            Quaternion rot = basicNodePrefab.transform.rotation;
             int x = i % data.width;
             int y = i / data.width;
 
             Vector3 pos = new Vector3(x * tileSize, -y * tileSize, 0);
 
-            GameObject baseNode = Instantiate(basicNode, pos, rot);
+            GameObject baseNode = Instantiate(basicNodePrefab, pos, rot);
             baseNode.transform.parent = this.transform;
 
             baseNode.GetComponentInChildren<TileHighlighter>().Initialise();
@@ -71,7 +72,8 @@ public class TileMap : MonoBehaviour {
             tiles[i].y = y;
             tiles[i].walkable = data.walkableData[i];
             tiles[i].lineOfSight = data.lineOfSightData[i];
-            tiles[i].level = 0;
+            tiles[i].room = data.roomData[i];
+            tiles[i].height = 0;
             tiles[i].moveCost = 1;
         }
     }
@@ -88,7 +90,7 @@ public class TileMap : MonoBehaviour {
 		for (int j = 0; j < level.layers.Length; ++j) {
 			for (int i = 0; i < level.layers[j].tiles.Length; ++i) {
 			
-				Quaternion rot = basicNode.transform.rotation;
+				Quaternion rot = basicNodePrefab.transform.rotation;
 				int x = i % level.maxSizeY;
 				int y = i / level.maxSizeX;
 				Vector3 pos = new Vector3 (x * tileSize, -y * tileSize, 0);
@@ -97,7 +99,7 @@ public class TileMap : MonoBehaviour {
 
 				if (tiles [i] == null) {
 					
-					GameObject baseNode = Instantiate (basicNode, pos, rot);
+					GameObject baseNode = Instantiate (basicNodePrefab, pos, rot);
 					baseNode.transform.parent = this.transform;
 
 					baseNode.GetComponentInChildren<TileHighlighter> ().Initialise ();
@@ -105,13 +107,13 @@ public class TileMap : MonoBehaviour {
 					tiles [i] = baseNode.GetComponent<Node> ();
 					tiles [i].x = x;
 					tiles [i].y = y;
-					tiles [i].level = level.heightMap [i];
+					tiles [i].height = level.heightMap [i];
 				}
 
 				if (id >= 0) {
 					pos = Vector3.zero;
 
-					GameObject visual = (GameObject)Instantiate (tileTemplate, pos, rot);
+					GameObject visual = (GameObject)Instantiate (tileTemplatePrefab, pos, rot);
 
 					//visual.GetComponent<SpriteRenderer> ().sprite = level.textures [id];
 
@@ -143,6 +145,18 @@ public class TileMap : MonoBehaviour {
 		CalculateNeighbours ();
 	}
 
+    void AddNeighbour(Node start, int dirX, int dirY) {
+        Neighbour neighbour = new Neighbour();
+        neighbour.node = getNode(start.x+dirX, start.y+dirY);
+        neighbour.direction = new Vector2(dirX, -dirY);
+
+        bool bothRoomsInMap = start.room != 0 && neighbour.node.room != 0;
+        bool differentRooms = start.room != neighbour.node.room;
+        neighbour.hasDoor = bothRoomsInMap && differentRooms;
+
+        start.neighbours.Add(neighbour);
+    }
+
 	void CalculateNeighbours() {
 
 		int x = 0;
@@ -154,32 +168,21 @@ public class TileMap : MonoBehaviour {
 			x = i % mapWidth;
 			y = i / mapWidth;
 
-            getNode (x, y).neighbours = new List<Neighbour>();
+            Node node = getNode(x, y);
+            node.neighbours = new List<Neighbour>();
 
 			//set all neighbours
 			if (x > 0) {
-				Neighbour left;
-				left.node = getNode(x-1, y);
-				left.direction = new Vector2 (-1, 0);
-				getNode(x, y).neighbours.Add(left);
+                AddNeighbour(node, -1, 0);
 			}
 			if (x < mapWidth-1) {
-				Neighbour right;
-				right.node = getNode(x+1, y);
-				right.direction = new Vector2 (1, 0);
-				getNode(x, y).neighbours.Add(right);
+                AddNeighbour(node, 1, 0);
 			}
 			if (y > 0) {
-				Neighbour up;
-				up.node = getNode(x, y-1);
-				up.direction = new Vector2 (0, 1);
-				getNode(x, y).neighbours.Add(up);
+                AddNeighbour(node, 0, -1);
 			}
 			if (y < mapHeight-1) {
-				Neighbour down;
-				down.node = getNode(x, y+1);
-				down.direction = new Vector2 (0, -1);
-				getNode(x, y).neighbours.Add(down);
+                AddNeighbour(node, 0, 1);
 			}
 
 		}

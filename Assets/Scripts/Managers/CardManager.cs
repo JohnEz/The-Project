@@ -15,6 +15,7 @@ public class CardManager : MonoBehaviour {
 
     private void Awake() {
         singleton = this;
+        // TODO i maybe cant do this on awake - potentialy race condition
         AbilityCardBase[] loadedCards = Resources.LoadAll<AbilityCardBase>("Cards");
 
         for(int i=0; i < loadedCards.Length; i++) {

@@ -227,8 +227,15 @@ public class UnitController : MonoBehaviour {
 
 	private void FinishWalking() {
 		anim.IsWalking (false);
-		RunNextAction (true);
-		myManager.UnitFinishedMoving ();
+
+        // TODO only the player should be able to open doors
+        Debug.Log("Checking for doors");
+        if (myNode.HasDoor()) {
+            myNode.OpenDoors();
+        }
+
+        RunNextAction(true);
+		myManager.UnitFinishedMoving (this);
 	}
 
     public void AttackTarget(List<Node> targetNodes, AttackAction action) {

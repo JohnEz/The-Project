@@ -128,7 +128,8 @@ public class TurnManager : MonoBehaviour {
 	}
 
 	public void FinishedAttacking() {
-		ChangeState(TurnPhase.WAITING_FOR_INPUT);
+        // TODO check for triggers?
+        ChangeState(TurnPhase.WAITING_FOR_INPUT);
         UserInterfaceManager.singleton.FinishedAttacking ();
     }
 

@@ -1,9 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
-public struct Neighbour {
+public class Neighbour {
 	public Vector2 direction;
 	public Node node;
+    public bool hasDoor;
+
+    public override string ToString() {
+        return string.Format("[ dirX: {0} dirY: {1} hasDoor: {2} ]", direction.x, direction.y, hasDoor);
+    }
 }
 
 public enum Walkable {
@@ -35,7 +41,8 @@ public class Node : MonoBehaviour {
 	public float moveCost = 1;
 	public Walkable walkable;
     public LineOfSight lineOfSight = LineOfSight.Full;
-	public int level = 0;
+	public int height = 0;
+    public int room = 0;
 
 	//Game engine variables
 	public UnitController myUnit;
@@ -65,6 +72,28 @@ public class Node : MonoBehaviour {
 		previous = new Neighbour();
 		previousMoveNode = null;
 	}
+
+    public bool HasDoor() {
+        return neighbours.Exists(n => n.hasDoor);
+    }
+
+    public void OpenDoors() {
+        Debug.Log("Openning Doors: " + ToString());
+
+        neighbours.ForEach(n => {
+            if (n.hasDoor) {
+                OpenDoor(n.direction);
+                n.node.OpenDoor(n.direction * -1);
+            }
+        });
+
+        Debug.Log("Has Doors: " + HasDoor());
+    }
+
+    public void OpenDoor(Vector2 direction) {
+        Neighbour neighbour = neighbours.Find(n => n.direction == direction);
+        neighbour.hasDoor = false;
+    }
 
     public override string ToString() {
         return string.Format("[ X: {0} Y: {1} MyUnit: {2} ]", x, y, myUnit != null ? myUnit.name : "None");

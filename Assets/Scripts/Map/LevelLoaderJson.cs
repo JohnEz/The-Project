@@ -40,6 +40,7 @@ public struct MapData {
     public int height;
     public Walkable[] walkableData;
     public LineOfSight[] lineOfSightData;
+    public int[] roomData;
 }
 
 public class LevelLoaderJson : MonoBehaviour {
@@ -74,6 +75,7 @@ public class LevelLoaderJson : MonoBehaviour {
 
         loadedLevel.walkableData = CreateWalkableMap();
         loadedLevel.lineOfSightData = CreateLineOfSightMap();
+        loadedLevel.roomData = CreateRoomMap();
     }
 
     public Walkable[] CreateWalkableMap() {
@@ -117,6 +119,21 @@ public class LevelLoaderJson : MonoBehaviour {
             }
         }
         return losArray;
+    }
+
+    public int[] CreateRoomMap() {
+        int[] roomArray = new int[loadedData.height * loadedData.width];
+
+        Layer roomLayer = loadedData.layers.Find(layer => layer.name.Equals("Rooms"));
+
+        if (roomLayer == null) {
+            Debug.LogError("No room layer found");
+        } else {
+            //TODO potentially need some mapping here but its fine for now
+            roomArray = roomLayer.data;
+        }
+
+        return roomArray;
     }
 
     public void LoadTiledData() {

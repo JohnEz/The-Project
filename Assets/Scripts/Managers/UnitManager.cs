@@ -250,30 +250,25 @@ public class UnitManager : MonoBehaviour {
 
     // Called when the unit starts following a path
 	public void UnitStartedMoving() {
-		TurnManager turnManager = GetComponent<TurnManager> ();
-		turnManager.StartMoving ();
+        TurnManager.singleton.StartMoving ();
 	}
 
     // Called when a unit has reached the end of its path
-	public void UnitFinishedMoving() {
-		TurnManager turnManager = GetComponent<TurnManager> ();
-		turnManager.FinishedMoving ();
+	public void UnitFinishedMoving(UnitController unit) {
+        TurnManager.singleton.FinishedMoving ();
 	}
 
     // Called at the start of a unit attack
 	public void UnitStartedAttacking() {
-		TurnManager turnManager = GetComponent<TurnManager> ();
-		turnManager.StartAttacking ();
+        TurnManager.singleton.StartAttacking ();
 	}
 
     // Called when a unit finishes its attack 
 	public void UnitFinishedAttacking() {
-		TurnManager turnManager = GetComponent<TurnManager> ();
-		
 		RemoveUnits ();
 
-        //TODO This seems odd, or at least should be a constant value
-        StartCoroutine(CallActionWithDelay(() => turnManager.FinishedAttacking(), 0.2f));
+        //TODO this is done to not jump around, should at least be a constant value
+        StartCoroutine(CallActionWithDelay(() => TurnManager.singleton.FinishedAttacking(), 0.2f));
 	}
 
     IEnumerator CallActionWithDelay(System.Action action, float seconds) {
