@@ -31,6 +31,7 @@ public class HighlightManager : MonoBehaviour {
 		SetEffectedTiles (effectedTiles, targetType, false, action);
 	}
 
+    // TODO, re write this trash
 	public void SetEffectedTiles(List<Node> effectedTiles, SquareTarget targetType = SquareTarget.UNDEFINED, bool path = false, AttackAction action = null) {
 		ClearEffectedTiles ();
 		int i = 0;
@@ -47,11 +48,11 @@ public class HighlightManager : MonoBehaviour {
 				highlighter.AddDecal(SquareDecal.TARGET);
 			}
 			if (path) {
-				Vector2 nextDirection = i < effectedTiles.Count-1 ? effectedTiles[i+1].previous.direction : new Vector2(0, 0);
-				//Vector2 previousDirection = i > 0 ? tile.previous.direction : new Vector2(0, 0);
-				Vector2 previousDirection = tile.previous.direction;
+                // if we are not at the end node, set the next direction to the direction between this and the next node
+                Vector2 previousDirection = tile.previous.GetDirectionFrom(tile);
+                Vector2 nextDirection = i == effectedTiles.Count - 1 ? new Vector2(0, 0) : effectedTiles[i+1].previous.GetDirectionFrom(effectedTiles[i+1]);
 
-				highlighter.CreateArrowDecal(previousDirection, nextDirection);
+                highlighter.CreateArrowDecal(previousDirection, nextDirection);
 
             }
 			currentlyEffected.Add(tile);

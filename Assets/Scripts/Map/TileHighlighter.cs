@@ -177,6 +177,7 @@ public class TileHighlighter : MonoBehaviour {
 	public void CreateArrowDecal(Vector2 previous, Vector2 next) {
 		Sprite arrowSprite;
 		Vector3 rotation = new Vector3();
+        // work out what direction its going
 		Vector2 minusDirections = next - previous;
 
 		//end arrow
@@ -190,8 +191,8 @@ public class TileHighlighter : MonoBehaviour {
 			} else if (previous.y == 1) {
 				rotation = new Vector3 (0, 0, 90);
 			}
-			//sort rotation
 		} else if (minusDirections == new Vector2 (0, 0)) {
+            // if the directions are 0,0 it means its not changing direction
 			arrowSprite = arrowStraight;
 			if (previous.y != 0) {
 				rotation = new Vector3 (0, 0, -90);

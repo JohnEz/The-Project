@@ -176,7 +176,7 @@ public class UnitController : MonoBehaviour {
         } else {
             transform.position = myPath [0].transform.position;
 			if (myPath.Count > 1) {
-				FaceDirection (myPath [1].previous.direction);
+				FaceDirection (myPath [1].previous.GetDirectionFrom(myPath[1]));
 			} else {
 				FinishWalking ();
 			}
@@ -220,7 +220,7 @@ public class UnitController : MonoBehaviour {
 		myPath = path;
 		myPath[myPath.Count-1].myUnit = this;
 		myNode = myPath [myPath.Count-1];
-		FaceDirection (myPath [0].previous.direction);
+		FaceDirection (myPath [0].previous.GetDirectionFrom(myPath[0]));
 		SetWalking(true);
 		myManager.UnitStartedMoving ();
 	}

@@ -145,16 +145,25 @@ public class TileMap : MonoBehaviour {
 		CalculateNeighbours ();
 	}
 
-    void AddNeighbour(Node start, int dirX, int dirY) {
-        Neighbour neighbour = new Neighbour();
-        neighbour.node = getNode(start.x+dirX, start.y+dirY);
-        neighbour.direction = new Vector2(dirX, -dirY);
+    void AddNeighbour(Node startNode, int dirX, int dirY) {
+        Node endNode = getNode(startNode.x + dirX, startNode.y + dirY);
 
-        bool bothRoomsInMap = start.room != 0 && neighbour.node.room != 0;
-        bool differentRooms = start.room != neighbour.node.room;
-        neighbour.hasDoor = bothRoomsInMap && differentRooms;
+        Neighbour exisitingNeighbour = endNode.neighbours != null ? endNode.FindNeighbourTo(startNode) : null;
+        // check to see if the end node has already created a neighbour
+        if (exisitingNeighbour != null) {
+            startNode.neighbours.Add(exisitingNeighbour);
+            return;
+        }
 
-        start.neighbours.Add(neighbour);
+        Neighbour neighbour = new Neighbour(startNode, endNode);
+
+        bool bothRoomsInMap = startNode.room != 0 && endNode.room != 0;
+        bool differentRooms = startNode.room != endNode.room;
+        if (bothRoomsInMap && differentRooms) {
+            neighbour.AddDoor(doorPrefab);
+        }
+
+        startNode.neighbours.Add(neighbour);
     }
 
 	void CalculateNeighbours() {

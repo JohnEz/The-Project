@@ -34,16 +34,14 @@ public class Pathfinder : MonoBehaviour {
 	
 	}
 
+    // cleans up the "previous" variables of a list of nodes to form a path
     public static List<Node> CleanPath(List<Node> path, Node startingNode) {
         List<Node> cleanedPath = new List<Node>();
 
         Node previousNode = startingNode;
 
         path.ForEach(node => {
-            Neighbour previousNeighbour = new Neighbour();
-            previousNeighbour.node = previousNode;
-            previousNeighbour.direction = DirectionToNode(node, previousNode);
-            node.previous = previousNeighbour;
+            node.previous = node.FindNeighbourTo(previousNode);
 
             previousNode = node;
             cleanedPath.Add(node);
@@ -57,6 +55,7 @@ public class Pathfinder : MonoBehaviour {
         return new Vector2(Math.Sign(from.x - to.x), Math.Sign(to.y - from.y));
     }
 
+    // find all nodes that can be reached
 	public ReachableTiles findReachableTiles(Node startNode, float distance, Walkable walkingType, int faction, bool canDash = false) {
 		map.resetTiles ();
 
@@ -76,21 +75,29 @@ public class Pathfinder : MonoBehaviour {
 			currentList = openList;
 			openList = new List<Node> ();
 
+            // for each node in our current list
 			foreach (Node node in currentList) {
 
+                // loop through all its neighbours
 				foreach (Neighbour neighbour in node.neighbours) {
-					
-					if (neighbour.node != startNode && IsTileWalkable(node, neighbour.node, walkingType, faction) && !neighbour.hasDoor) {
-						float totalCost = node.cost + neighbour.node.moveCost;
 
+                    // get the new node from the neighbour
+                    Node neighbourNode = neighbour.GetOppositeNode(node);
+
+                    // if the new node is not the starting node, there isnt a door in the way and can be walked on
+					if (neighbourNode != startNode && !neighbour.HasDoor() && IsTileWalkable(node, neighbourNode, walkingType, faction)) {
+                        // caclulate the cost to move here
+						float totalCost = node.cost + neighbourNode.moveCost;
+
+                        // if the cost is less or equal to our distance
 						if (totalCost <= maxDistance) {
-							if (!reachableNodes.ContainsKey (neighbour.node) || reachableNodes[neighbour.node] > totalCost) {
-								neighbour.node.previous = new Neighbour();
-								neighbour.node.previous.node = node;
-								neighbour.node.previous.direction = neighbour.direction;
-								neighbour.node.cost = totalCost;
-								reachableNodes [neighbour.node] = totalCost;
-								openList.Add (neighbour.node);
+                            // check to see if we haven't already added it, and if we have, see if this way is faster to it
+							if (!reachableNodes.ContainsKey (neighbourNode) || reachableNodes[neighbourNode] > totalCost) {
+                                // set the previous neighbour to the one we just used and set costs
+                                neighbourNode.previous = neighbour;
+                                neighbourNode.cost = totalCost;
+								reachableNodes [neighbourNode] = totalCost;
+								openList.Add (neighbourNode);
 								changed = true;
 							}
 						}
@@ -117,9 +124,13 @@ public class Pathfinder : MonoBehaviour {
 	public MovementPath FindShortestPathToUnit(Node source, Node target, Walkable walkingType, int faction) {
 		List<MovementPath> paths = new List<MovementPath> ();
 		map.resetTiles ();
+
+        // loop through all the target nodes neighbours
 		target.neighbours.ForEach (neighbour => {
-			if (neighbour.node.myUnit == null && UnitCanStandOnTile(neighbour.node, walkingType)) {
-				paths.Add(FindPath(source, neighbour.node, walkingType, faction));
+            // check to see if we can stand on the tile
+            Node neighbourNode = neighbour.GetOppositeNode(target);
+            if (neighbourNode.myUnit == null && UnitCanStandOnTile(neighbourNode, walkingType)) {
+				paths.Add(FindPath(source, neighbourNode, walkingType, faction));
 			}
 		});
 
@@ -150,7 +161,7 @@ public class Pathfinder : MonoBehaviour {
 		return shortestPath;
 	}
 
-    // this finds the path ONTO a tile
+    // this finds the fastest path ONTO a tile
 	public MovementPath FindPath(Node source, Node target, Walkable walkingType, int faction) {
 		map.resetTiles ();
 
@@ -162,6 +173,7 @@ public class Pathfinder : MonoBehaviour {
 
 		openList.Add (source);
 
+        // while we still have nodes to check
 		while (openList.Count > 0) {
 
 			//find the current lowest cost tile
@@ -172,28 +184,39 @@ public class Pathfinder : MonoBehaviour {
 				}
 			}
 
+            // if we couldnt find a node or its the target node
 			if (currentNode == null || currentNode == target) {
-				break; // i hate just calling break, lets change to bool?
+                // quit out loop
+				break;
 			}
 
 			openList.Remove (currentNode);
 
+            // loop through all the nodes neighbours
 			foreach (Neighbour neighbour in currentNode.neighbours) {
-                if (neighbour.node != source && IsTileWalkable(currentNode, neighbour.node, walkingType, faction) && !neighbour.hasDoor) {
-					float totalCost = currentNode.cost + neighbour.node.moveCost;
 
-					if (neighbour.node.cost > totalCost) {
-						neighbour.node.previous = new Neighbour();
-						neighbour.node.previous.node = currentNode;
-						neighbour.node.previous.direction = neighbour.direction;
-						neighbour.node.cost = totalCost;
-						openList.Add (neighbour.node);
+                // get the new node from the neighbour
+                Node neighbourNode = neighbour.GetOppositeNode(currentNode);
+
+                // if the new node is not the starting node, there isnt a door in the way and can be walked on
+                if (neighbourNode != source && !neighbour.HasDoor() && IsTileWalkable(currentNode, neighbourNode, walkingType, faction)) {
+                    // caclulate the cost to move here
+                    float totalCost = currentNode.cost + neighbourNode.moveCost;
+
+                    // check to see if our new path is faster to this node
+                    if (neighbourNode.cost > totalCost) {
+                        // set the previous neighbour to the one we just used and set costs
+                        neighbourNode.previous = neighbour;
+						neighbourNode.cost = totalCost;
+						openList.Add (neighbourNode);
 					}
-				}
+                }
+
 			}
 		}
 
-		if (target.previous.node != null) {
+        // if the target tile has a previous node, we found a path
+		if (target.previous != null) {
 			path = getPathFromTile (target);
 		}
 
@@ -209,8 +232,8 @@ public class Pathfinder : MonoBehaviour {
 		newPath.path.Add (endNode);
 
 		//while there is a previous node
-		while (currentNode.previous.node != null) {
-			Node previousNode = currentNode.previous.node;
+		while (currentNode.previous != null) {
+			Node previousNode = currentNode.previous.GetOppositeNode(currentNode);
 			newPath.path.Add (previousNode);
 			currentNode = previousNode;
 		}
@@ -403,15 +426,16 @@ public class Pathfinder : MonoBehaviour {
 
             // TODO potentially move this to its own function
             Node nextNode = map.getNode(x, y);
-            Neighbour neighbourBetweenNodes = previousNode.neighbours.Find(neighbour => neighbour.node == nextNode);
+            Neighbour neighbourBetweenNodes = previousNode.FindNeighbourTo(nextNode);
 
             //Debug.Log(neighbourBetweenNodes.ToString());
 
+            // TODO this will always happen on diagonals
             if (neighbourBetweenNodes == null) {
                 //Debug.Log("No neighbour found between nodes");
             }
 
-            if (map.getNode(x, y).lineOfSight != LineOfSight.Full || (neighbourBetweenNodes != null && neighbourBetweenNodes.hasDoor)) {
+            if (map.getNode(x, y).lineOfSight != LineOfSight.Full || (neighbourBetweenNodes != null && neighbourBetweenNodes.HasDoor())) {
                 return false;
             }
 

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-public class Neighbour {
+public class NeighbourLegacy {
 	public Vector2 direction;
 	public Node node;
     public bool hasDoor;
@@ -69,26 +69,24 @@ public class Node : MonoBehaviour {
 
 	public void Reset() {
 		cost = Mathf.Infinity;
-		previous = new Neighbour();
+		previous = null;
 		previousMoveNode = null;
 	}
 
     public bool HasDoor() {
-        return neighbours.Exists(n => n.hasDoor);
+        return neighbours.Exists(n => n.HasDoor());
     }
 
     public void OpenDoors() {
         neighbours.ForEach(n => {
-            if (n.hasDoor) {
-                OpenDoor(n.direction);
-                n.node.OpenDoor(n.direction * -1);
+            if (n.HasDoor()) {
+                n.OpenDoor();
             }
         });
     }
 
-    public void OpenDoor(Vector2 direction) {
-        Neighbour neighbour = neighbours.Find(n => n.direction == direction);
-        neighbour.hasDoor = false;
+    public Neighbour FindNeighbourTo(Node target) {
+        return neighbours.Find(neighbour => neighbour.GetOppositeNode(this) == target);
     }
 
     public override string ToString() {
