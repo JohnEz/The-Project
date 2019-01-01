@@ -78,16 +78,12 @@ public class Node : MonoBehaviour {
     }
 
     public void OpenDoors() {
-        Debug.Log("Openning Doors: " + ToString());
-
         neighbours.ForEach(n => {
             if (n.hasDoor) {
                 OpenDoor(n.direction);
                 n.node.OpenDoor(n.direction * -1);
             }
         });
-
-        Debug.Log("Has Doors: " + HasDoor());
     }
 
     public void OpenDoor(Vector2 direction) {

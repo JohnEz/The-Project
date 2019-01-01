@@ -32,7 +32,7 @@ public class GameManager : MonoBehaviour {
 
     //TEMP
     void AddPlayers() {
-        Player humanPlayer = PlayerManager.singleton.AddPlayer(1, CardManager.singleton.LoadDeck(BasicDecks.iceElementalist), "Jonesy");
+        Player humanPlayer = PlayerManager.singleton.AddPlayer(1, CardManager.singleton.LoadDeck(BasicDecks.elementalistDeck), "Jonesy");
 
         if (MatchDetails.VersusAi) {
             //Player cpuPlayer = PlayerManager.singleton.AddAiPlayer(1);

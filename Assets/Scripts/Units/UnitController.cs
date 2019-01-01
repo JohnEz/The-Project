@@ -229,7 +229,6 @@ public class UnitController : MonoBehaviour {
 		anim.IsWalking (false);
 
         // TODO only the player should be able to open doors
-        Debug.Log("Checking for doors");
         if (myNode.HasDoor()) {
             myNode.OpenDoors();
         }
