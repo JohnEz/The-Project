@@ -43,7 +43,6 @@ public class GameManager : MonoBehaviour {
 
         humanPlayer.myCharacter = UnitManager.singleton.SpawnUnit(5, PlayerManager.singleton.GetPlayer(0), 1, 9);
         CameraManager.singleton.JumpToLocation(humanPlayer.myCharacter.myNode);
-        map.pathfinder.HasLineOfSight(map.getNode(6, 9), map.getNode(7, 9));
 
         //UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(1), 1, 8);
         //UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(1), 1, 10);

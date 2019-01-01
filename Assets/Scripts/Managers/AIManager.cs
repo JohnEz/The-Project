@@ -221,7 +221,7 @@ public class AIManager : MonoBehaviour {
         //Debug.Log("I want to move to node: " + shortestPath.path.Last());
 
         // if there is a unit on the final node
-        if (shortestPath.path.Last().myUnit != null) {
+        while (shortestPath.path.Last().myUnit != null) {
             //remove that node
             shortestPath.path.Remove(shortestPath.path.Last());
         }
