@@ -4,7 +4,8 @@ using TMPro;
 
 public class PlayMenuController : MonoBehaviour {
 
-    public static Vector3 SUBMENU_POSITON = new Vector3(408f, 10f, 0f);
+    public static Vector3 OPEN_POSITION = new Vector3(0, 0, 0);
+    public static Vector3 SUBMENU_POSITON = new Vector3(515f, 3f, 0f);
 
     public GameObject subMenu;
 
@@ -24,10 +25,18 @@ public class PlayMenuController : MonoBehaviour {
 
     private void UpdateSubmenu(string title, string description) {
         // set title
-        subMenu.transform.Find("Header").gameObject.GetComponentInChildren<TextMeshProUGUI>().text = title;
+        subMenu.transform.Find("Title").gameObject.GetComponent<TextMeshProUGUI>().text = title;
 
         // set description
         subMenu.transform.Find("Description").GetComponent<TextMeshProUGUI>().text = description;
+    }
+
+    public void OpenMenu() {
+        GetComponent<SlidingMenu>().SlideToPosition(OPEN_POSITION);
+    }
+
+    public void CloseMenu() {
+        GetComponent<SlidingMenu>().CloseMenu();
     }
 
     public void OpenSubMenu() {
@@ -47,7 +56,8 @@ public class PlayMenuController : MonoBehaviour {
     }
 
     public void Back() {
-        transform.parent.Find("MainMenu").gameObject.SetActive(true);
-        gameObject.SetActive(false);
+        transform.parent.Find("MainMenu").GetComponent<MainMenuController>().OpenMenu();
+        CloseMenu();
+        CloseSubMenu();
     }
 }
