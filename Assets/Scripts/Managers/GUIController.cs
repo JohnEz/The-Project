@@ -13,7 +13,9 @@ public class GUIController : MonoBehaviour {
 	GameObject turnText;
 
 	public GameObject errorMessagePrefab;
-    public GameObject endGameMenuPrefab;
+
+    public GameObject victoryMenuPrefab;
+    public GameObject defeatMenuPrefab;
 
 	List<GameObject> abilityIcons = new List<GameObject>();
 	Dictionary<string, RuntimeAnimatorController> abilityIconControllers = new Dictionary<string, RuntimeAnimatorController>();
@@ -61,14 +63,7 @@ public class GUIController : MonoBehaviour {
     }
 
     public void GameOver(bool playerWon) {
-        GameObject go = Instantiate(endGameMenuPrefab, transform);
-
-        Text titleText = go.transform.Find("Title").GetComponent<Text>();
-        titleText.text = playerWon ? "Victory" : "Defeat";
-        titleText.color = playerWon ? new Color(0.01f, 1f, 0.1f) : new Color(1f, 0.01f, 0.1f);
-
-        go.transform.Find("BtnRetry").gameObject.SetActive(!playerWon);
-
+        GameObject go = Instantiate(playerWon ? victoryMenuPrefab : defeatMenuPrefab, transform);
     }
 
 	public void StartNewTurn(bool ally, List<Objective> objectives) {
