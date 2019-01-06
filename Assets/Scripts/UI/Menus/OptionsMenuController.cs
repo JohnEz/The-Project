@@ -13,7 +13,10 @@ public class OptionsMenuController : MonoBehaviour {
     public AudioMixer masterMixer;
     public TMP_Dropdown resolutionDropdown;
     public Toggle fullscreenToggle;
+
     public Slider masterVolumeSlider;
+    public Slider musicVolumeSlider;
+    public Slider sfxVolumeSlider;
 
     public AudioClip buttonClickAudio;
 
@@ -57,12 +60,28 @@ public class OptionsMenuController : MonoBehaviour {
 
         fullscreenToggle.isOn = Screen.fullScreen;
         float startingMasterVolume = 0;
-        masterMixer.GetFloat("volume", out startingMasterVolume);
+        masterMixer.GetFloat("masterVolume", out startingMasterVolume);
         masterVolumeSlider.value = startingMasterVolume;
+
+        float startingMusicVolume = 0;
+        masterMixer.GetFloat("musicVolume", out startingMusicVolume);
+        musicVolumeSlider.value = startingMusicVolume;
+
+        float startingSfxVolume = 0;
+        masterMixer.GetFloat("sfxVolume", out startingSfxVolume);
+        sfxVolumeSlider.value = startingSfxVolume;
     }
 
-    public void SetVolume(float volume) {
-        masterMixer.SetFloat("volume", volume);
+    public void SetMasterVolume(float volume) {
+        masterMixer.SetFloat("masterVolume", volume);
+    }
+
+    public void SetMusicVolume(float volume) {
+        masterMixer.SetFloat("musicVolume", volume);
+    }
+
+    public void SetSfxVolume(float volume) {
+        masterMixer.SetFloat("sfxVolume", volume);
     }
 
     public void SetFullScreen(bool isFullscreen) {

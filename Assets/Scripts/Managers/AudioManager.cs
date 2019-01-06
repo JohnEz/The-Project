@@ -10,6 +10,79 @@ public enum AudioMixers {
     SFX,
 }
 
+public enum Fade {
+    IN,
+    OUT,
+    NONE
+}
+
+[System.Serializable]
+public class Music {
+
+    public string name;
+
+    public AudioClip intro;
+    public AudioClip mainLoop;
+    public AudioClip stinger;
+
+    [HideInInspector]
+    public AudioSource source;
+
+    Fade fading = Fade.NONE;
+
+    const float FADE_SPEED = 0.5f;
+
+    public void Play(bool fadeIn = true) {
+        
+        if (fadeIn) {
+            FadeIn();
+            source.volume = 0;
+        } else {
+            source.volume = 1;
+        }
+        source.clip = mainLoop;
+        source.loop = true;
+        source.Play();
+    }
+
+    public void UpdateFade() {
+        if (!source.isPlaying) {
+            return;
+        }
+
+        if (fading == Fade.IN) {
+
+            if (source.volume < 1) {
+                source.volume += FADE_SPEED * Time.deltaTime;
+            } else {
+                fading = Fade.NONE;
+            }
+
+        } else if (fading == Fade.OUT) {
+
+            if (source.volume > 0) {
+                source.volume -= FADE_SPEED * Time.deltaTime;
+            } else {
+                source.Stop();
+                fading = Fade.NONE;
+            }
+
+        }
+    }
+
+    public void FadeIn() {
+        fading = Fade.IN;
+    }
+
+    public void FadeOut() {
+        fading = Fade.OUT;
+    }
+
+    public void Update() {
+        UpdateFade();
+    }
+}
+
 public class AudioManager : MonoBehaviour {
 
     public static AudioManager singleton;
@@ -19,6 +92,10 @@ public class AudioManager : MonoBehaviour {
     public AudioMixerGroup musicMixer;
     public AudioMixerGroup sfxMixer;
 
+    public Music[] music;
+
+    private Music currentMusic;
+
     void Awake() {
         if (singleton != null) {
             Destroy(gameObject);
@@ -26,23 +103,66 @@ public class AudioManager : MonoBehaviour {
             singleton = this;
             DontDestroyOnLoad(gameObject);
         }
+
+        foreach (Music m in music) {
+            m.source = gameObject.AddComponent<AudioSource>();
+            m.source.clip = m.intro;
+
+            m.source.outputAudioMixerGroup = musicMixer;
+        }
     }
 
-    public AudioSource PlayLoop(AudioClip sound, Transform transform, AudioMixers mixer = AudioMixers.MASTER, bool persist = true) {
+    public void Update() {
+        foreach (Music m in music) {
+            m.Update();
+        }
+    }
+
+    public void PlayMusic(string name, bool fadeIn = true) {
+        Music m = Array.Find(music, item => item.name == name);
+        if (m == null) {
+            Debug.LogWarning("Music: " + name + " not found!");
+            return;
+        }
+
+        if (currentMusic != null) {
+            if (m == currentMusic) {
+                Debug.LogWarning("Music: " + name + " already playing!");
+                return;
+            }
+
+            if (fadeIn) {
+                currentMusic.FadeOut();
+            } else {
+                currentMusic.source.Stop();
+            }
+        }
+        
+        currentMusic = m;
+
+        m.Play(fadeIn);
+    }
+
+    public GameObject PlayLoop(AudioClip sound, Transform transform, AudioMixers mixer = AudioMixers.MASTER, bool persist = true) {
         return Play(sound, transform, mixer, persist, true);
     }
 
-    public AudioSource Play(AudioClip clip, Transform transform, AudioMixers mixer = AudioMixers.MASTER, bool persist = false, bool loop = false) {
+    public GameObject Play(AudioClip clip, Transform transform, AudioMixers mixer = AudioMixers.MASTER, bool persist = false, bool loop = false) {
         //Create an empty game object
-        AudioSource source = CreatePlaySource(clip, transform.position, mixer, loop);
-        if (persist) {
-            DontDestroyOnLoad(source.gameObject);
+        GameObject go = CreatePlaySource(clip, transform.position, mixer, loop);
+        if (go == null) {
+            return go;
         }
-        Destroy(source.gameObject, clip.length);
-        return source;
+
+        if (persist) {
+            DontDestroyOnLoad(go);
+        }
+        Destroy(go, clip.length);
+
+        return go;
     }
 
-    private AudioSource CreatePlaySource(AudioClip clip, Vector3 point, AudioMixers mixer, bool loop) {
+    private GameObject CreatePlaySource(AudioClip clip, Vector3 point, AudioMixers mixer, bool loop) {
         if (clip == null) {
             Debug.LogError("Tried to play a null audio clip!");
             return null;
@@ -64,10 +184,10 @@ public class AudioManager : MonoBehaviour {
                 source.outputAudioMixerGroup = musicMixer;
                 break;
             case AudioMixers.UI:
-                source.outputAudioMixerGroup = musicMixer;
+                source.outputAudioMixerGroup = uiMixer;
                 break;
             case AudioMixers.SFX:
-                source.outputAudioMixerGroup = musicMixer;
+                source.outputAudioMixerGroup = sfxMixer;
                 break;
             default:
                 source.outputAudioMixerGroup = masterMixer;
@@ -75,7 +195,7 @@ public class AudioManager : MonoBehaviour {
         }
 
         source.Play();
-        return source;
+        return go;
     }
 
 }

@@ -8,7 +8,11 @@ public class MainMenuController : MonoBehaviour {
 
     public AudioClip buttonClickAudio;
 
-	public void Play() {
+    public void Start() {
+        AudioManager.singleton.PlayMusic("Menu", true);
+    }
+
+    public void Play() {
         AudioManager.singleton.Play(buttonClickAudio, transform, AudioMixers.UI, true);
 
         transform.parent.Find("PlayMenu").GetComponent<PlayMenuController>().OpenMenu();

@@ -63,6 +63,7 @@ public class GUIController : MonoBehaviour {
     }
 
     public void GameOver(bool playerWon) {
+        AudioManager.singleton.PlayMusic(playerWon ? "Victory" : "Defeat");
         GameObject go = Instantiate(playerWon ? victoryMenuPrefab : defeatMenuPrefab, transform);
     }
 

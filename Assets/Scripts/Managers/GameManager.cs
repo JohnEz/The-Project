@@ -26,6 +26,8 @@ public class GameManager : MonoBehaviour {
         //TEMP this should be loaded
         AddPlayers();
         AddObjectives();
+
+        AudioManager.singleton.PlayMusic("Battle", true);
     }
 
     public void StartGame() {
