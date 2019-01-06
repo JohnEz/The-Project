@@ -35,7 +35,6 @@ public class UnitController : MonoBehaviour {
 	public UnitManager myManager;
 	UnitAnimationController anim;
 	UnitCanvasController unitCanvasController;
-	UnitAudioController audioController;
     UnitDialogController myDialogController;
 
 	[System.NonSerialized]
@@ -76,7 +75,6 @@ public class UnitController : MonoBehaviour {
 		anim = GetComponentInChildren<UnitAnimationController> ();
         myStats = Instantiate(baseStats);
 		myStats.Initialise (this);
-		audioController = GetComponent<UnitAudioController> ();
 		projectiles = new List<ProjectileController> ();
         myDialogController = GetComponentInChildren<UnitDialogController>();
 
@@ -331,12 +329,12 @@ public class UnitController : MonoBehaviour {
 			anim.PlayHitAnimation ();
             // TODO move these onto the unit stats
             if (myStats.onHitSfx) {
-                PlayOneShot(myStats.onHitSfx);
+                AudioManager.singleton.Play(myStats.onHitSfx, transform, AudioMixers.SFX);
             }
         } else {
 			anim.PlayDeathAnimation ();
             if (myStats.onDeathSfx) {
-                PlayOneShot(myStats.onDeathSfx);
+                AudioManager.singleton.Play(myStats.onDeathSfx, transform, AudioMixers.SFX);
             }
             myManager.UnitDied (this);
 			isStillAlive = false;
@@ -389,10 +387,6 @@ public class UnitController : MonoBehaviour {
         Player owningPlayer = myPlayer.ai ? myPlayer : PlayerManager.singleton.GetPlayer(1);
         UnitManager.singleton.SpawnUnit(unitPrefab, owningPlayer, targetNode.x, targetNode.y);
     }
-
-	public void PlayOneShot(AudioClip sound) {
-		audioController.PlayOneShot (sound);
-	}
 
 	public void CreateBuffEffect(Buff buff) {
 		GameObject myEffect =  Instantiate (buff.persistentFxPrefab);

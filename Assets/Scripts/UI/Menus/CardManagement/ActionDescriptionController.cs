@@ -66,8 +66,8 @@ public class ActionDescriptionController : MonoBehaviour {
         string multiplyerString = null;
 
         attack.attackEffects.ForEach(effect => {
-            if (effect.GetType() == typeof(DamageWithMultiplier)) {
-                DamageWithMultiplier damageEffect = (DamageWithMultiplier)effect;
+            if (effect.GetType() == typeof(DamageWithMultiplierEffect)) {
+                DamageWithMultiplierEffect damageEffect = (DamageWithMultiplierEffect)effect;
                 multiplyerString = damageEffect.ToDescription();
             }
         });

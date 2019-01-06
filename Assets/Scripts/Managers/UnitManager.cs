@@ -50,8 +50,14 @@ public class UnitManager : MonoBehaviour {
 		get { return units; }
 	}
 
-	public UnitController SpawnUnit(int unit, Player player, int x, int y) {
-        return SpawnUnit(unitPrefabs[unit], player, x, y);
+	public UnitController SpawnUnit(string unit, Player player, int x, int y) {
+        if (!ResourceManager.singleton.units.ContainsKey(unit)) {
+            Debug.LogError("Could not spawn character " + unit);
+            return null;
+        }
+        GameObject unitToSpawn = ResourceManager.singleton.units[unit];
+
+        return SpawnUnit(unitToSpawn, player, x, y);
     }
 
     public UnitController SpawnUnit(GameObject unit, Player player, int x, int y) {

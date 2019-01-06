@@ -15,6 +15,8 @@ public class OptionsMenuController : MonoBehaviour {
     public Toggle fullscreenToggle;
     public Slider masterVolumeSlider;
 
+    public AudioClip buttonClickAudio;
+
     private Resolution[] resolutions;
 
     private void Start() {
@@ -76,6 +78,8 @@ public class OptionsMenuController : MonoBehaviour {
     }
 
     public void SaveAndExit() {
+        AudioManager.singleton.Play(buttonClickAudio, transform, AudioMixers.UI, true);
+
         transform.parent.Find("MainMenu").GetComponent<MainMenuController>().OpenMenu();
         CloseMenu();
     }

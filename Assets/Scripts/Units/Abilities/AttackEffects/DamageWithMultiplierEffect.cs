@@ -2,7 +2,7 @@
 using System.Collections;
 
 [CreateAssetMenu(fileName = "New Attack Action", menuName = "Card/Attack/Damage with Multiplier")]
-public class DamageWithMultiplier : DamagePerStackEffect {
+public class DamageWithMultiplierEffect : DamagePerStackEffect {
 
     public int baseDamage = 1;
 

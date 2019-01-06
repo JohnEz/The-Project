@@ -9,6 +9,8 @@ public class PauseMenuController : MonoBehaviour {
 
 	public GameObject pauseMenuUI;
 
+    public AudioClip buttonClickAudio;
+
     public void Awake() {
         singleton = this;
     }
@@ -26,12 +28,16 @@ public class PauseMenuController : MonoBehaviour {
 	}
 
 	public void LoadMainMenu () {
-		Resume ();
+        AudioManager.singleton.Play(buttonClickAudio, transform, AudioMixers.UI, true);
+
+        Resume ();
 		MenuSystem.LoadScene (Scenes.MAIN_MENU);
 	}
 
 	public void ExitGame () {
-		Application.Quit ();
+        AudioManager.singleton.Play(buttonClickAudio, transform, AudioMixers.UI, true);
+
+        Application.Quit ();
 	}
 }
 

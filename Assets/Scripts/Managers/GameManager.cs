@@ -7,6 +7,8 @@ public class GameManager : MonoBehaviour {
 
     TileMap map;
 
+    private const bool ADD_ALLY = false;
+
     private void Awake() {
         singleton = this;
     }
@@ -32,27 +34,30 @@ public class GameManager : MonoBehaviour {
 
     //TEMP
     void AddPlayers() {
-        Player humanPlayer = PlayerManager.singleton.AddPlayer(GameDetails.PlayerCharacter, CardManager.singleton.LoadDeck(GameDetails.PlayerDeck), "Jonesy");
+        Player humanPlayer = PlayerManager.singleton.AddPlayer(1, CardManager.singleton.LoadDeck(GameDetails.PlayerDeck), "Jonesy");
 
-        //Player cpuPlayer = PlayerManager.singleton.AddAiPlayer(1);
-        Player cpuPlayer2 = PlayerManager.singleton.AddAiPlayer(2);
+        if (ADD_ALLY) {
+            Player allyAI = PlayerManager.singleton.AddAiPlayer(1);
 
-        humanPlayer.myCharacter = UnitManager.singleton.SpawnUnit(5, PlayerManager.singleton.GetPlayer(0), 1, 9);
+            UnitManager.singleton.SpawnUnit("Bandit", allyAI, 1, 8);
+            UnitManager.singleton.SpawnUnit("Bandit", allyAI, 1, 10);
+        }
+
+        humanPlayer.myCharacter = UnitManager.singleton.SpawnUnit(GameDetails.PlayerCharacter, PlayerManager.singleton.GetPlayer(0), 1, 9);
         CameraManager.singleton.JumpToLocation(humanPlayer.myCharacter.myNode);
 
-        //UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(1), 1, 8);
-        //UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(1), 1, 10);
+        Player enemyAI = PlayerManager.singleton.AddAiPlayer(2);
 
-        UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(1), 5, 8);
-        UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(1), 5, 9);
-        UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(1), 5, 10);
+        UnitManager.singleton.SpawnUnit("Bandit", enemyAI, 5, 8);
+        UnitManager.singleton.SpawnUnit("Bandit", enemyAI, 5, 9);
+        UnitManager.singleton.SpawnUnit("Bandit", enemyAI, 5, 10);
 
-        UnitManager.singleton.SpawnUnit(6, PlayerManager.singleton.GetPlayer(1), 14, 8);
-        UnitManager.singleton.SpawnUnit(6, PlayerManager.singleton.GetPlayer(1), 14, 10);
+        UnitManager.singleton.SpawnUnit("Bandit Archer", enemyAI, 14, 8);
+        UnitManager.singleton.SpawnUnit("Bandit Archer", enemyAI, 14, 10);
 
-        UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(1), 10, 2);
-        UnitManager.singleton.SpawnUnit(6, PlayerManager.singleton.GetPlayer(1), 11, 1);
-        UnitManager.singleton.SpawnUnit(2, PlayerManager.singleton.GetPlayer(1), 12, 2);
+        UnitManager.singleton.SpawnUnit("Bandit", enemyAI, 10, 2);
+        UnitManager.singleton.SpawnUnit("Bandit Archer", enemyAI, 11, 1);
+        UnitManager.singleton.SpawnUnit("Bandit", enemyAI, 12, 2);
         
     }
 
@@ -70,10 +75,12 @@ public class GameManager : MonoBehaviour {
         objective2.type = ObjectiveType.ANNIHILATION;
         ObjectiveManager.singleton.AddObjective(PlayerManager.singleton.GetPlayer(1), objective2);
 
-        //Objective objective3 = new Objective();
-        //objective2.optional = false;
-        //objective2.text = "Kill all enemies!";
-        //objective2.type = ObjectiveType.ANNIHILATION;
-        //ObjectiveManager.singleton.AddObjective(PlayerManager.singleton.GetPlayer(2), objective3);
+        if (ADD_ALLY) {
+            Objective objective3 = new Objective();
+            objective3.optional = false;
+            objective3.text = "Kill all enemies!";
+            objective3.type = ObjectiveType.ANNIHILATION;
+            ObjectiveManager.singleton.AddObjective(PlayerManager.singleton.GetPlayer(2), objective3);
+        }
     }
 }

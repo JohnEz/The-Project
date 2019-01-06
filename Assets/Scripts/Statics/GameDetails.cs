@@ -2,11 +2,11 @@
 
 public static class GameDetails {
     private static string mapName = "";
-    private static int playerCharacter = 1;
+    private static string playerCharacter = "Mage";
     private static List<string> playerDeck = BasicDecks.elementalistDeck;
 
 
-    public static int PlayerCharacter {
+    public static string PlayerCharacter {
 		get {
 			return playerCharacter;
 		}

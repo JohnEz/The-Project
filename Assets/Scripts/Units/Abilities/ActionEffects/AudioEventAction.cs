@@ -9,21 +9,19 @@ public class AudioEventAction : EventAction {
     // Use this for initialization
     public AudioEventAction() : base() {
         action = (UnitController caster, UnitController target, Node targetedTile) => {
+            Transform targetTransform = caster.transform;
             switch (eventTarget) {
-                case EventTarget.CASTER:
-                    if (caster != null) {
-                        caster.PlayOneShot(audioClip);
-                    }
-                    break;
                 case EventTarget.TARGETUNIT:
                     if (target != null) {
-                        target.PlayOneShot(audioClip);
+                        targetTransform = target.transform;
                     }
                     break;
                 case EventTarget.TARGETEDTILE:
-                    //TODO ADD SOUNDEFFECT TO NODE
+                    targetTransform = targetedTile.transform;
                     break;
             };
+
+            AudioManager.singleton.Play(audioClip, targetTransform, AudioMixers.SFX);
         };
     }
 }

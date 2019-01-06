@@ -9,15 +9,21 @@ public class PlayMenuController : MonoBehaviour {
 
     public GameObject subMenu;
 
+    public AudioClip buttonClickAudio;
+
     public void PlayGameFireMage() {
-        GameDetails.PlayerCharacter = 1;
+        AudioManager.singleton.Play(buttonClickAudio, transform, AudioMixers.UI, true);
+
+        GameDetails.PlayerCharacter = "Mage";
         GameDetails.PlayerDeck = BasicDecks.fireElementalist;
         UpdateSubmenu("Fire Mage", "Description text for a Fire Mage.");
         OpenSubMenu();
     }
 
     public void PlayGameElementalist() {
-        GameDetails.PlayerCharacter = 1;
+        AudioManager.singleton.Play(buttonClickAudio, transform, AudioMixers.UI, true);
+
+        GameDetails.PlayerCharacter = "Mage";
         GameDetails.PlayerDeck = BasicDecks.elementalistDeck;
         UpdateSubmenu("Elementalist", "Description text for a Elementalist.");
         OpenSubMenu();
@@ -48,6 +54,8 @@ public class PlayMenuController : MonoBehaviour {
     }
 
     public void PlayGame() {
+        AudioManager.singleton.Play(buttonClickAudio, transform, AudioMixers.UI, true);
+
         LoadArena();
     }
 
@@ -56,6 +64,8 @@ public class PlayMenuController : MonoBehaviour {
     }
 
     public void Back() {
+        AudioManager.singleton.Play(buttonClickAudio, transform, AudioMixers.UI, true);
+
         transform.parent.Find("MainMenu").GetComponent<MainMenuController>().OpenMenu();
         CloseMenu();
         CloseSubMenu();
