@@ -8,12 +8,12 @@ public class EndGameMenuController : MonoBehaviour {
     public void Quit() {
         AudioManager.singleton.Play(buttonClickAudio, transform, AudioMixers.UI, true);
 
-        MenuSystem.LoadScene(Scenes.MAIN_MENU);
+        SceneChanger.Instance.FadeToScene(Scenes.MAIN_MENU);
     }
 
     public void Retry() {
         AudioManager.singleton.Play(buttonClickAudio, transform, AudioMixers.UI, true);
 
-        MenuSystem.LoadScene(Scenes.ARENA);
+        SceneChanger.Instance.FadeToScene(Scenes.ARENA);
     }
 }

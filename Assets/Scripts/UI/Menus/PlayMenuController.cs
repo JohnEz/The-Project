@@ -60,7 +60,7 @@ public class PlayMenuController : MonoBehaviour {
     }
 
     void LoadArena() {
-        MenuSystem.LoadScene(Scenes.ARENA);
+        SceneChanger.Instance.FadeToScene(Scenes.ARENA);
     }
 
     public void Back() {

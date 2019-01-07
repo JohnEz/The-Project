@@ -31,7 +31,7 @@ public class PauseMenuController : MonoBehaviour {
         AudioManager.singleton.Play(buttonClickAudio, transform, AudioMixers.UI, true);
 
         Resume ();
-		MenuSystem.LoadScene (Scenes.MAIN_MENU);
+        SceneChanger.Instance.FadeToScene(Scenes.MAIN_MENU);
 	}
 
 	public void ExitGame () {

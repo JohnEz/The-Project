@@ -4,6 +4,6 @@ using System.Collections;
 public class PregameUIController : MonoBehaviour {
 
     public void EnterMatch() {
-        MenuSystem.LoadScene(Scenes.ARENA);
+        SceneChanger.Instance.FadeToScene(Scenes.ARENA);
     }
 }
