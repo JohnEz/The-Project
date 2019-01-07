@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class CardDescriptionController : MonoBehaviour {
-
     public GameObject abilityDescriptionPrefab;
 
     public List<GameObject> abilityDescriptions;

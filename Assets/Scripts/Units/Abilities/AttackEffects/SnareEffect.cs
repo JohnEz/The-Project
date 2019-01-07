@@ -1,10 +1,7 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
 
 [CreateAssetMenu(fileName = "New Attack Action", menuName = "Card/Attack/Snare")]
 public class SnareEffect : AttackEffect {
-
     public int duration = 1;
 
     public GameObject effectPrefab;

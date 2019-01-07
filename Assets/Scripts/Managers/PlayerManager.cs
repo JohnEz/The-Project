@@ -1,6 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class Player {
     public int id;
@@ -9,11 +8,12 @@ public class Player {
     public int faction;
 
     public List<AbilityCardBase> deck = new List<AbilityCardBase>();
-    List<AbilityCardBase> hand = new List<AbilityCardBase>();
+    private List<AbilityCardBase> hand = new List<AbilityCardBase>();
     public Stack<AbilityCardBase> discard = new Stack<AbilityCardBase>();
 
     // Physical world objects
     public UnitController myCharacter;
+
     //public Hand myHand;
     public Deck myDeck;
 }
@@ -21,13 +21,13 @@ public class Player {
 public class PlayerManager : MonoBehaviour {
     public static PlayerManager singleton;
 
-    List<Player> players = new List<Player>();
+    private List<Player> players = new List<Player>();
 
     public GameObject player1Hand;
     public GameObject player1Deck;
 
-    int humanCount = 0;
-    int cpuCount = 0;
+    private int humanCount = 0;
+    private int cpuCount = 0;
 
     //TODO i dont like this, can we store it in a player as local player or current player?
     public Player mainPlayer;

@@ -1,11 +1,9 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class GameManager : MonoBehaviour {
-
     public static GameManager singleton;
 
-    TileMap map;
+    private TileMap map;
 
     private const bool ADD_ALLY = false;
 
@@ -14,7 +12,7 @@ public class GameManager : MonoBehaviour {
     }
 
     // Use this for initialization
-    void Start() {
+    private void Start() {
         // TODO try to abstract this out
         map = GetComponentInChildren<TileMap>();
         map.Initialise();
@@ -35,7 +33,7 @@ public class GameManager : MonoBehaviour {
     }
 
     //TEMP
-    void AddPlayers() {
+    private void AddPlayers() {
         Player humanPlayer = PlayerManager.singleton.AddPlayer(1, CardManager.singleton.LoadDeck(GameDetails.PlayerDeck), "Jonesy");
 
         if (ADD_ALLY) {
@@ -60,11 +58,10 @@ public class GameManager : MonoBehaviour {
         UnitManager.singleton.SpawnUnit("Bandit", enemyAI, 10, 2);
         UnitManager.singleton.SpawnUnit("Bandit Archer", enemyAI, 11, 1);
         UnitManager.singleton.SpawnUnit("Bandit", enemyAI, 12, 2);
-        
     }
 
     //TEMP
-    void AddObjectives() {
+    private void AddObjectives() {
         Objective objective = new Objective();
         objective.optional = false;
         objective.text = "Kill all enemies!";

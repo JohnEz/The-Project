@@ -1,13 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
 
 public class OptionsMenuController : MonoBehaviour {
-
     public static Vector3 OPEN_POSITION = new Vector3(0, 0, 0);
 
     public AudioMixer masterMixer;

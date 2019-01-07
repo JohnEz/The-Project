@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 [CreateAssetMenu(fileName = "New Attack Action", menuName = "Card/Attack/Damage Per Stack")]
 public class DamagePerStackEffect : AttackEffect {
-
     public int damageMod = 1;
     public string buffName = "Burn";
 

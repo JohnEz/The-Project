@@ -1,14 +1,12 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class SlidingMenu : MonoBehaviour {
+    private float SLIDE_SPEED = 8f;
+    private float MIN_DISTANCE = 0.05f;
 
-    float SLIDE_SPEED = 8f;
-    float MIN_DISTANCE = 0.05f;
-
-    Vector3 startingPosition;
-    bool isSliding = false;
-    Vector3 targetPosition;
+    private Vector3 startingPosition;
+    private bool isSliding = false;
+    private Vector3 targetPosition;
 
     private void Awake() {
         startingPosition = transform.localPosition;
@@ -16,7 +14,7 @@ public class SlidingMenu : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update() {
+    private void Update() {
         if (targetPosition == null || SLIDE_SPEED <= 0) {
             return;
         }

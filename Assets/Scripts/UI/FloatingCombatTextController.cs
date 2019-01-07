@@ -1,20 +1,16 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class FloatingCombatTextController : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    private void Start() {
+    }
 
-	}
+    // Update is called once per frame
+    private void Update() {
+    }
 
-	// Update is called once per frame
-	void Update () {
-
-	}
-
-	public void DestroyMe() {
-		Destroy (gameObject);
-	}
-		
+    public void DestroyMe() {
+        Destroy(gameObject);
+    }
 }

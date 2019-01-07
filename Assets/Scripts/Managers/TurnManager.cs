@@ -1,29 +1,25 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine.SceneManagement;
 
 public enum TurnPhase {
     GAME_STARTING,
-	TURN_STARTING,
-	WAITING_FOR_INPUT,
-	UNIT_MOVING,
-	UNIT_ATTACKING,
-	TURN_ENDING,
+    TURN_STARTING,
+    WAITING_FOR_INPUT,
+    UNIT_MOVING,
+    UNIT_ATTACKING,
+    TURN_ENDING,
     GAME_OVER
 }
 
 public class TurnManager : MonoBehaviour {
-
     public static TurnManager singleton;
 
-	TileMap map;
+    private TileMap map;
 
-	TurnPhase currentPhase = TurnPhase.GAME_STARTING;
+    private TurnPhase currentPhase = TurnPhase.GAME_STARTING;
 
-	int playersTurn = -1;
+    private int playersTurn = -1;
 
-	bool checkedIfTurnShouldEnd = true;
+    private bool checkedIfTurnShouldEnd = true;
 
     private void Awake() {
         singleton = this;
@@ -33,18 +29,18 @@ public class TurnManager : MonoBehaviour {
     public void Initialise(TileMap _map) {
         map = _map;
     }
-	
-	// Update is called once per frame
-	void Update () {
-		//check to see if the turn should end
-		if (!checkedIfTurnShouldEnd) {
-			if (!isAiTurn() && currentPhase == TurnPhase.WAITING_FOR_INPUT && UnitManager.singleton.PlayerOutOfActions (playersTurn)) {
-				EndTurn ();
-			} else {
+
+    // Update is called once per frame
+    private void Update() {
+        //check to see if the turn should end
+        if (!checkedIfTurnShouldEnd) {
+            if (!isAiTurn() && currentPhase == TurnPhase.WAITING_FOR_INPUT && UnitManager.singleton.PlayerOutOfActions(playersTurn)) {
+                EndTurn();
+            } else {
                 checkedIfTurnShouldEnd = true;
-			}
-		}
-	}
+            }
+        }
+    }
 
     public void StartGame() {
         PlayerManager.singleton.StartGame();
@@ -52,88 +48,85 @@ public class TurnManager : MonoBehaviour {
         StartNewTurn();
     }
 
-	public void StartNewTurn() {
-		ChangeState(TurnPhase.TURN_STARTING);
-		playersTurn++;
-		playersTurn = playersTurn % PlayerManager.singleton.GetNumberOfPlayers();
+    public void StartNewTurn() {
+        ChangeState(TurnPhase.TURN_STARTING);
+        playersTurn++;
+        playersTurn = playersTurn % PlayerManager.singleton.GetNumberOfPlayers();
         Player currentPlayersTurn = GetCurrentPlayer();
-        UnitManager.singleton.StartTurn (currentPlayersTurn);
-		bool alliedTurn = PlayerManager.singleton.mainPlayer.faction == currentPlayersTurn.faction;
+        UnitManager.singleton.StartTurn(currentPlayersTurn);
+        bool alliedTurn = PlayerManager.singleton.mainPlayer.faction == currentPlayersTurn.faction;
 
-		GUIController.singleton.StartNewTurn (alliedTurn, ObjectiveManager.singleton.getObjectives(currentPlayersTurn));
+        GUIController.singleton.StartNewTurn(alliedTurn, ObjectiveManager.singleton.getObjectives(currentPlayersTurn));
 
         PlayerManager.singleton.StartNewTurn(currentPlayersTurn);
 
-		UserInterfaceManager.singleton.StartTurn ();
-
-
+        UserInterfaceManager.singleton.StartTurn();
 
         // TODO Had error when unit died at turn start
-        if (isAiTurn ()) {
-			StartCoroutine(AIManager.singleton.NewTurn (playersTurn));
-		} else if (currentPlayersTurn.myCharacter != null) {
+        if (isAiTurn()) {
+            StartCoroutine(AIManager.singleton.NewTurn(playersTurn));
+        } else if (currentPlayersTurn.myCharacter != null) {
             CameraManager.singleton.MoveToLocation(currentPlayersTurn.myCharacter.myNode);
         }
-
     }
 
-	public void EndTurn() {
-		ChangeState(TurnPhase.TURN_ENDING);
+    public void EndTurn() {
+        ChangeState(TurnPhase.TURN_ENDING);
         Player currentPlayersTurn = GetCurrentPlayer();
 
-        if (ObjectiveManager.singleton.CheckObjectives (currentPlayersTurn)) {
+        if (ObjectiveManager.singleton.CheckObjectives(currentPlayersTurn)) {
             ChangeState(TurnPhase.GAME_OVER);
             GUIController.singleton.GameOver(GetCurrentPlayer() == PlayerManager.singleton.mainPlayer);
-		} else {
-			UnitManager.singleton.EndTurn (currentPlayersTurn);
-			StartNewTurn ();
-			UserInterfaceManager.singleton.EndTurn ();
-		}
-	}
+        } else {
+            UnitManager.singleton.EndTurn(currentPlayersTurn);
+            StartNewTurn();
+            UserInterfaceManager.singleton.EndTurn();
+        }
+    }
 
-	public TurnPhase CurrentPhase {
-		get { return currentPhase; }
-		set { ChangeState(value); }
-	}
+    public TurnPhase CurrentPhase {
+        get { return currentPhase; }
+        set { ChangeState(value); }
+    }
 
-	public int PlayersTurn {
-		get { return playersTurn; }
-		set { playersTurn = value; }
-	}
+    public int PlayersTurn {
+        get { return playersTurn; }
+        set { playersTurn = value; }
+    }
 
     public Player GetCurrentPlayer() {
         return PlayerManager.singleton.GetPlayer(playersTurn);
     }
 
-	public void ChangeState(TurnPhase newPhase) {
-		currentPhase = newPhase;
+    public void ChangeState(TurnPhase newPhase) {
+        currentPhase = newPhase;
         checkedIfTurnShouldEnd = false;
-	}
-
-	public void FinishStartingTurn() {
-		ChangeState(TurnPhase.WAITING_FOR_INPUT);
     }
 
-	public void StartMoving() {
-		ChangeState(TurnPhase.UNIT_MOVING);
-	}
+    public void FinishStartingTurn() {
+        ChangeState(TurnPhase.WAITING_FOR_INPUT);
+    }
 
-	public void FinishedMoving() {
-		ChangeState(TurnPhase.WAITING_FOR_INPUT);
-		UserInterfaceManager.singleton.FinishedMoving ();
-	}
+    public void StartMoving() {
+        ChangeState(TurnPhase.UNIT_MOVING);
+    }
 
-	public void StartAttacking() {
-		ChangeState(TurnPhase.UNIT_ATTACKING);
-	}
+    public void FinishedMoving() {
+        ChangeState(TurnPhase.WAITING_FOR_INPUT);
+        UserInterfaceManager.singleton.FinishedMoving();
+    }
 
-	public void FinishedAttacking() {
+    public void StartAttacking() {
+        ChangeState(TurnPhase.UNIT_ATTACKING);
+    }
+
+    public void FinishedAttacking() {
         // TODO check for triggers?
         ChangeState(TurnPhase.WAITING_FOR_INPUT);
-        UserInterfaceManager.singleton.FinishedAttacking ();
+        UserInterfaceManager.singleton.FinishedAttacking();
     }
 
-	public bool isAiTurn() {
-		return GetCurrentPlayer().ai;
-	}
+    public bool isAiTurn() {
+        return GetCurrentPlayer().ai;
+    }
 }

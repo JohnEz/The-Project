@@ -21,5 +21,4 @@ public static class PlayerSchool {
             roster = value;
         }
     }
-
 }

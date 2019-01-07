@@ -1,7 +1,4 @@
-﻿using UnityEngine;
-using System.Collections;
-
-public class Weaken : Buff {
+﻿public class Weaken : Buff {
 
     public Weaken(int maxDuration) : base(maxDuration) {
         name = "Weaken";
@@ -10,5 +7,4 @@ public class Weaken : Buff {
         isDebuff = true;
         percentMod[(int)Stats.POWER] = 0.8f;
     }
-
 }

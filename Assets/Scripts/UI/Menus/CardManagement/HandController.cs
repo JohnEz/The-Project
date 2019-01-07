@@ -1,28 +1,25 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class HandController : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler {
+    private const float DRAG_SPEED = 25F;
+    private const float MIN_DISTANCE = 1f;
 
-    const float DRAG_SPEED = 25F;
-    const float MIN_DISTANCE = 1f;
-
-    Vector3 targetLocation;
+    private Vector3 targetLocation;
 
     public Transform originalParent;
     public Transform placeholderParent;
 
-    GameObject placeholder = null;
+    private GameObject placeholder = null;
 
-    bool beingDragged = false;
-    public bool droppedOnZone = false; 
+    private bool beingDragged = false;
+    public bool droppedOnZone = false;
 
-    void Start() {
-        
+    private void Start() {
     }
 
-    void Update() {
+    private void Update() {
         if (beingDragged && Vector3.Distance(targetLocation, transform.position) > MIN_DISTANCE) {
             this.transform.position = Vector3.Lerp(transform.position, targetLocation, DRAG_SPEED * Time.deltaTime);
         }
@@ -35,9 +32,9 @@ public class HandController : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 
         beingDragged = true;
         originalParent = transform.parent;
-        
+
         CreatePlaceholder();
-        
+
         // Remove from the hand
         transform.SetParent(GameObject.Find("GameCanvas").transform);
 
@@ -74,7 +71,7 @@ public class HandController : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     }
 
     // Creates a placeholder where this card was in the hand
-    void CreatePlaceholder() {
+    private void CreatePlaceholder() {
         RectTransform myRect = GetComponent<RectTransform>();
 
         placeholderParent = originalParent;
@@ -93,7 +90,7 @@ public class HandController : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         placeholder.transform.SetSiblingIndex(transform.GetSiblingIndex());
     }
 
-    void AdjustPlaceHolder() {
+    private void AdjustPlaceHolder() {
         int newSiblingIndex = placeholderParent.childCount;
 
         if (placeholder.transform.parent != placeholderParent) {
@@ -107,7 +104,7 @@ public class HandController : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
                 if (placeholder.transform.GetSiblingIndex() < newSiblingIndex) {
                     newSiblingIndex--;
                 }
-                
+
                 break;
             }
         }

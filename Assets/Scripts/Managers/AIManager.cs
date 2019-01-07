@@ -1,54 +1,50 @@
-﻿using UnityEngine;
-using System.Collections;
-using UnityEngine.UI;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class AIManager : MonoBehaviour {
-
     public static AIManager singleton;
 
-	List<UnitController> myUnits;
+    private List<UnitController> myUnits;
 
-	TileMap myMap;
+    private TileMap myMap;
 
     private void Awake() {
         singleton = this;
     }
 
     // Use this for initialization
-    void Start () {
+    private void Start() {
+    }
 
-	}
+    // Update is called once per frame
+    private void Update() {
+    }
 
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    public void Initialise(TileMap map) {
+        myMap = map;
+    }
 
-	public void Initialise(TileMap map) {
-		myMap = map;
-	}
+    public List<UnitController> MyUnits {
+        get { return myUnits; }
+        set { myUnits = value; }
+    }
 
-	public List<UnitController> MyUnits {
-		get { return myUnits; }
-		set { myUnits = value; }
-	}
+    // NewTurn is called at the start of each of the AIs turns.
+    public IEnumerator NewTurn(int myPlayerId) {
+        myUnits = UnitManager.singleton.Units.Where(unit => unit.myPlayer.id == myPlayerId).ToList();
 
-	// NewTurn is called at the start of each of the AIs turns.
-	public IEnumerator NewTurn(int myPlayerId) {
-		myUnits = UnitManager.singleton.Units.Where (unit => unit.myPlayer.id == myPlayerId).ToList ();
-
-		foreach (UnitController unit in myUnits) {
+        foreach (UnitController unit in myUnits) {
             CameraManager.singleton.FollowTarget(unit.transform);
             yield return PlanTurnTwoActions(unit);
-		}
+        }
 
-		TurnManager.singleton.EndTurn ();
-	}
+        TurnManager.singleton.EndTurn();
+    }
 
     //If we only want AI to have a single move and a single attack
-	public IEnumerator PlanTurnMoveAndAttack(UnitController unit) {
+    public IEnumerator PlanTurnMoveAndAttack(UnitController unit) {
         bool hasEndedTurn = false;
         bool hasAttacked = false;
         bool hasMoved = false;
@@ -81,11 +77,9 @@ public class AIManager : MonoBehaviour {
             } else {
                 hasEndedTurn = true;
             }
-
         }
-        yield return WaitForWaitingForInput ();
-
-	}
+        yield return WaitForWaitingForInput();
+    }
 
     public IEnumerator PlanTurnTwoActions(UnitController unit) {
         int actionPoints = 2;
@@ -100,7 +94,6 @@ public class AIManager : MonoBehaviour {
 
             // if the first ability has 1 or more available targets
             if (hasAvailableTargets) {
-
                 // TODO THIS IS DUMB
                 int chosenAttackIndex = Random.Range(0, filteredPotentialAbilityTargets.Keys.Count);
                 AttackAction chosenAttack = filteredPotentialAbilityTargets.Keys.ToArray()[chosenAttackIndex];
@@ -126,10 +119,8 @@ public class AIManager : MonoBehaviour {
             } else {
                 actionPoints = 0;
             }
-
         }
         yield return WaitForWaitingForInput();
-
     }
 
     // Finds all tiles that can attack an enemy
@@ -139,7 +130,6 @@ public class AIManager : MonoBehaviour {
         UnitManager.singleton.Units.ForEach(otherUnit => {
             unit.myStats.Attacks.ForEach(attackAction => {
                 if (attackAction.CanHitUnit(otherUnit.myNode)) {
-
                     List<Node> nodesToAttackFrom = myMap.pathfinder.FindAttackableTiles(otherUnit.myNode, attackAction);
 
                     // This isnt needed anymore but better safe than sorry i guess
@@ -150,10 +140,8 @@ public class AIManager : MonoBehaviour {
                             attackNodes.Add(attackNode);
                         }
                     });
-
                 }
             });
-
         });
 
         return attackNodes;
@@ -172,7 +160,7 @@ public class AIManager : MonoBehaviour {
         return pathsToNodes;
     }
 
-        // finds finds the shortest path to all enemies
+    // finds finds the shortest path to all enemies
     public List<MovementPath> FindPathsToEnemies(UnitController unit) {
         List<MovementPath> pathsToEnemies = new List<MovementPath>();
 
@@ -236,7 +224,7 @@ public class AIManager : MonoBehaviour {
         UnitManager.singleton.SetUnitPath(unit, shortestPath);
     }
 
-	public IEnumerator WaitForWaitingForInput() {
-		return new WaitUntil (() => TurnManager.singleton.CurrentPhase == TurnPhase.WAITING_FOR_INPUT);
-	}
+    public IEnumerator WaitForWaitingForInput() {
+        return new WaitUntil(() => TurnManager.singleton.CurrentPhase == TurnPhase.WAITING_FOR_INPUT);
+    }
 }

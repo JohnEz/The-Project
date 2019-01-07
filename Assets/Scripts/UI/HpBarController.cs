@@ -1,72 +1,71 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class HpBarController : MonoBehaviour {
+    public Image hpBar;
 
-	public Image hpBar;
-	[SerializeField]
-	public GameObject hpMarkerPrefab;
+    [SerializeField]
+    public GameObject hpMarkerPrefab;
 
-	private List<GameObject> hpMarkers = new List<GameObject>();
+    private List<GameObject> hpMarkers = new List<GameObject>();
 
-	private const int HP_MARKER_INTERVAL = 1;
+    private const int HP_MARKER_INTERVAL = 1;
 
-	private float currentMax = 0;
+    private float currentMax = 0;
     private float targetPercent = 1;
 
-	// Use this for initialization
-	public void Initialize (float maxHp) {
-		hpBar = transform.Find("hpBar").GetComponent<Image>();
-		currentMax = maxHp;
-		createMarkers (maxHp);
+    // Use this for initialization
+    public void Initialize(float maxHp) {
+        hpBar = transform.Find("hpBar").GetComponent<Image>();
+        currentMax = maxHp;
+        createMarkers(maxHp);
     }
-	
-	// Update is called once per frame
-	void Update () {
-		if (targetPercent != hpBar.fillAmount) {
+
+    // Update is called once per frame
+    private void Update() {
+        if (targetPercent != hpBar.fillAmount) {
             hpBar.fillAmount = Mathf.Lerp(hpBar.fillAmount, targetPercent, 2f * Time.deltaTime);
         }
-	}
+    }
 
-	public void SetHP(float currentHp, float maxHp) {
+    public void SetHP(float currentHp, float maxHp) {
         targetPercent = currentHp / maxHp;
 
-		if (maxHp != currentMax) {
-			currentMax = maxHp;
-			destroyMarkers ();
-			createMarkers (maxHp);
-		}
-	}
+        if (maxHp != currentMax) {
+            currentMax = maxHp;
+            destroyMarkers();
+            createMarkers(maxHp);
+        }
+    }
 
-	public void SetHPColor(Color color) {
-		hpBar.color = color;
-	}
+    public void SetHPColor(Color color) {
+        hpBar.color = color;
+    }
 
-	public void createMarkers(float maxHp) {
-		int numberOfMarkers = (int)(maxHp / HP_MARKER_INTERVAL);
-		float increment = hpBar.rectTransform.rect.width / (numberOfMarkers);
+    public void createMarkers(float maxHp) {
+        int numberOfMarkers = (int)(maxHp / HP_MARKER_INTERVAL);
+        float increment = hpBar.rectTransform.rect.width / (numberOfMarkers);
 
-		for (int i = 0; i < numberOfMarkers-1; i++) {
-			GameObject newMarker = createMarker (i, increment);
-			hpMarkers.Add (newMarker);
-		}
-	}
+        for (int i = 0; i < numberOfMarkers - 1; i++) {
+            GameObject newMarker = createMarker(i, increment);
+            hpMarkers.Add(newMarker);
+        }
+    }
 
-	public GameObject createMarker(int index, float increment) {
-		GameObject newMarker = Instantiate (hpMarkerPrefab);
-		Vector3 newPosition = newMarker.transform.position;
-		newMarker.transform.SetParent(hpBar.transform, false);
-		newPosition.x = Mathf.RoundToInt((index+1)*increment);
-		newMarker.GetComponent<RectTransform> ().anchoredPosition = newPosition;
-		return newMarker;
-	}
+    public GameObject createMarker(int index, float increment) {
+        GameObject newMarker = Instantiate(hpMarkerPrefab);
+        Vector3 newPosition = newMarker.transform.position;
+        newMarker.transform.SetParent(hpBar.transform, false);
+        newPosition.x = Mathf.RoundToInt((index + 1) * increment);
+        newMarker.GetComponent<RectTransform>().anchoredPosition = newPosition;
+        return newMarker;
+    }
 
-	public void destroyMarkers() {
-		hpMarkers.ForEach ((hpMarker) => {
-			Destroy (hpMarker);
-		});
-		hpMarkers.Clear ();
-	}
+    public void destroyMarkers() {
+        hpMarkers.ForEach((hpMarker) => {
+            Destroy(hpMarker);
+        });
+        hpMarkers.Clear();
+    }
 }

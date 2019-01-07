@@ -4,11 +4,10 @@ Shader "Hidden/RadialGaussShader"
 {
 	Properties
 	{
-		_MainTex ("Texture", 2D) = "white" {}
+		_MainTex("Texture", 2D) = "white" {}
 	}
 		SubShader
 	{
-
 		CGINCLUDE
 
 		#include "UnityCG.cginc"
@@ -43,7 +42,7 @@ Shader "Hidden/RadialGaussShader"
 		{
 			float4 colour = float4(0.0f, 0.0f, 0.0f, 0.0f);
 			float4 centerTap = float4(0.0f, 0.0f, 0.0f, 0.0f);
-			
+
 			colour += tex2D(tex, uv + (-2 * texelOffset)) * gaussianKernel[2];
 			colour += tex2D(tex, uv + (-1 * texelOffset)) * gaussianKernel[1];
 			centerTap = tex2D(tex, uv);

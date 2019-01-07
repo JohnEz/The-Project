@@ -1,33 +1,31 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler {
+    private const float DRAG_SPEED = 25F;
+    private const float MIN_DISTANCE_TO_LOCATION = 1f;
+    private const float SCALE_SPEED = 15f;
+    private const float MIN_DISTANCE_TO_SCALE = 0.05f;
 
-    const float DRAG_SPEED = 25F;
-    const float MIN_DISTANCE_TO_LOCATION = 1f;
-    const float SCALE_SPEED = 15f;
-    const float MIN_DISTANCE_TO_SCALE = 0.05f;
-
-    Vector3 targetLocation;
-    Vector3 targetScale;
+    private Vector3 targetLocation;
+    private Vector3 targetScale;
 
     public Transform originalParent;
     public Transform placeholderParent;
 
-    GameObject placeholder = null;
+    private GameObject placeholder = null;
 
-    bool beingDragged = false;
+    private bool beingDragged = false;
     public bool droppedOnZone = false;
 
     //public bool isScaling;
 
-    void Start() {
+    private void Start() {
         targetScale = GetComponent<RectTransform>().localScale;
     }
 
-    void Update() {
+    private void Update() {
         // move to target location
         if (beingDragged && Vector3.Distance(targetLocation, transform.position) > MIN_DISTANCE_TO_LOCATION) {
             this.transform.position = Vector3.Lerp(transform.position, targetLocation, DRAG_SPEED * Time.deltaTime);
@@ -48,7 +46,7 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
     }
 
     public void SetTargetPosition(Vector3 target) {
-        targetLocation = new Vector3(target.x, target.y - (GetComponent<RectTransform>().rect.height/4), target.z);
+        targetLocation = new Vector3(target.x, target.y - (GetComponent<RectTransform>().rect.height / 4), target.z);
     }
 
     public void SetScale(Vector3 scale) {
@@ -124,7 +122,7 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
     }
 
     // Creates a placeholder where this card was in the hand
-    void CreatePlaceholder() {
+    private void CreatePlaceholder() {
         RectTransform myRect = GetComponent<RectTransform>();
 
         placeholderParent = originalParent;
@@ -143,7 +141,7 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         placeholder.transform.SetSiblingIndex(transform.GetSiblingIndex());
     }
 
-    void AdjustPlaceHolder() {
+    private void AdjustPlaceHolder() {
         int newSiblingIndex = placeholderParent.childCount;
 
         if (placeholder.transform.parent != placeholderParent) {
@@ -157,7 +155,7 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
                 if (placeholder.transform.GetSiblingIndex() < newSiblingIndex) {
                     newSiblingIndex--;
                 }
-                
+
                 break;
             }
         }

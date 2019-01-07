@@ -1,10 +1,7 @@
 ﻿using UnityEngine;
-using System.Collections;
-using UnityEngine.SceneManagement;
 
 public class MainMenuController : MonoBehaviour {
-
-    Vector3 EXIT_POSITION = new Vector3(-1280, 0, 0);
+    private Vector3 EXIT_POSITION = new Vector3(-1280, 0, 0);
 
     public AudioClip buttonClickAudio;
 
@@ -34,8 +31,7 @@ public class MainMenuController : MonoBehaviour {
         GetComponent<SlidingMenu>().SlideToPosition(EXIT_POSITION);
     }
 
-	public void Exit() {
-		Application.Quit ();
-	}
+    public void Exit() {
+        Application.Quit();
+    }
 }
-

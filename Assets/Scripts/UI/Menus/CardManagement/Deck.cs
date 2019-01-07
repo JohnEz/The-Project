@@ -1,16 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 public class Deck : MonoBehaviour {
     public Hand hand;
 
-    Player myPlayer;
+    private Player myPlayer;
 
     // Use this for initialization
-    void Start() {
-
+    private void Start() {
     }
 
     public void SetPlayer(Player _myPlayer) {
@@ -18,7 +16,7 @@ public class Deck : MonoBehaviour {
     }
 
     public void DrawCard(int count = 1) {
-        for(int i=0; i < count; ++i) {
+        for (int i = 0; i < count; ++i) {
             DrawCard();
         }
     }

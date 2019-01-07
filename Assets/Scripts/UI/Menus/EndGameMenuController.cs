@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class EndGameMenuController : MonoBehaviour {
-
     public AudioClip buttonClickAudio;
 
     public void Quit() {

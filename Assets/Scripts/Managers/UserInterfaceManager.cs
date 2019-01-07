@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
-using UnityEngine.UI;
 
 public enum CardState {
     NONE,
@@ -9,32 +7,31 @@ public enum CardState {
 }
 
 public class UserInterfaceManager : MonoBehaviour {
-
     public static UserInterfaceManager singleton;
 
-	//Managers
-	PauseMenuController pauseMenuController;
+    //Managers
+    private PauseMenuController pauseMenuController;
 
-    CardDisplay activeCard = null;
-    int currentActionIndex = 0;
-    CardState cardState = CardState.NONE;
+    private CardDisplay activeCard = null;
+    private int currentActionIndex = 0;
+    private CardState cardState = CardState.NONE;
 
     private void Awake() {
         singleton = this;
     }
 
     // Use this for initialization
-    void Start () {
+    private void Start() {
         pauseMenuController = GetComponent<PauseMenuController>();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		UserControls ();
-	}
+    }
 
-	public void ShowCard(CardDisplay card) {
-		UnshowCard ();
+    // Update is called once per frame
+    private void Update() {
+        UserControls();
+    }
+
+    public void ShowCard(CardDisplay card) {
+        UnshowCard();
         activeCard = card;
 
         if (cardState == CardState.NONE) {
@@ -42,27 +39,26 @@ public class UserInterfaceManager : MonoBehaviour {
         }
     }
 
-	public void UnshowCard() {
-		if (activeCard) {
+    public void UnshowCard() {
+        if (activeCard) {
             HighlightManager.singleton.UnhighlightTiles();
             HighlightManager.singleton.ClearEffectedTiles();
         }
-	}
+    }
 
     // When the user clicked an action from the card
     public void CardInvoked() {
         cardState = CardState.INVOKED;
     }
 
-	void UserControls() {
+    private void UserControls() {
+        //temp for ai
+        //if (Input.GetKeyUp ("space")) {
+        //	TurnManager.singleton.EndTurn ();
+        //}
 
-		//temp for ai
-		//if (Input.GetKeyUp ("space")) {
-		//	TurnManager.singleton.EndTurn ();
-		//}
-
-		//Cancel (right click)
-		if (Input.GetKeyUp (KeyCode.Escape)) {
+        //Cancel (right click)
+        if (Input.GetKeyUp(KeyCode.Escape)) {
             if (cardState == CardState.PLAYED) {
                 CancelCurrentCard();
             } else {
@@ -72,16 +68,14 @@ public class UserInterfaceManager : MonoBehaviour {
                     pauseMenuController.Pause();
                 }
             }
-		}
+        }
 
-		if (TurnManager.singleton.CurrentPhase == TurnPhase.WAITING_FOR_INPUT && !TurnManager.singleton.isAiTurn()) {
-
-			if (Input.GetKeyUp ("space")) {
+        if (TurnManager.singleton.CurrentPhase == TurnPhase.WAITING_FOR_INPUT && !TurnManager.singleton.isAiTurn()) {
+            if (Input.GetKeyUp("space")) {
                 TurnManager.singleton.EndTurn();
             }
-		}
-
-	}
+        }
+    }
 
     public void CancelCurrentCard() {
         cardState = CardState.NONE;
@@ -90,41 +84,40 @@ public class UserInterfaceManager : MonoBehaviour {
         UnshowCard();
     }
 
-	public void TileHovered(Node node, SquareTarget target) {
-		UnitManager.singleton.CurrentlyHoveredNode = node;
-		if (cardState != CardState.NONE && (target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL)) {
-			UnitManager.singleton.HighlightEffectedTiles (activeCard.ability.caster, node);
-		} else if (target == SquareTarget.MOVEMENT || target == SquareTarget.DASH || ((target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL) && node.previousMoveNode != null)) {
-			UnitManager.singleton.ShowPath (node);
-		}
-	}
+    public void TileHovered(Node node, SquareTarget target) {
+        UnitManager.singleton.CurrentlyHoveredNode = node;
+        if (cardState != CardState.NONE && (target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL)) {
+            UnitManager.singleton.HighlightEffectedTiles(activeCard.ability.caster, node);
+        } else if (target == SquareTarget.MOVEMENT || target == SquareTarget.DASH || ((target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL) && node.previousMoveNode != null)) {
+            UnitManager.singleton.ShowPath(node);
+        }
+    }
 
-	public void TileExit(Node node, SquareTarget target) {
-		UnitManager.singleton.CurrentlyHoveredNode = null;
-		UnitManager.singleton.UnhiglightEffectedTiles ();
-	}
+    public void TileExit(Node node, SquareTarget target) {
+        UnitManager.singleton.CurrentlyHoveredNode = null;
+        UnitManager.singleton.UnhiglightEffectedTiles();
+    }
 
-	public void TileClicked(Node node, SquareTarget target) {
+    public void TileClicked(Node node, SquareTarget target) {
+        if (TurnManager.singleton.CurrentPhase == TurnPhase.WAITING_FOR_INPUT && !TurnManager.singleton.isAiTurn()) {
+            switch (target) {
+                case SquareTarget.HELPFULL:
+                case SquareTarget.ATTACK:
+                    ClickedAttack(node);
+                    break;
 
-		if (TurnManager.singleton.CurrentPhase == TurnPhase.WAITING_FOR_INPUT && !TurnManager.singleton.isAiTurn()) {
-			switch (target) {
-			case SquareTarget.HELPFULL:
-			case SquareTarget.ATTACK:
-				ClickedAttack (node);
-				break;
-			case SquareTarget.DASH:
-			case SquareTarget.MOVEMENT:
-				ClickedMovement (node);
-				break;
-			case SquareTarget.NONE: 
-			default:
-				ClickedUnselected (node);
-				break;
-			}
+                case SquareTarget.DASH:
+                case SquareTarget.MOVEMENT:
+                    ClickedMovement(node);
+                    break;
 
-		}
-
-	}
+                case SquareTarget.NONE:
+                default:
+                    ClickedUnselected(node);
+                    break;
+            }
+        }
+    }
 
     public void ClickedAttack(Node node) {
         if (UnitManager.singleton.AttackTile(activeCard.ability.caster, node)) {
@@ -134,24 +127,21 @@ public class UserInterfaceManager : MonoBehaviour {
     }
 
     public void ClickedMovement(Node node) {
-		UnitManager.singleton.MoveToTile (activeCard.ability.caster, node);
-		UnshowCard();
+        UnitManager.singleton.MoveToTile(activeCard.ability.caster, node);
+        UnshowCard();
         CardInvoked();
     }
 
-	public void ClickedUnselected(Node node) {
+    public void ClickedUnselected(Node node) {
+    }
 
-	}
+    public void StartTurn() {
+        if (!TurnManager.singleton.isAiTurn()) {
+        }
+    }
 
-	public void StartTurn() {
-		if (!TurnManager.singleton.isAiTurn ()) {
-			
-		}
-	}
-
-	public void EndTurn() {
-
-	}
+    public void EndTurn() {
+    }
 
     public bool CanPlayCard() {
         return cardState == CardState.NONE;
@@ -216,16 +206,15 @@ public class UserInterfaceManager : MonoBehaviour {
         }
     }
 
-	public void FinishedAttacking() {
-		if (!TurnManager.singleton.isAiTurn ()) {
+    public void FinishedAttacking() {
+        if (!TurnManager.singleton.isAiTurn()) {
             FinishedAction();
         }
-	}
+    }
 
-	public void FinishedMoving() {
-		if (!TurnManager.singleton.isAiTurn ()) {
+    public void FinishedMoving() {
+        if (!TurnManager.singleton.isAiTurn()) {
             FinishedAction();
         }
-	}
-
+    }
 }

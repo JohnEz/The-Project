@@ -1,11 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ActionDescriptionController : MonoBehaviour {
-
     public Sprite attackImage;
     public Sprite shieldImage;
     public Sprite moveImage;
@@ -15,13 +12,13 @@ public class ActionDescriptionController : MonoBehaviour {
 
     public Image actionImage;
     public TextMeshProUGUI actionText;
+
     //public Text quantityText;
     public Image buffImage;
 
     public GameObject subText;
 
     public void SetAction(CardAction action) {
-
         // Set the action icon and text
         if (typeof(AttackAction).IsAssignableFrom(action.GetType())) {
             AttackAction attackAction = (AttackAction)action;
@@ -33,8 +30,6 @@ public class ActionDescriptionController : MonoBehaviour {
             DrawCardAction drawAction = (DrawCardAction)action;
             SetDrawAction(drawAction);
         }
-
-
     }
 
     // TODO these should be moved to the actions themselves if its possible
@@ -79,8 +74,6 @@ public class ActionDescriptionController : MonoBehaviour {
             }
         });
 
-
-
         if (damage > 0) {
             actionText.text = "Attack " + damage;
             actionImage.sprite = attackImage;
@@ -88,7 +81,6 @@ public class ActionDescriptionController : MonoBehaviour {
             actionText.text = "Armour " + armour;
             actionImage.sprite = shieldImage;
         }
-
 
         bool displaySubText = false;
         string subTextString = "";
@@ -111,7 +103,7 @@ public class ActionDescriptionController : MonoBehaviour {
         if (displaySubText) {
             subText.SetActive(true);
             // Remove last \n at the end
-            subText.GetComponentInChildren<TextMeshProUGUI>().text = subTextString.Substring(0, subTextString.Length-1);
+            subText.GetComponentInChildren<TextMeshProUGUI>().text = subTextString.Substring(0, subTextString.Length - 1);
         }
     }
 
@@ -127,4 +119,3 @@ public class ActionDescriptionController : MonoBehaviour {
         //quantityText.text = draw.cardsToDraw.ToString();
     }
 }
- 

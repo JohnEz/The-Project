@@ -1,9 +1,7 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class CardManager : MonoBehaviour {
-
     public const int DECK_SIZE = 30;
 
     public static CardManager singleton;
@@ -27,6 +25,4 @@ public class CardManager : MonoBehaviour {
 
         return loadedDeck;
     }
-
-
 }

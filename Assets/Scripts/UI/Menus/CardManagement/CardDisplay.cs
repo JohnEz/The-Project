@@ -1,12 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using TMPro;
+using UnityEngine.UI;
 
 public class CardDisplay : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IDragHandler, IEndDragHandler {
-
     public AbilityCardBase ability;
 
     public TextMeshProUGUI nameText;
@@ -18,7 +15,7 @@ public class CardDisplay : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     public Player myPlayer;
     public Hand myHand;
 
-    void Start() {
+    private void Start() {
         nameText.text = ability.name;
         artworkImage.sprite = ability.icon;
         //descriptionText.text = ability.GetDescription();
@@ -30,7 +27,6 @@ public class CardDisplay : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         } else {
             Debug.LogError("Card was started without player set!");
         }
-        
     }
 
     public bool CanInterractWithCard(bool displayErrors = true) {
@@ -58,7 +54,6 @@ public class CardDisplay : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
             }
             return false;
         }
-
 
         return true;
     }
@@ -92,7 +87,6 @@ public class CardDisplay : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         UserInterfaceManager.singleton.CardPlayed(this);
         gameObject.SetActive(false);
     }
-
 
     public void OnPointerEnter(PointerEventData eventData) {
         UserInterfaceManager.singleton.CardHovered(this);

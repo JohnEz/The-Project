@@ -1,41 +1,36 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CameraManager : MonoBehaviour {
-
     public static CameraManager singleton;
 
-	public CameraController cam;
+    public CameraController cam;
 
-	TileMap map;
+    private TileMap map;
 
     private void Awake() {
         singleton = this;
     }
 
-    void Start () {
+    private void Start() {
+    }
 
-	}
+    public void Initialise() {
+        map = GetComponentInChildren<TileMap>();
 
-	public void Initialise() {
-		map = GetComponentInChildren<TileMap> ();
+        cam.Initialise(map);
+    }
 
-		cam.Initialise (map);
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    // Update is called once per frame
+    private void Update() {
+    }
 
-	public void MoveToLocation(Vector2 location) {
-		cam.MoveToTarget (location);
-	}
+    public void MoveToLocation(Vector2 location) {
+        cam.MoveToTarget(location);
+    }
 
-	public void MoveToLocation(Node node) {
-		MoveToLocation (map.getPositionOfNode(node));
-	}
+    public void MoveToLocation(Node node) {
+        MoveToLocation(map.getPositionOfNode(node));
+    }
 
     public void JumpToLocation(Node node) {
         cam.JumpToLocation(map.getPositionOfNode(node));

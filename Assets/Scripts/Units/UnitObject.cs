@@ -1,6 +1,6 @@
-﻿using UnityEngine;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public enum Stats {
     HEALTH,
@@ -17,21 +17,20 @@ public enum Stats {
 
 [CreateAssetMenu(fileName = "New Unit", menuName = "Unit")]
 public class UnitObject : ScriptableObject {
-
     public string characterName;
     public string className;
     public Sprite Icon; //TODO THIS SHOULD PROBABLY BE IN THE CLASS OR SOMETHING
 
     //scaling consts
-    const int ACTION_POINTS_TO_STAMINA = 2;
+    private const int ACTION_POINTS_TO_STAMINA = 2;
 
     //list of buffs and debuffs
-    List<Buff> myBuffs = new List<Buff>();
+    private List<Buff> myBuffs = new List<Buff>();
 
     public int baseHealth = 100;
-    int currentHealth;
+    private int currentHealth;
     public int baseStamina = 50;
-    int currentStamina = 0;
+    private int currentStamina = 0;
     public int baseBlock = 0;
     public int baseArmour = 0;
 
@@ -40,11 +39,13 @@ public class UnitObject : ScriptableObject {
 
     //Stats for AI
     public Walkable baseWalkingType = Walkable.Walkable;
+
     public Walkable walkingType;
 
     public int baseSpeed = 3;
 
     public List<AttackAction> baseAttacks;
+
     [HideInInspector]
     public List<AttackAction> instantiatedAttacks;
 
@@ -161,7 +162,6 @@ public class UnitObject : ScriptableObject {
     }
 
     public void EndTurn() {
-
     }
 
     public Buff FindOldestBuff(bool debuff) {
@@ -199,5 +199,4 @@ public class UnitObject : ScriptableObject {
 
         return true;
     }
-
 }

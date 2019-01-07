@@ -140,5 +140,4 @@ public static class BasicDecks {
         "Walk",
         "Walk"
     };
-
 }

@@ -1,38 +1,34 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class UnitDialogController : MonoBehaviour {
+    private float CHANCE_OF_DIALOG = 10;
 
-    float CHANCE_OF_DIALOG = 10;
-
-    TextAsset dialogText;
-    UnitDialog myDialog;
+    private TextAsset dialogText;
+    private UnitDialog myDialog;
     public GameObject dialogPrefab;
 
     [SerializeField]
-    string dialogType;
+    private string dialogType;
 
     public void Initialise(string dialogType) {
-
     }
 
     private void Start() {
         LoadDialog(dialogType);
     }
 
-    void LoadDialog(string dialogType) {
+    private void LoadDialog(string dialogType) {
         string dialogPath = dialogType != "" ? dialogType : "Template";
 
         string filePath = "Dialog/Characters/" + dialogPath;
         dialogText = Resources.Load<TextAsset>(filePath);
 
-
         myDialog = JsonUtility.FromJson<UnitDialog>(dialogText.ToString());
     }
 
-    public bool ShouldTalk (float chanceMod = 0) {
+    public bool ShouldTalk(float chanceMod = 0) {
         float rolledValue = Random.value * 100;
         return rolledValue <= CHANCE_OF_DIALOG + chanceMod;
     }

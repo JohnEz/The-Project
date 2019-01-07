@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class Neighbour {
+
     //public Vector2 direction;
     public Node n1;
+
     public Node n2;
     public GameObject myDoor;
 

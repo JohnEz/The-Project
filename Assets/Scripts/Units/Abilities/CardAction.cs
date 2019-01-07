@@ -1,54 +1,46 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 // type of units the ability effects
-public enum TargetType
-{
+public enum TargetType {
     ENEMY,
     ALLY,
     UNIT //both enemies and allies
 }
 
 // type of object that must be the center of the attack
-public enum TileTarget
-{
+public enum TileTarget {
     TILE,
     UNIT,
     EMPTY_TILE
 }
 
 // type of area of effect
-public enum AreaOfEffect
-{
+public enum AreaOfEffect {
     SINGLE,
     CIRCLE,
     CLEAVE,
     AURA
 }
 
-public enum AbilityEvent
-{
+public enum AbilityEvent {
     CAST_START,
     CAST_END, //called just for the caster after cast
     HIT //called for each target on hit TODO, doesnt seem to be called anywhere
 }
 
-public enum EventTarget
-{
+public enum EventTarget {
     TARGETEDTILE,
     CASTER,
     TARGETUNIT
 }
 
-public struct EventActionLegacy
-{
+public struct EventActionLegacy {
     public AbilityEvent eventTrigger;
     public EventTarget eventTarget;
     public System.Action<UnitController, UnitController, Node> action;
 
-    public static EventAction CreateProjectileEventAction(AbilityEvent _eventTrigger, GameObject projectileObject, float speed, float delay = 0)
-    {
+    public static EventAction CreateProjectileEventAction(AbilityEvent _eventTrigger, GameObject projectileObject, float speed, float delay = 0) {
         EventAction newEventAction = new EventAction();
         newEventAction.eventTrigger = _eventTrigger;
         newEventAction.eventTarget = EventTarget.CASTER;
@@ -71,5 +63,4 @@ public class CardAction : ScriptableObject {
     public void AddAbilityTarget(Node targetNode, System.Action ability) {
         caster.AddAbilityTarget(targetNode, ability);
     }
-
 }

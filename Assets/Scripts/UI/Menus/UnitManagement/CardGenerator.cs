@@ -1,9 +1,7 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class CardGenerator : MonoBehaviour {
-
     public GameObject cardPrefab;
 
     public List<UnitObject> units;
@@ -15,12 +13,10 @@ public class CardGenerator : MonoBehaviour {
     }
 
     public void LoadCards(List<UnitObject> units) {
-
-        foreach(UnitObject unit in units) {
+        foreach (UnitObject unit in units) {
             GameObject unitCard = Instantiate(cardPrefab, transform);
 
             unitCard.GetComponent<UnitCard>().myUnit = unit;
         }
-
     }
 }

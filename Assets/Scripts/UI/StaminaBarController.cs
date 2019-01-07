@@ -2,14 +2,13 @@
 using UnityEngine.UI;
 
 public class StaminaBarController : MonoBehaviour {
-
     public Image staminaBar;
 
     private float currentMax = 0;
     private float realFillAmount = 1;
     private float targetPercent = 1;
 
-    private Color maxStaminaColour = new Color(1,1,1);
+    private Color maxStaminaColour = new Color(1, 1, 1);
     private Color zeroStaminaColour = new Color(1, 0.5f, 0.5f);
     private Color negativeStaminaColour = new Color(1, 0, 0);
 
@@ -20,7 +19,7 @@ public class StaminaBarController : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update() {
+    private void Update() {
         if (targetPercent != staminaBar.fillAmount) {
             float fillAmount = Mathf.Lerp(realFillAmount, targetPercent, 2f * Time.deltaTime);
             realFillAmount = fillAmount;
@@ -29,7 +28,6 @@ public class StaminaBarController : MonoBehaviour {
             Color highColour = maxStaminaColour;
 
             if (isNegative) {
-                
                 fillAmount *= -1;
                 highColour = negativeStaminaColour;
             }

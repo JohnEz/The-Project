@@ -1,27 +1,25 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SceneLoader : MonoBehaviour
-{
+public class SceneLoader : MonoBehaviour {
 
-    void Start () {
+    private void Start() {
         LoadScene(SceneChanger.Instance.SceneToLoad);
-	}
+    }
 
-	public void LoadScene (int sceneIndex) {
-		StartCoroutine (LoadAsync (sceneIndex));
-	}
+    public void LoadScene(int sceneIndex) {
+        StartCoroutine(LoadAsync(sceneIndex));
+    }
 
-	IEnumerator LoadAsync (int sceneIndex) {
-		AsyncOperation operation = SceneManager.LoadSceneAsync (sceneIndex);
+    private IEnumerator LoadAsync(int sceneIndex) {
+        AsyncOperation operation = SceneManager.LoadSceneAsync(sceneIndex);
 
-		while (!operation.isDone) {
+        while (!operation.isDone) {
             //Load progress
-			Debug.Log (operation.progress);
+            Debug.Log(operation.progress);
 
-			yield return null;
-		}
-	}
+            yield return null;
+        }
+    }
 }
-

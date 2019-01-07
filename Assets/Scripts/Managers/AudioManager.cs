@@ -1,6 +1,5 @@
-﻿using UnityEngine;
-using UnityEditor;
-using System;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Audio;
 
 public enum AudioMixers {
@@ -18,7 +17,6 @@ public enum Fade {
 
 [System.Serializable]
 public class Music {
-
     public string name;
 
     public AudioClip intro;
@@ -28,12 +26,11 @@ public class Music {
     [HideInInspector]
     public AudioSource source;
 
-    Fade fading = Fade.NONE;
+    private Fade fading = Fade.NONE;
 
-    const float FADE_SPEED = 0.5f;
+    private const float FADE_SPEED = 0.5f;
 
     public void Play(bool fadeIn = true) {
-        
         if (fadeIn) {
             FadeIn();
             source.volume = 0;
@@ -51,22 +48,18 @@ public class Music {
         }
 
         if (fading == Fade.IN) {
-
             if (source.volume < 1) {
                 source.volume += FADE_SPEED * Time.deltaTime;
             } else {
                 fading = Fade.NONE;
             }
-
         } else if (fading == Fade.OUT) {
-
             if (source.volume > 0) {
                 source.volume -= FADE_SPEED * Time.deltaTime;
             } else {
                 source.Stop();
                 fading = Fade.NONE;
             }
-
         }
     }
 
@@ -84,7 +77,6 @@ public class Music {
 }
 
 public class AudioManager : MonoBehaviour {
-
     public static AudioManager singleton;
 
     public AudioMixerGroup masterMixer;
@@ -96,7 +88,7 @@ public class AudioManager : MonoBehaviour {
 
     private Music currentMusic;
 
-    void Awake() {
+    private void Awake() {
         if (singleton != null) {
             Destroy(gameObject);
         } else {
@@ -137,7 +129,7 @@ public class AudioManager : MonoBehaviour {
                 currentMusic.source.Stop();
             }
         }
-        
+
         currentMusic = m;
 
         m.Play(fadeIn);
@@ -183,12 +175,15 @@ public class AudioManager : MonoBehaviour {
             case AudioMixers.MUSIC:
                 source.outputAudioMixerGroup = musicMixer;
                 break;
+
             case AudioMixers.UI:
                 source.outputAudioMixerGroup = uiMixer;
                 break;
+
             case AudioMixers.SFX:
                 source.outputAudioMixerGroup = sfxMixer;
                 break;
+
             default:
                 source.outputAudioMixerGroup = masterMixer;
                 break;
@@ -197,5 +192,4 @@ public class AudioManager : MonoBehaviour {
         source.Play();
         return go;
     }
-
 }

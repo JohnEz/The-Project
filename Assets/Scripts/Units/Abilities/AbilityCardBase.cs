@@ -1,10 +1,8 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Ability", menuName = "Card/New Card")]
 public class AbilityCardBase : ScriptableObject {
-
     public new string name = "UNNAMED";
     public string description = "No description set!";
     public Sprite icon;
@@ -25,20 +23,16 @@ public class AbilityCardBase : ScriptableObject {
         });
     }
 
-    public List<CardAction> Actions
-    {
+    public List<CardAction> Actions {
         get { return instansiatedActions; }
     }
 
-    public string Name
-    {
+    public string Name {
         get { return name; }
         set { name = value; }
     }
 
-    public virtual string GetDescription()
-    {
+    public virtual string GetDescription() {
         return description;
     }
-
 }

@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 [CreateAssetMenu(fileName = "New Attack Action", menuName = "Card/Attack/Damage with Multiplier")]
 public class DamageWithMultiplierEffect : DamagePerStackEffect {
-
     public int baseDamage = 1;
 
     public override void AbilityEffect(UnitController caster, UnitController target) {

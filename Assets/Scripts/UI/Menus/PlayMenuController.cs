@@ -1,9 +1,7 @@
-﻿using UnityEngine;
-using System.Collections;
-using TMPro;
+﻿using TMPro;
+using UnityEngine;
 
 public class PlayMenuController : MonoBehaviour {
-
     public static Vector3 OPEN_POSITION = new Vector3(0, 0, 0);
     public static Vector3 SUBMENU_POSITON = new Vector3(515f, 3f, 0f);
 
@@ -59,7 +57,7 @@ public class PlayMenuController : MonoBehaviour {
         LoadArena();
     }
 
-    void LoadArena() {
+    private void LoadArena() {
         SceneChanger.Instance.FadeToScene(Scenes.ARENA);
     }
 

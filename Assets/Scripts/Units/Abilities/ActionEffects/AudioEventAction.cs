@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 [CreateAssetMenu(fileName = "New Audio Effect", menuName = "Card/EventFX/Audio Effect")]
 public class AudioEventAction : EventAction {
-
     public AudioClip audioClip = null;
 
     // Use this for initialization
@@ -16,6 +14,7 @@ public class AudioEventAction : EventAction {
                         targetTransform = target.transform;
                     }
                     break;
+
                 case EventTarget.TARGETEDTILE:
                     targetTransform = targetedTile.transform;
                     break;

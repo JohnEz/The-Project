@@ -1,11 +1,7 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿public class Haste : Buff {
 
-public class Haste : Buff {
-
-	public Haste(int maxDuration) : base (maxDuration) {
-		name = "Haste";
-		flatMod [(int)Stats.AP] = 1;
-	}
-
+    public Haste(int maxDuration) : base(maxDuration) {
+        name = "Haste";
+        flatMod[(int)Stats.AP] = 1;
+    }
 }

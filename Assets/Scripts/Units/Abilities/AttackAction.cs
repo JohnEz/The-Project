@@ -1,10 +1,8 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Attack Action", menuName = "Card/New Attack Action")]
 public class AttackAction : CardAction {
-
     public int range = 1;
     public int minRange = 1;
 
@@ -20,6 +18,7 @@ public class AttackAction : CardAction {
 
     // AI Variables
     private int cooldown;
+
     public int maxCooldown = 1;
 
     public bool CanTargetSelf {
@@ -90,17 +89,13 @@ public class AttackAction : CardAction {
         eventActions.ForEach((eventAction) => {
             if (eventAction.eventTrigger == AbilityEvent.CAST_START) {
                 if (eventAction.eventTarget == EventTarget.CASTER || eventAction.eventTarget == EventTarget.TARGETEDTILE) {
-
                     eventAction.action(caster, null, target);
-
                 } else if (eventAction.eventTarget == EventTarget.TARGETUNIT) {
-
                     effectedNodes.ForEach((targetNode) => {
                         if (CanHitUnit(targetNode)) {
                             eventAction.action(caster, targetNode.myUnit, target);
                         }
                     });
-
                 }
             }
         });
@@ -119,7 +114,6 @@ public class AttackAction : CardAction {
     }
 
     public bool CanHitUnit(Node targetNode) {
-
         if (caster.myNode == targetNode && !CanTargetSelf) {
             return false;
         }
@@ -130,10 +124,13 @@ public class AttackAction : CardAction {
         switch (targets) {
             case TargetType.ENEMY:
                 return isEnemy;
+
             case TargetType.ALLY:
                 return hasTarget && !isEnemy;
+
             case TargetType.UNIT:
                 return hasTarget;
+
             default:
                 return false;
         }

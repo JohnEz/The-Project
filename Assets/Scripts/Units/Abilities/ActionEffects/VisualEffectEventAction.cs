@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 [CreateAssetMenu(fileName = "New Visual Effect", menuName = "Card/EventFX/Visual Effect")]
 public class VisualEffectEventAction : EventAction {
-
     public GameObject effectObject = null;
     public float delay = 0;
 
@@ -14,9 +12,11 @@ public class VisualEffectEventAction : EventAction {
                 case EventTarget.CASTER:
                     caster.CreateEffectWithDelay(effectObject, delay);
                     break;
+
                 case EventTarget.TARGETUNIT:
                     target.CreateEffectWithDelay(effectObject, delay);
                     break;
+
                 case EventTarget.TARGETEDTILE:
                     caster.CreateEffectWithDelay(effectObject, delay, targetedTile);
                     break;

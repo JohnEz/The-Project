@@ -5,15 +5,14 @@ public static class GameDetails {
     private static string playerCharacter = "Mage";
     private static List<string> playerDeck = BasicDecks.elementalistDeck;
 
-
     public static string PlayerCharacter {
-		get {
-			return playerCharacter;
-		}
-		set {
+        get {
+            return playerCharacter;
+        }
+        set {
             playerCharacter = value;
-		}
-	}
+        }
+    }
 
     public static string MapName {
         get {

@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 [CreateAssetMenu(fileName = "New Attack Action", menuName = "Card/Attack/New Summon Action")]
 public class SummonAction : AttackEffect {
-
     public GameObject summonPrefab;
 
     private void Awake() {
@@ -14,5 +12,4 @@ public class SummonAction : AttackEffect {
     public override void AbilityEffect(UnitController caster, Node targetNode) {
         caster.Summon(targetNode, summonPrefab);
     }
-
 }

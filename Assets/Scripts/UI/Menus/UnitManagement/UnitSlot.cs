@@ -3,7 +3,6 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class UnitSlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler {
-
     public UnitObject myUnit;
 
     public Text nameText;
@@ -25,16 +24,13 @@ public class UnitSlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
     }
 
     public void OnPointerEnter(PointerEventData eventData) {
-        
     }
 
     public void OnPointerExit(PointerEventData eventData) {
-        
     }
 
-    void LoadUnit(UnitObject unit) {
+    private void LoadUnit(UnitObject unit) {
         nameText.text = unit.characterName;
         icon.sprite = unit.Icon;
     }
-
 }

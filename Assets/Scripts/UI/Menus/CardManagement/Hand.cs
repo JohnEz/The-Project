@@ -1,10 +1,9 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class Hand : MonoBehaviour {
     public static int HAND_LIMIT = 10;
-    
+
     public GameObject cardPrefab;
 
     public Player myPlayer;

@@ -1,7 +1,6 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
+using UnityEngine;
 
 [System.Serializable]
 public class Layer {
@@ -10,7 +9,6 @@ public class Layer {
 }
 
 public class TileSet {
-
 }
 
 public class TiledMap {
@@ -44,8 +42,7 @@ public struct MapData {
 }
 
 public class LevelLoaderJson : MonoBehaviour {
-
-    TiledMap loadedData;
+    private TiledMap loadedData;
     public MapData loadedLevel;
 
     public string levelName;
@@ -53,8 +50,7 @@ public class LevelLoaderJson : MonoBehaviour {
     public Sprite backdrop;
 
     // Use this for initialization
-    void Start() {
-
+    private void Start() {
     }
 
     public void Initialise() {
@@ -92,9 +88,11 @@ public class LevelLoaderJson : MonoBehaviour {
                     case 2:
                         walkableArray[i] = Walkable.Walkable;
                         break;
+
                     case 4:
                         walkableArray[i] = Walkable.Flying;
                         break;
+
                     case 6:
                         walkableArray[i] = Walkable.Impassable;
                         break;
@@ -137,7 +135,6 @@ public class LevelLoaderJson : MonoBehaviour {
     }
 
     public void LoadTiledData() {
-
         // Path.Combine combines strings into a file path
         // Application.StreamingAssets points to Assets/StreamingAssets in the Editor, and the StreamingAssets folder in a build
         string filePath = Path.Combine(Application.streamingAssetsPath, levelName + ".json");

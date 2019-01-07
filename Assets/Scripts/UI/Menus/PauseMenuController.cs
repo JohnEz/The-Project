@@ -1,13 +1,11 @@
 ﻿using UnityEngine;
-using System.Collections;
-using UnityEngine.SceneManagement;
 
 public class PauseMenuController : MonoBehaviour {
     public static PauseMenuController singleton;
 
-	public static bool gameIsPaused = false;
+    public static bool gameIsPaused = false;
 
-	public GameObject pauseMenuUI;
+    public GameObject pauseMenuUI;
 
     public AudioClip buttonClickAudio;
 
@@ -15,29 +13,28 @@ public class PauseMenuController : MonoBehaviour {
         singleton = this;
     }
 
-    public void Pause () {
-		Time.timeScale = 0f;
-		gameIsPaused = true;
-		pauseMenuUI.SetActive (true);
-	}
+    public void Pause() {
+        Time.timeScale = 0f;
+        gameIsPaused = true;
+        pauseMenuUI.SetActive(true);
+    }
 
-	public void Resume () {
-		Time.timeScale = 1f;
-		gameIsPaused = false;	
-		pauseMenuUI.SetActive (false);
-	}
+    public void Resume() {
+        Time.timeScale = 1f;
+        gameIsPaused = false;
+        pauseMenuUI.SetActive(false);
+    }
 
-	public void LoadMainMenu () {
+    public void LoadMainMenu() {
         AudioManager.singleton.Play(buttonClickAudio, transform, AudioMixers.UI, true);
 
-        Resume ();
+        Resume();
         SceneChanger.Instance.FadeToScene(Scenes.MAIN_MENU);
-	}
+    }
 
-	public void ExitGame () {
+    public void ExitGame() {
         AudioManager.singleton.Play(buttonClickAudio, transform, AudioMixers.UI, true);
 
-        Application.Quit ();
-	}
+        Application.Quit();
+    }
 }
-

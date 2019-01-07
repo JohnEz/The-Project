@@ -1,80 +1,77 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public enum ObjectiveType {
-	ANNIHILATION
+    ANNIHILATION
 }
 
 public struct Objective {
-	public ObjectiveType type;
-	public string text;
-	public bool optional;
+    public ObjectiveType type;
+    public string text;
+    public bool optional;
 }
 
 public class ObjectiveManager : MonoBehaviour {
-
     public static ObjectiveManager singleton;
 
-	private Dictionary<Player, List<Objective>> objectives = new Dictionary<Player, List<Objective>>();
+    private Dictionary<Player, List<Objective>> objectives = new Dictionary<Player, List<Objective>>();
 
     private void Awake() {
         singleton = this;
     }
 
-	public List<Objective> getObjectives(Player player) {
-		return objectives [player];
-	}
+    public List<Objective> getObjectives(Player player) {
+        return objectives[player];
+    }
 
-	public void AddObjective(Player player, Objective objective) {
-		if (!objectives.ContainsKey (player)) {
-			List<Objective> newObjectives = new List<Objective> ();
-			newObjectives.Add (objective);
-			objectives.Add (player, newObjectives);
-		} else {
-			objectives [player].Add (objective);
-		}
-	}
+    public void AddObjective(Player player, Objective objective) {
+        if (!objectives.ContainsKey(player)) {
+            List<Objective> newObjectives = new List<Objective>();
+            newObjectives.Add(objective);
+            objectives.Add(player, newObjectives);
+        } else {
+            objectives[player].Add(objective);
+        }
+    }
 
-	public void RemoveObjective() {
+    public void RemoveObjective() {
+    }
 
-	}
+    public bool CheckObjectives(Player player) {
+        if (objectives.ContainsKey(player)) {
+            List<Objective> playerObjectives = objectives[player];
 
-	public bool CheckObjectives(Player player) {
-		if (objectives.ContainsKey (player)) {
-			List<Objective> playerObjectives = objectives [player];
+            foreach (Objective objective in playerObjectives) {
+                bool objectiveCompleted;
+                switch (objective.type) {
+                    case ObjectiveType.ANNIHILATION:
+                        objectiveCompleted = Annihilation(player);
+                        break;
 
-			foreach (Objective objective in playerObjectives) {
-				bool objectiveCompleted;
-				switch (objective.type) {
-				case ObjectiveType.ANNIHILATION:
-					objectiveCompleted = Annihilation (player);
-					break;
-				default:
-					objectiveCompleted = true;
-					break;
-				}
+                    default:
+                        objectiveCompleted = true;
+                        break;
+                }
 
-				if (!objectiveCompleted) {
-					return false;
-				}
-			}
+                if (!objectiveCompleted) {
+                    return false;
+                }
+            }
 
-			return true;
-		}
-		return false;
-	}
+            return true;
+        }
+        return false;
+    }
 
-	private bool Annihilation(Player player) {
-		List<UnitController> units = UnitManager.singleton.Units;
+    private bool Annihilation(Player player) {
+        List<UnitController> units = UnitManager.singleton.Units;
 
-		foreach (UnitController unit in units) {
-			if (unit.myPlayer.faction != player.faction) {
-				return false;
-			}
-		}
+        foreach (UnitController unit in units) {
+            if (unit.myPlayer.faction != player.faction) {
+                return false;
+            }
+        }
 
-		return true;
-	}
+        return true;
+    }
 }
-

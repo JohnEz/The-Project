@@ -1,14 +1,12 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using UnityEditor;
+using UnityEngine;
 
 [CustomEditor(typeof(AttackAction))]
 public class AttackEditor : Editor {
-
-    bool showAIVariables = false;
+    private bool showAIVariables = false;
 
     public void OnInspectorGUILegacy() {
         AttackAction myTarget = (AttackAction)target;
-
 
         GUIStyle titleStyle = new GUIStyle();
         titleStyle.fontSize = 20;
@@ -24,11 +22,9 @@ public class AttackEditor : Editor {
         if (showAIVariables) {
             myTarget.MaxCooldown = EditorGUILayout.IntField("Cooldown", myTarget.MaxCooldown);
         }
-
     }
 
     public override void OnInspectorGUI() {
         base.OnInspectorGUI();
     }
-
 }

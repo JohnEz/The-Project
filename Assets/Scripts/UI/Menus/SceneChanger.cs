@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.SceneManagement;
 
 public class SceneChanger : MonoBehaviour {
-
     public static SceneChanger Instance;
 
     public Animator animator;
@@ -31,8 +29,7 @@ public class SceneChanger : MonoBehaviour {
     }
 
     // Use this for initialization
-    void Start() {
-
+    private void Start() {
     }
 
     public int SceneToLoad {
@@ -45,8 +42,7 @@ public class SceneChanger : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update() {
-
+    private void Update() {
     }
 
     public void FadeToScene(int sceneIndex) {
@@ -55,11 +51,11 @@ public class SceneChanger : MonoBehaviour {
         animator.SetTrigger("FadeOut");
     }
 
-    public void OnFadeComplete () {
+    public void OnFadeComplete() {
         SceneManager.LoadScene(Scenes.LOADING);
     }
 
-    void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
         if (changingScene) {
             changingScene = false;
             animator.SetTrigger("FadeIn");
