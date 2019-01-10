@@ -10,66 +10,27 @@ public static class BasicDecks {
         "Walk",
     };
 
-    public static List<string> elementalistDeck = new List<string> {
-        "Fireball",
-        "Fireball",
-        "Fireball",
-        "Shield Of Frost",
-        "Shield Of Frost",
-        "Shield Of Frost",
-        "Frostbolt",
-        "Frostbolt",
-        "Frost Nova",
-        "Frost Nova",
-        "Frost Nova",
-        "Consult Notes",
-        "Consult Notes",
-        "Consult Notes",
-        "Arcane Pulse",
-        "Arcane Pulse",
-        "Arcane Pulse",
+    public static List<string> starterElementalist = new List<string> {
+        //Weapon
+        "Strike",
+        "Strike",
+        "Strike",
+        "Strike",
+        "Strike",
         "Mana Bolt",
         "Mana Bolt",
         "Mana Bolt",
-        "Mana Bolt",
-        "Mana Bolt",
-        "Meteor",
-        "Meteor",
-        "Meteor",
+        //Armour
+        "Armour",
+        //Legs
         "Walk",
         "Walk",
+        //Feet
+        "Dash",
         "Walk",
         "Walk",
-        "Walk",
-        "Walk",
-        "Walk",
-        "Walk",
-        "Walk",
-        "Walk"
+        "Hop",
     };
-
-    //public static List<string> iceElementalist = new List<string> {
-    //    "Frost Nova",
-    //    "Frost Nova",
-    //    "Frost Nova",
-    //    "Frostbolt",
-    //    "Frostbolt",
-    //    "Frostbolt",
-    //    "Frostbolt",
-    //    "Consult Notes",
-    //    "Consult Notes",
-    //    "Consult Notes",
-    //    "Walk",
-    //    "Walk",
-    //    "Walk",
-    //    "Walk",
-    //    "Walk",
-    //    "Walk",
-    //    "Walk",
-    //    "Walk",
-    //    "Walk",
-    //    "Walk"
-    //};
 
     public static List<string> iceElementalist = new List<string> {
         "Frost Nova",

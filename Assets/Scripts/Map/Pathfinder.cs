@@ -277,15 +277,15 @@ public class Pathfinder : MonoBehaviour {
     //}
 
     public static bool IsTileWalkable(Node startNode, Node endNode, Walkable walkingType, int faction) {
-        return UnitCanStandOnTile(endNode, walkingType) && !UnitInTheWay(endNode, faction) && UnitCanChangeLevel(startNode, endNode, walkingType);
+        return UnitCanStandOnTile(endNode, walkingType) && !UnitInTheWay(endNode, faction, walkingType) && UnitCanChangeLevel(startNode, endNode, walkingType);
     }
 
     public static bool UnitCanStandOnTile(Node node, Walkable walkingType) {
         return node.walkable <= walkingType;
     }
 
-    public static bool UnitInTheWay(Node node, int faction) {
-        return node.myUnit != null && node.myUnit.myPlayer.faction != faction && faction != -1;
+    public static bool UnitInTheWay(Node node, int faction, Walkable walkingType) {
+        return node.myUnit != null && node.myUnit.myPlayer.faction != faction && faction != -1 && walkingType != Walkable.Flying;
     }
 
     public static bool UnitCanChangeLevel(Node startNode, Node endNode, Walkable walkingType) {
