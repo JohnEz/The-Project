@@ -15,14 +15,19 @@ public enum Stats {
     MANA
 }
 
+[Serializable]
+public struct UnitToken {
+    public Sprite frontSprite;
+    public Sprite backSprite;
+}
+
 [CreateAssetMenu(fileName = "New Unit", menuName = "Unit")]
 public class UnitObject : ScriptableObject {
     public string characterName;
     public string className;
     public Sprite Icon;
 
-    public Sprite frontSprite;
-    public Sprite backSprite;
+    public UnitToken[] unitTokens;
 
     //scaling consts
     private const int ACTION_POINTS_TO_STAMINA = 2;
@@ -63,8 +68,14 @@ public class UnitObject : ScriptableObject {
         });
 
         // set graphics
-        myUnit.transform.Find("Token").Find("FrontSprite").GetComponent<SpriteRenderer>().sprite = frontSprite;
-        myUnit.transform.Find("Token").Find("BackSprite").GetComponent<SpriteRenderer>().sprite = backSprite;
+        UnitToken selectedToken = unitTokens[UnityEngine.Random.Range(0, unitTokens.Length)];
+        Transform tokenTransform = myUnit.transform.Find("Token");
+
+        tokenTransform.Find("FrontSprite").GetComponent<SpriteRenderer>().sprite = selectedToken.frontSprite;
+        tokenTransform.Find("BackSprite").GetComponent<SpriteRenderer>().sprite = selectedToken.backSprite;
+
+        Vector3 tokenPos = tokenTransform.localPosition;
+        tokenTransform.localPosition = new Vector3(tokenPos.x, -((400 - selectedToken.frontSprite.rect.height) / 10), tokenPos.z);
     }
 
     public int GetModifiedStat(int baseValue, Stats stat) {

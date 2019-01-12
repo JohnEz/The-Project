@@ -49,16 +49,16 @@ public class GameManager : MonoBehaviour {
 
         Player enemyAI = PlayerManager.singleton.AddAiPlayer(2);
 
-        UnitManager.singleton.SpawnUnit("Criminal", enemyAI, 5, 8);
-        //UnitManager.singleton.SpawnUnit("Bandit", enemyAI, 5, 9);
-        //UnitManager.singleton.SpawnUnit("Bandit", enemyAI, 5, 10);
+        UnitManager.singleton.SpawnUnit("Goblin Warrior", enemyAI, 5, 8);
+        UnitManager.singleton.SpawnUnit("Goblin Warrior", enemyAI, 5, 9);
+        UnitManager.singleton.SpawnUnit("Goblin Warrior", enemyAI, 5, 10);
 
-        //UnitManager.singleton.SpawnUnit("Bandit Archer", enemyAI, 14, 8);
-        //UnitManager.singleton.SpawnUnit("Bandit Archer", enemyAI, 14, 10);
+        UnitManager.singleton.SpawnUnit("Goblin Archer", enemyAI, 14, 8);
+        UnitManager.singleton.SpawnUnit("Goblin Archer", enemyAI, 14, 10);
 
-        //UnitManager.singleton.SpawnUnit("Bandit", enemyAI, 10, 2);
-        //UnitManager.singleton.SpawnUnit("Bandit Archer", enemyAI, 11, 1);
-        //UnitManager.singleton.SpawnUnit("Bandit", enemyAI, 12, 2);
+        UnitManager.singleton.SpawnUnit("Goblin Warrior", enemyAI, 10, 2);
+        UnitManager.singleton.SpawnUnit("Goblin Archer", enemyAI, 11, 1);
+        UnitManager.singleton.SpawnUnit("Goblin Warrior", enemyAI, 12, 2);
     }
 
     //TEMP
