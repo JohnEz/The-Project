@@ -19,7 +19,10 @@ public enum Stats {
 public class UnitObject : ScriptableObject {
     public string characterName;
     public string className;
-    public Sprite Icon; //TODO THIS SHOULD PROBABLY BE IN THE CLASS OR SOMETHING
+    public Sprite Icon;
+
+    public Sprite frontSprite;
+    public Sprite backSprite;
 
     //scaling consts
     private const int ACTION_POINTS_TO_STAMINA = 2;
@@ -58,6 +61,10 @@ public class UnitObject : ScriptableObject {
             instantaitedAttack.caster = myUnit;
             instantiatedAttacks.Add(instantaitedAttack);
         });
+
+        // set graphics
+        myUnit.transform.Find("Token").Find("FrontSprite").GetComponent<SpriteRenderer>().sprite = frontSprite;
+        myUnit.transform.Find("Token").Find("BackSprite").GetComponent<SpriteRenderer>().sprite = backSprite;
     }
 
     public int GetModifiedStat(int baseValue, Stats stat) {

@@ -8,7 +8,7 @@ public class ResourceManager : MonoBehaviour {
     public Dictionary<string, AbilityCardBase> cards = new Dictionary<string, AbilityCardBase>();
 
     [HideInInspector]
-    public Dictionary<string, GameObject> units = new Dictionary<string, GameObject>();
+    public Dictionary<string, UnitObject> units = new Dictionary<string, UnitObject>();
 
     private void Awake() {
         if (singleton != null) {
@@ -32,11 +32,11 @@ public class ResourceManager : MonoBehaviour {
     }
 
     private void LoadUnits() {
-        GameObject[] loadedUnits = Resources.LoadAll<GameObject>("Units");
+        UnitObject[] loadedUnits = Resources.LoadAll<UnitObject>("Units");
 
         for (int i = 0; i < loadedUnits.Length; i++) {
-            GameObject newUnit = loadedUnits[i];
-            units.Add(newUnit.GetComponent<UnitController>().baseStats.className, newUnit);
+            UnitObject newUnit = loadedUnits[i];
+            units.Add(newUnit.className, newUnit);
         }
     }
 }

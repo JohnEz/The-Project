@@ -6,10 +6,10 @@ using UnityEngine;
 public class UnitManager : MonoBehaviour {
     public static UnitManager singleton;
 
+    public GameObject UnitPrefab;
+
     private List<UnitController> units;
     private List<UnitController> unitsToRemove;
-
-    public GameObject[] unitPrefabs;
 
     private TileMap myMap;
 
@@ -53,20 +53,20 @@ public class UnitManager : MonoBehaviour {
             Debug.LogError("Could not spawn character " + unit);
             return null;
         }
-        GameObject unitToSpawn = ResourceManager.singleton.units[unit];
+        UnitObject unitToSpawn = ResourceManager.singleton.units[unit];
 
         return SpawnUnit(unitToSpawn, player, x, y);
     }
 
-    public UnitController SpawnUnit(GameObject unit, Player player, int x, int y) {
-        GameObject newUnit = (GameObject)Instantiate(unit, myMap.getPositionOfNode(x, y), Quaternion.identity);
+    public UnitController SpawnUnit(UnitObject unit, Player player, int x, int y) {
+        GameObject newUnit = (GameObject)Instantiate(UnitPrefab, myMap.getPositionOfNode(x, y), Quaternion.identity);
         newUnit.transform.parent = myMap.transform;
 
         Node startingNode = myMap.getNode(x, y);
         UnitController unitController = newUnit.GetComponent<UnitController>();
 
         startingNode.myUnit = unitController;
-        unitController.Spawn(player, startingNode);
+        unitController.Spawn(player, startingNode, unit);
         unitController.FaceDirection(Vector2.down);
         unitController.myManager = this;
         unitController.Initialise();

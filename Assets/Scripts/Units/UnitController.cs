@@ -101,9 +101,10 @@ public class UnitController : MonoBehaviour {
         myStats.EndTurn();
     }
 
-    public void Spawn(Player player, Node startNode) {
+    public void Spawn(Player player, Node startNode, UnitObject startingStats) {
         myPlayer = player;
         myNode = startNode;
+        baseStats = startingStats;
     }
 
     public void DestroySelf() {
@@ -113,9 +114,9 @@ public class UnitController : MonoBehaviour {
     public void FaceDirection(Vector2 dir) {
         //GetComponentInChildren<UnitAnimationController>().FaceDirection(dir);
         if (dir.x > 0) {
-            transform.Find("baseSprite").localScale = new Vector3(1, 1, 1);
+            transform.Find("Token").localScale = new Vector3(1, 1, 1);
         } else if (dir.x < 0) {
-            transform.Find("baseSprite").localScale = new Vector3(-1, 1, 1);
+            transform.Find("Token").localScale = new Vector3(-1, 1, 1);
         }
         facingDirection = dir;
     }
@@ -386,10 +387,10 @@ public class UnitController : MonoBehaviour {
         }
     }
 
-    public void Summon(Node targetNode, GameObject unitPrefab) {
+    public void Summon(Node targetNode, UnitObject unitStats) {
         // TODO work out a clean way of getting allied player
         Player owningPlayer = myPlayer.ai ? myPlayer : PlayerManager.singleton.GetPlayer(1);
-        UnitManager.singleton.SpawnUnit(unitPrefab, owningPlayer, targetNode.x, targetNode.y);
+        UnitManager.singleton.SpawnUnit(unitStats, owningPlayer, targetNode.x, targetNode.y);
     }
 
     public void CreateBuffEffect(Buff buff) {

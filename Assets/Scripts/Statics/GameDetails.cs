@@ -2,7 +2,7 @@
 
 public static class GameDetails {
     private static string mapName = "";
-    private static string playerCharacter = "Mage";
+    private static string playerCharacter = "Criminal";
     private static List<string> playerDeck = BasicDecks.starterElementalist;
 
     public static string PlayerCharacter {
