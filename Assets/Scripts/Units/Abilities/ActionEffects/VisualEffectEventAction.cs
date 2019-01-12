@@ -10,15 +10,20 @@ public class VisualEffectEventAction : EventAction {
         action = (UnitController caster, UnitController target, Node targetedTile) => {
             switch (eventTarget) {
                 case EventTarget.CASTER:
-                    caster.CreateEffectWithDelay(effectObject, delay);
+                    if (caster != null) {
+                        caster.CreateEffectWithDelay(effectObject, delay);
+                    }
                     break;
-
                 case EventTarget.TARGETUNIT:
-                    target.CreateEffectWithDelay(effectObject, delay);
+                    if (target != null) {
+                        Debug.Log("target unit create effect called");
+                        caster.CreateEffectWithDelay(effectObject, delay, target.myNode);
+                    }
                     break;
-
                 case EventTarget.TARGETEDTILE:
-                    caster.CreateEffectWithDelay(effectObject, delay, targetedTile);
+                    if (caster != null) {
+                        caster.CreateEffectWithDelay(effectObject, delay, targetedTile);
+                    }
                     break;
             };
         };

@@ -34,7 +34,6 @@ public class UnitController : MonoBehaviour {
     [System.NonSerialized]
     public UnitManager myManager;
 
-    private UnitAnimationController anim;
     private UnitCanvasController unitCanvasController;
     private UnitDialogController myDialogController;
 
@@ -74,7 +73,6 @@ public class UnitController : MonoBehaviour {
         unitCanvas.transform.SetParent(transform, false);
         unitCanvasController = unitCanvas.GetComponent<UnitCanvasController>();
 
-        anim = GetComponentInChildren<UnitAnimationController>();
         myStats = Instantiate(baseStats);
         myStats.Initialise(this);
         projectiles = new List<ProjectileController>();
@@ -83,6 +81,10 @@ public class UnitController : MonoBehaviour {
 
     // Update is called once per frame
     private void Update() {
+        if (abilityEffects.Count > 0  || effectsToCreate > 0) {
+            Debug.Log("effectsToCreate: " + effectsToCreate);
+            Debug.Log("abilityEffects: " + abilityEffects.Count);
+        }
         FollowPath();
     }
 
@@ -113,7 +115,7 @@ public class UnitController : MonoBehaviour {
     }
 
     public void FaceDirection(Vector2 dir) {
-        GetComponentInChildren<UnitAnimationController>().FaceDirection(dir);
+        //GetComponentInChildren<UnitAnimationController>().FaceDirection(dir);
         facingDirection = dir;
     }
 
@@ -131,15 +133,15 @@ public class UnitController : MonoBehaviour {
     }
 
     public void SetWalking(bool walking) {
-        anim.IsWalking(walking);
+        //anim.IsWalking(walking);
     }
 
     public void SetAttacking(bool attacking) {
-        anim.IsAttacking(attacking);
+        //anim.IsAttacking(attacking);
     }
 
     public void SetSelected(bool selected) {
-        anim.IsSelected(selected);
+        //anim.IsSelected(selected);
     }
 
     public void RemoveTurn() {
@@ -224,7 +226,7 @@ public class UnitController : MonoBehaviour {
     }
 
     private void FinishWalking() {
-        anim.IsWalking(false);
+        //anim.IsWalking(false);
 
         // TODO only the player should be able to open doors
         if (myNode.HasDoor()) {
@@ -247,15 +249,18 @@ public class UnitController : MonoBehaviour {
         activeAction = action;
         SetAttacking(true);
         myDialogController.Attacking();
+        effectsToCreate = action.eventActions.FindAll(e => e.GetType() == typeof(VisualEffectEventAction)).Count;
+        Debug.Log("setup effectsToCreate: " + effectsToCreate);
+        Debug.Log("eventActions: " + action.eventActions.Count);
         StartCoroutine(AttackRoutine());
     }
 
     public bool getAttackAnimationPlaying() {
-        return GetComponentInChildren<UnitAnimationController>().isAttacking;
+        return false;
     }
 
     public bool getAttackHasLanded() {
-        return GetComponentInChildren<UnitAnimationController>().attackHasLanded;
+        return true;
     }
 
     public IEnumerator AttackRoutine() {
@@ -278,15 +283,19 @@ public class UnitController : MonoBehaviour {
 
     //TODO COME UP WITH A BETTER NAME - means deal damage / show cast events
     public void RunAbilityTargets() {
+        // for each target unit, run effects and damage
+        Debug.Log("abilityTargets: " + abilityTargets.Count);
         foreach (AbilityTarget abilityTarget in abilityTargets) {
             abilityTarget.abilityFunction();
             activeAction.eventActions.ForEach((eventAction) => {
                 if (eventAction.eventTrigger == AbilityEvent.CAST_END && eventAction.eventTarget == EventTarget.TARGETUNIT) {
+                    Debug.Log("Creating effect from ability targets: " + eventAction.eventTrigger + ", " + eventAction.eventTarget);
                     eventAction.action(this, abilityTarget.targetNode.myUnit, abilityTarget.targetNode);
                 }
             });
         }
 
+        // for each effect for node and caster, run now
         activeAction.eventActions.ForEach((eventAction) => {
             if (eventAction.eventTrigger == AbilityEvent.CAST_END) {
                 if (eventAction.eventTarget == EventTarget.CASTER || eventAction.eventTarget == EventTarget.TARGETEDTILE) {
@@ -298,8 +307,8 @@ public class UnitController : MonoBehaviour {
 
     public void ClearAbilityTargets() {
         abilityTargets.Clear();
-        //effectsToCreate = 0;
-        //abilityEffects.Clear ();
+        effectsToCreate = 0;
+        abilityEffects.Clear ();
     }
 
     public bool TakeDamage(UnitController attacker, int damage, bool ignoreArmour = false) {
@@ -325,13 +334,13 @@ public class UnitController : MonoBehaviour {
         myDialogController.Attacked();
 
         if (myStats.Health > 0) {
-            anim.PlayHitAnimation();
+            //anim.PlayHitAnimation();
             // TODO move these onto the unit stats
             if (myStats.onHitSfx) {
                 AudioManager.singleton.Play(myStats.onHitSfx, transform, AudioMixers.SFX);
             }
         } else {
-            anim.PlayDeathAnimation();
+            //anim.PlayDeathAnimation();
             if (myStats.onDeathSfx) {
                 AudioManager.singleton.Play(myStats.onDeathSfx, transform, AudioMixers.SFX);
             }
@@ -401,11 +410,11 @@ public class UnitController : MonoBehaviour {
         myEffect.transform.SetParent(location.transform, false);
         myEffect.GetComponent<SpriteFxController>().Initialise(this);
         abilityEffects.Add(myEffect);
+        Debug.Log("Created Effect");
         effectsToCreate--;
     }
 
     public void CreateEffectWithDelay(GameObject effect, float delay, Node location = null) {
-        effectsToCreate++;
         if (location != null) {
             StartCoroutine(CreateEffectAtLocation(location, effect, delay));
         } else {

@@ -41,16 +41,16 @@ public class AttackAction : CardAction {
     }
 
     private void AbilityEffectUnit(UnitController target) {
-        attackEffects.ForEach(attackEffect => {
-            AddAbilityTarget(target.myNode, () => {
+        AddAbilityTarget(target.myNode, () => {
+            attackEffects.ForEach(attackEffect => {
                 attackEffect.AbilityEffect(caster, target);
             });
         });
     }
 
     private void AbilityEffectNode(Node targetNode) {
-        attackEffects.ForEach(attackEffect => {
-            AddAbilityTarget(targetNode, () => {
+        AddAbilityTarget(targetNode, () => {
+            attackEffects.ForEach(attackEffect => {
                 attackEffect.AbilityEffect(caster, targetNode);
             });
         });
@@ -59,8 +59,12 @@ public class AttackAction : CardAction {
     // Single target on use
     public virtual void UseAbility(Node target) {
         OnUseSingleEventActions(target);
-        AbilityEffectUnit(target.myUnit);
-        AbilityEffectNode(target);
+        Debug.Log("Adding node and unit targets");
+        if (tileTarget == TileTarget.UNIT) {
+            AbilityEffectUnit(target.myUnit);
+        } else {
+            AbilityEffectNode(target);
+        }
         Cooldown = MaxCooldown;
     }
 
@@ -77,6 +81,7 @@ public class AttackAction : CardAction {
         Cooldown = MaxCooldown;
     }
 
+    // Creates effects on cast start
     private void OnUseSingleEventActions(Node target) {
         eventActions.ForEach((eventAction) => {
             if (eventAction.eventTrigger == AbilityEvent.CAST_START) {
@@ -85,6 +90,7 @@ public class AttackAction : CardAction {
         });
     }
 
+    // Creates effects on cast start
     private void OnUseAOEEventActions(List<Node> effectedNodes, Node target) {
         eventActions.ForEach((eventAction) => {
             if (eventAction.eventTrigger == AbilityEvent.CAST_START) {

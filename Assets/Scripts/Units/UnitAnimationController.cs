@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class UnitAnimationController : MonoBehaviour {
+public class UnitAnimationControllerLegacy : MonoBehaviour {
     public bool isWalking = false;
     public bool isAttacking = false;
     public bool attackHasLanded = false;

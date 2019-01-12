@@ -5,7 +5,7 @@ public class GameManager : MonoBehaviour {
 
     private TileMap map;
 
-    private const bool ADD_ALLY = false;
+    private const bool ADD_ALLY = true;
 
     private void Awake() {
         singleton = this;
