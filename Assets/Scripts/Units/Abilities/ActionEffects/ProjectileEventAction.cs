@@ -8,8 +8,8 @@ public class ProjectileEventAction : EventAction {
 
     public ProjectileEventAction() : base() {
         eventTarget = EventTarget.CASTER;
-        action = (UnitController caster, UnitController target, Node targetedTile) => {
-            caster.CreateProjectileWithDelay(projectileObject, target.myNode, speed, delay);
+        action = (UnitController caster, Node targetedTile) => {
+            caster.CreateProjectileWithDelay(projectileObject, targetedTile, speed, delay);
         };
     }
 }

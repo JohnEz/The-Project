@@ -44,8 +44,8 @@ public struct EventActionLegacy {
         EventAction newEventAction = new EventAction();
         newEventAction.eventTrigger = _eventTrigger;
         newEventAction.eventTarget = EventTarget.CASTER;
-        newEventAction.action = (UnitController caster, UnitController target, Node targetedTile) => {
-            caster.CreateProjectileWithDelay(projectileObject, target.myNode, speed, delay);
+        newEventAction.action = (UnitController caster, Node targetedTile) => {
+            caster.CreateProjectileWithDelay(projectileObject, targetedTile, speed, delay);
         };
 
         return newEventAction;

@@ -81,10 +81,6 @@ public class UnitController : MonoBehaviour {
 
     // Update is called once per frame
     private void Update() {
-        if (abilityEffects.Count > 0  || effectsToCreate > 0) {
-            Debug.Log("effectsToCreate: " + effectsToCreate);
-            Debug.Log("abilityEffects: " + abilityEffects.Count);
-        }
         FollowPath();
     }
 
@@ -116,6 +112,11 @@ public class UnitController : MonoBehaviour {
 
     public void FaceDirection(Vector2 dir) {
         //GetComponentInChildren<UnitAnimationController>().FaceDirection(dir);
+        if (dir.x > 0) {
+            transform.Find("baseSprite").localScale = new Vector3(1, 1, 1);
+        } else if (dir.x < 0) {
+            transform.Find("baseSprite").localScale = new Vector3(-1, 1, 1);
+        }
         facingDirection = dir;
     }
 
@@ -250,8 +251,6 @@ public class UnitController : MonoBehaviour {
         SetAttacking(true);
         myDialogController.Attacking();
         effectsToCreate = action.eventActions.FindAll(e => e.GetType() == typeof(VisualEffectEventAction)).Count;
-        Debug.Log("setup effectsToCreate: " + effectsToCreate);
-        Debug.Log("eventActions: " + action.eventActions.Count);
         StartCoroutine(AttackRoutine());
     }
 
@@ -284,13 +283,11 @@ public class UnitController : MonoBehaviour {
     //TODO COME UP WITH A BETTER NAME - means deal damage / show cast events
     public void RunAbilityTargets() {
         // for each target unit, run effects and damage
-        Debug.Log("abilityTargets: " + abilityTargets.Count);
         foreach (AbilityTarget abilityTarget in abilityTargets) {
             abilityTarget.abilityFunction();
             activeAction.eventActions.ForEach((eventAction) => {
                 if (eventAction.eventTrigger == AbilityEvent.CAST_END && eventAction.eventTarget == EventTarget.TARGETUNIT) {
-                    Debug.Log("Creating effect from ability targets: " + eventAction.eventTrigger + ", " + eventAction.eventTarget);
-                    eventAction.action(this, abilityTarget.targetNode.myUnit, abilityTarget.targetNode);
+                    eventAction.action(this, abilityTarget.targetNode);
                 }
             });
         }
@@ -299,7 +296,7 @@ public class UnitController : MonoBehaviour {
         activeAction.eventActions.ForEach((eventAction) => {
             if (eventAction.eventTrigger == AbilityEvent.CAST_END) {
                 if (eventAction.eventTarget == EventTarget.CASTER || eventAction.eventTarget == EventTarget.TARGETEDTILE) {
-                    eventAction.action(this, null, currentAbilityTarget);
+                    eventAction.action(this, currentAbilityTarget);
                 }
             }
         });
@@ -340,7 +337,8 @@ public class UnitController : MonoBehaviour {
                 AudioManager.singleton.Play(myStats.onHitSfx, transform, AudioMixers.SFX);
             }
         } else {
-            //anim.PlayDeathAnimation();
+            // TODO add death
+            DestroySelf();
             if (myStats.onDeathSfx) {
                 AudioManager.singleton.Play(myStats.onDeathSfx, transform, AudioMixers.SFX);
             }
@@ -410,7 +408,6 @@ public class UnitController : MonoBehaviour {
         myEffect.transform.SetParent(location.transform, false);
         myEffect.GetComponent<SpriteFxController>().Initialise(this);
         abilityEffects.Add(myEffect);
-        Debug.Log("Created Effect");
         effectsToCreate--;
     }
 

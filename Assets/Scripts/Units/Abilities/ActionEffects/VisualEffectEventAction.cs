@@ -7,7 +7,7 @@ public class VisualEffectEventAction : EventAction {
 
     // Use this for initialization
     public VisualEffectEventAction() : base() {
-        action = (UnitController caster, UnitController target, Node targetedTile) => {
+        action = (UnitController caster, Node targetedTile) => {
             switch (eventTarget) {
                 case EventTarget.CASTER:
                     if (caster != null) {
@@ -15,9 +15,8 @@ public class VisualEffectEventAction : EventAction {
                     }
                     break;
                 case EventTarget.TARGETUNIT:
-                    if (target != null) {
-                        Debug.Log("target unit create effect called");
-                        caster.CreateEffectWithDelay(effectObject, delay, target.myNode);
+                    if (targetedTile != null) {
+                        caster.CreateEffectWithDelay(effectObject, delay, targetedTile);
                     }
                     break;
                 case EventTarget.TARGETEDTILE:

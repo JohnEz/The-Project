@@ -3,7 +3,7 @@
 public class EventAction : ScriptableObject {
     public AbilityEvent eventTrigger;
     public EventTarget eventTarget;
-    public System.Action<UnitController, UnitController, Node> action;
+    public System.Action<UnitController, Node> action;
 
     // Use this for initialization
     private void Start() {

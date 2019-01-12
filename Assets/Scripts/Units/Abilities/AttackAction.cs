@@ -59,7 +59,6 @@ public class AttackAction : CardAction {
     // Single target on use
     public virtual void UseAbility(Node target) {
         OnUseSingleEventActions(target);
-        Debug.Log("Adding node and unit targets");
         if (tileTarget == TileTarget.UNIT) {
             AbilityEffectUnit(target.myUnit);
         } else {
@@ -85,7 +84,7 @@ public class AttackAction : CardAction {
     private void OnUseSingleEventActions(Node target) {
         eventActions.ForEach((eventAction) => {
             if (eventAction.eventTrigger == AbilityEvent.CAST_START) {
-                eventAction.action(caster, target.myUnit, target);
+                eventAction.action(caster, target);
             }
         });
     }
@@ -95,11 +94,11 @@ public class AttackAction : CardAction {
         eventActions.ForEach((eventAction) => {
             if (eventAction.eventTrigger == AbilityEvent.CAST_START) {
                 if (eventAction.eventTarget == EventTarget.CASTER || eventAction.eventTarget == EventTarget.TARGETEDTILE) {
-                    eventAction.action(caster, null, target);
+                    eventAction.action(caster, target);
                 } else if (eventAction.eventTarget == EventTarget.TARGETUNIT) {
                     effectedNodes.ForEach((targetNode) => {
                         if (CanHitUnit(targetNode)) {
-                            eventAction.action(caster, targetNode.myUnit, target);
+                            eventAction.action(caster, target);
                         }
                     });
                 }
