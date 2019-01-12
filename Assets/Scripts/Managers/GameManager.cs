@@ -39,8 +39,9 @@ public class GameManager : MonoBehaviour {
         if (ADD_ALLY) {
             Player allyAI = PlayerManager.singleton.AddAiPlayer(1);
 
-            UnitManager.singleton.SpawnUnit("Bandit", allyAI, 1, 8);
-            UnitManager.singleton.SpawnUnit("Bandit", allyAI, 1, 10);
+            UnitManager.singleton.SpawnUnit("Criminal", allyAI, 1, 8);
+            UnitManager.singleton.SpawnUnit("Farmer", allyAI, 2, 9);
+            UnitManager.singleton.SpawnUnit("Scribe", allyAI, 1, 10);
         }
 
         humanPlayer.myCharacter = UnitManager.singleton.SpawnUnit(GameDetails.PlayerCharacter, PlayerManager.singleton.GetPlayer(0), 1, 9);
