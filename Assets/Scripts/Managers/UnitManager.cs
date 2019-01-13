@@ -56,6 +56,7 @@ public class UnitManager : MonoBehaviour {
     }
 
     public UnitController SpawnUnit(UnitObject unit, Player player, int x, int y) {
+        // TODO 3d Refactor, unit spawn locations should only do X and Z
         GameObject newUnit = (GameObject)Instantiate(UnitPrefab, TileMap.instance.getPositionOfNode(x, y), Quaternion.identity);
         newUnit.transform.parent = TileMap.instance.transform;
 

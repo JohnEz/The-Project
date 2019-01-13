@@ -60,7 +60,7 @@ public class TileMap : MonoBehaviour {
             int x = i % data.width;
             int y = i / data.width;
 
-            Vector3 pos = new Vector3(x * tileSize, -y * tileSize, 0);
+            Vector3 pos = new Vector3(x * tileSize, 0, -y * tileSize);
 
             GameObject baseNode = Instantiate(basicNodePrefab, pos, rot);
             baseNode.transform.parent = this.transform;
@@ -203,7 +203,7 @@ public class TileMap : MonoBehaviour {
     }
 
     public Vector3 getPositionOfNode(int x, int y) {
-        return GetNode(x, y).transform.position;
+        return getPositionOfNode(GetNode(x, y));
     }
 
     public float getWidth() {

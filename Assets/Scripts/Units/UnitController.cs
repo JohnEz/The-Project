@@ -122,11 +122,11 @@ public class UnitController : MonoBehaviour {
 
     public void FaceDirection(Vector2 dir) {
         //GetComponentInChildren<UnitAnimationController>().FaceDirection(dir);
-        if (dir.x > 0) {
-            transform.Find("Token").localScale = new Vector3(1, 1, 1);
-        } else if (dir.x < 0) {
-            transform.Find("Token").localScale = new Vector3(-1, 1, 1);
-        }
+        float rotationX = 90 * -dir.x;
+        float rotationY = dir.y == 1 ? 180 : 0;
+
+        transform.Find("Token").transform.localRotation = Quaternion.Euler(new Vector3(0, rotationX + rotationY, 0));
+
         facingDirection = dir;
     }
 
@@ -179,13 +179,15 @@ public class UnitController : MonoBehaviour {
         if (myPath.Count <= 0) {
             return;
         }
-
-        float distanceToNode = Vector3.Distance(myPath[0].transform.position, transform.position);
+        Vector3 my2DPosition = new Vector3(transform.position.x, 0, transform.position.z);
+        Vector3 target2DPosition = new Vector3(myPath[0].transform.position.x, 0, myPath[0].transform.position.z);
+        float distanceToNode = Vector3.Distance(my2DPosition, target2DPosition);
 
         if (distanceToNode - (WALKSPEED * Time.deltaTime) > CLOSE_ENOUGH_TO_TILE) {
-            transform.position = transform.position + ((Vector3)facingDirection * WALKSPEED * Time.deltaTime);
+            Vector3 moveDirection = new Vector3(facingDirection.x, 0, facingDirection.y);
+            transform.position = transform.position + (moveDirection * WALKSPEED * Time.deltaTime);
         } else {
-            transform.position = myPath[0].transform.position;
+            transform.position = new Vector3(myPath[0].transform.position.x, transform.position.y, myPath[0].transform.position.z);
             if (myPath.Count > 1) {
                 FaceDirection(myPath[1].previous.GetDirectionFrom(myPath[1]));
             } else {

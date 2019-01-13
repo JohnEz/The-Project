@@ -55,6 +55,15 @@ public class UnitCanvasController : MonoBehaviour {
             CombatText combatText = combatTextQueue.Dequeue();
             CreateCombatText(combatText.text, combatText.colour);
         }
+
+        FaceCamera();
+    }
+
+    public void FaceCamera() {
+        Vector3 v = CameraManager.singleton.cam.transform.position - transform.position;
+        v.x = v.z = 0.0f;
+        transform.LookAt(CameraManager.singleton.cam.transform.position - v);
+        transform.Rotate(0, 180, 0);
     }
 
     public void UpdateBuffs(List<Buff> buffs) {

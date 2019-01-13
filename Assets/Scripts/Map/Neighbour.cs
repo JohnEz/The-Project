@@ -37,11 +37,11 @@ public class Neighbour {
         }
 
         Vector3 positionDifference = (n2.transform.position - n1.transform.position) / 2;
-        Vector3 position = new Vector3(n1.transform.position.x + positionDifference.x, n1.transform.position.y + positionDifference.y, doorPrefab.transform.position.z);
+        Vector3 position = new Vector3(n1.transform.position.x + positionDifference.x, doorPrefab.transform.position.y, n1.transform.position.z + positionDifference.z);
         Quaternion rotation = Quaternion.Euler(0, 0, 0);
 
-        if (positionDifference.y != 0) {
-            rotation = Quaternion.Euler(0, 0, -90);
+        if (positionDifference.z != 0) {
+            rotation = Quaternion.Euler(0, -90, 0);
         }
 
         myDoor = GameObject.Instantiate(doorPrefab, position, rotation);
