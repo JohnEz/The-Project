@@ -61,8 +61,7 @@ public class UnitCanvasController : MonoBehaviour {
 
     public void FaceCamera() {
         Vector3 v = CameraManager.singleton.cam.transform.position - transform.position;
-        v.x = v.z = 0.0f;
-        transform.LookAt(CameraManager.singleton.cam.transform.position - v);
+        transform.LookAt(CameraManager.singleton.cam.transform.position);
         transform.Rotate(0, 180, 0);
     }
 
