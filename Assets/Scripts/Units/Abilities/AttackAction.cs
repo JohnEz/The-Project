@@ -37,7 +37,6 @@ public class AttackAction : CardAction {
     }
 
     public bool IsOnCooldown() {
-        Debug.Log("Checking if " + name + " is on cooldown: " + cooldown);
         return Cooldown > 0;
     }
 
@@ -65,8 +64,7 @@ public class AttackAction : CardAction {
         } else {
             AbilityEffectNode(target);
         }
-        Debug.Log("Setting cooldown " + MaxCooldown + " for ability " + name);
-        Cooldown = MaxCooldown;
+        AbilityUsed();
     }
 
     // AOE on use
@@ -79,7 +77,16 @@ public class AttackAction : CardAction {
                 AbilityEffectUnit(node.myUnit);
             }
         });
+        AbilityUsed();
+    }
+
+    public void AbilityUsed() {
         Cooldown = MaxCooldown;
+        
+        if (caster.IsStealthed()) {
+            Buff stealthBuff = caster.myStats.FindBuff("Stealth");
+            caster.myStats.RemoveBuff(stealthBuff);
+        }
     }
 
     // Creates effects on cast start
@@ -125,6 +132,10 @@ public class AttackAction : CardAction {
             return false;
         }
 
+        if (targetNode.myUnit && targetNode.myUnit.IsStealthed()) {
+            return false;
+        }
+
         bool hasTarget = targetNode.myUnit != null;
         bool isEnemy = hasTarget && targetNode.myUnit.myPlayer.faction != caster.myPlayer.faction;
 
@@ -142,6 +153,9 @@ public class AttackAction : CardAction {
                 return false;
         }
     }
+
+    // AI Estimates //
+    //////////////////
 
     public int GetDamageEstimate() {
         int damage = 0;
@@ -182,5 +196,9 @@ public class AttackAction : CardAction {
         });
 
         return armour;
+    }
+
+    public bool AppliesStealth() {
+        return attackEffects.Exists(attackEffect => attackEffect.GetType() == typeof(StealthEffect));
     }
 }

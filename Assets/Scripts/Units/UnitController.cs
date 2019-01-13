@@ -61,6 +61,7 @@ public class UnitController : MonoBehaviour {
     private Queue<Action> actionQueue = new Queue<Action>();
     private List<ProjectileController> projectiles;
     private Node currentAbilityTarget;
+    private int projectilesToCreate = 0;
     private int effectsToCreate = 0;
     private List<GameObject> abilityEffects = new List<GameObject>();
 
@@ -86,6 +87,10 @@ public class UnitController : MonoBehaviour {
 
     public bool IsAllyOf(UnitController other) {
         return myPlayer.faction == other.myPlayer.faction;
+    }
+
+    public bool IsStealthed() {
+        return myStats.FindBuff("Stealth") != null;
     }
 
     public bool HasRemainingQueuedActions() {
@@ -256,6 +261,7 @@ public class UnitController : MonoBehaviour {
         SetAttacking(true);
         myDialogController.Attacking();
         effectsToCreate = action.eventActions.FindAll(e => e.GetType() == typeof(VisualEffectEventAction)).Count;
+        projectilesToCreate = action.eventActions.FindAll(e => e.GetType() == typeof(ProjectileEventAction)).Count;
         StartCoroutine(AttackRoutine());
     }
 
@@ -269,7 +275,7 @@ public class UnitController : MonoBehaviour {
 
     public IEnumerator AttackRoutine() {
         //make sure projects have been destroyed
-        yield return new WaitUntil(() => getAttackHasLanded() && projectiles.Count < 1);
+        yield return new WaitUntil(() => getAttackHasLanded() && projectilesToCreate == 0 && projectiles.Count < 1);
         RunAbilityTargets();
 
         //wait for effects to end
@@ -310,6 +316,7 @@ public class UnitController : MonoBehaviour {
     public void ClearAbilityTargets() {
         abilityTargets.Clear();
         effectsToCreate = 0;
+        projectilesToCreate = 0;
         abilityEffects.Clear ();
     }
 
@@ -435,6 +442,7 @@ public class UnitController : MonoBehaviour {
         ProjectileController createdProjectileController = createdProjectile.GetComponent<ProjectileController>();
         createdProjectileController.SetTarget(this, target, speed);
         projectiles.Add(createdProjectileController);
+        projectilesToCreate--;
     }
 
     public void CreateProjectileWithDelay(GameObject projectile, Node target, float speed, float delay) {

@@ -135,7 +135,7 @@ public class AIAttackPicker {
             int missingHealth = target.myUnit.myStats.MaxHealth - target.myUnit.myStats.Health;
             int effectiveHealing = Mathf.Min(calculatedHealing, missingHealth);
 
-            int calculatedDamageReduction = attack.GetArmourEstimate() * tileHostility.numberOfAttacks;
+            int calculatedDamageReduction = attack.AppliesStealth() ? tileHostility.heat : attack.GetArmourEstimate() * tileHostility.numberOfAttacks;
 
             bool savesAlly = target.myUnit.Health <= tileHostility.heat && target.myUnit.Health + effectiveHealing > tileHostility.heat - calculatedDamageReduction;
 

@@ -2,6 +2,7 @@
 
 [CreateAssetMenu(fileName = "New Attack Action", menuName = "Card/Attack/Damage Per Stack")]
 public class DamagePerStackEffect : AttackEffect {
+    public int baseDamage = 1;
     public int damageMod = 1;
     public string buffName = "Burn";
 
@@ -9,8 +10,8 @@ public class DamagePerStackEffect : AttackEffect {
 
     public override void AbilityEffect(UnitController caster, UnitController target) {
         Buff targetBuff = target.myStats.FindBuff(buffName);
-        int numberOfStacks = targetBuff.stacks;
-        int damage = numberOfStacks * damageMod;
+        int numberOfStacks = targetBuff != null ? targetBuff.stacks : 0;
+        int damage = baseDamage + (numberOfStacks * damageMod);
 
         caster.DealDamageTo(target, damage);
 

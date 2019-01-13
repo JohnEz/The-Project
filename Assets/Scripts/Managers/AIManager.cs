@@ -105,14 +105,12 @@ public class AIManager : MonoBehaviour {
                     // Check there is a path to that node
                     if (pathToNode.movementCost > -1) {
                         // Trim path to our walkable distance
-                        TripPathToWalkable(unit, pathToNode);
+                        pathToNode = TripPathToWalkable(unit, pathToNode);
                         pathToNode.path = Pathfinder.CleanPath(pathToNode.path, unit.myNode);
 
                         // Tell unit to follow path
-                        //UnitManager.singleton.SetUnitPath(unit, pathToNode);
-                        Debug.Log("Told unit " + unit.myStats.className + " to go to " + pathToNode.path.Last().ToString());
                         UnitManager.singleton.SetUnitPath(unit, pathToNode);
-                        actionPoints = 0;
+                        actionPoints--;
                     } else {
                         Debug.LogError(String.Format("Unit \"{0}\" cant move to node {1}", unit.name, turnPlan.targetMoveNode));
                     }
@@ -127,8 +125,12 @@ public class AIManager : MonoBehaviour {
             if (turnPlan != null && turnPlan.targetMoveNode == null && turnPlan.attack == null) {
                 turnPlan = null;
             }
-            yield return WaitForWaitingForInput();
+
+            // dont let turns go crazy fast
+            yield return new WaitForSeconds(1);
         }
+
+        yield return WaitForWaitingForInput();
     }
 
     //If we only want AI to have a single move and a single attack
@@ -274,7 +276,7 @@ public class AIManager : MonoBehaviour {
         UnitManager.singleton.AttackTile(unit, targetTile, attack);
     }
 
-    private void TripPathToWalkable(UnitController unit, MovementPath movementPath) {
+    private MovementPath TripPathToWalkable(UnitController unit, MovementPath movementPath) {
         movementPath.path = movementPath.path.Take(unit.myStats.Speed).ToList();
 
         //Debug.Log("I want to move to node: " + shortestPath.path.Last());
@@ -284,12 +286,14 @@ public class AIManager : MonoBehaviour {
             //remove that node
             movementPath.path.Remove(movementPath.path.Last());
         }
+
+        return movementPath;
     }
 
     public void MoveShortestPath(UnitController unit, List<MovementPath> paths) {
         // finds the shortest path out of all the paths
         MovementPath shortestPath = Pathfinder.GetSortestPath(paths);
-        TripPathToWalkable(unit, shortestPath);
+        shortestPath = TripPathToWalkable(unit, shortestPath);
 
         //Debug.Log("I am moving to node: " + shortestPath.path.Last());
 
