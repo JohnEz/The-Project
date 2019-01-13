@@ -3,9 +3,7 @@
 public class CameraManager : MonoBehaviour {
     public static CameraManager singleton;
 
-    public CameraController cam;
-
-    private TileMap map;
+    public CameraController3D cam;
 
     private void Awake() {
         singleton = this;
@@ -15,9 +13,7 @@ public class CameraManager : MonoBehaviour {
     }
 
     public void Initialise() {
-        map = GetComponentInChildren<TileMap>();
 
-        cam.Initialise(map);
     }
 
     // Update is called once per frame
@@ -29,11 +25,11 @@ public class CameraManager : MonoBehaviour {
     }
 
     public void MoveToLocation(Node node) {
-        MoveToLocation(map.getPositionOfNode(node));
+        MoveToLocation(TileMap.instance.getPositionOfNode(node));
     }
 
     public void JumpToLocation(Node node) {
-        cam.JumpToLocation(map.getPositionOfNode(node));
+        cam.JumpToLocation(TileMap.instance.getPositionOfNode(node));
     }
 
     public void FollowTarget(Transform target) {
