@@ -126,13 +126,13 @@ public class Pathfinder : MonoBehaviour {
             }
         });
 
-        /*List<MovementPath> pathsWithoutUnitsAtEnd = paths.Where (movementPath => {
+        List<MovementPath> pathsWithoutUnitsAtEnd = paths.Where (movementPath => {
 			return movementPath.movementCost > -1 &&
 				movementPath.path [movementPath.path.Count-1].myUnit == null;
-		}).ToList();*/
+		}).ToList();
 
-        //return GetSortestPath (pathsWithoutUnitsAtEnd.Count > 0 ? pathsWithoutUnitsAtEnd : paths);
-        return GetSortestPath(paths);
+        return GetSortestPath (pathsWithoutUnitsAtEnd.Count > 0 ? pathsWithoutUnitsAtEnd : paths);
+        //return GetSortestPath(paths);
     }
 
     public static MovementPath GetSortestPath(List<MovementPath> paths) {
@@ -154,12 +154,17 @@ public class Pathfinder : MonoBehaviour {
 
     // this finds the fastest path ONTO a tile
     public MovementPath FindPath(Node source, Node target, Walkable walkingType, int faction) {
-        map.resetTiles();
-
-        List<Node> openList = new List<Node>();
         MovementPath path = new MovementPath();
         path.movementCost = -1;
 
+        if (source == target) {
+            path.movementCost = 0;
+            return path;
+        }
+
+        map.resetTiles();
+
+        List<Node> openList = new List<Node>();
         source.cost = 0;
 
         openList.Add(source);
@@ -413,7 +418,7 @@ public class Pathfinder : MonoBehaviour {
             //Debug.Log(map.getNode(x, y).ToString());
 
             // TODO potentially move this to its own function
-            Node nextNode = map.getNode(x, y);
+            Node nextNode = map.GetNode(x, y);
             Neighbour neighbourBetweenNodes = previousNode.FindNeighbourTo(nextNode);
 
             //Debug.Log(neighbourBetweenNodes.ToString());
@@ -423,7 +428,7 @@ public class Pathfinder : MonoBehaviour {
                 //Debug.Log("No neighbour found between nodes");
             }
 
-            if (map.getNode(x, y).lineOfSight != LineOfSight.Full || (neighbourBetweenNodes != null && neighbourBetweenNodes.HasDoor())) {
+            if (map.GetNode(x, y).lineOfSight != LineOfSight.Full || (neighbourBetweenNodes != null && neighbourBetweenNodes.HasDoor())) {
                 return false;
             }
 

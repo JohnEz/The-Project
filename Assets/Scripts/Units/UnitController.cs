@@ -84,6 +84,10 @@ public class UnitController : MonoBehaviour {
         FollowPath();
     }
 
+    public bool IsAllyOf(UnitController other) {
+        return myPlayer.faction == other.myPlayer.faction;
+    }
+
     public bool HasRemainingQueuedActions() {
         return actionQueue.Count > 0;
     }

@@ -11,8 +11,6 @@ public class UnitManager : MonoBehaviour {
     private List<UnitController> units;
     private List<UnitController> unitsToRemove;
 
-    private TileMap myMap;
-
     //currentSelect
     //UnitController currentPlayerUnit = null;
     private AttackAction activeAbility = null;
@@ -34,10 +32,9 @@ public class UnitManager : MonoBehaviour {
     private void Start() {
     }
 
-    public void Initialise(TileMap map) {
+    public void Initialise() {
         units = new List<UnitController>();
         unitsToRemove = new List<UnitController>();
-        myMap = map;
     }
 
     // Update is called once per frame
@@ -59,10 +56,10 @@ public class UnitManager : MonoBehaviour {
     }
 
     public UnitController SpawnUnit(UnitObject unit, Player player, int x, int y) {
-        GameObject newUnit = (GameObject)Instantiate(UnitPrefab, myMap.getPositionOfNode(x, y), Quaternion.identity);
-        newUnit.transform.parent = myMap.transform;
+        GameObject newUnit = (GameObject)Instantiate(UnitPrefab, TileMap.instance.getPositionOfNode(x, y), Quaternion.identity);
+        newUnit.transform.parent = TileMap.instance.transform;
 
-        Node startingNode = myMap.getNode(x, y);
+        Node startingNode = TileMap.instance.GetNode(x, y);
         UnitController unitController = newUnit.GetComponent<UnitController>();
 
         startingNode.myUnit = unitController;
@@ -136,7 +133,7 @@ public class UnitManager : MonoBehaviour {
             throw new System.Exception("Current player not selected!");
         }
 
-        ReachableTiles walkingTiles = myMap.pathfinder.findReachableTiles(unit.myNode, moveDistance, walkingType, unit.myPlayer.faction);
+        ReachableTiles walkingTiles = TileMap.instance.pathfinder.findReachableTiles(unit.myNode, moveDistance, walkingType, unit.myPlayer.faction);
         HighlightManager.singleton.HighlightTiles(walkingTiles.basic.Keys.ToList(), SquareTarget.MOVEMENT);
     }
 
@@ -156,7 +153,7 @@ public class UnitManager : MonoBehaviour {
         action.caster = unit;
         activeAbility = action;
 
-        attackableTiles = myMap.pathfinder.FindAttackableTiles(unit.myNode, action);
+        attackableTiles = TileMap.instance.pathfinder.FindAttackableTiles(unit.myNode, action);
         HighlightManager.singleton.UnhighlightAllTiles();
         HighlightManager.singleton.HighlightTile(unit.myNode, SquareTarget.NONE);
         SquareTarget targetType = action.targets == TargetType.ALLY ? SquareTarget.HELPFULL : SquareTarget.ATTACK;
@@ -185,7 +182,7 @@ public class UnitManager : MonoBehaviour {
 
     // shows the path to the selected node
     public void ShowPath(Node targetNode) {
-        MovementPath movementPath = myMap.pathfinder.getPathFromTile(targetNode);
+        MovementPath movementPath = TileMap.instance.pathfinder.getPathFromTile(targetNode);
         HighlightManager.singleton.ShowPath(movementPath.path);
     }
 
@@ -201,7 +198,7 @@ public class UnitManager : MonoBehaviour {
 
         if (targetNode.previousMoveNode) {
             //MovementPath movementPath = myMap.pathfinder.getPathFromTile (targetNode.previousMoveNode);
-            MovementPath movementPath = myMap.pathfinder.FindPath(unit.myNode, targetNode.previousMoveNode, unit.myStats.WalkingType, unit.myPlayer.faction);
+            MovementPath movementPath = TileMap.instance.pathfinder.FindPath(unit.myNode, targetNode.previousMoveNode, unit.myStats.WalkingType, unit.myPlayer.faction);
             SetUnitPath(unit, movementPath);
         }
 
@@ -220,13 +217,13 @@ public class UnitManager : MonoBehaviour {
         List<Node> targetTiles = new List<Node>();
         switch (action.areaOfEffect) {
             case AreaOfEffect.AURA:
-                return attackableTiles;
+                return TileMap.instance.pathfinder.FindAOEHitTiles(unit.myNode, action);
 
             case AreaOfEffect.CIRCLE:
-                return myMap.pathfinder.FindAOEHitTiles(targetNode, action);
+                return TileMap.instance.pathfinder.FindAOEHitTiles(targetNode, action);
 
             case AreaOfEffect.CLEAVE:
-                return myMap.pathfinder.FindCleaveTargetTiles(targetNode, action, unit.myNode);
+                return TileMap.instance.pathfinder.FindCleaveTargetTiles(targetNode, action, unit.myNode);
 
             case AreaOfEffect.SINGLE:
             default:
@@ -245,7 +242,7 @@ public class UnitManager : MonoBehaviour {
 
     // Tells the unit to move to a set node
     public void MoveToTile(UnitController unit, Node targetNode) {
-        MovementPath movementPath = myMap.pathfinder.getPathFromTile(targetNode);
+        MovementPath movementPath = TileMap.instance.pathfinder.getPathFromTile(targetNode);
         SetUnitPath(unit, movementPath);
     }
 

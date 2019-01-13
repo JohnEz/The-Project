@@ -140,4 +140,45 @@ public class AttackAction : CardAction {
                 return false;
         }
     }
+
+    public int GetDamageEstimate() {
+        int damage = 0;
+
+        attackEffects.ForEach(attackEffect => {
+            if (attackEffect.GetType() == typeof(DamageEffect)) {
+                damage += ((DamageEffect)attackEffect).damage;
+            } else if (attackEffect.GetType() == typeof(DamagePerStackEffect)) {
+                damage += ((DamagePerStackEffect)attackEffect).damageMod * 2;
+            } else if (attackEffect.GetType() == typeof(DamageWithMultiplierEffect)) {
+                DamageWithMultiplierEffect damageEffect = (DamageWithMultiplierEffect)attackEffect;
+                damage += damageEffect.baseDamage * (damageEffect.damageMod / 2);
+            }
+        });
+
+        return damage;
+    }
+
+    public int GetHealingEstimate() {
+        int healing = 0;
+
+        attackEffects.ForEach(attackEffect => {
+            if (attackEffect.GetType() == typeof(HealEffect)) {
+                healing += ((HealEffect)attackEffect).healing;
+            }
+        });
+
+        return healing;
+    }
+
+    public int GetArmourEstimate() {
+        int armour = 0;
+
+        attackEffects.ForEach(attackEffect => {
+            if (attackEffect.GetType() == typeof(IncreaseArmour)) {
+                armour += ((IncreaseArmour) attackEffect).armourIncrease;
+            }
+        });
+
+        return armour;
+    }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public enum SquareTarget {
@@ -234,5 +235,14 @@ public class TileHighlighter : MonoBehaviour {
         newDecal.transform.SetParent(this.transform, false);
         newDecal.transform.Rotate(rotation);
         myDecals.Add(newDecal);
+    }
+
+    public void DebugSetColour(float update, Color color) {
+        updateAlpha(update);
+        mySpriteRenderer.color = color;
+    }
+
+    public void DebugSetText(string text) {
+        transform.GetComponentInChildren<TextMeshProUGUI>().text = text;
     }
 }

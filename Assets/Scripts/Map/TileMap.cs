@@ -8,6 +8,8 @@ public class PrefabDictionaryEntry {
 }
 
 public class TileMap : MonoBehaviour {
+    public static TileMap instance; 
+
     private int mapWidth;
     private int mapHeight;
     private Node[] tiles;
@@ -19,6 +21,10 @@ public class TileMap : MonoBehaviour {
     public Pathfinder pathfinder;
 
     private float tileSize = 128;
+
+    private void Awake() {
+        instance = this;
+    }
 
     // Use this for initialization
     private void Start() {
@@ -136,7 +142,7 @@ public class TileMap : MonoBehaviour {
     }
 
     private void AddNeighbour(Node startNode, int dirX, int dirY) {
-        Node endNode = getNode(startNode.x + dirX, startNode.y + dirY);
+        Node endNode = GetNode(startNode.x + dirX, startNode.y + dirY);
 
         Neighbour exisitingNeighbour = endNode.neighbours != null ? endNode.FindNeighbourTo(startNode) : null;
         // check to see if the end node has already created a neighbour
@@ -165,7 +171,7 @@ public class TileMap : MonoBehaviour {
             x = i % mapWidth;
             y = i / mapWidth;
 
-            Node node = getNode(x, y);
+            Node node = GetNode(x, y);
             node.neighbours = new List<Neighbour>();
 
             //set all neighbours
@@ -184,7 +190,11 @@ public class TileMap : MonoBehaviour {
         }
     }
 
-    public Node getNode(int x, int y) {
+    public Node GetNode(Vector2 pos) {
+        return GetNode((int)pos.x, (int)pos.y);
+    }
+
+    public Node GetNode(int x, int y) {
         return tiles[y * mapWidth + x];
     }
 
@@ -193,7 +203,7 @@ public class TileMap : MonoBehaviour {
     }
 
     public Vector3 getPositionOfNode(int x, int y) {
-        return getNode(x, y).transform.position;
+        return GetNode(x, y).transform.position;
     }
 
     public float getWidth() {

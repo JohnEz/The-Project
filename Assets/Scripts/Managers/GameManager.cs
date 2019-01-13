@@ -3,8 +3,6 @@
 public class GameManager : MonoBehaviour {
     public static GameManager singleton;
 
-    private TileMap map;
-
     private const bool ADD_ALLY = true;
 
     private void Awake() {
@@ -13,12 +11,9 @@ public class GameManager : MonoBehaviour {
 
     // Use this for initialization
     private void Start() {
-        // TODO try to abstract this out
-        map = GetComponentInChildren<TileMap>();
-        map.Initialise();
+        TileMap.instance.Initialise();
 
-        UnitManager.singleton.Initialise(map);
-        AIManager.singleton.Initialise(map);
+        UnitManager.singleton.Initialise();
         CameraManager.singleton.Initialise();
 
         //TEMP this should be loaded
