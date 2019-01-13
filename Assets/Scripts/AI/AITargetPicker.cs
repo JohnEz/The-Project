@@ -62,7 +62,7 @@ public class AITargetPicker {
         Node targetNode = path.movementCost == 0 ? unit.myNode : path.path.Last();
         TileHostility hostility = AIInfoCollector.Instance.GetHostilityOfTile(unit.myPlayer.faction, targetNode);
         int damageReductionFromArmour = hostility.numberOfAttacks * unit.myStats.Armour;
-        int potentialDamageTaken = includeHostility ? hostility.heat - damageReductionFromArmour : 0;
+        int potentialDamageTaken = includeHostility ? hostility.numberOfAttacks - damageReductionFromArmour : 0;
         return -path.movementCost - potentialDamageTaken;
         //return -Mathf.CeilToInt(path.movementCost / unit.myStats.Speed);
     }

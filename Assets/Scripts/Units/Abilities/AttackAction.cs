@@ -37,7 +37,8 @@ public class AttackAction : CardAction {
     }
 
     public bool IsOnCooldown() {
-        return cooldown > 0;
+        Debug.Log("Checking if " + name + " is on cooldown: " + cooldown);
+        return Cooldown > 0;
     }
 
     private void AbilityEffectUnit(UnitController target) {
@@ -64,6 +65,7 @@ public class AttackAction : CardAction {
         } else {
             AbilityEffectNode(target);
         }
+        Debug.Log("Setting cooldown " + MaxCooldown + " for ability " + name);
         Cooldown = MaxCooldown;
     }
 

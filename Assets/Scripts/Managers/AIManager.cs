@@ -120,6 +120,7 @@ public class AIManager : MonoBehaviour {
 
             } else if (turnPlan.attack != null) {
                 AttackTile(unit, turnPlan.attack.targetNode, turnPlan.attack.attack);
+                turnPlan.attack = null;
                 actionPoints--;
             }
 

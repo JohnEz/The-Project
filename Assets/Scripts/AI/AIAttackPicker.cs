@@ -80,7 +80,7 @@ public class AIAttackPicker {
             unit.myStats.Attacks.ForEach(attackAction => {
                 List<Node> attackNodes = new List<Node>();
 
-                if (attackAction.CanHitUnit(otherUnit.myNode)) {
+                if (!attackAction.IsOnCooldown() && attackAction.CanHitUnit(otherUnit.myNode)) {
                     int valueOfAttack = CalculateAttackValue(unit, otherUnit.myNode, attackAction);
                     AIAttackAction aiAttackAction = new AIAttackAction(attackAction, otherUnit.myNode, valueOfAttack);
                     List<Node> nodesToAttackFrom = TileMap.instance.pathfinder.FindAttackableTiles(otherUnit.myNode, attackAction);
