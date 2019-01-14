@@ -122,6 +122,10 @@ public class UnitController : MonoBehaviour {
 
     public void FaceDirection(Vector2 dir) {
         //GetComponentInChildren<UnitAnimationController>().FaceDirection(dir);
+        if (dir.magnitude == 0) {
+            return;
+        } 
+
         float rotationX = 90 * -dir.x;
         float rotationY = dir.y == 1 ? 180 : 0;
 
@@ -131,6 +135,10 @@ public class UnitController : MonoBehaviour {
     }
 
     private Vector2 GetDirectionToTile(Node target) {
+        if (myNode == target) {
+            return new Vector2(0, 0);
+        }
+
         //find if we want to check x or y
         float difX = target.x - myNode.x;
         float difY = target.y - myNode.y;
@@ -418,8 +426,10 @@ public class UnitController : MonoBehaviour {
 
     private IEnumerator CreateEffectAtLocation(Node location, GameObject effect, float delay = 0) {
         yield return new WaitForSeconds(delay);
-        GameObject myEffect = Instantiate(effect);
-        myEffect.transform.SetParent(location.transform, false);
+        Transform spawnTransform = location.myUnit != null ? location.myUnit.transform.Find("Token") : location.transform;
+        GameObject myEffect = Instantiate(effect, spawnTransform);
+        myEffect.transform.rotation = effect.transform.rotation;
+        myEffect.transform.SetParent(location.transform, true);
         myEffect.GetComponent<SpriteFxController>().Initialise(this);
         abilityEffects.Add(myEffect);
         effectsToCreate--;

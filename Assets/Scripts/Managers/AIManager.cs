@@ -68,6 +68,7 @@ public class AIManager : MonoBehaviour {
 
         foreach (UnitController unit in myUnits) {
             CameraManager.singleton.FollowTarget(unit.transform);
+            yield return new WaitForSeconds(1.5f); // TODO get this value from cinemachine brain blend time
             //yield return PlanTurnTwoActions(unit);
             yield return ExecutePlannedTurn(unit);
         }
@@ -127,7 +128,7 @@ public class AIManager : MonoBehaviour {
             }
 
             // dont let turns go crazy fast
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(0.5f);
         }
 
         yield return WaitForWaitingForInput();

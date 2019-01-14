@@ -60,8 +60,8 @@ public class UnitCanvasController : MonoBehaviour {
     }
 
     public void FaceCamera() {
-        Vector3 v = CameraManager.singleton.cam.transform.position - transform.position;
-        transform.LookAt(CameraManager.singleton.cam.transform.position);
+        Vector3 v = CameraManager.singleton.physicalCamera.transform.position - transform.position;
+        transform.LookAt(CameraManager.singleton.physicalCamera.transform.position);
         transform.Rotate(0, 180, 0);
     }
 
@@ -132,10 +132,9 @@ public class UnitCanvasController : MonoBehaviour {
 
     public void SpawnCombatText(string text, Color color) {
         canCreateCombatText = false;
-        GameObject newDamageText = Instantiate(damageTextPrefab);
+        GameObject newDamageText = Instantiate(damageTextPrefab, transform);
         newDamageText.GetComponent<Text>().text = text;
         newDamageText.GetComponent<Text>().color = color;
-        newDamageText.transform.SetParent(this.transform);
         StartCoroutine(AllowCreateCombatText());
     }
 

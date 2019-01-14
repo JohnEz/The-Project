@@ -1,9 +1,16 @@
-﻿using UnityEngine;
+﻿using Cinemachine;
+using UnityEngine;
 
 public class CameraManager : MonoBehaviour {
     public static CameraManager singleton;
 
-    public CameraController3D cam;
+    public Camera physicalCamera;
+    public CameraController3D controlledCamera;
+    public GameObject followCameraPrefab;
+    public GameObject personalCamera;
+
+    [HideInInspector]
+    public CinemachineVirtualCamera activeFollowCamera;
 
     private void Awake() {
         singleton = this;
@@ -21,7 +28,9 @@ public class CameraManager : MonoBehaviour {
     }
 
     public void MoveToLocation(Vector2 location) {
-        cam.MoveToTarget(location);
+        TurnOffCameras();
+        controlledCamera.TurnOn();
+        controlledCamera.MoveToTarget(location);
     }
 
     public void MoveToLocation(Node node) {
@@ -29,10 +38,30 @@ public class CameraManager : MonoBehaviour {
     }
 
     public void JumpToLocation(Node node) {
-        cam.JumpToLocation(TileMap.instance.getPositionOfNode(node));
+        TurnOffCameras();
+        controlledCamera.TurnOn();
+        controlledCamera.JumpToLocation(TileMap.instance.getPositionOfNode(node));
     }
 
     public void FollowTarget(Transform target) {
-        cam.FollowTarget(target);
+        TurnOffCameras();
+        GameObject followCamera = Instantiate(followCameraPrefab);
+        CinemachineVirtualCamera newFollowCamera = followCamera.GetComponent<CinemachineVirtualCamera>();
+
+        newFollowCamera.Follow = target;
+        newFollowCamera.Priority = 10;
+
+        if (activeFollowCamera != null) {
+            Destroy(activeFollowCamera.gameObject, 2.1f);
+        }
+        activeFollowCamera = newFollowCamera;
+    }
+
+    public void TurnOffCameras() {
+        controlledCamera.TurnOff();
+
+        if (activeFollowCamera != null) {
+            activeFollowCamera.Priority = 0;
+        }
     }
 }

@@ -1,10 +1,5 @@
-﻿using UnityEngine;
-
-public enum CameraMoveState {
-    FREE,
-    MOVING_TO_LOCATION,
-    FOLLOWING_UNIT
-}
+﻿using Cinemachine;
+using UnityEngine;
 
 public class CameraController3D : MonoBehaviour {
     private const float MOVE_SPEED = 1200; //speed the camera moves
@@ -19,9 +14,8 @@ public class CameraController3D : MonoBehaviour {
     public float mapWidth = 0;
     public float mapHeight = 0;
 
-    public CameraMoveState movementState = CameraMoveState.FREE;
+    private bool isControllable = true;
     private Vector3 targetLocation;
-    private Transform followTarget;
 
     [HideInInspector]
     public float minX = -100000;
@@ -60,6 +54,16 @@ public class CameraController3D : MonoBehaviour {
 
     }
 
+    public void TurnOff() {
+        isControllable = false;
+        GetComponent<CinemachineVirtualCamera>().Priority = 0;
+    }
+
+    public void TurnOn() {
+        isControllable = true;
+        GetComponent<CinemachineVirtualCamera>().Priority = 10;
+    }
+
     public void CalculateBounds() {
         //float vertExtent = Camera.main.GetComponent<Camera>().orthographicSize;
         //float horzExtent = vertExtent * Screen.width / Screen.height;
@@ -79,7 +83,7 @@ public class CameraController3D : MonoBehaviour {
     //updates the position of the camera via keyboard input
     private void UpdateMovement() {
         // TODO make a switch statement
-        if (movementState == CameraMoveState.FREE) {
+        if (isControllable) {
             //allow user to move camera
             movement = new Vector3(0, 0, 0);
 
@@ -105,17 +109,6 @@ public class CameraController3D : MonoBehaviour {
             Vector3 roundPos = new Vector3(newPos.x, newPos.y, newPos.z);
 
             transform.position = roundPos;
-        } else if (movementState == CameraMoveState.FOLLOWING_UNIT || movementState == CameraMoveState.MOVING_TO_LOCATION) {
-            if (movementState == CameraMoveState.MOVING_TO_LOCATION && Vector3.Distance(transform.position, targetLocation) < 2f) {
-                movementState = CameraMoveState.FREE;
-                return;
-            }
-
-            Vector3 moveLocation = movementState == CameraMoveState.MOVING_TO_LOCATION ? targetLocation : new Vector3(followTarget.position.x, followTarget.position.y, transform.position.z);
-
-            //Smoothly animate towards the correct location
-            // TODO move hardcoded value
-            transform.position = Vector3.Lerp(transform.position, moveLocation, 6f * Time.deltaTime);
         }
     }
 
@@ -163,7 +156,7 @@ public class CameraController3D : MonoBehaviour {
     }
 
     public void JumpToLocation(Vector2 location) {
-        //transform.position = new Vector3(location.x, location.y, transform.position.z);
+        transform.position = new Vector3(location.x, transform.position.y, location.y);
     }
 
     public void ClampBounds() {
