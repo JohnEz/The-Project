@@ -155,8 +155,8 @@ public class CameraController3D : MonoBehaviour {
         //targetLocation = new Vector3(RoundToNearestPixel(clampedTarget.x, GetComponent<Camera>()), RoundToNearestPixel(clampedTarget.y, GetComponent<Camera>()), transform.position.z);
     }
 
-    public void JumpToLocation(Vector2 location) {
-        transform.position = new Vector3(location.x, transform.position.y, location.y);
+    public void JumpToLocation(Vector3 location) {
+        transform.position = location;
     }
 
     public void ClampBounds() {

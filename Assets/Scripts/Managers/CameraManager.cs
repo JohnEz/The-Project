@@ -12,8 +12,11 @@ public class CameraManager : MonoBehaviour {
     [HideInInspector]
     public CinemachineVirtualCamera activeFollowCamera;
 
+    Vector3 cameraOffset;
+
     private void Awake() {
         singleton = this;
+        cameraOffset = followCameraPrefab.GetComponent<CinemachineVirtualCamera>().GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset;
     }
 
     private void Start() {
@@ -40,7 +43,7 @@ public class CameraManager : MonoBehaviour {
     public void JumpToLocation(Node node) {
         TurnOffCameras();
         controlledCamera.TurnOn();
-        controlledCamera.JumpToLocation(TileMap.instance.getPositionOfNode(node));
+        controlledCamera.JumpToLocation(TileMap.instance.getPositionOfNode(node) + cameraOffset);
     }
 
     public void FollowTarget(Transform target) {
