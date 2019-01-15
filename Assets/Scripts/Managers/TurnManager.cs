@@ -76,7 +76,7 @@ public class TurnManager : MonoBehaviour {
 
         if (ObjectiveManager.singleton.CheckObjectives(currentPlayersTurn)) {
             ChangeState(TurnPhase.GAME_OVER);
-            GUIController.singleton.GameOver(GetCurrentPlayer() == PlayerManager.singleton.mainPlayer);
+            GUIController.singleton.GameOver(GetCurrentPlayer().faction == PlayerManager.singleton.mainPlayer.faction);
         } else {
             UnitManager.singleton.EndTurn(currentPlayersTurn);
             StartNewTurn();

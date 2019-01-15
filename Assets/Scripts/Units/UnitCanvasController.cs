@@ -115,8 +115,8 @@ public class UnitCanvasController : MonoBehaviour {
         CreateCombatText(healing, new Color(0.7294f, 0.9569f, 0.1176f));
     }
 
-    public void CreateBasicText(string healing) {
-        CreateCombatText(healing, new Color(1f, 1f, 1f));
+    public void CreateBasicText(string text) {
+        CreateCombatText(text, new Color(1f, 1f, 1f));
     }
 
     public void CreateCombatText(string text, Color colour) {

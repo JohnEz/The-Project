@@ -416,7 +416,7 @@ public class UnitController : MonoBehaviour {
 
     public void CreateBuffEffect(Buff buff) {
         GameObject myEffect = Instantiate(buff.persistentFxPrefab);
-        myEffect.transform.SetParent(transform, false);
+        myEffect.transform.SetParent(transform.Find("Token"), false);
         buff.persistentFx = myEffect;
     }
 
@@ -427,9 +427,10 @@ public class UnitController : MonoBehaviour {
     private IEnumerator CreateEffectAtLocation(Node location, GameObject effect, float delay = 0) {
         yield return new WaitForSeconds(delay);
         Transform spawnTransform = location.myUnit != null ? location.myUnit.transform.Find("Token") : location.transform;
+        Debug.Log("spawning effect at: " + spawnTransform);
         GameObject myEffect = Instantiate(effect, spawnTransform);
         myEffect.transform.rotation = effect.transform.rotation;
-        myEffect.transform.SetParent(location.transform, true);
+        //myEffect.transform.SetParent(location.transform, true);
         myEffect.GetComponent<SpriteFxController>().Initialise(this);
         abilityEffects.Add(myEffect);
         effectsToCreate--;
@@ -464,5 +465,9 @@ public class UnitController : MonoBehaviour {
     public void ProjectileHit(ProjectileController projectile) {
         projectiles.Remove(projectile);
         Destroy(projectile.gameObject);
+    }
+
+    public void CreateBasicText(string text) {
+        unitCanvasController.CreateBasicText(text);
     }
 }

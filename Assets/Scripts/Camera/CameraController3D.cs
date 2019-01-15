@@ -17,17 +17,17 @@ public class CameraController3D : MonoBehaviour {
     private bool isControllable = true;
     private Vector3 targetLocation;
 
-    [HideInInspector]
+    //[HideInInspector]
     public float minX = -100000;
 
-    [HideInInspector]
-    public float minY = -100000;
+    //[HideInInspector]
+    public float minZ = -100000;
 
-    [HideInInspector]
+    //[HideInInspector]
     public float maxX = 100000;
 
-    [HideInInspector]
-    public float maxY = 100000;
+    //[HideInInspector]
+    public float maxZ = 100000;
 
     private float textureSize = 128;
 
@@ -50,8 +50,10 @@ public class CameraController3D : MonoBehaviour {
     private void Start() {
     }
 
-    public void Initialise() {
-
+    public void Initialise(Vector3 cameraOffset) {
+        mapHeight = TileMap.instance.getHeight() * textureSize;
+        mapWidth = TileMap.instance.getWidth() * textureSize;
+        CalculateBounds(cameraOffset);
     }
 
     public void TurnOff() {
@@ -64,20 +66,19 @@ public class CameraController3D : MonoBehaviour {
         GetComponent<CinemachineVirtualCamera>().Priority = 10;
     }
 
-    public void CalculateBounds() {
-        //float vertExtent = Camera.main.GetComponent<Camera>().orthographicSize;
-        //float horzExtent = vertExtent * Screen.width / Screen.height;
+    public void CalculateBounds(Vector3 cameraOffset) {
+        minX = cameraOffset.x;
+        minZ = -mapHeight + cameraOffset.z;
 
-        //minX = RoundToNearestPixel(horzExtent - (0.5f * textureSize), GetComponent<Camera>());
-        //maxX = RoundToNearestPixel(mapWidth - horzExtent - (0.5f * textureSize), GetComponent<Camera>());
-        //minY = RoundToNearestPixel(vertExtent + (0.5f * textureSize) - mapHeight - cardBuffer, GetComponent<Camera>());
-        //maxY = RoundToNearestPixel(-vertExtent + (0.5f * textureSize), GetComponent<Camera>());
+        maxX = mapWidth + cameraOffset.x;
+        maxZ = cameraOffset.z;
     }
 
     // Update is called once per frame
     private void Update() {
         UpdateMovement();
         //UpdateZoom ();
+        ClampBounds();
     }
 
     //updates the position of the camera via keyboard input
@@ -139,7 +140,7 @@ public class CameraController3D : MonoBehaviour {
         if (zoomHasChanged) {
             //cam.orthographicSize = ((Screen.height / 2f) * unitsPerPixel)*currentZoom;
             cam.orthographicSize = Screen.height / 2f * currentZoom;
-            CalculateBounds();
+            //CalculateBounds();
         }
     }
 
@@ -159,8 +160,15 @@ public class CameraController3D : MonoBehaviour {
         transform.position = location;
     }
 
+    public Vector3 GetClampedPosition(Vector3 targetPosition) {
+        Vector3 clampedPosition = targetPosition;
+        clampedPosition.x = Mathf.Clamp(clampedPosition.x, minX, maxX);
+        clampedPosition.z = Mathf.Clamp(clampedPosition.z, minZ, maxZ);
+        return clampedPosition;
+    }
+
     public void ClampBounds() {
-        //transform.position = GetClampedPosition(transform.position);
+        transform.position = GetClampedPosition(transform.position);
     }
 
     public void FollowTarget(Transform target) {

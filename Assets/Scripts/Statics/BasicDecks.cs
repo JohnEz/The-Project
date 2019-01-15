@@ -4,7 +4,7 @@ public static class BasicDecks {
 
     public static List<string> testDeck = new List<string> {
         "Walk",
-        "Walk",
+        "Frost Nova",
         "Walk",
         "Walk",
         "Walk",
@@ -16,11 +16,11 @@ public static class BasicDecks {
         "Strike",
         "Strike",
         "Strike",
-        "Strike",
         "Mana Bolt",
         "Mana Bolt",
         "Mana Bolt",
-        //Armour
+        "Mana Bolt",
+        //Chest
         "Armour",
         //Legs
         "Walk",

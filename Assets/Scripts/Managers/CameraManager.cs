@@ -16,14 +16,16 @@ public class CameraManager : MonoBehaviour {
 
     private void Awake() {
         singleton = this;
-        cameraOffset = followCameraPrefab.GetComponent<CinemachineVirtualCamera>().GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset;
+        
     }
 
     private void Start() {
+        
     }
 
     public void Initialise() {
-
+        cameraOffset = followCameraPrefab.GetComponent<CinemachineVirtualCamera>().GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset;
+        controlledCamera.Initialise(cameraOffset);
     }
 
     // Update is called once per frame

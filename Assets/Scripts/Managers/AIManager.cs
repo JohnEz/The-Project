@@ -93,6 +93,7 @@ public class AIManager : MonoBehaviour {
 
             if (turnPlan == null) {
                 // No actions to take
+                unit.CreateBasicText("Pass");
                 actionPoints = 0;
             } else if (turnPlan.targetMoveNode != null) {
 
@@ -110,7 +111,12 @@ public class AIManager : MonoBehaviour {
                         pathToNode.path = Pathfinder.CleanPath(pathToNode.path, unit.myNode);
 
                         // Tell unit to follow path
-                        UnitManager.singleton.SetUnitPath(unit, pathToNode);
+                        if (pathToNode.path.Count > 0) {
+                            UnitManager.singleton.SetUnitPath(unit, pathToNode);
+                        } else {
+                            unit.CreateBasicText("Pass");
+                        }
+                        
                         actionPoints--;
                     } else {
                         Debug.LogError(String.Format("Unit \"{0}\" cant move to node {1}", unit.name, turnPlan.targetMoveNode));
@@ -283,7 +289,7 @@ public class AIManager : MonoBehaviour {
         //Debug.Log("I want to move to node: " + shortestPath.path.Last());
 
         // if there is a unit on the final node
-        while (movementPath.path.Last().myUnit != null) {
+        while (movementPath.path.Count > 0 && movementPath.path.Last().myUnit != null) {
             //remove that node
             movementPath.path.Remove(movementPath.path.Last());
         }
