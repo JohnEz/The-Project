@@ -127,6 +127,10 @@ public class UnitObject : ScriptableObject {
         get { return GetModifiedStat(baseArmour, Stats.ARMOUR); }
     }
 
+    public int Power {
+        get { return GetModifiedStat(baseBlock, Stats.POWER); }
+    }
+
     public int Speed {
         get { return GetModifiedStat(baseSpeed, Stats.SPEED); }
     }

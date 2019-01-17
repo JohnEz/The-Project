@@ -22,7 +22,7 @@ public class PlayMenuController : MonoBehaviour {
         AudioManager.singleton.Play(buttonClickAudio, transform, AudioMixers.UI, true);
 
         GameDetails.PlayerCharacter = "Warrior";
-        GameDetails.PlayerDeck = BasicDecks.starterWarrior;
+        GameDetails.PlayerDeck = BasicDecks.starterFighter;
         UpdateSubmenu("Warrior", "Description text for a Warrior.");
         OpenSubMenu();
     }

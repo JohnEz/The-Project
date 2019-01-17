@@ -32,7 +32,7 @@ public static class BasicDecks {
         "Hop",
     };
 
-    public static List<string> starterWarrior = new List<string> {
+    public static List<string> starterFighter = new List<string> {
         //Weapon
         "Slash",
         "Slash",
@@ -44,6 +44,28 @@ public static class BasicDecks {
         "Second Wind",
         //Chest
         "Armour",
+        //Legs
+        "Walk",
+        "Walk",
+        //Feet
+        "Dash",
+        "Walk",
+        "Walk",
+        "Hop",
+    };
+
+    public static List<string> starterBard = new List<string> {
+        //Weapon
+        "Slash",
+        "Slash",
+        "Slash",
+        "Slash",
+        "Inspire",
+        "Inspire",
+        "Motif of Power",
+        "Motif of Power",
+        //Chest
+        "Fanfare of Vitality",
         //Legs
         "Walk",
         "Walk",

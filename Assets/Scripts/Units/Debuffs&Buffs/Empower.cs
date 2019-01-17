@@ -4,6 +4,6 @@
         name = "Empower";
         icon = "buffPower";
         maxStack = 5;
-        percentMod[(int)Stats.POWER] = 1.2f;
+        flatMod[(int)Stats.POWER] = 1;
     }
 }

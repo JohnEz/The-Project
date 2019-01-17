@@ -373,7 +373,8 @@ public class UnitController : MonoBehaviour {
     }
 
     public bool DealDamageTo(UnitController target, int damage, bool ignoreArmour = false) {
-        return target.TakeDamage(this, damage, ignoreArmour);
+        float endDamage = damage + myStats.Power;
+        return target.TakeDamage(this, (int)endDamage, ignoreArmour);
     }
 
     public bool TakeHealing(UnitController caster, int healing) {
@@ -386,7 +387,7 @@ public class UnitController : MonoBehaviour {
     }
 
     public bool GiveHealingTo(UnitController target, float healing) {
-        float endHealing = healing;
+        float endHealing = healing + myStats.Power;
 
         myDialogController.Helping();
 
