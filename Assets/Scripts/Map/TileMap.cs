@@ -22,6 +22,8 @@ public class TileMap : MonoBehaviour {
 
     private float tileSize = 128;
 
+    public bool isMapLoaded = false;
+
     private void Awake() {
         instance = this;
     }
@@ -46,6 +48,7 @@ public class TileMap : MonoBehaviour {
         //LevelLoader lLoader = GetComponent<LevelLoader> ();
         //lLoader.Initialise ();
         //GenerateMap (lLoader.GetLevel(0));
+        isMapLoaded = true;
     }
 
     private void GenerateMapJson(MapData data) {

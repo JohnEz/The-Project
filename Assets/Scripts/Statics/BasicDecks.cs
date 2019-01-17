@@ -32,73 +32,25 @@ public static class BasicDecks {
         "Hop",
     };
 
-    public static List<string> iceElementalist = new List<string> {
-        "Frost Nova",
-        "Frost Nova",
-        "Shards Of Ice",
-        "Shards Of Ice",
-        "Shards Of Ice",
-        "Shield Of Frost",
-        "Frostbolt",
-        "Frostbolt",
-        "Frostbolt",
-        "Frostbolt",
+    public static List<string> starterWarrior = new List<string> {
+        //Weapon
+        "Slash",
+        "Slash",
+        "Slash",
+        "Slash",
+        "Cleave",
+        "Cleave",
+        "Cleave",
+        "Second Wind",
+        //Chest
+        "Armour",
+        //Legs
         "Walk",
         "Walk",
-        "Walk",
-    };
-
-    public static List<string> fireElementalist = new List<string> {
-        "Fireball",
-        "Fireball",
-        "Fireball",
-        "Fireball",
-        "Fireball",
-        "Fireball",
-        "Consult Notes",
-        "Consult Notes",
-        "Consult Notes",
-        "Arcane Pulse",
-        "Arcane Pulse",
-        "Arcane Pulse",
-        "Meteor",
-        "Meteor",
-        "Meteor",
-        "Engulf",
-        "Engulf",
-        "Engulf",
+        //Feet
+        "Dash",
         "Walk",
         "Walk",
-        "Walk",
-        "Walk",
-        "Walk",
-        "Walk",
-        "Walk",
-        "Walk",
-        "Walk",
-        "Walk"
-    };
-
-    public static List<string> summonerElementalist = new List<string> {
-        "Summon Imp",
-        "Summon Imp",
-        "Summon Imp",
-        "Summon Imp",
-        "Summon Imp",
-        "Arcane Pulse",
-        "Arcane Pulse",
-        "Arcane Pulse",
-        "Arcane Pulse",
-        "Arcane Pulse",
-        "Walk",
-        "Walk",
-        "Walk",
-        "Walk",
-        "Walk",
-        "Walk",
-        "Walk",
-        "Walk",
-        "Walk",
-        "Walk"
+        "Hop",
     };
 }

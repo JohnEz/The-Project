@@ -13,17 +13,17 @@ public class PlayMenuController : MonoBehaviour {
         AudioManager.singleton.Play(buttonClickAudio, transform, AudioMixers.UI, true);
 
         GameDetails.PlayerCharacter = "Mage";
-        GameDetails.PlayerDeck = BasicDecks.fireElementalist;
-        UpdateSubmenu("Fire Mage", "Description text for a Fire Mage.");
+        GameDetails.PlayerDeck = BasicDecks.starterElementalist;
+        UpdateSubmenu("Elementalist", "Description text for a Elementalist.");
         OpenSubMenu();
     }
 
     public void PlayGameElementalist() {
         AudioManager.singleton.Play(buttonClickAudio, transform, AudioMixers.UI, true);
 
-        GameDetails.PlayerCharacter = "Mage";
-        GameDetails.PlayerDeck = BasicDecks.starterElementalist;
-        UpdateSubmenu("Elementalist", "Description text for a Elementalist.");
+        GameDetails.PlayerCharacter = "Warrior";
+        GameDetails.PlayerDeck = BasicDecks.starterWarrior;
+        UpdateSubmenu("Warrior", "Description text for a Warrior.");
         OpenSubMenu();
     }
 

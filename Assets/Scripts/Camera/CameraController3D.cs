@@ -34,13 +34,13 @@ public class CameraController3D : MonoBehaviour {
     private float currentZoom = 1f;
     private float targetZoom = 1f;
 
-    private int cardBuffer = 384; // how much the cards take up at the bottom of the screen
+    //private int cardBuffer = 384; // how much the cards take up at the bottom of the screen
 
     private bool mouseMovement = false;
 
-    private int height;
-
     private Vector3 movement = new Vector3();
+
+    public CinemachineVirtualCamera cam;
 
     private void Awake() {
 
@@ -48,30 +48,33 @@ public class CameraController3D : MonoBehaviour {
 
     // Use this for initialization
     private void Start() {
+
     }
 
-    public void Initialise(Vector3 cameraOffset) {
+    public void Initialise() {
         mapHeight = TileMap.instance.getHeight() * textureSize;
         mapWidth = TileMap.instance.getWidth() * textureSize;
-        CalculateBounds(cameraOffset);
+        CalculateBounds();
     }
 
     public void TurnOff() {
         isControllable = false;
-        GetComponent<CinemachineVirtualCamera>().Priority = 0;
+        cam.GetComponent<CinemachineVirtualCamera>().Priority = 0;
     }
 
     public void TurnOn() {
         isControllable = true;
-        GetComponent<CinemachineVirtualCamera>().Priority = 10;
+        cam.GetComponent<CinemachineVirtualCamera>().Priority = 10;
     }
 
-    public void CalculateBounds(Vector3 cameraOffset) {
-        minX = cameraOffset.x;
-        minZ = -mapHeight + cameraOffset.z;
+    public void CalculateBounds() {
+        float halfTextureSize = textureSize / 2;
 
-        maxX = mapWidth + cameraOffset.x;
-        maxZ = cameraOffset.z;
+        minX = -halfTextureSize;
+        minZ = -mapHeight + halfTextureSize;
+
+        maxX = mapWidth - halfTextureSize;
+        maxZ = +halfTextureSize;
     }
 
     // Update is called once per frame
@@ -157,6 +160,7 @@ public class CameraController3D : MonoBehaviour {
     }
 
     public void JumpToLocation(Vector3 location) {
+        location.y = 0;
         transform.position = location;
     }
 

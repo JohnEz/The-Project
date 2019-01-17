@@ -270,6 +270,7 @@ public class UnitController : MonoBehaviour {
         activeAction = action;
         SetAttacking(true);
         myDialogController.Attacking();
+        // TODO this doesnt work for multi-targets
         effectsToCreate = action.eventActions.FindAll(e => e.GetType() == typeof(VisualEffectEventAction)).Count;
         projectilesToCreate = action.eventActions.FindAll(e => e.GetType() == typeof(ProjectileEventAction)).Count;
         StartCoroutine(AttackRoutine());
@@ -285,11 +286,11 @@ public class UnitController : MonoBehaviour {
 
     public IEnumerator AttackRoutine() {
         //make sure projects have been destroyed
-        yield return new WaitUntil(() => getAttackHasLanded() && projectilesToCreate == 0 && projectiles.Count < 1);
+        yield return new WaitUntil(() => getAttackHasLanded() && projectilesToCreate <= 0 && projectiles.Count < 1);
         RunAbilityTargets();
 
         //wait for effects to end
-        yield return new WaitUntil(() => !getAttackAnimationPlaying() && effectsToCreate == 0 && abilityEffects.Count < 1);
+        yield return new WaitUntil(() => !getAttackAnimationPlaying() && effectsToCreate <= 0 && abilityEffects.Count < 1);
 
         ClearAbilityTargets();
         currentAbilityTarget = null;
@@ -427,10 +428,9 @@ public class UnitController : MonoBehaviour {
     private IEnumerator CreateEffectAtLocation(Node location, GameObject effect, float delay = 0) {
         yield return new WaitForSeconds(delay);
         Transform spawnTransform = location.myUnit != null ? location.myUnit.transform.Find("Token") : location.transform;
-        Debug.Log("spawning effect at: " + spawnTransform);
         GameObject myEffect = Instantiate(effect, spawnTransform);
         myEffect.transform.rotation = effect.transform.rotation;
-        //myEffect.transform.SetParent(location.transform, true);
+        myEffect.transform.SetParent(location.transform, true);
         myEffect.GetComponent<SpriteFxController>().Initialise(this);
         abilityEffects.Add(myEffect);
         effectsToCreate--;

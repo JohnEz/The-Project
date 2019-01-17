@@ -60,6 +60,8 @@ public class CardAction : ScriptableObject {
 
     public UnitController caster;
 
+    public string description = null;
+
     public void AddAbilityTarget(Node targetNode, System.Action ability) {
         caster.AddAbilityTarget(targetNode, ability);
     }

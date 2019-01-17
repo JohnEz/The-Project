@@ -24,8 +24,7 @@ public class CameraManager : MonoBehaviour {
     }
 
     public void Initialise() {
-        cameraOffset = followCameraPrefab.GetComponent<CinemachineVirtualCamera>().GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset;
-        controlledCamera.Initialise(cameraOffset);
+        controlledCamera.Initialise();
     }
 
     // Update is called once per frame

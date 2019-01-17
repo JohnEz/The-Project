@@ -22,7 +22,11 @@ public class ActionDescriptionController : MonoBehaviour {
         // Set the action icon and text
         if (typeof(AttackAction).IsAssignableFrom(action.GetType())) {
             AttackAction attackAction = (AttackAction)action;
-            SetAttackAction(attackAction);
+            if (action.description != null && !action.description.Equals("")) {
+                SetAttackText(attackAction);
+            } else {
+                SetAttackActionLegacy(attackAction);
+            }
         } else if (action.GetType() == typeof(MoveAction)) {
             MoveAction moveAction = (MoveAction)action;
             SetMoveAction(moveAction);
@@ -32,8 +36,64 @@ public class ActionDescriptionController : MonoBehaviour {
         }
     }
 
+    private void SetAttackText(AttackAction attack) {
+        int damage = 0;
+        int armour = 0;
+        string stackString = null;
+        string multiplyerString = null;
+
+        attack.attackEffects.ForEach(effect => {
+            if (effect.GetType() == typeof(DamageEffect)) {
+                DamageEffect damageEffect = (DamageEffect)effect;
+                damage += damageEffect.damage;
+            }
+        });
+
+        attack.attackEffects.ForEach(effect => {
+            if (effect.GetType() == typeof(IncreaseArmour)) {
+                IncreaseArmour armourEffect = (IncreaseArmour)effect;
+                armour += armourEffect.armourIncrease;
+            }
+        });
+
+        attack.attackEffects.ForEach(effect => {
+            if (effect.GetType() == typeof(DamagePerStackEffect)) {
+                DamagePerStackEffect damageEffect = (DamagePerStackEffect)effect;
+                stackString = damageEffect.ToDescription();
+            }
+        });
+
+        attack.attackEffects.ForEach(effect => {
+            if (effect.GetType() == typeof(DamageWithMultiplierEffect)) {
+                DamageWithMultiplierEffect damageEffect = (DamageWithMultiplierEffect)effect;
+                multiplyerString = damageEffect.ToDescription();
+            }
+        });
+
+        bool displaySubText = false;
+        string subTextString = "";
+
+        if (attack.range > 1) {
+            subTextString += "Range " + attack.range + "\n";
+            displaySubText = true;
+        }
+
+        if (attack.areaOfEffect == AreaOfEffect.CIRCLE || attack.areaOfEffect == AreaOfEffect.AURA) {
+            subTextString += "Area " + attack.aoeRange + "\n";
+            displaySubText = true;
+        }
+
+        actionText.text = string.Format(attack.description, damage, armour, stackString, multiplyerString);
+
+        if (displaySubText) {
+            subText.SetActive(true);
+            // Remove last \n at the end
+            subText.GetComponentInChildren<TextMeshProUGUI>().text = subTextString.Substring(0, subTextString.Length - 1);
+        }
+    }
+
     // TODO these should be moved to the actions themselves if its possible
-    private void SetAttackAction(AttackAction attack) {
+    private void SetAttackActionLegacy(AttackAction attack) {
         int damage = 0;
         int armour = 0;
 
@@ -76,10 +136,10 @@ public class ActionDescriptionController : MonoBehaviour {
 
         if (damage > 0) {
             actionText.text = "Attack " + damage;
-            actionImage.sprite = attackImage;
+            //actionImage.sprite = attackImage;
         } else if (armour > 0) {
             actionText.text = "Armour " + armour;
-            actionImage.sprite = shieldImage;
+            //actionImage.sprite = shieldImage;
         }
 
         bool displaySubText = false;
@@ -108,13 +168,13 @@ public class ActionDescriptionController : MonoBehaviour {
     }
 
     private void SetMoveAction(MoveAction move) {
-        actionImage.sprite = moveImage;
+        //actionImage.sprite = moveImage;
         actionText.text = "Move " + move.distance.ToString();
         //quantityText.text = move.distance.ToString();
     }
 
     private void SetDrawAction(DrawCardAction draw) {
-        actionImage.sprite = drawImage;
+        //actionImage.sprite = drawImage;
         actionText.text = "Draw " + draw.cardsToDraw.ToString();
         //quantityText.text = draw.cardsToDraw.ToString();
     }
