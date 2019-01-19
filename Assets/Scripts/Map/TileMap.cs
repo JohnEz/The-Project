@@ -7,12 +7,25 @@ public class PrefabDictionaryEntry {
     public GameObject value;
 }
 
+public class Room {
+    public int id;
+    public bool isActive;
+    public List<Node> nodes;
+
+    public Room(int _id) {
+        id = _id;
+        isActive = false;
+        nodes = new List<Node>();
+    }
+}
+
 public class TileMap : MonoBehaviour {
     public static TileMap instance; 
 
     private int mapWidth;
     private int mapHeight;
     private Node[] tiles;
+    private Dictionary<int, Room> rooms;
 
     public GameObject basicNodePrefab;
     public GameObject tileTemplatePrefab;
@@ -28,15 +41,8 @@ public class TileMap : MonoBehaviour {
         instance = this;
     }
 
-    // Use this for initialization
-    private void Start() {
-    }
-
-    // Update is called once per frame
-    private void Update() {
-    }
-
     public void Initialise() {
+        rooms = new Dictionary<int, Room>();
         pathfinder = GetComponent<Pathfinder>();
         pathfinder.Initialise();
 
@@ -49,6 +55,53 @@ public class TileMap : MonoBehaviour {
         //lLoader.Initialise ();
         //GenerateMap (lLoader.GetLevel(0));
         isMapLoaded = true;
+    }
+
+    public Node GetNode(Vector2 pos) {
+        return GetNode((int)pos.x, (int)pos.y);
+    }
+
+    public Node GetNode(int x, int y) {
+        return tiles[y * mapWidth + x];
+    }
+
+    public Vector3 getPositionOfNode(Node targetNode) {
+        return targetNode.transform.position;
+    }
+
+    public Vector3 getPositionOfNode(int x, int y) {
+        return getPositionOfNode(GetNode(x, y));
+    }
+
+    public float getWidth() {
+        return mapWidth;
+    }
+
+    public float getHeight() {
+        return mapHeight;
+    }
+
+    public void resetTiles() {
+        foreach (Node n in tiles) {
+            n.Reset();
+        }
+    }
+
+    public bool IsRoomActive(int roomId) {
+        return rooms[roomId].isActive;
+    }
+
+    public void ActivateRoom(int roomId) {
+        rooms[roomId].isActive = true;
+        rooms[roomId].nodes.ForEach(node => {
+            node.Activate();
+        });
+    }
+
+    public Vector2 GetDirectionBetweenNodes(Node startNode, Node endNode) {
+        Vector2 direction = new Vector2(endNode.x - startNode.x, -(endNode.y - startNode.y));
+
+        return direction.normalized;
     }
 
     private void GenerateMapJson(MapData data) {
@@ -78,6 +131,8 @@ public class TileMap : MonoBehaviour {
             tiles[i].room = data.roomData[i];
             tiles[i].height = 0;
             tiles[i].moveCost = 1;
+
+            AddNodeToRoom(data.roomData[i], tiles[i]);
         }
     }
 
@@ -193,39 +248,14 @@ public class TileMap : MonoBehaviour {
         }
     }
 
-    public Node GetNode(Vector2 pos) {
-        return GetNode((int)pos.x, (int)pos.y);
-    }
-
-    public Node GetNode(int x, int y) {
-        return tiles[y * mapWidth + x];
-    }
-
-    public Vector3 getPositionOfNode(Node targetNode) {
-        return targetNode.transform.position;
-    }
-
-    public Vector3 getPositionOfNode(int x, int y) {
-        return getPositionOfNode(GetNode(x, y));
-    }
-
-    public float getWidth() {
-        return mapWidth;
-    }
-
-    public float getHeight() {
-        return mapHeight;
-    }
-
-    public void resetTiles() {
-        foreach (Node n in tiles) {
-            n.Reset();
+    public void AddNodeToRoom(int roomId, Node node) {
+        if (!rooms.ContainsKey(roomId)) {
+            rooms.Add(roomId, new Room(roomId));
+        } else if (rooms[roomId].nodes.Contains(node)) {
+            Debug.Log("Node already existed in room!");
+            return;
         }
-    }
 
-    public Vector2 GetDirectionBetweenNodes(Node startNode, Node endNode) {
-        Vector2 direction = new Vector2(endNode.x - startNode.x, -(endNode.y - startNode.y));
-
-        return direction.normalized;
+        rooms[roomId].nodes.Add(node);
     }
 }

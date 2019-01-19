@@ -41,6 +41,8 @@ public class UnitObject : ScriptableObject {
     private int currentStamina = 0;
     public int baseBlock = 0;
     public int baseArmour = 0;
+    public int baseActionPoints = 2;
+    public int actionPoints = 0;
 
     public AudioClip onHitSfx;
     public AudioClip onDeathSfx;
@@ -51,6 +53,7 @@ public class UnitObject : ScriptableObject {
     public Walkable walkingType;
 
     public int baseSpeed = 3;
+    public bool isActive = false;
 
     public List<AttackAction> baseAttacks;
 
@@ -101,6 +104,11 @@ public class UnitObject : ScriptableObject {
     public void SetStamina(int stamina) {
         //currentStamina = Mathf.Clamp(stamina, -MaxStamina, MaxStamina);
         currentStamina = Mathf.Clamp(stamina, 0, MaxStamina);
+    }
+
+    public int ActionPoints {
+        get { return actionPoints; }
+        set { actionPoints = value; }
     }
 
     public int Health {

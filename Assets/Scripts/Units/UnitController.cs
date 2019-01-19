@@ -124,7 +124,7 @@ public class UnitController : MonoBehaviour {
         //GetComponentInChildren<UnitAnimationController>().FaceDirection(dir);
         if (dir.magnitude == 0) {
             return;
-        } 
+        }
 
         float rotationX = 90 * -dir.x;
         float rotationY = dir.y == 1 ? 180 : 0;
@@ -139,16 +139,23 @@ public class UnitController : MonoBehaviour {
             return new Vector2(0, 0);
         }
 
+        Neighbour neighbour = myNode.FindNeighbourTo(target);
+
+        if (neighbour != null) {
+            return neighbour.GetDirectionFrom(target);
+        }
+
         //find if we want to check x or y
         float difX = target.x - myNode.x;
-        float difY = target.y - myNode.y;
+        float difY = myNode.y - target.y;
 
         //This needs to be changed if we get 4 directions to x >= y
-        if (Mathf.Abs(difX) > 0) {
+        if (difX != 0) {
             return new Vector2(Mathf.Sign(difX), 0);
         } else {
             return new Vector2(0, Mathf.Sign(difY));
         }
+
     }
 
     public void SetWalking(bool walking) {

@@ -87,6 +87,12 @@ public class Node : MonoBehaviour {
         });
     }
 
+    public void Activate() {
+        if (myUnit != null) {
+            myUnit.myStats.isActive = true;
+        }
+    }
+
     public Neighbour FindNeighbourTo(Node target) {
         return neighbours.Find(neighbour => neighbour.GetOppositeNode(this) == target);
     }

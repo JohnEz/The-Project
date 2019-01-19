@@ -67,10 +67,12 @@ public class AIManager : MonoBehaviour {
         //});
 
         foreach (UnitController unit in myUnits) {
-            CameraManager.singleton.FollowTarget(unit.transform);
-            yield return new WaitForSeconds(1.5f); // TODO get this value from cinemachine brain blend time
-            //yield return PlanTurnTwoActions(unit);
-            yield return ExecutePlannedTurn(unit);
+            if (unit.myStats.isActive) {
+                CameraManager.singleton.FollowTarget(unit.transform);
+                yield return new WaitForSeconds(1.5f); // TODO get this value from cinemachine brain blend time
+                //yield return PlanTurnTwoActions(unit);
+                yield return ExecutePlannedTurn(unit);
+            }
         }
 
         AIInfoCollector.Instance.GetHotNodes(faction).ForEach(nodePos => {
@@ -82,8 +84,8 @@ public class AIManager : MonoBehaviour {
 
     public IEnumerator ExecutePlannedTurn(UnitController unit) {
         AITurnPlan turnPlan = null;
-        int actionPoints = 2;
-        while (actionPoints > 0) {
+        unit.myStats.ActionPoints = 2;
+        while (unit.myStats.ActionPoints > 0) {
             yield return WaitForWaitingForInput();
 
             //if (turnPlan.targetMoveNode == null && turnPlan.attack == null) {
@@ -94,7 +96,7 @@ public class AIManager : MonoBehaviour {
             if (turnPlan == null) {
                 // No actions to take
                 unit.CreateBasicText("Pass");
-                actionPoints = 0;
+                unit.myStats.ActionPoints = 0;
             } else if (turnPlan.targetMoveNode != null) {
 
                 // At the target
@@ -116,8 +118,8 @@ public class AIManager : MonoBehaviour {
                         } else {
                             unit.CreateBasicText("Pass");
                         }
-                        
-                        actionPoints--;
+
+                        unit.myStats.ActionPoints--;
                     } else {
                         Debug.LogError(String.Format("Unit \"{0}\" cant move to node {1}", unit.name, turnPlan.targetMoveNode));
                     }
@@ -126,7 +128,7 @@ public class AIManager : MonoBehaviour {
             } else if (turnPlan.attack != null) {
                 AttackTile(unit, turnPlan.attack.targetNode, turnPlan.attack.attack);
                 turnPlan.attack = null;
-                actionPoints--;
+                unit.myStats.ActionPoints--;
             }
 
             if (turnPlan != null && turnPlan.targetMoveNode == null && turnPlan.attack == null) {

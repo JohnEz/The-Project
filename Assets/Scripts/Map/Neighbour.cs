@@ -54,6 +54,14 @@ public class Neighbour {
             return false;
         }
 
+        if (!TileMap.instance.IsRoomActive(n1.room)) {
+            TileMap.instance.ActivateRoom(n1.room);
+        }
+
+        if (!TileMap.instance.IsRoomActive(n2.room)) {
+            TileMap.instance.ActivateRoom(n2.room);
+        }
+
         GameObject.Destroy(myDoor);
         myDoor = null;
         return true;
