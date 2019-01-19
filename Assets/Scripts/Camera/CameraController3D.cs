@@ -59,7 +59,7 @@ public class CameraController3D : MonoBehaviour {
 
     public void TurnOff() {
         isControllable = false;
-        cam.GetComponent<CinemachineVirtualCamera>().Priority = 0;
+        cam.GetComponent<CinemachineVirtualCamera>().Priority = 1;
     }
 
     public void TurnOn() {

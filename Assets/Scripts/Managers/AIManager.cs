@@ -69,7 +69,7 @@ public class AIManager : MonoBehaviour {
         foreach (UnitController unit in myUnits) {
             if (unit.myStats.isActive) {
                 CameraManager.singleton.FollowTarget(unit.transform);
-                yield return new WaitForSeconds(1.5f); // TODO get this value from cinemachine brain blend time
+                yield return new WaitForSeconds(CameraManager.singleton.blendTime);
                 //yield return PlanTurnTwoActions(unit);
                 yield return ExecutePlannedTurn(unit);
             }
@@ -86,7 +86,7 @@ public class AIManager : MonoBehaviour {
         AITurnPlan turnPlan = null;
         unit.myStats.ActionPoints = 2;
         while (unit.myStats.ActionPoints > 0) {
-            yield return WaitForWaitingForInput();
+            yield return TurnManager.singleton.WaitForWaitingForInput();
 
             //if (turnPlan.targetMoveNode == null && turnPlan.attack == null) {
             if (turnPlan == null) {
@@ -139,7 +139,7 @@ public class AIManager : MonoBehaviour {
             yield return new WaitForSeconds(0.5f);
         }
 
-        yield return WaitForWaitingForInput();
+        yield return TurnManager.singleton.WaitForWaitingForInput();
     }
 
     //If we only want AI to have a single move and a single attack
@@ -185,7 +185,7 @@ public class AIManager : MonoBehaviour {
         int actionPoints = 2;
 
         while (actionPoints > 0) {
-            yield return WaitForWaitingForInput();
+            yield return TurnManager.singleton.WaitForWaitingForInput();
 
             Dictionary<AttackAction, List<Node>> potentialAbilityTargets = GetPotentialAbilityTargets(unit);
             Dictionary<AttackAction, List<Node>> filteredPotentialAbilityTargets = potentialAbilityTargets.Where(keyValuePair => keyValuePair.Value.Count > 0).ToDictionary(i => i.Key, i => i.Value);
@@ -220,7 +220,7 @@ public class AIManager : MonoBehaviour {
                 actionPoints = 0;
             }
         }
-        yield return WaitForWaitingForInput();
+        yield return TurnManager.singleton.WaitForWaitingForInput();
     }
 
     // Finds all tiles that can attack an enemy
@@ -312,9 +312,5 @@ public class AIManager : MonoBehaviour {
         shortestPath.path = Pathfinder.CleanPath(shortestPath.path, unit.myNode);
 
         UnitManager.singleton.SetUnitPath(unit, shortestPath);
-    }
-
-    public IEnumerator WaitForWaitingForInput() {
-        return new WaitUntil(() => TurnManager.singleton.CurrentPhase == TurnPhase.WAITING_FOR_INPUT);
     }
 }

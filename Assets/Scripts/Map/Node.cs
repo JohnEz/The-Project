@@ -89,7 +89,7 @@ public class Node : MonoBehaviour {
 
     public void Activate() {
         if (myUnit != null) {
-            myUnit.myStats.isActive = true;
+            myUnit.Activate();
         }
     }
 

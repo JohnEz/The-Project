@@ -116,12 +116,26 @@ public class UnitController : MonoBehaviour {
         baseStats = startingStats;
     }
 
+    public void Activate() {
+        myStats.isActive = true;
+
+        // TODO sort this problem, it shouldnt try to create camera for allies and the player, only enemies
+        if (PlayerManager.singleton.mainPlayer.myCharacter == this) {
+            return;
+        }
+
+        if (!SavedVariables.HasEncounteredEnemy(myStats.className)) {
+            SavedVariables.EncounteredEnemy(myStats.className);
+
+            CameraManager.singleton.AddEncounteredTarget(this);
+        }
+    }
+
     public void DestroySelf() {
         Destroy(gameObject);
     }
 
     public void FaceDirection(Vector2 dir) {
-        //GetComponentInChildren<UnitAnimationController>().FaceDirection(dir);
         if (dir.magnitude == 0) {
             return;
         }

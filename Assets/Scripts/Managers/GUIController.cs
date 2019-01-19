@@ -11,6 +11,7 @@ public class GUIController : MonoBehaviour {
     private GameObject turnText;
 
     public GameObject errorMessagePrefab;
+    public GameObject flyInTextPrefab;
 
     public GameObject victoryMenuPrefab;
     public GameObject defeatMenuPrefab;
@@ -50,7 +51,9 @@ public class GUIController : MonoBehaviour {
     }
 
     public void BtnStartGame() {
+        // TODO animate out
         startMenu.SetActive(false);
+        Destroy(startMenu, 1f);
         playerHand.SetActive(true);
         staminaPoints.SetActive(true);
         Invoke("StartGame", 0.5f);
@@ -75,7 +78,7 @@ public class GUIController : MonoBehaviour {
         turnText.transform.Find("EnemyTurnImage").gameObject.SetActive(!ally);
 
         if (objectivesBody == null) {
-            objectivesBody = transform.Find("ObjectivesBody").GetComponent<TextMeshProUGUI>();
+            objectivesBody = transform.Find("Objectives").Find("ObjectivesBody").GetComponent<TextMeshProUGUI>();
         }
         objectivesBody.text = CreateObjectiveText(objectives);
 
@@ -128,5 +131,30 @@ public class GUIController : MonoBehaviour {
         newDamageText.GetComponent<Text>().text = message;
         newDamageText.GetComponent<Text>().color = new Color(0.95f, 0.25f, 0.25f);
         newDamageText.transform.SetParent(this.transform);
+    }
+
+    public void HideUI() {
+        foreach (Transform child in transform) {
+            SlidingMenu slider = child.GetComponent<SlidingMenu>();
+
+            if (slider != null) {
+                slider.CloseMenu(CameraManager.singleton.blendTime * 0.5f);
+            }
+        }
+    }
+
+    public void ShowUI() {
+        foreach (Transform child in transform) {
+            SlidingMenu slider = child.GetComponent<SlidingMenu>();
+
+            if (slider != null) {
+                slider.OpenMenu(CameraManager.singleton.blendTime * 0.5f);
+            }
+        }
+    }
+
+    public void CreateFlyinText(string message) {
+        GameObject newText = Instantiate(flyInTextPrefab, transform);
+        newText.GetComponent<TextMeshProUGUI>().text = message;
     }
 }

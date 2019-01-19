@@ -109,6 +109,7 @@ public class TileMap : MonoBehaviour {
 
         mapWidth = data.width;
         mapHeight = data.height;
+        float halfTileSize = tileSize / 2;
 
         //Generate empty nodes
         for (int i = 0; i < tiles.Length; ++i) {
@@ -116,7 +117,7 @@ public class TileMap : MonoBehaviour {
             int x = i % data.width;
             int y = i / data.width;
 
-            Vector3 pos = new Vector3(x * tileSize, 0, -y * tileSize);
+            Vector3 pos = new Vector3((x * tileSize) + halfTileSize, 0, (-y * tileSize) - halfTileSize);
 
             GameObject baseNode = Instantiate(basicNodePrefab, pos, rot);
             baseNode.transform.parent = this.transform;

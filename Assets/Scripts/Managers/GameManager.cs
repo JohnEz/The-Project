@@ -3,7 +3,7 @@
 public class GameManager : MonoBehaviour {
     public static GameManager singleton;
 
-    private const bool ADD_ALLY = true;
+    private const bool ADD_ALLY = false;
 
     private void Awake() {
         singleton = this;
@@ -34,26 +34,19 @@ public class GameManager : MonoBehaviour {
         if (ADD_ALLY) {
             Player allyAI = PlayerManager.singleton.AddAiPlayer(1);
 
-            UnitManager.singleton.SpawnUnit("Criminal", allyAI, 1, 8);
-            UnitManager.singleton.SpawnUnit("Farmer", allyAI, 2, 9);
-            UnitManager.singleton.SpawnUnit("Scribe", allyAI, 1, 10);
+            UnitManager.singleton.SpawnUnit("Criminal", allyAI, 2, 12);
+            UnitManager.singleton.SpawnUnit("Farmer", allyAI, 3, 11);
+            UnitManager.singleton.SpawnUnit("Scribe", allyAI, 4, 12);
         }
 
-        humanPlayer.myCharacter = UnitManager.singleton.SpawnUnit(GameDetails.PlayerCharacter, PlayerManager.singleton.GetPlayer(0), 1, 9);
+        humanPlayer.myCharacter = UnitManager.singleton.SpawnUnit(GameDetails.PlayerCharacter, PlayerManager.singleton.GetPlayer(0), 3, 12);
         CameraManager.singleton.JumpToLocation(humanPlayer.myCharacter.myNode);
 
         Player enemyAI = PlayerManager.singleton.AddAiPlayer(2);
 
-        UnitManager.singleton.SpawnUnit("Goblin Warrior", enemyAI, 5, 8);
-        UnitManager.singleton.SpawnUnit("Goblin Warrior", enemyAI, 5, 9);
-        UnitManager.singleton.SpawnUnit("Goblin Warrior", enemyAI, 5, 10);
-
-        UnitManager.singleton.SpawnUnit("Goblin Archer", enemyAI, 14, 8);
-        UnitManager.singleton.SpawnUnit("Goblin Archer", enemyAI, 14, 10);
-
-        UnitManager.singleton.SpawnUnit("Goblin Warrior", enemyAI, 10, 2);
-        UnitManager.singleton.SpawnUnit("Goblin Archer", enemyAI, 11, 1);
-        UnitManager.singleton.SpawnUnit("Goblin Warrior", enemyAI, 12, 2);
+        UnitManager.singleton.SpawnUnit("Goblin Warrior", enemyAI, 3, 2);
+        UnitManager.singleton.SpawnUnit("Goblin Warrior", enemyAI, 5, 1);
+        UnitManager.singleton.SpawnUnit("Goblin Warrior", enemyAI, 7, 1);
 
         TileMap.instance.ActivateRoom(humanPlayer.myCharacter.myNode.room);
     }
@@ -79,5 +72,19 @@ public class GameManager : MonoBehaviour {
             objective3.type = ObjectiveType.ANNIHILATION;
             ObjectiveManager.singleton.AddObjective(PlayerManager.singleton.GetPlayer(2), objective3);
         }
+    }
+
+    // TEMP
+    private void SpawnDungeon1Units(Player enemyAI) {
+        UnitManager.singleton.SpawnUnit("Goblin Warrior", enemyAI, 5, 8);
+        UnitManager.singleton.SpawnUnit("Goblin Warrior", enemyAI, 5, 9);
+        UnitManager.singleton.SpawnUnit("Goblin Warrior", enemyAI, 5, 10);
+
+        UnitManager.singleton.SpawnUnit("Goblin Archer", enemyAI, 14, 8);
+        UnitManager.singleton.SpawnUnit("Goblin Archer", enemyAI, 14, 10);
+
+        UnitManager.singleton.SpawnUnit("Goblin Warrior", enemyAI, 10, 2);
+        UnitManager.singleton.SpawnUnit("Goblin Archer", enemyAI, 11, 1);
+        UnitManager.singleton.SpawnUnit("Goblin Warrior", enemyAI, 12, 2);
     }
 }

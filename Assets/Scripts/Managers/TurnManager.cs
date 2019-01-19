@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public enum TurnPhase {
     GAME_STARTING,
@@ -7,6 +8,7 @@ public enum TurnPhase {
     UNIT_MOVING,
     UNIT_ATTACKING,
     TURN_ENDING,
+    CUTSCENE,
     GAME_OVER
 }
 
@@ -128,5 +130,18 @@ public class TurnManager : MonoBehaviour {
 
     public bool isAiTurn() {
         return GetCurrentPlayer().ai;
+    }
+
+    public IEnumerator WaitForWaitingForInput() {
+        return new WaitUntil(() => CurrentPhase == TurnPhase.WAITING_FOR_INPUT);
+    }
+
+    public void StartingCutscene() {
+        CurrentPhase = TurnPhase.CUTSCENE;
+    }
+
+    public void EndedCutscene() {
+        // TODO this maybe should go back to the previous phase instead
+        CurrentPhase = TurnPhase.WAITING_FOR_INPUT;
     }
 }

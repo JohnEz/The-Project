@@ -29,6 +29,8 @@ public class UnitObject : ScriptableObject {
 
     public UnitToken[] unitTokens;
 
+    public AudioClip encounterSFX;
+
     //scaling consts
     private const int ACTION_POINTS_TO_STAMINA = 2;
 

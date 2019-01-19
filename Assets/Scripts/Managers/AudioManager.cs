@@ -12,6 +12,7 @@ public enum AudioMixers {
 public enum Fade {
     IN,
     OUT,
+    TARGET,
     NONE
 }
 
@@ -29,6 +30,8 @@ public class Music {
     private Fade fading = Fade.NONE;
 
     private const float FADE_SPEED = 0.5f;
+
+    private float targetVolume;
 
     public void Play(bool fadeIn = true) {
         if (fadeIn) {
@@ -60,6 +63,14 @@ public class Music {
                 source.Stop();
                 fading = Fade.NONE;
             }
+        } else if (fading == Fade.TARGET) {
+            float distanceToFade = Math.Abs(source.volume - targetVolume);
+            if (distanceToFade > 0.02f) {
+                source.volume =  Vector2.Lerp(new Vector2(source.volume, 0), new Vector2(targetVolume, 0) , Time.deltaTime).x;
+            } else {
+                source.volume = targetVolume;
+                fading = Fade.NONE;
+            }
         }
     }
 
@@ -69,6 +80,11 @@ public class Music {
 
     public void FadeOut() {
         fading = Fade.OUT;
+    }
+
+    public void FadeTo(float fadeTarget) {
+        fading = Fade.TARGET;
+        targetVolume = fadeTarget;
     }
 
     public void Update() {
@@ -108,6 +124,8 @@ public class AudioManager : MonoBehaviour {
         foreach (Music m in music) {
             m.Update();
         }
+
+
     }
 
     public void PlayMusic(string name, bool fadeIn = true) {
@@ -191,5 +209,13 @@ public class AudioManager : MonoBehaviour {
 
         source.Play();
         return go;
+    }
+
+    public void LowerMusic() {
+        currentMusic.FadeTo(0.33f);
+    }
+
+    public void RaiseMusic() {
+        currentMusic.FadeTo(1);
     }
 }
