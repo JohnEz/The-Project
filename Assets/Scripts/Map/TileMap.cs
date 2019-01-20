@@ -20,6 +20,8 @@ public class Room {
 }
 
 public class TileMap : MonoBehaviour {
+    public const int TILE_SIZE = 128;
+
     public static TileMap instance;
 
     private int mapWidth;
@@ -33,9 +35,9 @@ public class TileMap : MonoBehaviour {
 
     public Pathfinder pathfinder;
 
-    private float tileSize = 128;
-
     public bool isMapLoaded = false;
+
+    public List<SpawnLocation> spawnLocations;
 
     private void Awake() {
         instance = this;
@@ -45,6 +47,8 @@ public class TileMap : MonoBehaviour {
         rooms = new Dictionary<int, Room>();
         pathfinder = GetComponent<Pathfinder>();
         pathfinder.Initialise();
+
+        spawnLocations = new List<SpawnLocation>();
 
         LevelLoaderJson lLoaderJson = GetComponent<LevelLoaderJson>();
         lLoaderJson.Initialise();
@@ -107,9 +111,10 @@ public class TileMap : MonoBehaviour {
     private void GenerateMapJson(MapData data) {
         tiles = new Node[data.width * data.height];
 
+        spawnLocations = data.spawnLocations;
         mapWidth = data.width;
         mapHeight = data.height;
-        float halfTileSize = tileSize / 2;
+        float halfTileSize = TILE_SIZE / 2;
 
         //Generate empty nodes
         for (int i = 0; i < tiles.Length; ++i) {
@@ -117,7 +122,7 @@ public class TileMap : MonoBehaviour {
             int x = i % data.width;
             int y = i / data.width;
 
-            Vector3 pos = new Vector3((x * tileSize) + halfTileSize, 0, (-y * tileSize) - halfTileSize);
+            Vector3 pos = new Vector3((x * TILE_SIZE) + halfTileSize, 0, (-y * TILE_SIZE) - halfTileSize);
 
             GameObject baseNode = Instantiate(basicNodePrefab, pos, rot);
             baseNode.transform.parent = this.transform;
@@ -149,7 +154,7 @@ public class TileMap : MonoBehaviour {
                 Quaternion rot = basicNodePrefab.transform.rotation;
                 int x = i % level.maxSizeY;
                 int y = i / level.maxSizeX;
-                Vector3 pos = new Vector3(x * tileSize, -y * tileSize, 0);
+                Vector3 pos = new Vector3(x * TILE_SIZE, -y * TILE_SIZE, 0);
 
                 int id = level.layers[j].tiles[i] - 1;
 

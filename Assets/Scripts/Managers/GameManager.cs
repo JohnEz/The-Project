@@ -39,15 +39,23 @@ public class GameManager : MonoBehaviour {
             UnitManager.singleton.SpawnUnit("Scribe", allyAI, 4, 12);
         }
 
-        //humanPlayer.myCharacter = UnitManager.singleton.SpawnUnit(GameDetails.PlayerCharacter, PlayerManager.singleton.GetPlayer(0), 3, 12);
-        humanPlayer.myCharacter = UnitManager.singleton.SpawnUnit(GameDetails.PlayerCharacter, PlayerManager.singleton.GetPlayer(0), 5, 6);
+        SpawnLocation playerSpawnLocation = TileMap.instance.spawnLocations.Find(sl => sl.name == "PlayerSpawn");
+        if (playerSpawnLocation != null) {
+            humanPlayer.myCharacter = UnitManager.singleton.SpawnUnit(GameDetails.PlayerCharacter, PlayerManager.singleton.GetPlayer(0), playerSpawnLocation.x, playerSpawnLocation.y);
+        } else {
+            //humanPlayer.myCharacter = UnitManager.singleton.SpawnUnit(GameDetails.PlayerCharacter, PlayerManager.singleton.GetPlayer(0), 3, 12);
+            humanPlayer.myCharacter = UnitManager.singleton.SpawnUnit(GameDetails.PlayerCharacter, PlayerManager.singleton.GetPlayer(0), 5, 6);
+        }
+
         CameraManager.singleton.JumpToLocation(humanPlayer.myCharacter.myNode);
 
         Player enemyAI = PlayerManager.singleton.AddAiPlayer(2);
 
-        UnitManager.singleton.SpawnUnit("Goblin Archer", enemyAI, 7, 2);
-        UnitManager.singleton.SpawnUnit("Goblin Archer", enemyAI, 5, 1);
-        UnitManager.singleton.SpawnUnit("Goblin Archer", enemyAI, 3, 1);
+        TileMap.instance.spawnLocations.ForEach(sl => {
+            if (sl.name != "PlayerSpawn") {
+                UnitManager.singleton.SpawnUnit(sl.name, enemyAI, sl.x, sl.y);
+            }
+        });
 
         TileMap.instance.ActivateRoom(humanPlayer.myCharacter.myNode.room);
     }
@@ -73,6 +81,12 @@ public class GameManager : MonoBehaviour {
             objective3.type = ObjectiveType.ANNIHILATION;
             ObjectiveManager.singleton.AddObjective(PlayerManager.singleton.GetPlayer(2), objective3);
         }
+    }
+
+    private void SpawnStartMapUnits(Player enemyAI) {
+        UnitManager.singleton.SpawnUnit("Goblin Archer", enemyAI, 7, 2);
+        UnitManager.singleton.SpawnUnit("Goblin Archer", enemyAI, 5, 1);
+        UnitManager.singleton.SpawnUnit("Goblin Archer", enemyAI, 3, 1);
     }
 
     // TEMP

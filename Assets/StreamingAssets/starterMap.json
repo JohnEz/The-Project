@@ -48,9 +48,56 @@
          "width":11,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":5,
+         "name":"SpawnLocations",
+         "objects":[
+                {
+                 "height":0,
+                 "id":4,
+                 "name":"PlayerSpawn",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":700,
+                 "y":1599
+                }, 
+                {
+                 "height":0,
+                 "id":5,
+                 "name":"Goblin Warrior",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":576,
+                 "y":318
+                }, 
+                {
+                 "height":0,
+                 "id":6,
+                 "name":"Goblin Warrior",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":829,
+                 "y":318
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
- "nextlayerid":5,
- "nextobjectid":1,
+ "nextlayerid":7,
+ "nextobjectid":7,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.2.1",

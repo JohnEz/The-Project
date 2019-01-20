@@ -6,9 +6,20 @@ using UnityEngine;
 public class Layer {
     public string name;
     public int[] data;
+    public SpawnLocation[] objects;
 }
 
 public class TileSet {
+}
+
+[System.Serializable]
+public class SpawnLocation {
+    public string name;
+    public int x, y;
+
+    public override string ToString() {
+        return string.Format("[ x: {0}, y: {1}, unit: {2} ]", x, y, name);
+    }
 }
 
 public class TiledMap {
@@ -39,6 +50,7 @@ public struct MapData {
     public Walkable[] walkableData;
     public LineOfSight[] lineOfSightData;
     public int[] roomData;
+    public List<SpawnLocation> spawnLocations;
 }
 
 public class LevelLoaderJson : MonoBehaviour {
@@ -72,6 +84,7 @@ public class LevelLoaderJson : MonoBehaviour {
         loadedLevel.walkableData = CreateWalkableMap();
         loadedLevel.lineOfSightData = CreateLineOfSightMap();
         loadedLevel.roomData = CreateRoomMap();
+        loadedLevel.spawnLocations = CreateSpawnLocations();
     }
 
     public Walkable[] CreateWalkableMap() {
@@ -132,6 +145,25 @@ public class LevelLoaderJson : MonoBehaviour {
         }
 
         return roomArray;
+    }
+
+    public List<SpawnLocation> CreateSpawnLocations() {
+        List<SpawnLocation> spawnLocations = new List<SpawnLocation>();
+
+        Layer spawnLocationLayer = loadedData.layers.Find(layer => layer.name.Equals("SpawnLocations"));
+
+        if (spawnLocationLayer == null) {
+            Debug.LogWarning("No spawn location layer");
+        } else {
+            foreach (SpawnLocation spawnLocation in spawnLocationLayer.objects) {
+                spawnLocation.x = Mathf.FloorToInt(spawnLocation.x / TileMap.TILE_SIZE);
+                spawnLocation.y = Mathf.FloorToInt(spawnLocation.y / TileMap.TILE_SIZE);
+
+                spawnLocations.Add(spawnLocation);
+            }
+        }
+
+        return spawnLocations;
     }
 
     public void LoadTiledData() {

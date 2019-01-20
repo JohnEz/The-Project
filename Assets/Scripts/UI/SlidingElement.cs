@@ -26,7 +26,7 @@ public class SlidingElement : MonoBehaviour {
 
     // Update is called once per frame
     private void Update() {
-        if (targetPosition == Vector3.zero || targetPosition == transform.localPosition) {
+        if (targetPosition == transform.localPosition) {
             return;
         }
 
