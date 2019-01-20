@@ -43,12 +43,10 @@ public class CameraController3D : MonoBehaviour {
     public CinemachineVirtualCamera cam;
 
     private void Awake() {
-
     }
 
     // Use this for initialization
     private void Start() {
-
     }
 
     public void Initialise() {

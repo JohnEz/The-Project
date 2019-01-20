@@ -31,6 +31,7 @@ public class UnitObject : ScriptableObject {
 
     // Audio
     public AudioClip encounterSFX;
+
     public AudioClip[] attackSFX;
     public AudioClip[] woundSFX;
     public AudioClip[] deathSFX;

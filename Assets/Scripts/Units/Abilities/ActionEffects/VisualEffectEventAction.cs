@@ -14,11 +14,13 @@ public class VisualEffectEventAction : EventAction {
                         caster.CreateEffectWithDelay(effectObject, delay);
                     }
                     break;
+
                 case EventTarget.TARGETUNIT:
                     if (targetedTile != null) {
                         caster.CreateEffectWithDelay(effectObject, delay, targetedTile);
                     }
                     break;
+
                 case EventTarget.TARGETEDTILE:
                     if (caster != null) {
                         caster.CreateEffectWithDelay(effectObject, delay, targetedTile);

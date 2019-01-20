@@ -82,7 +82,7 @@ public class AttackAction : CardAction {
 
     public void AbilityUsed() {
         Cooldown = MaxCooldown;
-        
+
         if (caster.IsStealthed()) {
             Buff stealthBuff = caster.myStats.FindBuff("Stealth");
             caster.myStats.RemoveBuff(stealthBuff);
@@ -191,7 +191,7 @@ public class AttackAction : CardAction {
 
         attackEffects.ForEach(attackEffect => {
             if (attackEffect.GetType() == typeof(IncreaseArmour)) {
-                armour += ((IncreaseArmour) attackEffect).armourIncrease;
+                armour += ((IncreaseArmour)attackEffect).armourIncrease;
             }
         });
 

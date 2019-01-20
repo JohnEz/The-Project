@@ -169,7 +169,6 @@ public class UnitController : MonoBehaviour {
         } else {
             return new Vector2(0, Mathf.Sign(difY));
         }
-
     }
 
     public void SetWalking(bool walking) {
@@ -380,7 +379,7 @@ public class UnitController : MonoBehaviour {
         abilityTargets.Clear();
         effectsToCreate = 0;
         projectilesToCreate = 0;
-        abilityEffects.Clear ();
+        abilityEffects.Clear();
     }
 
     public bool TakeDamage(UnitController attacker, int damage, bool ignoreArmour = false) {

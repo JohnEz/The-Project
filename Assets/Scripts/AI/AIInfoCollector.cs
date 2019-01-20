@@ -1,6 +1,6 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class HeatMap {
     public UnitController unit;
@@ -33,7 +33,6 @@ public class HeatMap {
                 });
             }
         });
-        
     }
 
     private void SetHeatForNode(Node n, int heat) {
@@ -59,7 +58,6 @@ public class TileHostility {
 }
 
 public class AIInfoCollector {
-
     private static AIInfoCollector instance = null;
 
     public Dictionary<int, List<HeatMap>> factionHeatMaps;
@@ -76,7 +74,6 @@ public class AIInfoCollector {
             return instance;
         }
     }
-
 
     public void GenerateHostilityMap(int faction) {
         if (factionHeatMaps.ContainsKey(faction)) {
@@ -96,11 +93,9 @@ public class AIInfoCollector {
     }
 
     public void UnitDied() {
-
     }
 
     public void UnitSpawned() {
-
     }
 
     public TileHostility GetHostilityOfTile(int faction, Node node) {
@@ -140,5 +135,4 @@ public class AIInfoCollector {
 
         return hotNodes;
     }
-
 }

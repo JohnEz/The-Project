@@ -59,5 +59,4 @@ public class SlidingMenu : MonoBehaviour {
     public void SlideToPosition(Vector3 position) {
         targetPosition = position;
     }
-
 }

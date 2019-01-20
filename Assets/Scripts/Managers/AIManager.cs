@@ -11,7 +11,6 @@ public class AITurnPlan {
 }
 
 public class AIAttackAction {
-
     public AttackAction attack = null;
     public Node targetNode = null;
     public int valueOfAttack = 0;
@@ -98,7 +97,6 @@ public class AIManager : MonoBehaviour {
                 unit.CreateBasicText("Pass");
                 unit.myStats.ActionPoints = 0;
             } else if (turnPlan.targetMoveNode != null) {
-
                 // At the target
                 if (turnPlan.targetMoveNode == unit.myNode) {
                     turnPlan.targetMoveNode = null;
@@ -124,7 +122,6 @@ public class AIManager : MonoBehaviour {
                         Debug.LogError(String.Format("Unit \"{0}\" cant move to node {1}", unit.name, turnPlan.targetMoveNode));
                     }
                 }
-
             } else if (turnPlan.attack != null) {
                 if (turnPlan.attack.targetNode != unit.myNode) {
                     CameraManager.singleton.FollowTarget(turnPlan.attack.targetNode.transform);

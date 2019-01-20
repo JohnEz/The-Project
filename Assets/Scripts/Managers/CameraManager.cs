@@ -13,12 +13,14 @@ public class CameraManager : MonoBehaviour {
 
     [HideInInspector]
     public CinemachineVirtualCamera activeFollowCamera;
+
     [HideInInspector]
     public CinemachineVirtualCamera activePersonalCamera;
 
     [HideInInspector]
     public float blendTime;
-    Vector3 cameraOffset;
+
+    private Vector3 cameraOffset;
 
     private Stack<UnitController> encounterTargets;
 
@@ -30,7 +32,6 @@ public class CameraManager : MonoBehaviour {
     }
 
     private void Start() {
-        
     }
 
     public void Initialise() {
@@ -40,7 +41,6 @@ public class CameraManager : MonoBehaviour {
 
     // Update is called once per frame
     private void Update() {
-
     }
 
     public void AddEncounteredTarget(UnitController target) {
@@ -58,7 +58,7 @@ public class CameraManager : MonoBehaviour {
 
         if (encounterTargets.Count < 1) {
             yield break;
-        } 
+        }
 
         TurnManager.singleton.StartingCutscene();
         UnitController target = encounterTargets.Pop();

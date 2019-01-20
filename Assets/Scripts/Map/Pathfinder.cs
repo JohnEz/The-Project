@@ -126,12 +126,12 @@ public class Pathfinder : MonoBehaviour {
             }
         });
 
-        List<MovementPath> pathsWithoutUnitsAtEnd = paths.Where (movementPath => {
-			return movementPath.movementCost > -1 &&
-				movementPath.path [movementPath.path.Count-1].myUnit == null;
-		}).ToList();
+        List<MovementPath> pathsWithoutUnitsAtEnd = paths.Where(movementPath => {
+            return movementPath.movementCost > -1 &&
+                movementPath.path[movementPath.path.Count - 1].myUnit == null;
+        }).ToList();
 
-        return GetSortestPath (pathsWithoutUnitsAtEnd.Count > 0 ? pathsWithoutUnitsAtEnd : paths);
+        return GetSortestPath(pathsWithoutUnitsAtEnd.Count > 0 ? pathsWithoutUnitsAtEnd : paths);
         //return GetSortestPath(paths);
     }
 

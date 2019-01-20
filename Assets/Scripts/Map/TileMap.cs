@@ -20,7 +20,7 @@ public class Room {
 }
 
 public class TileMap : MonoBehaviour {
-    public static TileMap instance; 
+    public static TileMap instance;
 
     private int mapWidth;
     private int mapHeight;

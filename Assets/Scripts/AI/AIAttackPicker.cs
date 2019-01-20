@@ -1,13 +1,11 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class AIAttackPicker {
     private static AIAttackPicker instance = null;
 
     private AIAttackPicker() {
-
     }
 
     public static AIAttackPicker Instance {
@@ -47,7 +45,7 @@ public class AIAttackPicker {
             List<Node> reachableNodes = attacksToTiles[aiAttackAction].Where(node => nodeValues.Keys.Contains(node)).ToList();
 
             if (reachableNodes.Count > 0) {
-                Node bestNodeToMoveTo = reachableNodes.Aggregate((x, y) => nodeValues[x] > nodeValues[y] ? x : y );
+                Node bestNodeToMoveTo = reachableNodes.Aggregate((x, y) => nodeValues[x] > nodeValues[y] ? x : y);
 
                 bool canAttackTwice = bestNodeToMoveTo == myUnit.myNode;
 
@@ -63,7 +61,7 @@ public class AIAttackPicker {
         //turnPlans.ForEach(plan => {
         //    plan.targetMoveNode.GetComponentInChildren<TileHighlighter>().DebugSetText(plan.valueOfPlan.ToString());
         //});
-        
+
         // Couldnt find a plan
         if (turnPlans.Count < 1) {
             return null;
@@ -98,7 +96,6 @@ public class AIAttackPicker {
                         attacksToTiles.Add(aiAttackAction, attackNodes);
                     }
                 }
-
             });
         });
 

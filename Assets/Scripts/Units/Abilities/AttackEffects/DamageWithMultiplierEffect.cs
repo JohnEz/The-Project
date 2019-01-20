@@ -2,6 +2,7 @@
 
 [CreateAssetMenu(fileName = "New Attack Action", menuName = "Card/Attack/Damage with Multiplier")]
 public class DamageWithMultiplierEffect : DamagePerStackEffect {
+
     public override void AbilityEffect(UnitController caster, UnitController target) {
         Buff targetBuff = target.myStats.FindBuff(buffName);
         int damage = baseDamage * (targetBuff != null ? damageMod : 1);

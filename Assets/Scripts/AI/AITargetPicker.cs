@@ -1,10 +1,7 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 public class AITargetPicker {
-
     private static AITargetPicker instance = null;
 
     // target and its calculated target value
@@ -120,5 +117,4 @@ public class AITargetPicker {
 
         return pathsToEnemies;
     }
-
 }

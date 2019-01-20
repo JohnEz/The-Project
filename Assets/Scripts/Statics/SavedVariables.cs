@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-using UnityEditor;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 public class SavedVariables {
     public static List<string> encounteredEnemies = new List<string>();

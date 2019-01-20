@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 
 public class ProjectileController : MonoBehaviour {
-
     public const float HIT_DISTANCE = 50;
 
     [SerializeField]
@@ -42,8 +41,8 @@ public class ProjectileController : MonoBehaviour {
         Vector3 startPosition = caster.transform.Find("Token").position;
         transform.position = startPosition;
 
-        Vector3 targetPosition = target.myUnit != null ? 
-            target.myUnit.transform.Find("Token").position : 
+        Vector3 targetPosition = target.myUnit != null ?
+            target.myUnit.transform.Find("Token").position :
             target.transform.position;
 
         direction = targetPosition - transform.position;

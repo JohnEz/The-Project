@@ -81,7 +81,7 @@ public class Music {
         } else if (fading == Fade.TARGET) {
             float distanceToFade = Math.Abs(source.volume - targetVolume);
             if (distanceToFade > 0.02f) {
-                source.volume =  Vector2.Lerp(new Vector2(source.volume, 0), new Vector2(targetVolume, 0) , Time.deltaTime).x;
+                source.volume = Vector2.Lerp(new Vector2(source.volume, 0), new Vector2(targetVolume, 0), Time.deltaTime).x;
             } else {
                 source.volume = targetVolume;
                 fading = Fade.NONE;
@@ -139,8 +139,6 @@ public class AudioManager : MonoBehaviour {
         foreach (Music m in music) {
             m.Update();
         }
-
-
     }
 
     public void PlayMusic(string name, bool fadeIn = true) {

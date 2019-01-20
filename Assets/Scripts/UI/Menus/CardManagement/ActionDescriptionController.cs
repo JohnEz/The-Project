@@ -44,23 +44,27 @@ public class ActionDescriptionController : MonoBehaviour {
         string multiplyerString = null;
 
         attack.attackEffects.ForEach(effect => {
-            switch(effect.GetType().ToString()) {
+            switch (effect.GetType().ToString()) {
                 case "DamageEffect":
                     DamageEffect damageEffect = (DamageEffect)effect;
                     damage += damageEffect.damage;
                     break;
+
                 case "IncreaseArmour":
                     IncreaseArmour armourEffect = (IncreaseArmour)effect;
                     armour += armourEffect.armourIncrease;
                     break;
+
                 case "DamagePerStackEffect":
                     DamagePerStackEffect damagePerStackEffect = (DamagePerStackEffect)effect;
                     stackString = damagePerStackEffect.ToDescription();
                     break;
+
                 case "DamageWithMultiplierEffect":
                     DamageWithMultiplierEffect damageWithMultiplierEffect = (DamageWithMultiplierEffect)effect;
                     multiplyerString = damageWithMultiplierEffect.ToDescription();
                     break;
+
                 case "HealEffect":
                     HealEffect healEffect = (HealEffect)effect;
                     healing += healEffect.healing;
