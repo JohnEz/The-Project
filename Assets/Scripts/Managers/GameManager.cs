@@ -45,9 +45,9 @@ public class GameManager : MonoBehaviour {
 
         Player enemyAI = PlayerManager.singleton.AddAiPlayer(2);
 
-        UnitManager.singleton.SpawnUnit("Goblin Warrior", enemyAI, 7, 2);
+        UnitManager.singleton.SpawnUnit("Goblin Archer", enemyAI, 7, 2);
         UnitManager.singleton.SpawnUnit("Goblin Archer", enemyAI, 5, 1);
-        UnitManager.singleton.SpawnUnit("Goblin Warrior", enemyAI, 3, 1);
+        UnitManager.singleton.SpawnUnit("Goblin Archer", enemyAI, 3, 1);
 
         TileMap.instance.ActivateRoom(humanPlayer.myCharacter.myNode.room);
     }

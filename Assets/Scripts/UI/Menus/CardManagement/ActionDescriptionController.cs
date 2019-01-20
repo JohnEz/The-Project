@@ -38,35 +38,33 @@ public class ActionDescriptionController : MonoBehaviour {
 
     private void SetAttackText(AttackAction attack) {
         int damage = 0;
+        int healing = 0;
         int armour = 0;
         string stackString = null;
         string multiplyerString = null;
 
         attack.attackEffects.ForEach(effect => {
-            if (effect.GetType() == typeof(DamageEffect)) {
-                DamageEffect damageEffect = (DamageEffect)effect;
-                damage += damageEffect.damage;
-            }
-        });
-
-        attack.attackEffects.ForEach(effect => {
-            if (effect.GetType() == typeof(IncreaseArmour)) {
-                IncreaseArmour armourEffect = (IncreaseArmour)effect;
-                armour += armourEffect.armourIncrease;
-            }
-        });
-
-        attack.attackEffects.ForEach(effect => {
-            if (effect.GetType() == typeof(DamagePerStackEffect)) {
-                DamagePerStackEffect damageEffect = (DamagePerStackEffect)effect;
-                stackString = damageEffect.ToDescription();
-            }
-        });
-
-        attack.attackEffects.ForEach(effect => {
-            if (effect.GetType() == typeof(DamageWithMultiplierEffect)) {
-                DamageWithMultiplierEffect damageEffect = (DamageWithMultiplierEffect)effect;
-                multiplyerString = damageEffect.ToDescription();
+            switch(effect.GetType().ToString()) {
+                case "DamageEffect":
+                    DamageEffect damageEffect = (DamageEffect)effect;
+                    damage += damageEffect.damage;
+                    break;
+                case "IncreaseArmour":
+                    IncreaseArmour armourEffect = (IncreaseArmour)effect;
+                    armour += armourEffect.armourIncrease;
+                    break;
+                case "DamagePerStackEffect":
+                    DamagePerStackEffect damagePerStackEffect = (DamagePerStackEffect)effect;
+                    stackString = damagePerStackEffect.ToDescription();
+                    break;
+                case "DamageWithMultiplierEffect":
+                    DamageWithMultiplierEffect damageWithMultiplierEffect = (DamageWithMultiplierEffect)effect;
+                    multiplyerString = damageWithMultiplierEffect.ToDescription();
+                    break;
+                case "HealEffect":
+                    HealEffect healEffect = (HealEffect)effect;
+                    healing += healEffect.healing;
+                    break;
             }
         });
 
@@ -81,9 +79,12 @@ public class ActionDescriptionController : MonoBehaviour {
         if (attack.areaOfEffect == AreaOfEffect.CIRCLE || attack.areaOfEffect == AreaOfEffect.AURA) {
             subTextString += "Area " + attack.aoeRange + "\n";
             displaySubText = true;
+        } else if (attack.areaOfEffect == AreaOfEffect.CLEAVE) {
+            subTextString += "Cleave\n";
+            displaySubText = true;
         }
 
-        actionText.text = string.Format(attack.description, damage, armour, stackString, multiplyerString);
+        actionText.text = string.Format(attack.description, damage, healing, armour, stackString, multiplyerString);
 
         if (displaySubText) {
             subText.SetActive(true);

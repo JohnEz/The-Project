@@ -24,7 +24,8 @@ public class OptionsMenuController : MonoBehaviour {
     }
 
     public void OpenMenu() {
-        GetComponent<SlidingMenu>().SlideToPosition(OPEN_POSITION);
+        //GetComponent<SlidingMenu>().SlideToPosition(OPEN_POSITION);
+        GetComponent<SlidingMenu>().OpenMenu();
     }
 
     public void CloseMenu() {

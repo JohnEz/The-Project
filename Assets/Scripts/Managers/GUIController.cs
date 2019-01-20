@@ -135,7 +135,7 @@ public class GUIController : MonoBehaviour {
 
     public void HideUI() {
         foreach (Transform child in transform) {
-            SlidingMenu slider = child.GetComponent<SlidingMenu>();
+            SlidingElement slider = child.GetComponent<SlidingElement>();
 
             if (slider != null) {
                 slider.CloseMenu(CameraManager.singleton.blendTime * 0.5f);
@@ -145,7 +145,7 @@ public class GUIController : MonoBehaviour {
 
     public void ShowUI() {
         foreach (Transform child in transform) {
-            SlidingMenu slider = child.GetComponent<SlidingMenu>();
+            SlidingElement slider = child.GetComponent<SlidingElement>();
 
             if (slider != null) {
                 slider.OpenMenu(CameraManager.singleton.blendTime * 0.5f);

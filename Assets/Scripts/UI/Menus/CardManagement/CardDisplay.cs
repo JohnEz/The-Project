@@ -89,7 +89,9 @@ public class CardDisplay : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     }
 
     public void OnPointerEnter(PointerEventData eventData) {
-        UserInterfaceManager.singleton.CardHovered(this);
+        if (TurnManager.singleton.CurrentPhase == TurnPhase.WAITING_FOR_INPUT) {
+            UserInterfaceManager.singleton.CardHovered(this);
+        }
     }
 
     public void OnPointerExit(PointerEventData eventData) {

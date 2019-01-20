@@ -126,6 +126,11 @@ public class AIManager : MonoBehaviour {
                 }
 
             } else if (turnPlan.attack != null) {
+                if (turnPlan.attack.targetNode != unit.myNode) {
+                    CameraManager.singleton.FollowTarget(turnPlan.attack.targetNode.transform);
+                    yield return new WaitForSeconds(CameraManager.singleton.blendTime);
+                }
+
                 AttackTile(unit, turnPlan.attack.targetNode, turnPlan.attack.attack);
                 turnPlan.attack = null;
                 unit.myStats.ActionPoints--;

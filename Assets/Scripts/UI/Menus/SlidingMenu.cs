@@ -1,57 +1,63 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class SlidingMenu : MonoBehaviour {
     private float DEFAULT_SLIDE_SPEED = 8f;
     private float MIN_DISTANCE = 0.05f;
 
-    private float slidingSpeed;
-    private float time = 0;
-    private Vector3 preSlideLocation;
-    private bool isSliding = false;
     private Vector3 targetPosition;
 
     private Vector3 startingPosition;
-    public Vector3 defaultOutPosition;
+    private Vector2 targetScreenSize;
+    public Vector2 anchorPosition;
+
+    public bool startsClosed = false;
 
     private RectTransform rectTransform;
 
-    private void Awake() {
+    public void Start() {
         rectTransform = GetComponent<RectTransform>();
         startingPosition = rectTransform.anchoredPosition;
         targetPosition = startingPosition;
+        targetScreenSize = GameObject.Find("MenuCanvas").GetComponent<CanvasScaler>().referenceResolution;
     }
 
     // Update is called once per frame
     private void Update() {
-        if (targetPosition == null || slidingSpeed <= 0) {
+        if (targetPosition == null) {
             return;
         }
 
         float distanceToNode = Vector3.Distance(targetPosition, transform.localPosition);
 
         if (distanceToNode > MIN_DISTANCE) {
-            rectTransform.anchoredPosition = Vector3.Lerp(preSlideLocation, targetPosition, time);
-            time += Time.deltaTime / slidingSpeed;
+            rectTransform.anchoredPosition = Vector3.Lerp(rectTransform.anchoredPosition, targetPosition, DEFAULT_SLIDE_SPEED * Time.deltaTime);
         } else {
             rectTransform.anchoredPosition = targetPosition;
         }
     }
 
-    public void OpenMenu(float speed = 0) {
-        slidingSpeed = speed != 0 ? speed : DEFAULT_SLIDE_SPEED;
-        time = 0;
-        targetPosition = startingPosition;
-        preSlideLocation = rectTransform.anchoredPosition;
+    public void OpenMenu() {
+        Vector3 openPosition = new Vector3((targetScreenSize.x / 2), (targetScreenSize.y / 2)) * -anchorPosition;
+
+        SlideToPosition(openPosition);
     }
 
-    public void CloseMenu(float speed = 0) {
-        slidingSpeed = speed != 0 ? speed : DEFAULT_SLIDE_SPEED;
-        time = 0;
-        targetPosition = defaultOutPosition;
-        preSlideLocation = rectTransform.anchoredPosition;
+    public void CloseMenu() {
+        if (startsClosed) {
+            SlideToPosition(startingPosition);
+        } else {
+            Debug.Log("Tried to close menu without close location");
+        }
     }
 
-    public void SlideToPosition(Vector3 _targetPosition) {
-        targetPosition = _targetPosition;
+    public void CloseMenu(Vector2 direction) {
+        Vector3 closedPosition = new Vector3((targetScreenSize.x), (targetScreenSize.y)) * direction;
+        SlideToPosition(closedPosition);
     }
+
+    public void SlideToPosition(Vector3 position) {
+        targetPosition = position;
+    }
+
 }

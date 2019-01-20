@@ -27,9 +27,9 @@ public class PlayMenuController : MonoBehaviour {
         pressAudioOptions.persist = true;
         AudioManager.singleton.Play(pressAudioOptions);
 
-        GameDetails.PlayerCharacter = "Warrior";
+        GameDetails.PlayerCharacter = "Fighter";
         GameDetails.PlayerDeck = BasicDecks.starterFighter;
-        UpdateSubmenu("Warrior", "Description text for a Warrior.");
+        UpdateSubmenu("Warrior", "Description text for a Fighter.");
         OpenSubMenu();
     }
 
@@ -42,7 +42,7 @@ public class PlayMenuController : MonoBehaviour {
     }
 
     public void OpenMenu() {
-        GetComponent<SlidingMenu>().SlideToPosition(OPEN_POSITION);
+        GetComponent<SlidingMenu>().OpenMenu();
     }
 
     public void CloseMenu() {
@@ -50,11 +50,11 @@ public class PlayMenuController : MonoBehaviour {
     }
 
     public void OpenSubMenu() {
-        subMenu.GetComponent<SlidingMenu>().SlideToPosition(SUBMENU_POSITON);
+        subMenu.GetComponent<SlidingElement>().OpenMenu();
     }
 
     public void CloseSubMenu() {
-        subMenu.GetComponent<SlidingMenu>().CloseMenu();
+        subMenu.GetComponent<SlidingElement>().CloseMenu();
     }
 
     public void PlayGame() {

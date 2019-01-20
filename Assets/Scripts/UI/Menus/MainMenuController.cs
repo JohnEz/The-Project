@@ -16,7 +16,7 @@ public class MainMenuController : MonoBehaviour {
         AudioManager.singleton.Play(pressAudioOptions);
 
         transform.parent.Find("PlayMenu").GetComponent<PlayMenuController>().OpenMenu();
-        CloseMenu();
+        CloseMenu(Vector2.left);
     }
 
     public void Options() {
@@ -26,15 +26,15 @@ public class MainMenuController : MonoBehaviour {
         AudioManager.singleton.Play(pressAudioOptions);
 
         transform.parent.Find("OptionsMenu").GetComponent<OptionsMenuController>().OpenMenu();
-        CloseMenu();
+        CloseMenu(Vector2.down);
     }
 
     public void OpenMenu() {
-        GetComponent<SlidingMenu>().CloseMenu();
+        GetComponent<SlidingMenu>().OpenMenu();
     }
 
-    public void CloseMenu() {
-        GetComponent<SlidingMenu>().SlideToPosition(EXIT_POSITION);
+    public void CloseMenu(Vector2 direction) {
+        GetComponent<SlidingMenu>().CloseMenu(direction);
     }
 
     public void Exit() {

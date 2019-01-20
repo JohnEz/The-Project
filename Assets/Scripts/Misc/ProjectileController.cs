@@ -2,7 +2,7 @@
 
 public class ProjectileController : MonoBehaviour {
 
-    public const float HIT_DISTANCE = 100F;
+    public const float HIT_DISTANCE = 50;
 
     [SerializeField]
     public GameObject onHitEffect;
@@ -27,7 +27,7 @@ public class ProjectileController : MonoBehaviour {
 
         float distanceToNode = Vector3.Distance(myTarget.transform.position, transform.position);
 
-        if (distanceToNode - (speed * Time.deltaTime) > HIT_DISTANCE) {
+        if (distanceToNode >= speed / 20) {
             transform.position = transform.position + (direction * speed * Time.deltaTime);
         } else {
             ReachedTarget();
@@ -39,10 +39,14 @@ public class ProjectileController : MonoBehaviour {
         myTarget = target;
         speed = movementSpeed;
 
-        Vector3 startPosition = caster.transform.position;
+        Vector3 startPosition = caster.transform.Find("Token").position;
         transform.position = startPosition;
 
-        direction = target.transform.position - transform.position;
+        Vector3 targetPosition = target.myUnit != null ? 
+            target.myUnit.transform.Find("Token").position : 
+            target.transform.position;
+
+        direction = targetPosition - transform.position;
         direction.Normalize();
 
         //Sprite mySprite = GetComponent<SpriteRenderer>().sprite;

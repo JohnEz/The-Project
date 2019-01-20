@@ -56,10 +56,10 @@ public static class BasicDecks {
 
     public static List<string> starterBard = new List<string> {
         //Weapon
-        "Slash",
-        "Slash",
-        "Slash",
-        "Slash",
+        "Shoot",
+        "Shoot",
+        "Shoot",
+        "Shoot",
         "Inspire",
         "Inspire",
         "Motif of Power",
