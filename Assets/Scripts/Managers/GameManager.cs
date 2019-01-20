@@ -51,11 +51,7 @@ public class GameManager : MonoBehaviour {
 
         Player enemyAI = PlayerManager.singleton.AddAiPlayer(2);
 
-        TileMap.instance.spawnLocations.ForEach(sl => {
-            if (sl.name != "PlayerSpawn") {
-                UnitManager.singleton.SpawnUnit(sl.name, enemyAI, sl.x, sl.y);
-            }
-        });
+        SpawnStartMapUnits(enemyAI);
 
         TileMap.instance.ActivateRoom(humanPlayer.myCharacter.myNode.room);
     }
@@ -81,6 +77,14 @@ public class GameManager : MonoBehaviour {
             objective3.type = ObjectiveType.ANNIHILATION;
             ObjectiveManager.singleton.AddObjective(PlayerManager.singleton.GetPlayer(2), objective3);
         }
+    }
+
+    private void LoadMapUnits(Player enemyAI) {
+        TileMap.instance.spawnLocations.ForEach(sl => {
+            if (sl.name != "PlayerSpawn") {
+                UnitManager.singleton.SpawnUnit(sl.name, enemyAI, sl.x, sl.y);
+            }
+        });
     }
 
     private void SpawnStartMapUnits(Player enemyAI) {
