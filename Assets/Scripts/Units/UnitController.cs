@@ -294,7 +294,38 @@ public class UnitController : MonoBehaviour {
         // TODO this doesnt work for multi-targets
         effectsToCreate = action.eventActions.FindAll(e => e.GetType() == typeof(VisualEffectEventAction)).Count;
         projectilesToCreate = action.eventActions.FindAll(e => e.GetType() == typeof(ProjectileEventAction)).Count;
+        PlayRandomAttackSound();
+
         StartCoroutine(AttackRoutine());
+    }
+
+    public void PlayRandomAttackSound() {
+        if (myStats.attackSFX.Length > 0) {
+            AudioClip selectedAudio = myStats.attackSFX[UnityEngine.Random.Range(0, myStats.attackSFX.Length)];
+            PlayVoiceClip(selectedAudio);
+        }
+    }
+
+    public void PlayRandomDeathSound() {
+        if (myStats.deathSFX.Length > 0) {
+            AudioClip selectedAudio = myStats.deathSFX[UnityEngine.Random.Range(0, myStats.deathSFX.Length)];
+            PlayVoiceClip(selectedAudio);
+        }
+    }
+
+    public void PlayRandomWoundSound() {
+        if (myStats.woundSFX.Length > 0) {
+            AudioClip selectedAudio = myStats.woundSFX[UnityEngine.Random.Range(0, myStats.woundSFX.Length)];
+            PlayVoiceClip(selectedAudio);
+        }
+    }
+
+    private void PlayVoiceClip(AudioClip voiceClip) {
+        PlayOptions attackSoundOptions = new PlayOptions(voiceClip, transform);
+        attackSoundOptions.audioMixer = AudioMixers.SFX;
+        attackSoundOptions.pitch = UnityEngine.Random.Range(0.8f, 1.2f);
+
+        AudioManager.singleton.Play(attackSoundOptions);
     }
 
     public bool getAttackAnimationPlaying() {
@@ -377,17 +408,13 @@ public class UnitController : MonoBehaviour {
         if (myStats.Health > 0) {
             //anim.PlayHitAnimation();
             // TODO move these onto the unit stats
-            if (myStats.onHitSfx) {
-                AudioManager.singleton.Play(myStats.onHitSfx, transform, AudioMixers.SFX);
-            }
+            PlayRandomWoundSound();
         } else {
             // TODO add death
-            DestroySelf();
-            if (myStats.onDeathSfx) {
-                AudioManager.singleton.Play(myStats.onDeathSfx, transform, AudioMixers.SFX);
-            }
+            PlayRandomDeathSound();
             myManager.UnitDied(this);
             isStillAlive = false;
+            DestroySelf();
         }
 
         return isStillAlive;

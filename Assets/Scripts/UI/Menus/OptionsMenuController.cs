@@ -94,7 +94,10 @@ public class OptionsMenuController : MonoBehaviour {
     }
 
     public void SaveAndExit() {
-        AudioManager.singleton.Play(buttonClickAudio, transform, AudioMixers.UI, true);
+        PlayOptions pressAudioOptions = new PlayOptions(buttonClickAudio, transform);
+        pressAudioOptions.audioMixer = AudioMixers.UI;
+        pressAudioOptions.persist = true;
+        AudioManager.singleton.Play(pressAudioOptions);
 
         transform.parent.Find("MainMenu").GetComponent<MainMenuController>().OpenMenu();
         CloseMenu();

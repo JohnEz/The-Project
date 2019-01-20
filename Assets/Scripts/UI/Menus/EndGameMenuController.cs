@@ -4,13 +4,19 @@ public class EndGameMenuController : MonoBehaviour {
     public AudioClip buttonClickAudio;
 
     public void Quit() {
-        AudioManager.singleton.Play(buttonClickAudio, transform, AudioMixers.UI, true);
+        PlayOptions pressAudioOptions = new PlayOptions(buttonClickAudio, transform);
+        pressAudioOptions.audioMixer = AudioMixers.UI;
+        pressAudioOptions.persist = true;
+        AudioManager.singleton.Play(pressAudioOptions);
 
         SceneChanger.Instance.FadeToScene(Scenes.MAIN_MENU);
     }
 
     public void Retry() {
-        AudioManager.singleton.Play(buttonClickAudio, transform, AudioMixers.UI, true);
+        PlayOptions pressAudioOptions = new PlayOptions(buttonClickAudio, transform);
+        pressAudioOptions.audioMixer = AudioMixers.UI;
+        pressAudioOptions.persist = true;
+        AudioManager.singleton.Play(pressAudioOptions);
 
         SceneChanger.Instance.FadeToScene(Scenes.ARENA);
     }

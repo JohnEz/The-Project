@@ -10,14 +10,20 @@ public class MainMenuController : MonoBehaviour {
     }
 
     public void Play() {
-        AudioManager.singleton.Play(buttonClickAudio, transform, AudioMixers.UI, true);
+        PlayOptions pressAudioOptions = new PlayOptions(buttonClickAudio, transform);
+        pressAudioOptions.audioMixer = AudioMixers.UI;
+        pressAudioOptions.persist = true;
+        AudioManager.singleton.Play(pressAudioOptions);
 
         transform.parent.Find("PlayMenu").GetComponent<PlayMenuController>().OpenMenu();
         CloseMenu();
     }
 
     public void Options() {
-        AudioManager.singleton.Play(buttonClickAudio, transform, AudioMixers.UI, true);
+        PlayOptions pressAudioOptions = new PlayOptions(buttonClickAudio, transform);
+        pressAudioOptions.audioMixer = AudioMixers.UI;
+        pressAudioOptions.persist = true;
+        AudioManager.singleton.Play(pressAudioOptions);
 
         transform.parent.Find("OptionsMenu").GetComponent<OptionsMenuController>().OpenMenu();
         CloseMenu();

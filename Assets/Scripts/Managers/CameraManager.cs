@@ -75,7 +75,9 @@ public class CameraManager : MonoBehaviour {
 
         GUIController.singleton.CreateFlyinText(target.myStats.className);
 
-        AudioManager.singleton.Play(target.myStats.encounterSFX, targetTransform, AudioMixers.SFX);
+        PlayOptions encounterSFX = new PlayOptions(target.myStats.encounterSFX, targetTransform);
+        encounterSFX.audioMixer = AudioMixers.SFX;
+        AudioManager.singleton.Play(encounterSFX);
 
         yield return new WaitForSeconds(CUTSCENE_TIME);
 

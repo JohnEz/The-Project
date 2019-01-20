@@ -2,6 +2,8 @@
 
 public class ProjectileController : MonoBehaviour {
 
+    public const float HIT_DISTANCE = 100F;
+
     [SerializeField]
     public GameObject onHitEffect;
 
@@ -25,7 +27,7 @@ public class ProjectileController : MonoBehaviour {
 
         float distanceToNode = Vector3.Distance(myTarget.transform.position, transform.position);
 
-        if (distanceToNode - (speed * Time.deltaTime) > halfWidth) {
+        if (distanceToNode - (speed * Time.deltaTime) > HIT_DISTANCE) {
             transform.position = transform.position + (direction * speed * Time.deltaTime);
         } else {
             ReachedTarget();
@@ -43,15 +45,15 @@ public class ProjectileController : MonoBehaviour {
         direction = target.transform.position - transform.position;
         direction.Normalize();
 
-        Sprite mySprite = GetComponent<SpriteRenderer>().sprite;
-        halfWidth = mySprite.rect.width / (mySprite.pixelsPerUnit * 2);
+        //Sprite mySprite = GetComponent<SpriteRenderer>().sprite;
+        //halfWidth = mySprite.rect.width / (mySprite.pixelsPerUnit * 2);
 
         transform.position = startPosition + (direction * halfWidth);
 
         //TODO FLIP THE PROJECTILE AND REVERSE / REDUCE ROTATION
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-        transform.rotation = rotation;
+        //float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        //Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        //transform.rotation = rotation;
     }
 
     public void ReachedTarget() {

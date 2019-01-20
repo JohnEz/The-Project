@@ -26,14 +26,20 @@ public class PauseMenuController : MonoBehaviour {
     }
 
     public void LoadMainMenu() {
-        AudioManager.singleton.Play(buttonClickAudio, transform, AudioMixers.UI, true);
+        PlayOptions pressAudioOptions = new PlayOptions(buttonClickAudio, transform);
+        pressAudioOptions.audioMixer = AudioMixers.UI;
+        pressAudioOptions.persist = true;
+        AudioManager.singleton.Play(pressAudioOptions);
 
         Resume();
         SceneChanger.Instance.FadeToScene(Scenes.MAIN_MENU);
     }
 
     public void ExitGame() {
-        AudioManager.singleton.Play(buttonClickAudio, transform, AudioMixers.UI, true);
+        PlayOptions pressAudioOptions = new PlayOptions(buttonClickAudio, transform);
+        pressAudioOptions.audioMixer = AudioMixers.UI;
+        pressAudioOptions.persist = true;
+        AudioManager.singleton.Play(pressAudioOptions);
 
         Application.Quit();
     }

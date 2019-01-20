@@ -16,6 +16,21 @@ public enum Fade {
     NONE
 }
 
+public class PlayOptions {
+    public AudioMixers audioMixer = AudioMixers.MASTER;
+    public AudioClip audioClip = null;
+    public Transform transform = null;
+    public bool loop = false;
+    public bool persist = false;
+    public float volume = 1f;
+    public float pitch = 1f;
+
+    public PlayOptions(AudioClip _audioClip, Transform _transform) {
+        audioClip = _audioClip;
+        transform = _transform;
+    }
+}
+
 [System.Serializable]
 public class Music {
     public string name;
@@ -153,43 +168,50 @@ public class AudioManager : MonoBehaviour {
         m.Play(fadeIn);
     }
 
-    public GameObject PlayLoop(AudioClip sound, Transform transform, AudioMixers mixer = AudioMixers.MASTER, bool persist = true) {
-        return Play(sound, transform, mixer, persist, true);
-    }
-
-    public GameObject Play(AudioClip clip, Transform transform, AudioMixers mixer = AudioMixers.MASTER, bool persist = false, bool loop = false) {
-        //Create an empty game object
-        GameObject go = CreatePlaySource(clip, transform.position, mixer, loop);
-        if (go == null) {
-            return go;
+    public GameObject Play(PlayOptions options) {
+        if (options == null) {
+            Debug.LogError("Tried to play audio with no options");
+            return null;
         }
 
-        if (persist) {
-            DontDestroyOnLoad(go);
+        if (options.audioClip == null) {
+            Debug.LogError("Tried to play audio with no audio clip");
+            return null;
         }
-        Destroy(go, clip.length);
 
-        return go;
-    }
-
-    private GameObject CreatePlaySource(AudioClip clip, Vector3 point, AudioMixers mixer, bool loop) {
-        if (clip == null) {
-            Debug.LogError("Tried to play a null audio clip!");
+        if (options.transform == null) {
+            Debug.LogError("Tried to play audio with no transform");
             return null;
         }
 
         //Create an empty game object
-        GameObject go = new GameObject("Audio: " + clip.name);
-        go.transform.position = point;
+        GameObject go = CreatePlaySource(options);
+        if (go == null) {
+            return go;
+        }
+
+        if (options.persist) {
+            DontDestroyOnLoad(go);
+        }
+        Destroy(go, options.audioClip.length);
+
+        return go;
+    }
+
+    private GameObject CreatePlaySource(PlayOptions options) {
+        //Create an empty game object
+        GameObject go = new GameObject("Audio: " + options.audioClip.name);
+        go.transform.position = options.transform.position;
 
         //Create the source
         AudioSource source = go.AddComponent<AudioSource>();
-        source.clip = clip;
-        source.volume = 1f;
-        source.loop = loop;
+        source.clip = options.audioClip;
+        source.volume = options.pitch;
+        source.loop = options.loop;
+        source.pitch = options.pitch;
 
         // Output sound through the sound group or music group
-        switch (mixer) {
+        switch (options.audioMixer) {
             case AudioMixers.MUSIC:
                 source.outputAudioMixerGroup = musicMixer;
                 break;

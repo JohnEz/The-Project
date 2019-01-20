@@ -10,7 +10,10 @@ public class PlayMenuController : MonoBehaviour {
     public AudioClip buttonClickAudio;
 
     public void PlayGameFireMage() {
-        AudioManager.singleton.Play(buttonClickAudio, transform, AudioMixers.UI, true);
+        PlayOptions pressAudioOptions = new PlayOptions(buttonClickAudio, transform);
+        pressAudioOptions.audioMixer = AudioMixers.UI;
+        pressAudioOptions.persist = true;
+        AudioManager.singleton.Play(pressAudioOptions);
 
         GameDetails.PlayerCharacter = "Mage";
         GameDetails.PlayerDeck = BasicDecks.starterElementalist;
@@ -19,7 +22,10 @@ public class PlayMenuController : MonoBehaviour {
     }
 
     public void PlayGameElementalist() {
-        AudioManager.singleton.Play(buttonClickAudio, transform, AudioMixers.UI, true);
+        PlayOptions pressAudioOptions = new PlayOptions(buttonClickAudio, transform);
+        pressAudioOptions.audioMixer = AudioMixers.UI;
+        pressAudioOptions.persist = true;
+        AudioManager.singleton.Play(pressAudioOptions);
 
         GameDetails.PlayerCharacter = "Warrior";
         GameDetails.PlayerDeck = BasicDecks.starterFighter;
@@ -52,7 +58,10 @@ public class PlayMenuController : MonoBehaviour {
     }
 
     public void PlayGame() {
-        AudioManager.singleton.Play(buttonClickAudio, transform, AudioMixers.UI, true);
+        PlayOptions pressAudioOptions = new PlayOptions(buttonClickAudio, transform);
+        pressAudioOptions.audioMixer = AudioMixers.UI;
+        pressAudioOptions.persist = true;
+        AudioManager.singleton.Play(pressAudioOptions);
 
         LoadArena();
     }
@@ -62,7 +71,10 @@ public class PlayMenuController : MonoBehaviour {
     }
 
     public void Back() {
-        AudioManager.singleton.Play(buttonClickAudio, transform, AudioMixers.UI, true);
+        PlayOptions pressAudioOptions = new PlayOptions(buttonClickAudio, transform);
+        pressAudioOptions.audioMixer = AudioMixers.UI;
+        pressAudioOptions.persist = true;
+        AudioManager.singleton.Play(pressAudioOptions);
 
         transform.parent.Find("MainMenu").GetComponent<MainMenuController>().OpenMenu();
         CloseMenu();

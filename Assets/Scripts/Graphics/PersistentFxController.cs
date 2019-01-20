@@ -47,6 +47,8 @@ public class PersistentFxController : MonoBehaviour {
 
     private IEnumerator PlayAudioClip(AudioClip audio, float delay) {
         yield return new WaitForSeconds(delay);
-        AudioManager.singleton.Play(audio, transform, AudioMixers.SFX);
+        PlayOptions clipOptions = new PlayOptions(audio, transform);
+        clipOptions.audioMixer = AudioMixers.SFX;
+        AudioManager.singleton.Play(clipOptions);
     }
 }

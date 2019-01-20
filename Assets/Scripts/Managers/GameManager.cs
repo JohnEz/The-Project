@@ -39,14 +39,15 @@ public class GameManager : MonoBehaviour {
             UnitManager.singleton.SpawnUnit("Scribe", allyAI, 4, 12);
         }
 
-        humanPlayer.myCharacter = UnitManager.singleton.SpawnUnit(GameDetails.PlayerCharacter, PlayerManager.singleton.GetPlayer(0), 3, 12);
+        //humanPlayer.myCharacter = UnitManager.singleton.SpawnUnit(GameDetails.PlayerCharacter, PlayerManager.singleton.GetPlayer(0), 3, 12);
+        humanPlayer.myCharacter = UnitManager.singleton.SpawnUnit(GameDetails.PlayerCharacter, PlayerManager.singleton.GetPlayer(0), 5, 6);
         CameraManager.singleton.JumpToLocation(humanPlayer.myCharacter.myNode);
 
         Player enemyAI = PlayerManager.singleton.AddAiPlayer(2);
 
-        UnitManager.singleton.SpawnUnit("Goblin Warrior", enemyAI, 3, 2);
-        UnitManager.singleton.SpawnUnit("Goblin Warrior", enemyAI, 5, 1);
-        UnitManager.singleton.SpawnUnit("Goblin Warrior", enemyAI, 7, 1);
+        UnitManager.singleton.SpawnUnit("Goblin Warrior", enemyAI, 7, 2);
+        UnitManager.singleton.SpawnUnit("Goblin Archer", enemyAI, 5, 1);
+        UnitManager.singleton.SpawnUnit("Goblin Warrior", enemyAI, 3, 1);
 
         TileMap.instance.ActivateRoom(humanPlayer.myCharacter.myNode.room);
     }

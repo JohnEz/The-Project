@@ -29,7 +29,11 @@ public class UnitObject : ScriptableObject {
 
     public UnitToken[] unitTokens;
 
+    // Audio
     public AudioClip encounterSFX;
+    public AudioClip[] attackSFX;
+    public AudioClip[] woundSFX;
+    public AudioClip[] deathSFX;
 
     //scaling consts
     private const int ACTION_POINTS_TO_STAMINA = 2;
@@ -45,9 +49,6 @@ public class UnitObject : ScriptableObject {
     public int baseArmour = 0;
     public int baseActionPoints = 2;
     public int actionPoints = 0;
-
-    public AudioClip onHitSfx;
-    public AudioClip onDeathSfx;
 
     //Stats for AI
     public Walkable baseWalkingType = Walkable.Walkable;

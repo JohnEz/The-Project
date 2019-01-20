@@ -14,8 +14,9 @@ public class AudioEventAction : EventAction {
                     targetTransform = targetedTile.transform;
                     break;
             };
-
-            AudioManager.singleton.Play(audioClip, targetTransform, AudioMixers.SFX);
+            PlayOptions soundOptions = new PlayOptions(audioClip, targetTransform);
+            soundOptions.audioMixer = AudioMixers.SFX;
+            AudioManager.singleton.Play(soundOptions);
         };
     }
 }
