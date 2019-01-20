@@ -10,7 +10,6 @@ public class ProjectileController : MonoBehaviour {
     private Node myTarget;
     private Vector3 direction;
     private float speed;
-    private float halfWidth;
 
     private void Start() {
     }
@@ -51,7 +50,7 @@ public class ProjectileController : MonoBehaviour {
         //Sprite mySprite = GetComponent<SpriteRenderer>().sprite;
         //halfWidth = mySprite.rect.width / (mySprite.pixelsPerUnit * 2);
 
-        transform.position = startPosition + (direction * halfWidth);
+        transform.position = startPosition;
 
         //TODO FLIP THE PROJECTILE AND REVERSE / REDUCE ROTATION
         //float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;

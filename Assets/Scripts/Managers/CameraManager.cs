@@ -20,8 +20,6 @@ public class CameraManager : MonoBehaviour {
     [HideInInspector]
     public float blendTime;
 
-    private Vector3 cameraOffset;
-
     private Stack<UnitController> encounterTargets;
 
     public static float CUTSCENE_TIME = 1.66f;
@@ -109,7 +107,7 @@ public class CameraManager : MonoBehaviour {
     public void JumpToLocation(Node node) {
         TurnOffCameras();
         controlledCamera.TurnOn();
-        controlledCamera.JumpToLocation(TileMap.instance.getPositionOfNode(node) + cameraOffset);
+        controlledCamera.JumpToLocation(TileMap.instance.getPositionOfNode(node));
     }
 
     public void FollowTarget(Transform target) {

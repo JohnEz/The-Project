@@ -15,8 +15,6 @@ public enum TurnPhase {
 public class TurnManager : MonoBehaviour {
     public static TurnManager singleton;
 
-    private TileMap map;
-
     private TurnPhase currentPhase = TurnPhase.GAME_STARTING;
 
     private int playersTurn = -1;
@@ -28,8 +26,7 @@ public class TurnManager : MonoBehaviour {
     }
 
     // Use this for initialization
-    public void Initialise(TileMap _map) {
-        map = _map;
+    public void Initialise() {
     }
 
     // Update is called once per frame

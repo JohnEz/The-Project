@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
 
 public class MainMenuController : MonoBehaviour {
-    private Vector3 EXIT_POSITION = new Vector3(-1280, 0, 0);
-
     public AudioClip buttonClickAudio;
 
     public void Start() {

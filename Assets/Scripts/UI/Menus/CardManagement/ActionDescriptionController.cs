@@ -24,8 +24,6 @@ public class ActionDescriptionController : MonoBehaviour {
             AttackAction attackAction = (AttackAction)action;
             if (action.description != null && !action.description.Equals("")) {
                 SetAttackText(attackAction);
-            } else {
-                SetAttackActionLegacy(attackAction);
             }
         } else if (action.GetType() == typeof(MoveAction)) {
             MoveAction moveAction = (MoveAction)action;
@@ -89,81 +87,6 @@ public class ActionDescriptionController : MonoBehaviour {
         }
 
         actionText.text = string.Format(attack.description, damage, healing, armour, stackString, multiplyerString);
-
-        if (displaySubText) {
-            subText.SetActive(true);
-            // Remove last \n at the end
-            subText.GetComponentInChildren<TextMeshProUGUI>().text = subTextString.Substring(0, subTextString.Length - 1);
-        }
-    }
-
-    // TODO these should be moved to the actions themselves if its possible
-    private void SetAttackActionLegacy(AttackAction attack) {
-        int damage = 0;
-        int armour = 0;
-
-        if (attack.attackEffects.Exists(effect => effect.GetType() == typeof(BurnEffect))) {
-            buffImage.gameObject.SetActive(true);
-            buffImage.sprite = burnImage;
-        }
-
-        attack.attackEffects.ForEach(effect => {
-            if (effect.GetType() == typeof(DamageEffect)) {
-                DamageEffect damageEffect = (DamageEffect)effect;
-                damage += damageEffect.damage;
-            }
-        });
-
-        string stackString = null;
-
-        attack.attackEffects.ForEach(effect => {
-            if (effect.GetType() == typeof(DamagePerStackEffect)) {
-                DamagePerStackEffect damageEffect = (DamagePerStackEffect)effect;
-                stackString = damageEffect.ToDescription();
-            }
-        });
-
-        string multiplyerString = null;
-
-        attack.attackEffects.ForEach(effect => {
-            if (effect.GetType() == typeof(DamageWithMultiplierEffect)) {
-                DamageWithMultiplierEffect damageEffect = (DamageWithMultiplierEffect)effect;
-                multiplyerString = damageEffect.ToDescription();
-            }
-        });
-
-        attack.attackEffects.ForEach(effect => {
-            if (effect.GetType() == typeof(IncreaseArmour)) {
-                IncreaseArmour armourEffect = (IncreaseArmour)effect;
-                armour += armourEffect.armourIncrease;
-            }
-        });
-
-        if (damage > 0) {
-            actionText.text = "Attack " + damage;
-            //actionImage.sprite = attackImage;
-        } else if (armour > 0) {
-            actionText.text = "Armour " + armour;
-            //actionImage.sprite = shieldImage;
-        }
-
-        bool displaySubText = false;
-        string subTextString = "";
-
-        if (attack.range > 1) {
-            subTextString += "Range " + attack.range + "\n";
-            displaySubText = true;
-        }
-
-        if (attack.areaOfEffect == AreaOfEffect.CIRCLE || attack.areaOfEffect == AreaOfEffect.AURA) {
-            subTextString += "Area " + attack.aoeRange + "\n";
-            displaySubText = true;
-        }
-
-        if (attack.attackEffects.Exists(effect => effect.GetType() == typeof(SnareEffect))) {
-            subTextString += "Snare\n";
-            displaySubText = true;
-        }
 
         if (displaySubText) {
             subText.SetActive(true);

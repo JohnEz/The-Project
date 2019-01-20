@@ -24,7 +24,7 @@ public class SlidingMenu : MonoBehaviour {
 
     // Update is called once per frame
     private void Update() {
-        if (targetPosition == null) {
+        if (targetPosition == Vector3.zero || transform.localPosition == targetPosition) {
             return;
         }
 
