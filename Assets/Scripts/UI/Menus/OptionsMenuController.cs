@@ -19,9 +19,6 @@ public class OptionsMenuController : MonoBehaviour {
 
     private Resolution[] resolutions;
 
-    public const string MASTER_VOLUME = "masterVolume";
-    public const string MUSIC_VOLUME = "musicVolume";
-    public const string SFX_VOLUME = "sfxVolume";
     public const string FULL_SCREEN = "fullScreen";
 
     private void Start() {
@@ -64,30 +61,30 @@ public class OptionsMenuController : MonoBehaviour {
         fullscreenToggle.isOn = PlayerPrefs.GetInt(FULL_SCREEN) == 1;
         Screen.fullScreen = PlayerPrefs.GetInt(FULL_SCREEN) == 1;
 
-        // TODO move this to the audio manager
-        float loadedMasterVolume = PlayerPrefs.GetFloat(MASTER_VOLUME);
-        masterMixer.SetFloat(MASTER_VOLUME, loadedMasterVolume);
+        RefreshMusicSliders();
+    }
+
+    public void RefreshMusicSliders() {
+        float loadedMasterVolume = PlayerPrefs.GetFloat(AudioManager.MASTER_VOLUME);
         masterVolumeSlider.value = loadedMasterVolume;
 
-        float loadedMusicVolume = PlayerPrefs.GetFloat(MUSIC_VOLUME);
-        masterMixer.SetFloat(MUSIC_VOLUME, loadedMusicVolume);
+        float loadedMusicVolume = PlayerPrefs.GetFloat(AudioManager.MUSIC_VOLUME);
         musicVolumeSlider.value = loadedMusicVolume;
 
-        float loadedSFXVolume = PlayerPrefs.GetFloat(SFX_VOLUME);
-        masterMixer.SetFloat(SFX_VOLUME, loadedSFXVolume);
+        float loadedSFXVolume = PlayerPrefs.GetFloat(AudioManager.SFX_VOLUME);
         sfxVolumeSlider.value = loadedSFXVolume;
     }
 
     public void SetMasterVolume(float volume) {
-        masterMixer.SetFloat(MASTER_VOLUME, volume);
+        masterMixer.SetFloat(AudioManager.MASTER_VOLUME, volume);
     }
 
     public void SetMusicVolume(float volume) {
-        masterMixer.SetFloat(MUSIC_VOLUME, volume);
+        masterMixer.SetFloat(AudioManager.MUSIC_VOLUME, volume);
     }
 
     public void SetSfxVolume(float volume) {
-        masterMixer.SetFloat(SFX_VOLUME, volume);
+        masterMixer.SetFloat(AudioManager.SFX_VOLUME, volume);
     }
 
     public void SetFullScreen(bool isFullscreen) {
@@ -116,16 +113,16 @@ public class OptionsMenuController : MonoBehaviour {
 
     public void SaveOptions() {
         float masterVolume = 0;
-        masterMixer.GetFloat(MASTER_VOLUME, out masterVolume);
-        PlayerPrefs.SetFloat(MASTER_VOLUME, masterVolume);
+        masterMixer.GetFloat(AudioManager.MASTER_VOLUME, out masterVolume);
+        PlayerPrefs.SetFloat(AudioManager.MASTER_VOLUME, masterVolume);
 
         float musicVolume = 0;
-        masterMixer.GetFloat(MUSIC_VOLUME, out musicVolume);
-        PlayerPrefs.SetFloat(MUSIC_VOLUME, musicVolume);
+        masterMixer.GetFloat(AudioManager.MUSIC_VOLUME, out musicVolume);
+        PlayerPrefs.SetFloat(AudioManager.MUSIC_VOLUME, musicVolume);
 
         float sfxVolume = 0;
-        masterMixer.GetFloat(SFX_VOLUME, out sfxVolume);
-        PlayerPrefs.SetFloat(SFX_VOLUME, sfxVolume);
+        masterMixer.GetFloat(AudioManager.SFX_VOLUME, out sfxVolume);
+        PlayerPrefs.SetFloat(AudioManager.SFX_VOLUME, sfxVolume);
 
         PlayerPrefs.SetInt(FULL_SCREEN, fullscreenToggle.isOn ? 1 : 0);
     }
