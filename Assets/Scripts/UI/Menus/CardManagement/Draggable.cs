@@ -55,7 +55,7 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
     }
 
     public bool CanHoverCard() {
-        return (CardManager.singleton.currentlyDraggedCard == null || CardManager.singleton.currentlyDraggedCard == this) && TurnManager.singleton.CurrentPhase == TurnPhase.WAITING_FOR_INPUT;
+        return CardManager.singleton.currentlyDraggedCard == null || CardManager.singleton.currentlyDraggedCard == this;
     }
 
     public void OnPointerEnter(PointerEventData eventData) {

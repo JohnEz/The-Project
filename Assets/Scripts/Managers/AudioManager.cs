@@ -110,10 +110,15 @@ public class Music {
 public class AudioManager : MonoBehaviour {
     public static AudioManager singleton;
 
-    public AudioMixerGroup masterMixer;
-    public AudioMixerGroup uiMixer;
-    public AudioMixerGroup musicMixer;
-    public AudioMixerGroup sfxMixer;
+    public AudioMixer masterMixer;
+    public AudioMixerGroup masterMixerGroup;
+    public AudioMixerGroup uiMixerGroup;
+    public AudioMixerGroup musicMixerGroup;
+    public AudioMixerGroup sfxMixerGroup;
+
+    public const string MASTER_VOLUME = "masterVolume";
+    public const string MUSIC_VOLUME = "musicVolume";
+    public const string SFX_VOLUME = "sfxVolume";
 
     public Music[] music;
 
@@ -122,6 +127,7 @@ public class AudioManager : MonoBehaviour {
     private void Awake() {
         if (singleton != null) {
             Destroy(gameObject);
+            return;
         } else {
             singleton = this;
             DontDestroyOnLoad(gameObject);
@@ -131,8 +137,10 @@ public class AudioManager : MonoBehaviour {
             m.source = gameObject.AddComponent<AudioSource>();
             m.source.clip = m.intro;
 
-            m.source.outputAudioMixerGroup = musicMixer;
+            m.source.outputAudioMixerGroup = musicMixerGroup;
         }
+
+        LoadAudioSettings();
     }
 
     public void Update() {
@@ -211,19 +219,19 @@ public class AudioManager : MonoBehaviour {
         // Output sound through the sound group or music group
         switch (options.audioMixer) {
             case AudioMixers.MUSIC:
-                source.outputAudioMixerGroup = musicMixer;
+                source.outputAudioMixerGroup = musicMixerGroup;
                 break;
 
             case AudioMixers.UI:
-                source.outputAudioMixerGroup = uiMixer;
+                source.outputAudioMixerGroup = uiMixerGroup;
                 break;
 
             case AudioMixers.SFX:
-                source.outputAudioMixerGroup = sfxMixer;
+                source.outputAudioMixerGroup = sfxMixerGroup;
                 break;
 
             default:
-                source.outputAudioMixerGroup = masterMixer;
+                source.outputAudioMixerGroup = masterMixerGroup;
                 break;
         }
 
@@ -237,5 +245,16 @@ public class AudioManager : MonoBehaviour {
 
     public void RaiseMusic() {
         currentMusic.FadeTo(1);
+    }
+
+    private void LoadAudioSettings() {
+        float loadedMasterVolume = PlayerPrefs.GetFloat(MASTER_VOLUME);
+        masterMixer.SetFloat(MASTER_VOLUME, loadedMasterVolume);
+
+        float loadedMusicVolume = PlayerPrefs.GetFloat(MUSIC_VOLUME);
+        masterMixer.SetFloat(MUSIC_VOLUME, loadedMusicVolume);
+
+        float loadedSFXVolume = PlayerPrefs.GetFloat(SFX_VOLUME);
+        masterMixer.SetFloat(SFX_VOLUME, loadedSFXVolume);
     }
 }

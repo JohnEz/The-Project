@@ -164,7 +164,7 @@ public class UnitController : MonoBehaviour {
         float difY = myNode.y - target.y;
 
         //This needs to be changed if we get 4 directions to x >= y
-        if (difX != 0) {
+        if (difX >= difY) {
             return new Vector2(Mathf.Sign(difX), 0);
         } else {
             return new Vector2(0, Mathf.Sign(difY));

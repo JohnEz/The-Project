@@ -321,7 +321,11 @@ public class Pathfinder : MonoBehaviour {
             reachableTiles.Insert(0, startNode);
         }
 
-        reachableTiles = reachableTiles.FindAll(node => HasLineOfSight(startNode, node));
+        reachableTiles = reachableTiles.FindAll(node => 
+            HasLineOfSight(startNode, node) && 
+            // TODO this wont work when we have slowing terrain
+            node.cost >= action.minRange
+        );
 
         return reachableTiles;
     }
