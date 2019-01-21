@@ -3,7 +3,7 @@
 public static class GameDetails {
     private static string mapName = "";
     private static string playerCharacter = "Fighter";
-    private static List<string> playerDeck = BasicDecks.starterFighter;
+    private static List<string> playerDeck = BasicDecks.starterBard;
 
     public static string PlayerCharacter {
         get {

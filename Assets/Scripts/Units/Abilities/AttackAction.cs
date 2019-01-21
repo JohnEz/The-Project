@@ -4,7 +4,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Attack Action", menuName = "Card/New Attack Action")]
 public class AttackAction : CardAction {
     public int range = 1;
-    public int minRange = 1;
+    public int minRange = 0;
 
     public AreaOfEffect areaOfEffect = AreaOfEffect.SINGLE;
     public int aoeRange = 1;
