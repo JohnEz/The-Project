@@ -1,0 +1,40 @@
+BROKE CARDS FIX THEM ALREADY
+
+Description text should update with buffs
+loadlevels from code
+facing direction on spawn
+Add descriptions for classes
+add audio to basic cards
+make walls impassible
+make decks reset
+Make death trigger after attack has finished
+rotate projectiles
+
+utility ai - correctly calculate movement cost
+utility ai - values for snares etc
+utility ai - values for aoes / auras
+stop mouse over cards when game over
+Add end turn button
+Allow camera movement via mouse
+Make sure menus are off screen in all res
+sort out imported ui graphics - dont need psds and examples
+check import settings on ui images
+burnt card on draw card effect
+lose when player dies not at turn end
+Bug - If allies dont have units it shows both animations on turn start
+Bug - Shows each units stamina
+Bug - Double clicking fight  breaks game
+show units to die
+make persistent effects calculate their Y axis from the sprite
+
+Make rooms tiles
+drag card to target location
+Add RNG!!
+self effects auto cast (shield self)
+Effects for movement
+sort pregame
+	prebuilt decks
+	squad picker
+	deck builder
+convert to 3D
+	- sort projectiles
