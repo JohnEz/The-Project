@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class AITargetPicker {
     private static AITargetPicker instance = null;
@@ -59,9 +60,10 @@ public class AITargetPicker {
         Node targetNode = path.movementCost == 0 ? unit.myNode : path.path.Last();
         TileHostility hostility = AIInfoCollector.Instance.GetHostilityOfTile(unit.myPlayer.faction, targetNode);
         int damageReductionFromArmour = hostility.numberOfAttacks * unit.myStats.Armour;
-        int potentialDamageTaken = includeHostility ? hostility.numberOfAttacks - damageReductionFromArmour : 0;
-        return -path.movementCost - potentialDamageTaken;
-        //return -Mathf.CeilToInt(path.movementCost / unit.myStats.Speed);
+        int potentialDamageTaken = includeHostility ? hostility.heat - damageReductionFromArmour : 0;
+        //return -path.movementCost - potentialDamageTaken;
+        //return -Mathf.CeilToInt((float)path.movementCost / (float)unit.myStats.Speed);
+        return -Mathf.CeilToInt((float)path.movementCost / (float)unit.myStats.Speed) - potentialDamageTaken;
     }
 
     // Finds all tiles that can attack an enemy

@@ -300,6 +300,25 @@ public class Pathfinder : MonoBehaviour {
         return levelDifference <= maxDifference + 1;
     }
 
+    public List<Node> FindEffectedTiles(Node unitNode, Node targetNode, AttackAction action) {
+        switch (action.areaOfEffect) {
+            case AreaOfEffect.AURA:
+                return FindAttackableTiles(unitNode, action);
+
+            case AreaOfEffect.CIRCLE:
+                return FindAttackableTiles(targetNode, action);
+
+            case AreaOfEffect.CLEAVE:
+                return TileMap.instance.pathfinder.FindCleaveTargetTiles(targetNode, action, unitNode);
+
+            case AreaOfEffect.SINGLE:
+            default:
+                List<Node> targetTiles = new List<Node>();
+                targetTiles.Add(targetNode);
+                return targetTiles;
+        }
+    }
+
     public List<Node> FindAttackableTiles(Node node, AttackAction action) {
         switch (action.areaOfEffect) {
             case AreaOfEffect.AURA:

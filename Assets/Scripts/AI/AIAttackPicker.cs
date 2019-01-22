@@ -31,9 +31,16 @@ public class AIAttackPicker {
         Dictionary<Node, int> nodeValues = AITargetPicker.Instance.GetValueToMoveToNodes(myUnit, allAttackNodes, true);
 
         //Debug
-        allAttackNodes.ForEach(node => {
-            node.GetComponentInChildren<TileHighlighter>().DebugSetText((nodeValues.Keys.Contains(node) ? nodeValues[node] : -100).ToString());
-        });
+        // allAttackNodes.ForEach(node => {
+        //     node
+        //         .GetComponentInChildren<TileHighlighter>()
+        //         .DebugSetText(
+        //             (nodeValues.Keys.Contains(node) ? 
+        //                 nodeValues[node].ToString() :
+        //                 "")
+        //             .ToString()
+        //         );
+        // });
 
         List<AITurnPlan> turnPlans = new List<AITurnPlan>();
 
@@ -45,7 +52,16 @@ public class AIAttackPicker {
             List<Node> reachableNodes = attacksToTiles[aiAttackAction].Where(node => nodeValues.Keys.Contains(node)).ToList();
 
             if (reachableNodes.Count > 0) {
-                Node bestNodeToMoveTo = reachableNodes.Aggregate((x, y) => nodeValues[x] > nodeValues[y] ? x : y);
+
+                Dictionary<Node, int> nodeAttackValues = new Dictionary<Node, int>();
+                
+                reachableNodes.ForEach(node => {
+                    int attackValue = CalculateAttackWorth(myUnit, node, aiAttackAction.targetNode, aiAttackAction.attack);
+                    nodeAttackValues.Add(node, attackValue);
+                });
+
+                Node bestNodeToMoveTo = reachableNodes.Aggregate(
+                    (x, y) => nodeValues[x] + nodeAttackValues[x] > nodeValues[y] + nodeAttackValues[y] ? x : y);
 
                 bool canAttackTwice = bestNodeToMoveTo == myUnit.myNode;
 
@@ -58,9 +74,9 @@ public class AIAttackPicker {
         });
 
         // Debug
-        //turnPlans.ForEach(plan => {
+        // turnPlans.ForEach(plan => {
         //    plan.targetMoveNode.GetComponentInChildren<TileHighlighter>().DebugSetText(plan.valueOfPlan.ToString());
-        //});
+        // });
 
         // Couldnt find a plan
         if (turnPlans.Count < 1) {
@@ -79,8 +95,9 @@ public class AIAttackPicker {
                 List<Node> attackNodes = new List<Node>();
 
                 if (!attackAction.IsOnCooldown() && attackAction.CanHitUnit(otherUnit.myNode)) {
-                    int valueOfAttack = CalculateAttackValue(unit, otherUnit.myNode, attackAction);
-                    AIAttackAction aiAttackAction = new AIAttackAction(attackAction, otherUnit.myNode, valueOfAttack);
+                    //int valueOfAttack = CalculateAttackWorth(unit, otherUnit.myNode, attackAction);
+                    //AIAttackAction aiAttackAction = new AIAttackAction(attackAction, otherUnit.myNode, valueOfAttack);
+                    AIAttackAction aiAttackAction = new AIAttackAction(attackAction, otherUnit.myNode, 0);
                     List<Node> nodesToAttackFrom = TileMap.instance.pathfinder.FindAttackableTiles(otherUnit.myNode, attackAction);
 
                     // This isnt needed anymore but better safe than sorry i guess
@@ -100,22 +117,6 @@ public class AIAttackPicker {
         });
 
         return attacksToTiles;
-    }
-
-    //picks the best target for the given ability, presuming we are in a tile that can attack that target
-    public UnitController GetMyTarget(UnitController unit, AttackAction attack, List<UnitController> targets) {
-        Dictionary<UnitController, int> attackTargets = new Dictionary<UnitController, int>();
-
-        targets.ForEach(target => {
-            if (attack.CanHitUnit(target.myNode)) {
-                // TODO calculate AOE effectivenes
-                attackTargets.Add(target, CalculateAttackValue(unit, target.myNode, attack));
-            }
-        });
-
-        UnitController targetUnit = attackTargets.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
-
-        return targetUnit;
     }
 
     private int CalculateAttackValue(UnitController attacker, Node target, AttackAction attack) {
@@ -146,4 +147,24 @@ public class AIAttackPicker {
 
         return value;
     }
+
+    private int CalculateAttackWorth(UnitController attacker, Node start, Node target, AttackAction attack) {
+        int valueOfAttack = 0;
+        //get all the nodes that target will effect
+        List<Node> effectedTiles = TileMap.instance.pathfinder.FindEffectedTiles(start, target, attack);
+
+        //for each node caluclate its effect value
+        effectedTiles.ForEach(node => {
+            if (node.myUnit == null) {
+                return;
+            }
+
+            if (attack.CanHitUnit(node)) {
+                valueOfAttack += CalculateAttackValue(attacker, target, attack);
+            }
+        });
+
+        return valueOfAttack;
+    }
+
 }

@@ -170,7 +170,7 @@ public class UnitManager : MonoBehaviour {
     // Highlight the tiles effected by the ability
     public void HighlightEffectedTiles(UnitController unit, Node target) {
         if (attackableTiles.Contains(target)) {
-            List<Node> effectedNodes = GetTargetNodes(unit, activeAbility, target);
+            List<Node> effectedNodes = TileMap.instance.pathfinder.FindEffectedTiles(unit.myNode, target, activeAbility);
             HighlightManager.singleton.ShowAbilityTiles(effectedNodes, activeAbility);
         }
     }
@@ -206,31 +206,11 @@ public class UnitManager : MonoBehaviour {
         Action action = new Action();
         action.type = ActionType.ATTACK;
         action.ability = attackAction;
-        action.nodes = GetTargetNodes(unit, attackAction, targetNode);
+        action.nodes = TileMap.instance.pathfinder.FindEffectedTiles(unit.myNode, targetNode, attackAction);
 
         unit.AddAction(action);
 
         return true;
-    }
-
-    // Shows the attackable tiles of the ability
-    private List<Node> GetTargetNodes(UnitController unit, AttackAction action, Node targetNode) {
-        List<Node> targetTiles = new List<Node>();
-        switch (action.areaOfEffect) {
-            case AreaOfEffect.AURA:
-                return TileMap.instance.pathfinder.FindAOEHitTiles(unit.myNode, action);
-
-            case AreaOfEffect.CIRCLE:
-                return TileMap.instance.pathfinder.FindAOEHitTiles(targetNode, action);
-
-            case AreaOfEffect.CLEAVE:
-                return TileMap.instance.pathfinder.FindCleaveTargetTiles(targetNode, action, unit.myNode);
-
-            case AreaOfEffect.SINGLE:
-            default:
-                targetTiles.Add(targetNode);
-                return targetTiles;
-        }
     }
 
     // Adds a move action to a units queue

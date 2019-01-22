@@ -10,9 +10,8 @@ make decks reset
 Make death trigger after attack has finished
 rotate projectiles
 
-utility ai - correctly calculate movement cost
 utility ai - values for snares etc
-utility ai - values for aoes / auras
+utility ai - values for aoes / auras - Needs to be checked - still targets 1 target
 stop mouse over cards when game over
 Add end turn button
 Allow camera movement via mouse

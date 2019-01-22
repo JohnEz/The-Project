@@ -60,10 +60,10 @@ public class AIManager : MonoBehaviour {
         AIInfoCollector.Instance.GenerateHostilityMap(faction);
 
         // Debug
-        //AIInfoCollector.Instance.GetHotNodes(faction).ForEach(nodePos => {
+        // AIInfoCollector.Instance.GetHotNodes(faction).ForEach(nodePos => {
         //    TileHostility hostility = AIInfoCollector.Instance.GetHostilityOfTile(faction, nodePos);
         //    TileMap.instance.GetNode(nodePos).GetComponentInChildren<TileHighlighter>().DebugSetText(hostility.heat + ", " + hostility.numberOfAttacks);
-        //});
+        // });
 
         foreach (UnitController unit in myUnits) {
             if (unit.myStats.isActive) {
@@ -74,9 +74,9 @@ public class AIManager : MonoBehaviour {
             }
         }
 
-        AIInfoCollector.Instance.GetHotNodes(faction).ForEach(nodePos => {
-            TileMap.instance.GetNode(nodePos).GetComponentInChildren<TileHighlighter>().DebugSetText("");
-        });
+        // AIInfoCollector.Instance.GetHotNodes(faction).ForEach(nodePos => {
+        //     TileMap.instance.GetNode(nodePos).GetComponentInChildren<TileHighlighter>().DebugSetText("");
+        // });
 
         TurnManager.singleton.EndTurn();
     }
