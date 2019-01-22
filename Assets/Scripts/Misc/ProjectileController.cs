@@ -52,10 +52,9 @@ public class ProjectileController : MonoBehaviour {
 
         transform.position = startPosition;
 
-        //TODO FLIP THE PROJECTILE AND REVERSE / REDUCE ROTATION
-        //float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        //Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-        //transform.rotation = rotation;
+        float angle = Mathf.Atan2(direction.z, direction.x) * Mathf.Rad2Deg;
+        Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.up);
+        transform.rotation = rotation;
     }
 
     public void ReachedTarget() {

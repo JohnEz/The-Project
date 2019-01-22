@@ -91,6 +91,8 @@ public class GameManager : MonoBehaviour {
         UnitManager.singleton.SpawnUnit("Goblin Archer", enemyAI, 7, 2);
         UnitManager.singleton.SpawnUnit("Goblin Archer", enemyAI, 5, 1);
         UnitManager.singleton.SpawnUnit("Goblin Archer", enemyAI, 3, 1);
+
+        UnitManager.singleton.SpawnUnit("Goblin Archer", enemyAI, 3, 10);
     }
 
     // TEMP
