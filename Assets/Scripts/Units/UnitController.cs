@@ -160,14 +160,15 @@ public class UnitController : MonoBehaviour {
         }
 
         //find if we want to check x or y
-        float difX = target.x - myNode.x;
-        float difY = myNode.y - target.y;
+        float minusX = target.x - myNode.x;
+        float minusY = myNode.y - target.y;
+        float difX = Mathf.Abs(minusX);
+        float difY = Mathf.Abs(minusY);
 
-        //This needs to be changed if we get 4 directions to x >= y
         if (difX >= difY) {
-            return new Vector2(Mathf.Sign(difX), 0);
+            return new Vector2(Mathf.Sign(minusX), 0);
         } else {
-            return new Vector2(0, Mathf.Sign(difY));
+            return new Vector2(0, Mathf.Sign(minusY));
         }
     }
 
