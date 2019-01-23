@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour {
     public static GameManager singleton;
@@ -29,7 +30,7 @@ public class GameManager : MonoBehaviour {
 
     //TEMP
     private void AddPlayers() {
-        Player humanPlayer = PlayerManager.singleton.AddPlayer(1, CardManager.singleton.LoadDeck(GameDetails.PlayerDeck), "Jonesy");
+        Player humanPlayer = PlayerManager.singleton.AddPlayer(1, "Jonesy");
 
         if (ADD_ALLY) {
             Player allyAI = PlayerManager.singleton.AddAiPlayer(1);
@@ -43,21 +44,19 @@ public class GameManager : MonoBehaviour {
             }
         }
 
+        List<AbilityCardBase> deck = CardManager.singleton.LoadDeck(GameDetails.PlayerDeck);
         SpawnLocation playerSpawnLocation = TileMap.instance.spawnLocations.Find(sl => sl.name == "PlayerSpawn");
-        if (playerSpawnLocation != null) {
-            humanPlayer.myCharacter = UnitManager.singleton.SpawnUnit(GameDetails.PlayerCharacter, PlayerManager.singleton.GetPlayer(0), playerSpawnLocation.x, playerSpawnLocation.y);
-        } else {
-            //humanPlayer.myCharacter = UnitManager.singleton.SpawnUnit(GameDetails.PlayerCharacter, PlayerManager.singleton.GetPlayer(0), 3, 12);
-            humanPlayer.myCharacter = UnitManager.singleton.SpawnUnit(GameDetails.PlayerCharacter, PlayerManager.singleton.GetPlayer(0), 5, 6);
-        }
+        int playerSpawnX = playerSpawnLocation != null ? playerSpawnLocation.x : 5;
+        int playerSpawnY = playerSpawnLocation != null ? playerSpawnLocation.y : 6;
+        UnitManager.singleton.SpawnPlayerUnit(GameDetails.PlayerCharacter, humanPlayer, playerSpawnX, playerSpawnY, deck);
 
-        CameraManager.singleton.JumpToLocation(humanPlayer.myCharacter.myNode);
+        CameraManager.singleton.JumpToLocation(humanPlayer.units[0].unit.myNode);
 
         Player enemyAI = PlayerManager.singleton.AddAiPlayer(2);
 
         SpawnStartMapUnits(enemyAI);
 
-        TileMap.instance.ActivateRoom(humanPlayer.myCharacter.myNode.room);
+        TileMap.instance.ActivateRoom(humanPlayer.units[0].unit.myNode.room);
     }
 
     //TEMP

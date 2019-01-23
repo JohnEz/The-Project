@@ -179,7 +179,7 @@ public class UserInterfaceManager : MonoBehaviour {
                 ShowAction();
             } else if (currentAction.GetType() == typeof(DrawCardAction)) {
                 DrawCardAction drawAction = (DrawCardAction)currentAction;
-                activeCard.myPlayer.myDeck.DrawCard(drawAction.cardsToDraw);
+                activeCard.myUnit.deck.DrawCard(drawAction.cardsToDraw);
                 FinishedAction();
             }
             return true;

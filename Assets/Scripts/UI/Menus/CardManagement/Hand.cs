@@ -6,18 +6,18 @@ public class Hand : MonoBehaviour {
 
     public GameObject cardPrefab;
 
-    public Player myPlayer;
+    public PlayerUnit myUnit;
     public List<GameObject> myCards = new List<GameObject>();
 
-    public void SetPlayer(Player _myPlayer) {
-        myPlayer = _myPlayer;
+    public void SetUnit(PlayerUnit _myUnit) {
+        myUnit = _myUnit;
     }
 
     public void AddCardToHand(AbilityCardBase card) {
         if (myCards.Count < HAND_LIMIT) {
             GameObject cardObject = Instantiate(cardPrefab, transform);
             cardObject.GetComponent<CardDisplay>().ability = Instantiate(card);
-            cardObject.GetComponent<CardDisplay>().myPlayer = myPlayer;
+            cardObject.GetComponent<CardDisplay>().myUnit = myUnit;
             cardObject.GetComponent<CardDisplay>().myHand = this;
             myCards.Add(cardObject);
         } else {

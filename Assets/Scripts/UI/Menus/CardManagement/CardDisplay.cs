@@ -12,7 +12,7 @@ public class CardDisplay : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
     public CardDescriptionController descriptionController;
     public TextMeshProUGUI staminaText;
 
-    public Player myPlayer;
+    public PlayerUnit myUnit;
     public Hand myHand;
 
     private void Start() {
@@ -22,16 +22,16 @@ public class CardDisplay : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
         descriptionController.SetDescription(ability);
         staminaText.text = ability.staminaCost.ToString();
 
-        if (myPlayer != null) {
-            ability.caster = myPlayer.myCharacter;
+        if (myUnit != null) {
+            ability.caster = myUnit.unit;
         } else {
-            Debug.LogError("Card was started without player set!");
+            Debug.LogError("Card was started without unit set!");
         }
     }
 
     public bool CanInterractWithCard(bool displayErrors = true) {
         // check players turn
-        if (TurnManager.singleton.GetCurrentPlayer() != myPlayer) {
+        if (TurnManager.singleton.GetCurrentPlayer() != myUnit.unit.myPlayer) {
             if (displayErrors) {
                 GUIController.singleton.ShowErrorMessage("You already have a card played");
             }

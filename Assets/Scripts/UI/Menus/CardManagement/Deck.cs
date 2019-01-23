@@ -5,14 +5,14 @@ using UnityEngine;
 public class Deck : MonoBehaviour {
     public Hand hand;
 
-    private Player myPlayer;
+    private PlayerUnit myUnit;
 
     // Use this for initialization
     private void Start() {
     }
 
-    public void SetPlayer(Player _myPlayer) {
-        myPlayer = _myPlayer;
+    public void SetUnit(PlayerUnit _myUnit) {
+        myUnit = _myUnit;
     }
 
     public void DrawCard(int count = 1) {
@@ -22,7 +22,7 @@ public class Deck : MonoBehaviour {
     }
 
     private void DrawCard() {
-        if (myPlayer.deck.Count > 0) {
+        if (myUnit.deckList.Count > 0) {
             AbilityCardBase drawnCardAbility = GetTopCard();
             hand.AddCardToHand(drawnCardAbility);
         }
@@ -30,21 +30,21 @@ public class Deck : MonoBehaviour {
 
     // note this removes it from the deck, maybe we need a peek?
     private AbilityCardBase GetTopCard() {
-        AbilityCardBase topCard = myPlayer.deck.Last();
-        myPlayer.deck.RemoveAt(myPlayer.deck.Count - 1);
+        AbilityCardBase topCard = myUnit.deckList.Last();
+        myUnit.deckList.RemoveAt(myUnit.deckList.Count - 1);
         return topCard;
     }
 
     public void Shuffle() {
         List<AbilityCardBase> tmp = new List<AbilityCardBase>();
 
-        int max = myPlayer.deck.Count;
+        int max = myUnit.deckList.Count;
         while (max > 0) {
             int offset = UnityEngine.Random.Range(0, max);
-            tmp.Add(myPlayer.deck[offset]);
-            myPlayer.deck.RemoveAt(offset);
+            tmp.Add(myUnit.deckList[offset]);
+            myUnit.deckList.RemoveAt(offset);
             max -= 1;
         }
-        myPlayer.deck = tmp;
+        myUnit.deckList = tmp;
     }
 }
