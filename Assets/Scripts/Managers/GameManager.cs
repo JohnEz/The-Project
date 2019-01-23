@@ -44,11 +44,16 @@ public class GameManager : MonoBehaviour {
             }
         }
 
-        List<AbilityCardBase> deck = CardManager.singleton.LoadDeck(GameDetails.PlayerDeck);
-        SpawnLocation playerSpawnLocation = TileMap.instance.spawnLocations.Find(sl => sl.name == "PlayerSpawn");
-        int playerSpawnX = playerSpawnLocation != null ? playerSpawnLocation.x : 5;
-        int playerSpawnY = playerSpawnLocation != null ? playerSpawnLocation.y : 6;
-        UnitManager.singleton.SpawnPlayerUnit(GameDetails.PlayerCharacter, humanPlayer, playerSpawnX, playerSpawnY, deck);
+        List<AbilityCardBase> fighterdeck = CardManager.singleton.LoadDeck(BasicDecks.starterFighter);
+        List<AbilityCardBase> barddeck = CardManager.singleton.LoadDeck(BasicDecks.starterBard);
+        List<AbilityCardBase> elementalistdeck = CardManager.singleton.LoadDeck(BasicDecks.starterElementalist);
+        //SpawnLocation playerSpawnLocation = TileMap.instance.spawnLocations.Find(sl => sl.name == "PlayerSpawn");
+        //int playerSpawnX = playerSpawnLocation != null ? playerSpawnLocation.x : 5;
+        //int playerSpawnY = playerSpawnLocation != null ? playerSpawnLocation.y : 6;
+        //UnitManager.singleton.SpawnPlayerUnit(GameDetails.PlayerCharacter, humanPlayer, playerSpawnX, playerSpawnY, fighterdeck);
+        UnitManager.singleton.SpawnPlayerUnit("Fighter", humanPlayer, 4, 12, fighterdeck);
+        UnitManager.singleton.SpawnPlayerUnit("Bard", humanPlayer, 5, 12, barddeck);
+        UnitManager.singleton.SpawnPlayerUnit("Mage", humanPlayer, 6, 12, elementalistdeck);
 
         CameraManager.singleton.JumpToLocation(humanPlayer.units[0].unit.myNode);
 

@@ -54,9 +54,13 @@ public class UnitManager : MonoBehaviour {
         newUnit.unit = SpawnUnit(unit, player, x, y);
         newUnit.deckList = deck;
 
-        newUnit.deck = PlayerManager.singleton.player1Deck.GetComponent<Deck>();
-        PlayerManager.singleton.player1Deck.GetComponent<Deck>().SetUnit(newUnit);
-        PlayerManager.singleton.player1Hand.GetComponent<Hand>().SetUnit(newUnit);
+        Deck spawnedDeck = GUIController.singleton.CreateDeck().GetComponent<Deck>();
+        Hand spawnedHand = GUIController.singleton.CreateHand().GetComponent<Hand>();
+
+        newUnit.deck = spawnedDeck;
+        spawnedDeck.SetUnit(newUnit);
+        spawnedHand.SetUnit(newUnit);
+        spawnedDeck.SetHand(spawnedHand);
 
         player.units.Add(newUnit);
 

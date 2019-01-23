@@ -15,6 +15,10 @@ public class Deck : MonoBehaviour {
         myUnit = _myUnit;
     }
 
+    public void SetHand(Hand _hand) {
+        hand = _hand;
+    }
+
     public void DrawCard(int count = 1) {
         for (int i = 0; i < count; ++i) {
             DrawCard();

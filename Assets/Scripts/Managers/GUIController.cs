@@ -16,21 +16,24 @@ public class GUIController : MonoBehaviour {
     public GameObject victoryMenuPrefab;
     public GameObject defeatMenuPrefab;
 
+    public GameObject handPrefab;
+    public GameObject deckPrefab;
+
     private List<GameObject> abilityIcons = new List<GameObject>();
     private Dictionary<string, RuntimeAnimatorController> abilityIconControllers = new Dictionary<string, RuntimeAnimatorController>();
 
     [HideInInspector]
     private GameObject startMenu;
 
-    private GameObject playerHand;
+    private GameObject handLayout;
     private GameObject staminaPoints;
     private TextMeshProUGUI objectivesBody;
 
     private void Awake() {
         singleton = this;
         startMenu = GameObject.Find("StartMenu");
-        playerHand = GameObject.Find("Player1Hand");
-        playerHand.SetActive(false);
+        handLayout = GameObject.Find("HandLayout");
+        handLayout.SetActive(false);
         staminaPoints = GameObject.Find("StaminaPointsFrame");
         staminaPoints.SetActive(false);
     }
@@ -54,7 +57,7 @@ public class GUIController : MonoBehaviour {
         // TODO animate out
         startMenu.SetActive(false);
         Destroy(startMenu, 1f);
-        playerHand.SetActive(true);
+        handLayout.SetActive(true);
         staminaPoints.SetActive(true);
         Invoke("StartGame", 0.5f);
     }
@@ -116,6 +119,14 @@ public class GUIController : MonoBehaviour {
 
     public void UpdateStamina(int newStamina) {
         staminaPoints.GetComponentInChildren<TextMeshProUGUI>().text = newStamina.ToString();
+    }
+
+    public GameObject CreateHand() {
+        return Instantiate(handPrefab, transform.Find("HandLayout"));
+    }
+
+    public GameObject CreateDeck() {
+        return Instantiate(deckPrefab);
     }
 
     private string CreateObjectiveText(List<Objective> objectives) {

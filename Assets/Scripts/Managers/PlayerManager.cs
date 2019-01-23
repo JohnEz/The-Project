@@ -9,6 +9,7 @@ public class Player {
 
     // Physical world objects
     public UnitController myCharacter;
+
     public List<PlayerUnit> units = new List<PlayerUnit>();
 
     //public Hand myHand;
@@ -22,7 +23,7 @@ public class PlayerUnit {
     public List<AbilityCardBase> deckList = new List<AbilityCardBase>();
     private List<AbilityCardBase> hand = new List<AbilityCardBase>();
     public Stack<AbilityCardBase> discard = new Stack<AbilityCardBase>();
-    
+
     //public Hand hand;
 }
 
@@ -81,6 +82,7 @@ public class PlayerManager : MonoBehaviour {
     public void StartGame() {
         // Draw starting Hand
         mainPlayer.units.ForEach(unit => {
+            Debug.Log("Spawning cards for unit: " + unit.unit.name);
             unit.deck.Shuffle();
             unit.deck.DrawCard(4);
         });
