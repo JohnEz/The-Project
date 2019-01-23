@@ -181,7 +181,7 @@ public class AudioManager : MonoBehaviour {
         }
 
         if (options.audioClip == null) {
-            Debug.LogError("Tried to play audio with no audio clip");
+            Debug.Log("Tried to play audio with no audio clip");
             return null;
         }
 

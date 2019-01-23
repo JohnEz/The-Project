@@ -72,6 +72,9 @@ public class UserInterfaceManager : MonoBehaviour {
 
         if (TurnManager.singleton.CurrentPhase == TurnPhase.WAITING_FOR_INPUT && !TurnManager.singleton.isAiTurn()) {
             if (Input.GetKeyUp("space")) {
+                if (cardState == CardState.PLAYED) {
+                    CancelCurrentCard();
+                }
                 TurnManager.singleton.EndTurn();
             }
         }

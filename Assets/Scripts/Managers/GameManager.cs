@@ -3,7 +3,7 @@
 public class GameManager : MonoBehaviour {
     public static GameManager singleton;
 
-    private const bool ADD_ALLY = false;
+    private const bool ADD_ALLY = true;
 
     private void Awake() {
         singleton = this;
@@ -34,9 +34,13 @@ public class GameManager : MonoBehaviour {
         if (ADD_ALLY) {
             Player allyAI = PlayerManager.singleton.AddAiPlayer(1);
 
-            UnitManager.singleton.SpawnUnit("Criminal", allyAI, 2, 12);
-            UnitManager.singleton.SpawnUnit("Farmer", allyAI, 3, 11);
-            UnitManager.singleton.SpawnUnit("Scribe", allyAI, 4, 12);
+            UnitManager.singleton.SpawnUnit("Criminal", allyAI, 4, 12);
+
+            if (GameDetails.PlayerCharacter == "Fighter") {
+                UnitManager.singleton.SpawnUnit("Scribe", allyAI, 6, 12);
+            } else {
+                UnitManager.singleton.SpawnUnit("Farmer", allyAI, 6, 12);
+            }
         }
 
         SpawnLocation playerSpawnLocation = TileMap.instance.spawnLocations.Find(sl => sl.name == "PlayerSpawn");
@@ -88,11 +92,12 @@ public class GameManager : MonoBehaviour {
     }
 
     private void SpawnStartMapUnits(Player enemyAI) {
-        UnitManager.singleton.SpawnUnit("Goblin Archer", enemyAI, 7, 2);
+        UnitManager.singleton.SpawnUnit("Goblin Warrior", enemyAI, 7, 2);
         UnitManager.singleton.SpawnUnit("Goblin Archer", enemyAI, 5, 1);
-        UnitManager.singleton.SpawnUnit("Goblin Archer", enemyAI, 3, 1);
+        UnitManager.singleton.SpawnUnit("Goblin Warrior", enemyAI, 3, 1);
 
-        UnitManager.singleton.SpawnUnit("Goblin Archer", enemyAI, 3, 10);
+        UnitManager.singleton.SpawnUnit("Goblin Warrior", enemyAI, 4, 9);
+        UnitManager.singleton.SpawnUnit("Goblin Warrior", enemyAI, 6, 9);
     }
 
     // TEMP
