@@ -45,6 +45,10 @@ public class UnitManager : MonoBehaviour {
         get { return units; }
     }
 
+    public List<UnitController> GetPlayersUnits(int playerId) {
+        return units.Where(unit => unit.myPlayer.id == playerId).ToList();
+    }
+
     public UnitController SpawnUnit(string unit, Player player, int x, int y) {
         if (!ResourceManager.singleton.units.ContainsKey(unit)) {
             Debug.LogError("Could not spawn character " + unit);

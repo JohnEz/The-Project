@@ -54,7 +54,7 @@ public class AIManager : MonoBehaviour {
 
     // NewTurn is called at the start of each of the AIs turns.
     public IEnumerator NewTurn(int myPlayerId) {
-        myUnits = UnitManager.singleton.Units.Where(unit => unit.myPlayer.id == myPlayerId).ToList();
+        myUnits = UnitManager.singleton.GetPlayersUnits(myPlayerId);
         // TODO make this async
         int faction = PlayerManager.singleton.GetPlayer(myPlayerId).faction;
         AIInfoCollector.Instance.GenerateHostilityMap(faction);
@@ -78,6 +78,10 @@ public class AIManager : MonoBehaviour {
         //     TileMap.instance.GetNode(nodePos).GetComponentInChildren<TileHighlighter>().DebugSetText("");
         // });
 
+
+        // TODO this shouldnt be needed if we skip ai turns with no active units
+        yield return TurnManager.singleton.WaitForWaitingForInput();
+
         TurnManager.singleton.EndTurn();
     }
 
@@ -85,12 +89,12 @@ public class AIManager : MonoBehaviour {
         AITurnPlan turnPlan = null;
         unit.myStats.ActionPoints = 2;
         while (unit.myStats.ActionPoints > 0) {
-            yield return TurnManager.singleton.WaitForWaitingForInput();
-
             //if (turnPlan.targetMoveNode == null && turnPlan.attack == null) {
             if (turnPlan == null) {
                 turnPlan = AIAttackPicker.Instance.GetBestPlan(unit);
             }
+
+            yield return TurnManager.singleton.WaitForWaitingForInput();
 
             if (turnPlan == null) {
                 // No actions to take

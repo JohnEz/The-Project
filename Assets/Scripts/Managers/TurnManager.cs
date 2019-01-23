@@ -47,11 +47,21 @@ public class TurnManager : MonoBehaviour {
         StartNewTurn();
     }
 
-    public void StartNewTurn() {
-        ChangeState(TurnPhase.TURN_STARTING);
+    private Player SetNextPlayersTurn() {
         playersTurn++;
         playersTurn = playersTurn % PlayerManager.singleton.GetNumberOfPlayers();
-        Player currentPlayersTurn = GetCurrentPlayer();
+        return GetCurrentPlayer();
+    }
+
+    public void StartNewTurn() {
+        ChangeState(TurnPhase.TURN_STARTING);
+        int previousPlayersTurn = playersTurn;
+        Player currentPlayersTurn = SetNextPlayersTurn();
+
+        while (UnitManager.singleton.GetPlayersUnits(currentPlayersTurn.id).Count <= 0 || playersTurn == previousPlayersTurn) {
+            currentPlayersTurn = SetNextPlayersTurn();
+        }
+        
         UnitManager.singleton.StartTurn(currentPlayersTurn);
         bool alliedTurn = PlayerManager.singleton.mainPlayer.faction == currentPlayersTurn.faction;
 

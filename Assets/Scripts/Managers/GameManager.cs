@@ -34,12 +34,12 @@ public class GameManager : MonoBehaviour {
         if (ADD_ALLY) {
             Player allyAI = PlayerManager.singleton.AddAiPlayer(1);
 
-            UnitManager.singleton.SpawnUnit("Criminal", allyAI, 4, 12);
+            //UnitManager.singleton.SpawnUnit("Criminal", allyAI, 4, 12);
 
             if (GameDetails.PlayerCharacter == "Fighter") {
-                UnitManager.singleton.SpawnUnit("Scribe", allyAI, 6, 12);
+                //UnitManager.singleton.SpawnUnit("Scribe", allyAI, 6, 12);
             } else {
-                UnitManager.singleton.SpawnUnit("Farmer", allyAI, 6, 12);
+                //UnitManager.singleton.SpawnUnit("Farmer", allyAI, 6, 12);
             }
         }
 
