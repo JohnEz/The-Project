@@ -407,7 +407,6 @@ public class UnitController : MonoBehaviour {
 
         if (myStats.Health > 0) {
             //anim.PlayHitAnimation();
-            // TODO move these onto the unit stats
             PlayRandomWoundSound();
         } else {
             // TODO add death

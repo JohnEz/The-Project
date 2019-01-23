@@ -71,7 +71,6 @@ public class TurnManager : MonoBehaviour {
 
         UserInterfaceManager.singleton.StartTurn();
 
-        // TODO Had error when unit died at turn start
         if (isAiTurn()) {
             StartCoroutine(AIManager.singleton.NewTurn(playersTurn));
         } else if (currentPlayersTurn.myCharacter != null) {
