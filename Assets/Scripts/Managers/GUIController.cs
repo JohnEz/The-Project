@@ -34,8 +34,8 @@ public class GUIController : MonoBehaviour {
         startMenu = GameObject.Find("StartMenu");
         handLayout = GameObject.Find("HandLayout");
         handLayout.SetActive(false);
-        staminaPoints = GameObject.Find("StaminaPointsFrame");
-        staminaPoints.SetActive(false);
+        //staminaPoints = GameObject.Find("StaminaPointsFrame");
+        //staminaPoints.SetActive(false);
     }
 
     // Use this for initialization
@@ -58,7 +58,7 @@ public class GUIController : MonoBehaviour {
         startMenu.SetActive(false);
         Destroy(startMenu, 1f);
         handLayout.SetActive(true);
-        staminaPoints.SetActive(true);
+        //staminaPoints.SetActive(true);
         Invoke("StartGame", 0.5f);
     }
 
@@ -148,7 +148,7 @@ public class GUIController : MonoBehaviour {
         foreach (Transform child in transform) {
             SlidingElement slider = child.GetComponent<SlidingElement>();
 
-            if (slider != null) {
+            if (slider != null && child.gameObject.active) {
                 slider.CloseMenu(CameraManager.singleton.blendTime * 0.5f);
             }
         }

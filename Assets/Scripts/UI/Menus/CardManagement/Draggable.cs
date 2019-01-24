@@ -9,7 +9,6 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
     private const float MIN_DISTANCE_TO_SCALE = 0.05f;
 
     private Vector3 targetLocation;
-    private Vector3 targetScale;
 
     public Transform originalParent;
     public Transform placeholderParent;
@@ -22,7 +21,6 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
     //public bool isScaling;
 
     private void Start() {
-        targetScale = GetComponent<RectTransform>().localScale;
     }
 
     private void Update() {
@@ -32,12 +30,12 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         }
 
         // scale to target scale
-        Vector3 currentScale = GetComponent<RectTransform>().localScale;
-        if (Vector3.Distance(targetScale, currentScale) > MIN_DISTANCE_TO_SCALE) {
-            GetComponent<RectTransform>().localScale = Vector3.Lerp(currentScale, targetScale, SCALE_SPEED * Time.deltaTime);
-        } else if (currentScale != targetScale) {
-            GetComponent<RectTransform>().localScale = targetScale;
-        }
+        // Vector3 currentScale = GetComponent<RectTransform>().localScale;
+        // if (Vector3.Distance(targetScale, currentScale) > MIN_DISTANCE_TO_SCALE) {
+        //     GetComponent<RectTransform>().localScale = Vector3.Lerp(currentScale, targetScale, SCALE_SPEED * Time.deltaTime);
+        // } else if (currentScale != targetScale) {
+        //     GetComponent<RectTransform>().localScale = targetScale;
+        // }
     }
 
     public void SetDragged(bool isBeingDragged) {
@@ -47,11 +45,6 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
 
     public void SetTargetPosition(Vector3 target) {
         targetLocation = new Vector3(target.x, target.y - (GetComponent<RectTransform>().rect.height / 4), target.z);
-    }
-
-    public void SetScale(Vector3 scale) {
-        targetScale = scale;
-        GetComponent<RectTransform>().localScale = targetScale;
     }
 
     public bool CanHoverCard() {
@@ -70,7 +63,6 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
 
         // Remove from the hand
         transform.SetParent(GameObject.Find("GameCanvas").transform);
-        targetScale = new Vector3(1, 1, 1);
     }
 
     public void OnPointerExit(PointerEventData eventData) {
@@ -78,7 +70,6 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
             return;
         }
 
-        targetScale = new Vector3(0.66f, 0.66f, 1);
         ReturnToParent(eventData.position);
     }
 
@@ -171,8 +162,6 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
 
         // Place card at correct index in hand
         transform.SetSiblingIndex(placeholder.transform.GetSiblingIndex());
-
-        targetScale = new Vector3(0.66f, 0.66f, 1);
 
         Destroy(placeholder);
     }

@@ -7,19 +7,19 @@ public class Player {
     public bool ai;
     public int faction;
 
-    private int currentInfluence;
-    private int startingInfluence = 6;
+    // private int currentInfluence;
+    // private int startingInfluence = 6;
 
-    public int CurrentInfluence {
-        get { return currentInfluence; }
-        set {
-            currentInfluence = value;
-            GUIController.singleton.UpdateStamina(currentInfluence);
-        }
-    }
+    // public int CurrentInfluence {
+    //     get { return currentInfluence; }
+    //     set {
+    //         currentInfluence = value;
+    //         GUIController.singleton.UpdateStamina(currentInfluence);
+    //     }
+    // }
 
     public void StartTurn() {
-        CurrentInfluence = startingInfluence;
+        //CurrentInfluence = startingInfluence;
     }
 
     // Physical world objects
