@@ -48,7 +48,8 @@ public class CardDisplay : MonoBehaviour, IDropHandler, IPointerEnterHandler, IP
 
         // if i have the stamina for it
         AbilityCardBase ability = GetComponent<CardDisplay>().ability;
-        if (ability.staminaCost > ability.caster.Stamina) {
+        //if (ability.staminaCost > ability.caster.Stamina) {
+        if (ability.staminaCost > ability.caster.myPlayer.CurrentInfluence) {
             if (displayErrors) {
                 GUIController.singleton.ShowErrorMessage("Not enough Stamina");
             }

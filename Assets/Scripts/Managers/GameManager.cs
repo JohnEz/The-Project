@@ -101,6 +101,7 @@ public class GameManager : MonoBehaviour {
         UnitManager.singleton.SpawnUnit("Goblin Warrior", enemyAI, 3, 1);
 
         UnitManager.singleton.SpawnUnit("Goblin Warrior", enemyAI, 4, 9);
+        UnitManager.singleton.SpawnUnit("Goblin Warrior", enemyAI, 5, 10);
         UnitManager.singleton.SpawnUnit("Goblin Warrior", enemyAI, 6, 9);
     }
 
