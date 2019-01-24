@@ -93,16 +93,16 @@ public class CameraController3D : MonoBehaviour {
             Vector3 forward = new Vector3(1, 0, 1);
             Vector3 right = new Vector3(1, 0, -1);
 
-            if ((Input.GetKey(KeyCode.W) || (Input.mousePosition.y > Screen.height - BOUNDARY && mouseMovement))) {
+            if ((Input.GetKey(KeyCode.W) || Input.GetKey("up") || (Input.mousePosition.y > Screen.height - BOUNDARY && mouseMovement))) {
                 movement += forward;
             }
-            if ((Input.GetKey(KeyCode.A) || (Input.mousePosition.x < BOUNDARY && mouseMovement))) {
+            if ((Input.GetKey(KeyCode.A) || Input.GetKey("left") || (Input.mousePosition.x < BOUNDARY && mouseMovement))) {
                 movement -= right;
             }
-            if ((Input.GetKey(KeyCode.S) || (Input.mousePosition.y < BOUNDARY && mouseMovement))) {
+            if ((Input.GetKey(KeyCode.S) || Input.GetKey("down") || (Input.mousePosition.y < BOUNDARY && mouseMovement))) {
                 movement -= forward;
             }
-            if ((Input.GetKey(KeyCode.D) || (Input.mousePosition.x > Screen.width - BOUNDARY && mouseMovement))) {
+            if ((Input.GetKey(KeyCode.D) || Input.GetKey("right") || (Input.mousePosition.x > Screen.width - BOUNDARY && mouseMovement))) {
                 movement += right;
             }
 
