@@ -7,8 +7,22 @@ public class Player {
     public bool ai;
     public int faction;
 
+    private int currentInfluence;
+    private int startingInfluence = 6;
+
+    public int CurrentInfluence {
+        get { return currentInfluence; }
+        set {
+            currentInfluence = value;
+            GUIController.singleton.UpdateStamina(currentInfluence);
+        }
+    }
+
+    public void StartTurn() {
+        CurrentInfluence = startingInfluence;
+    }
+
     // Physical world objects
-    public UnitController myCharacter;
 
     public List<PlayerUnit> units = new List<PlayerUnit>();
 
@@ -94,6 +108,7 @@ public class PlayerManager : MonoBehaviour {
 
     public void StartNewTurn(Player player) {
         if (!player.ai) {
+            player.StartTurn();
             player.units.ForEach(unit => {
                 unit.deck.DrawCard(2);
             });

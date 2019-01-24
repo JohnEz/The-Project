@@ -92,8 +92,6 @@ public class UnitManager : MonoBehaviour {
         unitController.Initialise();
         units.Add(unitController);
 
-        player.myCharacter = unitController;
-
         return unitController;
     }
 

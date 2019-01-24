@@ -73,8 +73,8 @@ public class TurnManager : MonoBehaviour {
 
         if (isAiTurn()) {
             StartCoroutine(AIManager.singleton.NewTurn(playersTurn));
-        } else if (currentPlayersTurn.myCharacter != null) {
-            CameraManager.singleton.JumpToLocation(currentPlayersTurn.myCharacter.myNode);
+        } else if (currentPlayersTurn.units.Count > 0) {
+            CameraManager.singleton.JumpToLocation(currentPlayersTurn.units[0].unit.myNode);
         }
     }
 

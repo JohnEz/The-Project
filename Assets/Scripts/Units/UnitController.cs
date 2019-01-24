@@ -120,7 +120,7 @@ public class UnitController : MonoBehaviour {
         myStats.isActive = true;
 
         // TODO sort this problem, it shouldnt try to create camera for allies and the player, only enemies
-        if (PlayerManager.singleton.mainPlayer.myCharacter == this) {
+        if (PlayerManager.singleton.mainPlayer == this.myPlayer) {
             return;
         }
 
@@ -192,7 +192,6 @@ public class UnitController : MonoBehaviour {
         set {
             myStats.SetStamina(value);
             unitCanvasController.UpdateStamina(myStats.Stamina, myStats.MaxStamina);
-            GUIController.singleton.UpdateStamina(myStats.Stamina);
         }
     }
 

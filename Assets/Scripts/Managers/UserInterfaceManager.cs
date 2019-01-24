@@ -83,7 +83,7 @@ public class UserInterfaceManager : MonoBehaviour {
     public void CancelCurrentCard() {
         cardState = CardState.NONE;
         activeCard.gameObject.SetActive(true);
-        PlayerManager.singleton.mainPlayer.myCharacter.Stamina += activeCard.ability.staminaCost;
+        PlayerManager.singleton.mainPlayer.CurrentInfluence += activeCard.ability.staminaCost;
         UnshowCard();
     }
 
@@ -167,7 +167,7 @@ public class UserInterfaceManager : MonoBehaviour {
     public void CardPlayed(CardDisplay card) {
         UnshowCard();
         cardState = CardState.PLAYED;
-        TurnManager.singleton.GetCurrentPlayer().myCharacter.Stamina -= card.ability.staminaCost;
+        TurnManager.singleton.GetCurrentPlayer().CurrentInfluence -= card.ability.staminaCost;
         activeCard = card;
         RunNextCardAction();
     }
