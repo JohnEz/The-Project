@@ -98,7 +98,7 @@ public class PlayerManager : MonoBehaviour {
         mainPlayer.units.ForEach(unit => {
             Debug.Log("Spawning cards for unit: " + unit.unit.name);
             unit.deck.Shuffle();
-            unit.deck.DrawCard(4);
+            unit.deck.DrawCard(2);
         });
     }
 

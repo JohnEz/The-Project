@@ -336,6 +336,8 @@ public class UnitController : MonoBehaviour {
     }
 
     public IEnumerator AttackRoutine() {
+        yield return new WaitForSeconds(0.33f);
+
         //make sure projects have been destroyed
         yield return new WaitUntil(() => getAttackHasLanded() && projectilesToCreate <= 0 && projectiles.Count < 1);
         RunAbilityTargets();
