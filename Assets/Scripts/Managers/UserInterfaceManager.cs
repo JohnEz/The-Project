@@ -12,7 +12,7 @@ public class UserInterfaceManager : MonoBehaviour {
     //Managers
     private PauseMenuController pauseMenuController;
 
-    private CardDisplay activeCard = null;
+    private CardSlot activeCard = null;
     private int currentActionIndex = 0;
     private CardState cardState = CardState.NONE;
 
@@ -30,9 +30,9 @@ public class UserInterfaceManager : MonoBehaviour {
         UserControls();
     }
 
-    public void ShowCard(CardDisplay card) {
+    public void ShowCard(CardSlot cardSlot) {
         UnshowCard();
-        activeCard = card;
+        activeCard = cardSlot;
 
         if (cardState == CardState.NONE) {
             ShowAction();
@@ -84,14 +84,14 @@ public class UserInterfaceManager : MonoBehaviour {
         cardState = CardState.NONE;
         activeCard.gameObject.SetActive(true);
         //PlayerManager.singleton.mainPlayer.CurrentInfluence += activeCard.ability.staminaCost;
-        activeCard.ability.caster.Stamina += activeCard.ability.staminaCost;
+        activeCard.card.caster.Stamina += activeCard.card.staminaCost;
         UnshowCard();
     }
 
     public void TileHovered(Node node, SquareTarget target) {
         UnitManager.singleton.CurrentlyHoveredNode = node;
         if (cardState != CardState.NONE && (target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL)) {
-            UnitManager.singleton.HighlightEffectedTiles(activeCard.ability.caster, node);
+            UnitManager.singleton.HighlightEffectedTiles(activeCard.card.caster, node);
         } else if (target == SquareTarget.MOVEMENT || target == SquareTarget.DASH || ((target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL) && node.previousMoveNode != null)) {
             UnitManager.singleton.ShowPath(node);
         }
@@ -124,14 +124,14 @@ public class UserInterfaceManager : MonoBehaviour {
     }
 
     public void ClickedAttack(Node node) {
-        if (UnitManager.singleton.AttackTile(activeCard.ability.caster, node)) {
+        if (UnitManager.singleton.AttackTile(activeCard.card.caster, node)) {
             UnshowCard();
             CardInvoked();
         }
     }
 
     public void ClickedMovement(Node node) {
-        UnitManager.singleton.MoveToTile(activeCard.ability.caster, node);
+        UnitManager.singleton.MoveToTile(activeCard.card.caster, node);
         UnshowCard();
         CardInvoked();
     }
@@ -151,7 +151,7 @@ public class UserInterfaceManager : MonoBehaviour {
         return cardState == CardState.NONE;
     }
 
-    public void CardHovered(CardDisplay card) {
+    public void CardHovered(CardSlot card) {
         if (CanPlayCard()) {
             ShowCard(card);
         }
@@ -165,18 +165,21 @@ public class UserInterfaceManager : MonoBehaviour {
         }
     }
 
-    public void CardPlayed(CardDisplay card) {
-        UnshowCard();
-        cardState = CardState.PLAYED;
-        card.ability.caster.Stamina -= card.ability.staminaCost;
-        //TurnManager.singleton.GetCurrentPlayer().CurrentInfluence -= card.ability.staminaCost;
-        activeCard = card;
-        RunNextCardAction();
+    public bool PlayCard(CardSlot cardSlot) {
+        if (CanPlayCard() && cardSlot.card.caster.Stamina >= cardSlot.card.staminaCost) {
+            UnshowCard();
+            cardState = CardState.PLAYED;
+            cardSlot.card.caster.Stamina -= cardSlot.card.staminaCost;
+            activeCard = cardSlot;
+            RunNextCardAction();
+            return true;
+        }
+        return false;
     }
 
     public bool RunNextCardAction() {
-        if (activeCard && currentActionIndex < activeCard.ability.Actions.Count) {
-            CardAction currentAction = activeCard.ability.Actions[currentActionIndex];
+        if (activeCard && currentActionIndex < activeCard.card.Actions.Count) {
+            CardAction currentAction = activeCard.card.Actions[currentActionIndex];
             if (currentAction.GetType() == typeof(MoveAction) || typeof(AttackAction).IsAssignableFrom(currentAction.GetType())) {
                 ShowAction();
             } else if (currentAction.GetType() == typeof(DrawCardAction)) {
@@ -191,13 +194,13 @@ public class UserInterfaceManager : MonoBehaviour {
     }
 
     public void ShowAction() {
-        CardAction currentAction = activeCard.ability.Actions[currentActionIndex];
+        CardAction currentAction = activeCard.card.Actions[currentActionIndex];
         if (currentAction.GetType() == typeof(MoveAction)) {
             MoveAction moveAction = (MoveAction)currentAction;
-            UnitManager.singleton.ShowMoveAction(activeCard.ability.caster, moveAction.distance, moveAction.walkingType);
+            UnitManager.singleton.ShowMoveAction(activeCard.card.caster, moveAction.distance, moveAction.walkingType);
         } else if (typeof(AttackAction).IsAssignableFrom(currentAction.GetType())) {
             AttackAction attackAction = (AttackAction)currentAction;
-            UnitManager.singleton.ShowAttackAction(activeCard.ability.caster, attackAction);
+            UnitManager.singleton.ShowAttackAction(activeCard.card.caster, attackAction);
         }
     }
 

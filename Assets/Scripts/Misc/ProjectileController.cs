@@ -2,6 +2,8 @@
 
 public class ProjectileController : MonoBehaviour {
     public const float HIT_DISTANCE = 50;
+    public const float SCALE_SPEED = 0.07f;
+    public const float MIN_SCALE_DISTANCE = 0.005f;
 
     [SerializeField]
     public GameObject onHitEffect;
@@ -11,11 +13,27 @@ public class ProjectileController : MonoBehaviour {
     private Vector3 direction;
     private float speed;
 
+    private bool hitTarget = false;
+
     private void Start() {
     }
 
     private void Update() {
-        MoveToTarget();
+        if (hitTarget) {
+            ScaleDown();
+        } else {
+            MoveToTarget();
+        }
+    }
+
+    private void ScaleDown() {
+        float distanceToZeroScale = Vector3.Distance(transform.localScale, Vector3.zero);
+
+        if (distanceToZeroScale >= MIN_SCALE_DISTANCE) {
+            transform.localScale = Vector3.Lerp(transform.localScale, Vector3.zero, SCALE_SPEED);
+        } else {
+            Destroy(gameObject);
+        }
     }
 
     private void MoveToTarget() {
@@ -23,11 +41,15 @@ public class ProjectileController : MonoBehaviour {
             return;
         }
 
-        float distanceToNode = Vector3.Distance(myTarget.transform.position, transform.position);
+        Vector3 targetPosition = myTarget.transform.position;
+        targetPosition.y = transform.position.y;
+
+        float distanceToNode = Vector3.Distance(targetPosition, transform.position);
 
         if (distanceToNode >= speed / 20) {
             transform.position = transform.position + (direction * speed * Time.deltaTime);
         } else {
+            transform.position = targetPosition;
             ReachedTarget();
         }
     }
@@ -45,6 +67,7 @@ public class ProjectileController : MonoBehaviour {
             target.transform.position;
 
         direction = targetPosition - transform.position;
+        direction.y = 0;
         direction.Normalize();
 
         //Sprite mySprite = GetComponent<SpriteRenderer>().sprite;
@@ -63,5 +86,6 @@ public class ProjectileController : MonoBehaviour {
         }
 
         myCaster.ProjectileHit(this);
+        hitTarget = true;
     }
 }

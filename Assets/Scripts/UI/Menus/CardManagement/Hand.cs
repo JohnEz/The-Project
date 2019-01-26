@@ -2,12 +2,15 @@
 using UnityEngine;
 
 public class Hand : MonoBehaviour {
-    public static int HAND_LIMIT = 10;
+    public static int HAND_LIMIT = 6;
 
-    public GameObject cardPrefab;
+    public GameObject cardSlotPrefab;
 
     public PlayerUnit myUnit;
     public List<GameObject> myCards = new List<GameObject>();
+
+    public void Awake() {
+    }
 
     public void SetUnit(PlayerUnit _myUnit) {
         myUnit = _myUnit;
@@ -15,11 +18,11 @@ public class Hand : MonoBehaviour {
 
     public void AddCardToHand(AbilityCardBase card) {
         if (myCards.Count < HAND_LIMIT) {
-            GameObject cardObject = Instantiate(cardPrefab, transform);
-            cardObject.GetComponent<CardDisplay>().ability = Instantiate(card);
-            cardObject.GetComponent<CardDisplay>().myUnit = myUnit;
-            cardObject.GetComponent<CardDisplay>().myHand = this;
-            myCards.Add(cardObject);
+            GameObject cardSlot = Instantiate(cardSlotPrefab, transform);
+            cardSlot.GetComponent<CardSlot>().card = Instantiate(card);
+            cardSlot.GetComponent<CardSlot>().myUnit = myUnit;
+            cardSlot.GetComponent<CardSlot>().myHand = this;
+            myCards.Add(cardSlot);
         } else {
             // TODO create card and show burn animation
             GUIController.singleton.ShowErrorMessage("Burnt card " + card.name);

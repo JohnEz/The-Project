@@ -148,7 +148,7 @@ public class GUIController : MonoBehaviour {
         foreach (Transform child in transform) {
             SlidingElement slider = child.GetComponent<SlidingElement>();
 
-            if (slider != null && child.gameObject.active) {
+            if (slider != null && child.gameObject.activeSelf) {
                 slider.CloseMenu(CameraManager.singleton.blendTime * 0.5f);
             }
         }

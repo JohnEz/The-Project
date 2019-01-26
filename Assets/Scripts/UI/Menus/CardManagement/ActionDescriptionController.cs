@@ -20,6 +20,10 @@ public class ActionDescriptionController : MonoBehaviour {
 
     public void SetAction(CardAction action) {
         // Set the action icon and text
+        if (action == null) {
+            return;
+        }
+
         if (typeof(AttackAction).IsAssignableFrom(action.GetType())) {
             AttackAction attackAction = (AttackAction)action;
             if (action.description != null && !action.description.Equals("")) {

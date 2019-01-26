@@ -511,7 +511,6 @@ public class UnitController : MonoBehaviour {
 
     public void ProjectileHit(ProjectileController projectile) {
         projectiles.Remove(projectile);
-        Destroy(projectile.gameObject);
     }
 
     public void CreateBasicText(string text) {
