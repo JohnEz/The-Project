@@ -38,7 +38,7 @@ public static class BasicDecks {
         "Slash",
         "Slash",
         "Slash",
-        "Cleave",
+        "Slash",
         "Cleave",
         "Cleave",
         "Second Wind",
@@ -66,6 +66,28 @@ public static class BasicDecks {
         "Motif of Power",
         //Chest
         "Fanfare of Vitality",
+        //Legs
+        "Walk",
+        "Walk",
+        //Feet
+        "Dash",
+        "Walk",
+        "Walk",
+        "Hop",
+    };
+
+    public static List<string> starterCleric = new List<string> {
+        //Weapon
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Bash",
+        "Holy Word",
+        "Holy Word",
+        "Holy Word",
+        //Chest
+        "Shield the Faithful",
         //Legs
         "Walk",
         "Walk",
