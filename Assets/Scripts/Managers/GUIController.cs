@@ -22,19 +22,18 @@ public class GUIController : MonoBehaviour {
     private List<GameObject> abilityIcons = new List<GameObject>();
     private Dictionary<string, RuntimeAnimatorController> abilityIconControllers = new Dictionary<string, RuntimeAnimatorController>();
 
-    [HideInInspector]
-    private GameObject startMenu;
+    // Pre created ui elements
+    public GameObject startMenu;
 
-    private GameObject handLayout;
-    private GameObject staminaPoints;
-    private TextMeshProUGUI objectivesBody;
+    public GameObject handLayout;
+    public GameObject staminaPoints;
+    public TextMeshProUGUI objectiveHeader;
+    public TextMeshProUGUI objectivesBody;
+    public Button endTurnButton;
 
     private void Awake() {
         singleton = this;
-        startMenu = GameObject.Find("StartMenu");
-        handLayout = GameObject.Find("HandLayout");
-        handLayout.SetActive(false);
-        //staminaPoints = GameObject.Find("StaminaPointsFrame");
+        SetUIActive(false);
         //staminaPoints.SetActive(false);
     }
 
@@ -57,7 +56,7 @@ public class GUIController : MonoBehaviour {
         // TODO animate out
         startMenu.SetActive(false);
         Destroy(startMenu, 1f);
-        handLayout.SetActive(true);
+        SetUIActive(true);
         //staminaPoints.SetActive(true);
         Invoke("StartGame", 0.5f);
     }
@@ -72,21 +71,29 @@ public class GUIController : MonoBehaviour {
     }
 
     public void StartNewTurn(bool ally, List<Objective> objectives) {
+        DisplayNewTurnText(ally);
+        UpdateObjectiveText(objectives);
+        SetEndTurnEnabled(TurnManager.singleton.IsPlayersTurn());
+    }
+
+    private void DisplayNewTurnText(bool allyTurn) {
         showingTurn = true;
         turnText = (GameObject)Instantiate(turnTextPrefab, turnTextPrefab.transform.position, Quaternion.identity);
         turnText.transform.SetParent(transform);
         turnText.transform.localPosition = turnTextPrefab.transform.position;
         turnText.transform.localScale = new Vector3(1, 1, 1);
-        turnText.transform.Find("AllyTurnImage").gameObject.SetActive(ally);
-        turnText.transform.Find("EnemyTurnImage").gameObject.SetActive(!ally);
+        turnText.transform.Find("AllyTurnImage").gameObject.SetActive(allyTurn);
+        turnText.transform.Find("EnemyTurnImage").gameObject.SetActive(!allyTurn);
 
+        //TODO THIS SHOULD FIND THE LENGTH OF THE ANIMATION AND NOT BE HARD CODED BUT IM TIRED
+        Destroy(turnText, 1.917f);
+    }
+
+    private void UpdateObjectiveText(List<Objective> objectives) {
         if (objectivesBody == null) {
             objectivesBody = transform.Find("Objectives").Find("ObjectivesBody").GetComponent<TextMeshProUGUI>();
         }
         objectivesBody.text = CreateObjectiveText(objectives);
-
-        //TODO THIS SHOULD FIND THE LENGTH OF THE ANIMATION AND NOT BE HARD CODED BUT IM TIRED
-        Destroy(turnText, 1.917f);
     }
 
     public void ClearAbilityIcons() {
@@ -144,14 +151,11 @@ public class GUIController : MonoBehaviour {
         newDamageText.transform.SetParent(this.transform);
     }
 
-    public void HideUI() {
-        foreach (Transform child in transform) {
-            SlidingElement slider = child.GetComponent<SlidingElement>();
-
-            if (slider != null && child.gameObject.activeSelf) {
-                slider.CloseMenu(CameraManager.singleton.blendTime * 0.5f);
-            }
-        }
+    public void SetUIActive(bool isActive) {
+        objectiveHeader.gameObject.SetActive(isActive);
+        objectivesBody.gameObject.SetActive(isActive);
+        endTurnButton.gameObject.SetActive(isActive);
+        handLayout.SetActive(isActive);
     }
 
     public void ShowUI() {
@@ -159,9 +163,23 @@ public class GUIController : MonoBehaviour {
             SlidingElement slider = child.GetComponent<SlidingElement>();
 
             if (slider != null) {
-                slider.OpenMenu(CameraManager.singleton.blendTime * 0.5f);
+                slider.OpenMenu(CameraManager.singleton.blendTime * 0.33f);
             }
         }
+    }
+
+    public void HideUI() {
+        foreach (Transform child in transform) {
+            SlidingElement slider = child.GetComponent<SlidingElement>();
+
+            if (slider != null && child.gameObject.activeSelf) {
+                slider.CloseMenu(CameraManager.singleton.blendTime * 0.33f);
+            }
+        }
+    }
+
+    public void SetEndTurnEnabled(bool isEnabled) {
+        endTurnButton.interactable = isEnabled;
     }
 
     public void CreateFlyinText(string message) {

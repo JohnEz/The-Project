@@ -70,13 +70,17 @@ public class UserInterfaceManager : MonoBehaviour {
             }
         }
 
+        if (Input.GetKeyUp("space")) {
+            EndTurn();
+        }
+    }
+
+    public void EndTurn() {
         if (TurnManager.singleton.CurrentPhase == TurnPhase.WAITING_FOR_INPUT && !TurnManager.singleton.isAiTurn()) {
-            if (Input.GetKeyUp("space")) {
-                if (cardState == CardState.PLAYED) {
-                    CancelCurrentCard();
-                }
-                TurnManager.singleton.EndTurn();
+            if (cardState == CardState.PLAYED) {
+                CancelCurrentCard();
             }
+            TurnManager.singleton.EndTurn();
         }
     }
 
@@ -141,19 +145,11 @@ public class UserInterfaceManager : MonoBehaviour {
     public void ClickedUnselected(Node node) {
     }
 
-    public void StartTurn() {
-        if (!TurnManager.singleton.isAiTurn()) {
-        }
-    }
-
-    public void EndTurn() {
-    }
-
     public bool CanPlayCard() {
         return
             cardState == CardState.NONE &&
             TurnManager.singleton.CurrentPhase == TurnPhase.WAITING_FOR_INPUT &&
-            TurnManager.singleton.GetCurrentPlayer() == PlayerManager.singleton.mainPlayer;
+            TurnManager.singleton.IsPlayersTurn();
     }
 
     public bool CanPlayCard(CardSlot cardSlot) {

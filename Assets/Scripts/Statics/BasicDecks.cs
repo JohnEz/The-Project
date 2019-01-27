@@ -14,8 +14,8 @@ public static class BasicDecks {
         //Weapon
         "Strike",
         "Strike",
-        "Strike",
-        "Strike",
+        "Mana Bolt",
+        "Mana Bolt",
         "Mana Bolt",
         "Mana Bolt",
         "Mana Bolt",

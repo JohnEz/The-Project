@@ -61,15 +61,13 @@ public class TurnManager : MonoBehaviour {
         while (UnitManager.singleton.GetPlayersUnits(currentPlayersTurn.id).Count <= 0 || playersTurn == previousPlayersTurn) {
             currentPlayersTurn = SetNextPlayersTurn();
         }
-        
+
         UnitManager.singleton.StartTurn(currentPlayersTurn);
         bool alliedTurn = PlayerManager.singleton.mainPlayer.faction == currentPlayersTurn.faction;
 
         GUIController.singleton.StartNewTurn(alliedTurn, ObjectiveManager.singleton.getObjectives(currentPlayersTurn));
 
         PlayerManager.singleton.StartNewTurn(currentPlayersTurn);
-
-        UserInterfaceManager.singleton.StartTurn();
 
         if (isAiTurn()) {
             StartCoroutine(AIManager.singleton.NewTurn(playersTurn));
@@ -104,6 +102,10 @@ public class TurnManager : MonoBehaviour {
 
     public Player GetCurrentPlayer() {
         return PlayerManager.singleton.GetPlayer(playersTurn);
+    }
+
+    public bool IsPlayersTurn() {
+        return PlayerManager.singleton.IsMainPlayer(playersTurn);
     }
 
     public void ChangeState(TurnPhase newPhase) {

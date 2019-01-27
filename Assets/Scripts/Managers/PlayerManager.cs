@@ -122,4 +122,8 @@ public class PlayerManager : MonoBehaviour {
     public Player GetPlayer(int playerId) {
         return players[playerId];
     }
+
+    public bool IsMainPlayer(int playerId) {
+        return players[playerId] == mainPlayer;
+    }
 }
