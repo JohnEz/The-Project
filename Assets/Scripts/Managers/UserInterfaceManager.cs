@@ -81,11 +81,13 @@ public class UserInterfaceManager : MonoBehaviour {
     }
 
     public void CancelCurrentCard() {
-        cardState = CardState.NONE;
-        activeCard.gameObject.SetActive(true);
-        //PlayerManager.singleton.mainPlayer.CurrentInfluence += activeCard.ability.staminaCost;
-        activeCard.card.caster.Stamina += activeCard.card.staminaCost;
-        UnshowCard();
+        if (cardState == CardState.PLAYED) {
+            cardState = CardState.NONE;
+            activeCard.CancelCard();
+            //PlayerManager.singleton.mainPlayer.CurrentInfluence += activeCard.ability.staminaCost;
+            activeCard.card.caster.Stamina += activeCard.card.staminaCost;
+            UnshowCard();
+        }
     }
 
     public void TileHovered(Node node, SquareTarget target) {
@@ -148,7 +150,14 @@ public class UserInterfaceManager : MonoBehaviour {
     }
 
     public bool CanPlayCard() {
-        return cardState == CardState.NONE;
+        return
+            cardState == CardState.NONE &&
+            TurnManager.singleton.CurrentPhase == TurnPhase.WAITING_FOR_INPUT &&
+            TurnManager.singleton.GetCurrentPlayer() == PlayerManager.singleton.mainPlayer;
+    }
+
+    public bool CanPlayCard(CardSlot cardSlot) {
+        return CanPlayCard() && cardSlot.card.caster.Stamina >= cardSlot.card.staminaCost;
     }
 
     public void CardHovered(CardSlot card) {
@@ -166,7 +175,7 @@ public class UserInterfaceManager : MonoBehaviour {
     }
 
     public bool PlayCard(CardSlot cardSlot) {
-        if (CanPlayCard() && cardSlot.card.caster.Stamina >= cardSlot.card.staminaCost) {
+        if (CanPlayCard(cardSlot)) {
             UnshowCard();
             cardState = CardState.PLAYED;
             cardSlot.card.caster.Stamina -= cardSlot.card.staminaCost;

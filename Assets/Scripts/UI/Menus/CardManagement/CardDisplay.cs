@@ -11,6 +11,7 @@ public class CardDisplay : MonoBehaviour {
     public Text descriptionText;
     public CardDescriptionController descriptionController;
     public TextMeshProUGUI staminaText;
+    public Image cardGlow;
 
     public void Start() {
     }
@@ -22,6 +23,10 @@ public class CardDisplay : MonoBehaviour {
         //descriptionText.text = ability.GetDescription();
         descriptionController.SetDescription(cardAbility);
         staminaText.text = cardAbility.staminaCost.ToString();
+    }
+
+    public void SetGlow(bool on) {
+        cardGlow.gameObject.SetActive(on);
     }
 
     //public bool CanInterractWithCard(bool displayErrors = true) {

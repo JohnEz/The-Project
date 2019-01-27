@@ -14,7 +14,7 @@ public class CardSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     public GameObject hoverCardDisplayPrefab;
     public CardDisplay cardSlotDisplay;
 
-    private GameObject hoverCardDisplay;
+    private CardDisplay hoverCardDisplay;
 
     public AbilityCardBase card;
     public CardSlotState state;
@@ -34,6 +34,14 @@ public class CardSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     }
 
     public void Update() {
+        // TODO this seems in efficient
+        bool glowOn = UserInterfaceManager.singleton.CanPlayCard(this);
+
+        cardSlotDisplay.SetGlow(glowOn);
+
+        if (hoverCardDisplay != null) {
+            hoverCardDisplay.SetGlow(glowOn);
+        }
     }
 
     public void OnDestroy() {
@@ -47,14 +55,15 @@ public class CardSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
             Debug.LogError("Tried to create hover card when it already exists");
         }
 
-        hoverCardDisplay = Instantiate(hoverCardDisplayPrefab, transform);
-        hoverCardDisplay.transform.SetParent(GetComponentInParent<Canvas>().transform);
-        hoverCardDisplay.GetComponent<CardDisplay>().SetCardAbility(card);
+        GameObject hoverCardDisplayObject = Instantiate(hoverCardDisplayPrefab, transform);
+        hoverCardDisplayObject.transform.SetParent(GetComponentInParent<Canvas>().transform);
+        hoverCardDisplay = hoverCardDisplayObject.GetComponent<CardDisplay>();
+        hoverCardDisplay.SetCardAbility(card);
     }
 
     private void DestroyHoverCardDisplay(float delay = 0) {
         if (hoverCardDisplay != null) {
-            Destroy(hoverCardDisplay, delay);
+            Destroy(hoverCardDisplay.gameObject, delay);
         }
     }
 
@@ -66,6 +75,17 @@ public class CardSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     public void HideDetailedCard() {
         DestroyHoverCardDisplay();
         cardSlotDisplay.gameObject.SetActive(true);
+    }
+
+    public void PlayCard() {
+        state = CardSlotState.PLAYED;
+        gameObject.SetActive(false);
+        HideDetailedCard();
+    }
+
+    public void CancelCard() {
+        state = CardSlotState.NONE;
+        gameObject.SetActive(true);
     }
 
     public void OnPointerEnter(PointerEventData eventData) {
@@ -99,11 +119,8 @@ public class CardSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
     }
 
     public void OnPointerClick(PointerEventData eventData) {
-        // play card
         if (UserInterfaceManager.singleton.PlayCard(this)) {
-            state = CardSlotState.PLAYED;
-            gameObject.SetActive(false);
-            HideDetailedCard();
+            PlayCard();
         }
     }
 }
