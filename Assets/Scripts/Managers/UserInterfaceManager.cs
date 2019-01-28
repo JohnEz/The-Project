@@ -1,20 +1,10 @@
 ﻿using UnityEngine;
 
-public enum CardState {
-    NONE,
-    PLAYED,
-    INVOKED
-}
-
 public class UserInterfaceManager : MonoBehaviour {
     public static UserInterfaceManager singleton;
 
     //Managers
     private PauseMenuController pauseMenuController;
-
-    private CardSlot activeCard = null;
-    private int currentActionIndex = 0;
-    private CardState cardState = CardState.NONE;
 
     private void Awake() {
         singleton = this;
@@ -32,23 +22,18 @@ public class UserInterfaceManager : MonoBehaviour {
 
     public void ShowCard(CardSlot cardSlot) {
         UnshowCard();
-        activeCard = cardSlot;
 
-        if (cardState == CardState.NONE) {
+        if (!CardManager.singleton.IsACardActive()) {
+            CardManager.singleton.ActiveCard = cardSlot;
             ShowAction();
         }
     }
 
     public void UnshowCard() {
-        if (activeCard) {
+        if (CardManager.singleton.ActiveCard != null) {
             HighlightManager.singleton.UnhighlightTiles();
             HighlightManager.singleton.ClearEffectedTiles();
         }
-    }
-
-    // When the user clicked an action from the card
-    public void CardInvoked() {
-        cardState = CardState.INVOKED;
     }
 
     private void UserControls() {
@@ -59,8 +44,8 @@ public class UserInterfaceManager : MonoBehaviour {
 
         //Cancel (right click)
         if (Input.GetKeyUp(KeyCode.Escape)) {
-            if (cardState == CardState.PLAYED) {
-                CancelCurrentCard();
+            if (CardManager.singleton.IsACardPlayed()) {
+                CardManager.singleton.CancelCurrentCard();
             } else {
                 if (PauseMenuController.gameIsPaused) {
                     pauseMenuController.Resume();
@@ -77,27 +62,17 @@ public class UserInterfaceManager : MonoBehaviour {
 
     public void EndTurn() {
         if (TurnManager.singleton.CurrentPhase == TurnPhase.WAITING_FOR_INPUT && !TurnManager.singleton.isAiTurn()) {
-            if (cardState == CardState.PLAYED) {
-                CancelCurrentCard();
+            if (CardManager.singleton.IsACardPlayed()) {
+                CardManager.singleton.CancelCurrentCard();
             }
             TurnManager.singleton.EndTurn();
         }
     }
 
-    public void CancelCurrentCard() {
-        if (cardState == CardState.PLAYED) {
-            cardState = CardState.NONE;
-            activeCard.CancelCard();
-            //PlayerManager.singleton.mainPlayer.CurrentInfluence += activeCard.ability.staminaCost;
-            activeCard.card.caster.Stamina += activeCard.card.staminaCost;
-            UnshowCard();
-        }
-    }
-
     public void TileHovered(Node node, SquareTarget target) {
         UnitManager.singleton.CurrentlyHoveredNode = node;
-        if (cardState != CardState.NONE && (target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL)) {
-            UnitManager.singleton.HighlightEffectedTiles(activeCard.card.caster, node);
+        if (!CardManager.singleton.IsACardActive() && (target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL)) {
+            UnitManager.singleton.HighlightEffectedTiles(CardManager.singleton.ActiveCard.card.caster, node);
         } else if (target == SquareTarget.MOVEMENT || target == SquareTarget.DASH || ((target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL) && node.previousMoveNode != null)) {
             UnitManager.singleton.ShowPath(node);
         }
@@ -130,66 +105,52 @@ public class UserInterfaceManager : MonoBehaviour {
     }
 
     public void ClickedAttack(Node node) {
-        if (UnitManager.singleton.AttackTile(activeCard.card.caster, node)) {
+        if (UnitManager.singleton.AttackTile(CardManager.singleton.ActiveCard.card.caster, node)) {
             UnshowCard();
-            CardInvoked();
+            CardManager.singleton.CardInvoked();
         }
     }
 
     public void ClickedMovement(Node node) {
-        UnitManager.singleton.MoveToTile(activeCard.card.caster, node);
+        UnitManager.singleton.MoveToTile(CardManager.singleton.ActiveCard.card.caster, node);
         UnshowCard();
-        CardInvoked();
+        CardManager.singleton.CardInvoked();
     }
 
     public void ClickedUnselected(Node node) {
     }
 
-    public bool CanPlayCard() {
-        return
-            cardState == CardState.NONE &&
-            TurnManager.singleton.CurrentPhase == TurnPhase.WAITING_FOR_INPUT &&
-            TurnManager.singleton.IsPlayersTurn();
-    }
-
-    public bool CanPlayCard(CardSlot cardSlot) {
-        return CanPlayCard() && cardSlot.card.caster.Stamina >= cardSlot.card.staminaCost;
-    }
-
     public void CardHovered(CardSlot card) {
-        if (CanPlayCard()) {
+        if (CardManager.singleton.CanPlayCard()) {
             ShowCard(card);
         }
     }
 
     public void CardUnhovered() {
         // if there isnt a played card, clear the display
-        if (cardState == CardState.NONE) {
+        if (!CardManager.singleton.IsACardActive()) {
             UnshowCard();
-            activeCard = null;
+            CardManager.singleton.ActiveCard = null;
         }
     }
 
     public bool PlayCard(CardSlot cardSlot) {
-        if (CanPlayCard(cardSlot)) {
+        if (CardManager.singleton.CanPlayCard(cardSlot)) {
             UnshowCard();
-            cardState = CardState.PLAYED;
-            cardSlot.card.caster.Stamina -= cardSlot.card.staminaCost;
-            activeCard = cardSlot;
-            RunNextCardAction();
+            CardManager.singleton.PlayCard(cardSlot);
             return true;
         }
         return false;
     }
 
-    public bool RunNextCardAction() {
-        if (activeCard && currentActionIndex < activeCard.card.Actions.Count) {
-            CardAction currentAction = activeCard.card.Actions[currentActionIndex];
+    public bool RunNextCardAction(CardSlot card, int actionIndex) {
+        if (card && actionIndex < card.card.Actions.Count) {
+            CardAction currentAction = card.card.Actions[actionIndex];
             if (currentAction.GetType() == typeof(MoveAction) || typeof(AttackAction).IsAssignableFrom(currentAction.GetType())) {
                 ShowAction();
             } else if (currentAction.GetType() == typeof(DrawCardAction)) {
                 DrawCardAction drawAction = (DrawCardAction)currentAction;
-                activeCard.myUnit.deck.DrawCard(drawAction.cardsToDraw);
+                CardManager.singleton.ActiveCard.myUnit.deck.DrawCard(drawAction.cardsToDraw);
                 FinishedAction();
             }
             return true;
@@ -199,7 +160,8 @@ public class UserInterfaceManager : MonoBehaviour {
     }
 
     public void ShowAction() {
-        CardAction currentAction = activeCard.card.Actions[currentActionIndex];
+        CardSlot activeCard = CardManager.singleton.ActiveCard;
+        CardAction currentAction = activeCard.card.Actions[CardManager.singleton.CurrentActionIndex];
         if (currentAction.GetType() == typeof(MoveAction)) {
             MoveAction moveAction = (MoveAction)currentAction;
             UnitManager.singleton.ShowMoveAction(activeCard.card.caster, moveAction.distance, moveAction.walkingType);
@@ -210,12 +172,9 @@ public class UserInterfaceManager : MonoBehaviour {
     }
 
     public void FinishedAction() {
-        currentActionIndex++;
-        if (!RunNextCardAction()) {
-            Destroy(activeCard.gameObject);
-            activeCard = null;
-            cardState = CardState.NONE;
-            currentActionIndex = 0;
+        CardManager.singleton.CurrentActionIndex++;
+        if (!RunNextCardAction(CardManager.singleton.ActiveCard, CardManager.singleton.CurrentActionIndex)) {
+            CardManager.singleton.DestroyActiveCard();
         }
     }
 

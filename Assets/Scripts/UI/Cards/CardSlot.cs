@@ -35,7 +35,7 @@ public class CardSlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDrag
 
     public void Update() {
         // TODO this seems in efficient
-        bool glowOn = UserInterfaceManager.singleton.CanPlayCard(this);
+        bool glowOn = CardManager.singleton.CanPlayCard(this);
 
         cardSlotDisplay.SetGlow(glowOn);
 
