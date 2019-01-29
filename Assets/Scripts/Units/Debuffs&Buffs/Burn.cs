@@ -5,6 +5,6 @@
         maxStack = 5;
         isDebuff = true;
         flatMod[(int)Stats.DAMAGE] = damage;
-        icon = "buffBurn";
+        icon = "icon_burn";
     }
 }
