@@ -28,6 +28,8 @@ public class UnitController : MonoBehaviour {
     public GameObject unitCanvasPrefab;
     public UnitObject baseStats;
 
+    public UnitStatistics myCounters;
+
     [System.NonSerialized]
     public UnitObject myStats;
 
@@ -74,6 +76,7 @@ public class UnitController : MonoBehaviour {
         unitCanvas.transform.SetParent(transform, false);
         unitCanvasController = unitCanvas.GetComponent<UnitCanvasController>();
 
+        myCounters = new UnitStatistics();
         myStats = Instantiate(baseStats);
         myStats.Initialise(this);
         projectiles = new List<ProjectileController>();
@@ -103,11 +106,14 @@ public class UnitController : MonoBehaviour {
             (healing) => { this.TakeHealing(null, healing); }
         );
         myStats.NewTurn();
+        myCounters.NewTurn();
         Stamina = myStats.MaxStamina;
     }
 
     public void EndTurn() {
+        Debug.Log(myStats.className + ": " + myCounters.ToString());
         myStats.EndTurn();
+        myCounters.EndTurn();
     }
 
     public void Spawn(Player player, Node startNode, UnitObject startingStats) {
@@ -264,6 +270,7 @@ public class UnitController : MonoBehaviour {
         FaceDirection(myPath[0].previous.GetDirectionFrom(myPath[0]));
         SetWalking(true);
         myManager.UnitStartedMoving();
+        myCounters.TilesMoved += path.Count;
     }
 
     private void FinishWalking() {

@@ -29,6 +29,7 @@ public class Deck : MonoBehaviour {
         if (myUnit.deckList.Count > 0) {
             AbilityCardBase drawnCardAbility = GetTopCard();
             hand.AddCardToHand(drawnCardAbility);
+            myUnit.unit.myCounters.CardsDrawn++;
         }
     }
 

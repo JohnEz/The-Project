@@ -93,12 +93,13 @@ public class CardManager : MonoBehaviour {
         }
     }
 
-    public void DestroyActiveCard() {
-        Debug.Log(ActiveCard);
-        Debug.Log(ActiveCard.myUnit);
-        Debug.Log(ActiveCard.myUnit.discard);
-        Debug.Log(ActiveCard.card);
+    public void FinishedPlayingCard() {
         ActiveCard.myUnit.discard.Push(ActiveCard.card);
+        ActiveCard.myUnit.unit.myCounters.CardsPlayed++;
+        DestroyActiveCard();
+    }
+
+    public void DestroyActiveCard() {
         Destroy(ActiveCard.gameObject);
         ActiveCard = null;
         cardState = CardState.NONE;

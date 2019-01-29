@@ -3,11 +3,10 @@
 public static class BasicDecks {
 
     public static List<string> testDeck = new List<string> {
-        "Walk",
-        "Frost Nova",
-        "Walk",
-        "Walk",
-        "Walk",
+        "Dash",
+        "Dash",
+        "Charge",
+        "Charge",
     };
 
     public static List<string> starterElementalist = new List<string> {
@@ -38,14 +37,14 @@ public static class BasicDecks {
         "Slash",
         "Slash",
         "Slash",
-        "Slash",
+        "Charge",
         "Cleave",
         "Cleave",
         "Second Wind",
         //Chest
         "Armour",
         //Legs
-        "Walk",
+        "Dash",
         "Walk",
         //Feet
         "Dash",

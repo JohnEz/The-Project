@@ -174,7 +174,7 @@ public class UserInterfaceManager : MonoBehaviour {
     public void FinishedAction() {
         CardManager.singleton.CurrentActionIndex++;
         if (!RunNextCardAction(CardManager.singleton.ActiveCard, CardManager.singleton.CurrentActionIndex)) {
-            CardManager.singleton.DestroyActiveCard();
+            CardManager.singleton.FinishedPlayingCard();
         }
     }
 
