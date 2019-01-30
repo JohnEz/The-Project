@@ -16,6 +16,8 @@ public class AbilityCardBase : ScriptableObject {
 
     public UnitController caster;
 
+    public bool exhausts = false;
+
     public void Awake() {
         instansiatedActions = new List<CardAction>(0);
         baseActions.ForEach(action => {

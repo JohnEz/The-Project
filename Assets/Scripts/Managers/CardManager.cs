@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-
 public enum CardState {
     NONE,
     PLAYED,
@@ -94,7 +93,9 @@ public class CardManager : MonoBehaviour {
     }
 
     public void FinishedPlayingCard() {
-        ActiveCard.myUnit.discardList.Push(ActiveCard.card);
+        if (!ActiveCard.card.exhausts) {
+            ActiveCard.myUnit.discardList.Push(ActiveCard.card);
+        }
         ActiveCard.myUnit.unit.myCounters.CardsPlayed++;
         DestroyActiveCard();
     }
