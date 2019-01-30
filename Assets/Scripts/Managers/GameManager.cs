@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour {
             }
         }
 
-        List<AbilityCardBase> fighterdeck = CardManager.singleton.LoadDeck(BasicDecks.testDeck);
+        List<AbilityCardBase> fighterdeck = CardManager.singleton.LoadDeck(BasicDecks.starterFighter);
         List<AbilityCardBase> barddeck = CardManager.singleton.LoadDeck(BasicDecks.starterBard);
         List<AbilityCardBase> clericdeck = CardManager.singleton.LoadDeck(BasicDecks.starterCleric);
         List<AbilityCardBase> elementalistdeck = CardManager.singleton.LoadDeck(BasicDecks.starterElementalist);

@@ -58,6 +58,7 @@ public class UnitManager : MonoBehaviour {
         Hand spawnedHand = GUIController.singleton.CreateHand().GetComponent<Hand>();
 
         newUnit.deck = spawnedDeck;
+        newUnit.hand = spawnedHand;
         spawnedDeck.SetUnit(newUnit);
         spawnedHand.SetUnit(newUnit);
         spawnedDeck.SetHand(spawnedHand);

@@ -30,6 +30,10 @@ public class Deck : MonoBehaviour {
             AbilityCardBase drawnCardAbility = GetTopCard();
             hand.AddCardToHand(drawnCardAbility);
             myUnit.unit.myCounters.CardsDrawn++;
+        } else {
+            myUnit.deckList.AddRange(myUnit.discardList);
+            myUnit.discardList.Clear();
+            DrawCard();
         }
     }
 

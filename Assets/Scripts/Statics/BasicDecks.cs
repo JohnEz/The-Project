@@ -36,7 +36,7 @@ public static class BasicDecks {
         "Slash",
         "Slash",
         "Slash",
-        "Slash",
+        "Charge",
         "Charge",
         "Cleave",
         "Cleave",

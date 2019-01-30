@@ -29,6 +29,15 @@ public class Hand : MonoBehaviour {
         }
     }
 
+    public void DiscardHand() {
+        myCards.ForEach(card => {
+            myUnit.discardList.Push(card.GetComponent<CardSlot>().card);
+            Destroy(card);
+        });
+
+        myCards.Clear();
+    }
+
     public void CardDestroyed(GameObject destroyedCard) {
         if (myCards.Contains(destroyedCard)) {
             myCards.Remove(destroyedCard);

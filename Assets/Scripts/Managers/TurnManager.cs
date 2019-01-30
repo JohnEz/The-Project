@@ -78,6 +78,7 @@ public class TurnManager : MonoBehaviour {
 
     public void EndTurn() {
         ChangeState(TurnPhase.TURN_ENDING);
+        PlayerManager.singleton.EndTurn(GetCurrentPlayer());
         Player currentPlayersTurn = GetCurrentPlayer();
 
         if (ObjectiveManager.singleton.CheckObjectives(currentPlayersTurn)) {

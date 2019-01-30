@@ -174,7 +174,6 @@ public class AudioManager : MonoBehaviour {
         currentMusic = m;
 
         m.Play(fadeIn);
-        Debug.Log("Playing " + name);
     }
 
     public GameObject Play(PlayOptions options) {
@@ -252,15 +251,12 @@ public class AudioManager : MonoBehaviour {
 
     private void LoadAudioSettings() {
         float loadedMasterVolume = PlayerPrefs.GetFloat(MASTER_VOLUME);
-        Debug.Log("Loaded master volume: " + loadedMasterVolume);
         masterMixer.SetFloat(MASTER_VOLUME, loadedMasterVolume);
 
         float loadedMusicVolume = PlayerPrefs.GetFloat(MUSIC_VOLUME);
-        Debug.Log("Loaded music volume: " + loadedMusicVolume);
         masterMixer.SetFloat(MUSIC_VOLUME, loadedMusicVolume);
 
         float loadedSFXVolume = PlayerPrefs.GetFloat(SFX_VOLUME);
-        Debug.Log("Loaded SFX volume: " + loadedSFXVolume);
         masterMixer.SetFloat(SFX_VOLUME, loadedSFXVolume);
     }
 }

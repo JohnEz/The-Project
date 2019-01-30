@@ -33,10 +33,11 @@ public class Player {
 public class PlayerUnit {
     public UnitController unit;
     public Deck deck;
+    public Hand hand;
 
     public List<AbilityCardBase> deckList = new List<AbilityCardBase>();
-    private List<AbilityCardBase> hand = new List<AbilityCardBase>();
-    public Stack<AbilityCardBase> discard = new Stack<AbilityCardBase>();
+    private List<AbilityCardBase> handList = new List<AbilityCardBase>();
+    public Stack<AbilityCardBase> discardList = new Stack<AbilityCardBase>();
 
     //public Hand hand;
 }
@@ -96,9 +97,7 @@ public class PlayerManager : MonoBehaviour {
     public void StartGame() {
         // Draw starting Hand
         mainPlayer.units.ForEach(unit => {
-            Debug.Log("Spawning cards for unit: " + unit.unit.name);
             unit.deck.Shuffle();
-            unit.deck.DrawCard(2);
         });
     }
 
@@ -110,7 +109,15 @@ public class PlayerManager : MonoBehaviour {
         if (!player.ai) {
             player.StartTurn();
             player.units.ForEach(unit => {
-                unit.deck.DrawCard(2);
+                unit.deck.DrawCard(4);
+            });
+        }
+    }
+
+    public void EndTurn(Player player) {
+        if (!player.ai) {
+            player.units.ForEach(unit => {
+                unit.hand.DiscardHand();
             });
         }
     }

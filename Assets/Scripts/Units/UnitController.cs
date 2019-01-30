@@ -111,7 +111,6 @@ public class UnitController : MonoBehaviour {
     }
 
     public void EndTurn() {
-        Debug.Log(myStats.className + ": " + myCounters.ToString());
         myStats.EndTurn();
         myCounters.EndTurn();
     }

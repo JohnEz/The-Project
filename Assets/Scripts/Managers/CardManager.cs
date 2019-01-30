@@ -94,7 +94,7 @@ public class CardManager : MonoBehaviour {
     }
 
     public void FinishedPlayingCard() {
-        ActiveCard.myUnit.discard.Push(ActiveCard.card);
+        ActiveCard.myUnit.discardList.Push(ActiveCard.card);
         ActiveCard.myUnit.unit.myCounters.CardsPlayed++;
         DestroyActiveCard();
     }
