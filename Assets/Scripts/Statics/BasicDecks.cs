@@ -5,8 +5,8 @@ public static class BasicDecks {
     public static List<string> testDeck = new List<string> {
         "Dash",
         "Dash",
-        "Charge",
-        "Cleave",
+        "Hook and Chain",
+        "Shield Slam",
     };
 
     public static List<string> starterElementalist = new List<string> {

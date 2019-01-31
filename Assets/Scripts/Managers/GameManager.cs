@@ -54,7 +54,7 @@ public class GameManager : MonoBehaviour {
         //int playerSpawnX = playerSpawnLocation != null ? playerSpawnLocation.x : 5;
         //int playerSpawnY = playerSpawnLocation != null ? playerSpawnLocation.y : 6;
         //UnitManager.singleton.SpawnPlayerUnit(GameDetails.PlayerCharacter, humanPlayer, playerSpawnX, playerSpawnY, fighterdeck);
-        UnitManager.singleton.SpawnPlayerUnit("Fighter", humanPlayer, 4, 12, fighterdeck);
+        UnitManager.singleton.SpawnPlayerUnit("Fighter", humanPlayer, 4, 12, testDeck);
         UnitManager.singleton.SpawnPlayerUnit("Cleric", humanPlayer, 5, 12, clericdeck);
         UnitManager.singleton.SpawnPlayerUnit("Criminal", humanPlayer, 6, 12, criminalDeck);
 
