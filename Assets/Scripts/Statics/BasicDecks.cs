@@ -6,7 +6,7 @@ public static class BasicDecks {
         "Dash",
         "Dash",
         "Charge",
-        "Charge",
+        "Cleave",
     };
 
     public static List<string> starterElementalist = new List<string> {
@@ -87,6 +87,28 @@ public static class BasicDecks {
         "Holy Word",
         //Chest
         "Shield the Faithful",
+        //Legs
+        "Walk",
+        "Walk",
+        //Feet
+        "Dash",
+        "Walk",
+        "Walk",
+        "Hop",
+    };
+
+        public static List<string> starterCriminal = new List<string> {
+        //Weapon
+        "Lunge",
+        "Lunge",
+        "Riposte",
+        "Riposte",
+        "Hidden Blade",
+        "Hidden Blade",
+        "Finisher",
+        "Run n' Gun",
+        //Chest
+        "Run n' Gun",
         //Legs
         "Walk",
         "Walk",

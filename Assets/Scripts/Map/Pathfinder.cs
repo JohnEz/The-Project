@@ -309,7 +309,7 @@ public class Pathfinder : MonoBehaviour {
                 return FindAttackableTiles(targetNode, action);
 
             case AreaOfEffect.CLEAVE:
-                return TileMap.instance.pathfinder.FindCleaveTargetTiles(targetNode, action, unitNode);
+                return FindCleaveTargetTiles(targetNode, action, unitNode);
 
             case AreaOfEffect.SINGLE:
             default:
@@ -362,6 +362,7 @@ public class Pathfinder : MonoBehaviour {
     }
 
     public List<Node> FindCleaveTargetTiles(Node node, AttackAction action, Node start) {
+        Debug.Log("finding cleave targets");
         //TODO write a smarter way of doing this
         bool attackingHorizontally = start.x != node.x;
         List<Node> targetTiles = findReachableTiles(node, action.aoeRange, Walkable.Flying, -1).basic.Keys.ToList();

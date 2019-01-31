@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 public class UserInterfaceManager : MonoBehaviour {
     public static UserInterfaceManager singleton;
@@ -46,6 +47,14 @@ public class UserInterfaceManager : MonoBehaviour {
         if (Input.GetKeyUp(KeyCode.Escape)) {
             if (CardManager.singleton.IsACardPlayed()) {
                 CardManager.singleton.CancelCurrentCard();
+            } else if (CardManager.singleton.IsACardInvoked()) {
+                //check to see if they have an available option
+                if (ActionHasAvailableOptions()) {
+                    GUIController.singleton.ShowErrorMessage("You have available options!");
+                } else {
+                    UnshowCard();
+                    CardManager.singleton.FinishedPlayingCard();
+                }
             } else {
                 if (PauseMenuController.gameIsPaused) {
                     pauseMenuController.Resume();
@@ -71,7 +80,7 @@ public class UserInterfaceManager : MonoBehaviour {
 
     public void TileHovered(Node node, SquareTarget target) {
         UnitManager.singleton.CurrentlyHoveredNode = node;
-        if (!CardManager.singleton.IsACardActive() && (target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL)) {
+        if (CardManager.singleton.IsACardActive() && (target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL)) {
             UnitManager.singleton.HighlightEffectedTiles(CardManager.singleton.ActiveCard.card.caster, node);
         } else if (target == SquareTarget.MOVEMENT || target == SquareTarget.DASH || ((target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL) && node.previousMoveNode != null)) {
             UnitManager.singleton.ShowPath(node);
@@ -169,6 +178,24 @@ public class UserInterfaceManager : MonoBehaviour {
             AttackAction attackAction = (AttackAction)currentAction;
             UnitManager.singleton.ShowAttackAction(activeCard.card.caster, attackAction);
         }
+    }
+
+    public bool ActionHasAvailableOptions() {
+        CardSlot activeCard = CardManager.singleton.ActiveCard;
+        CardAction currentAction = activeCard.card.Actions[CardManager.singleton.CurrentActionIndex];
+        UnitController unit = activeCard.card.caster;
+        if (currentAction.GetType() == typeof(MoveAction)) {
+            MoveAction moveAction = (MoveAction)currentAction;
+            ReachableTiles walkingTiles = TileMap.instance.pathfinder.findReachableTiles(unit.myNode, moveAction.distance, moveAction.walkingType, unit.myPlayer.faction);
+            return walkingTiles.basic.Keys.Count > 0;
+        } else if (typeof(AttackAction).IsAssignableFrom(currentAction.GetType())) {
+            AttackAction attackAction = (AttackAction)currentAction;
+            //UnitManager.singleton.ShowAttackAction(activeCard.card.caster, attackAction);
+            List<Node> attackableTiles = TileMap.instance.pathfinder.FindAttackableTiles(unit.myNode, attackAction);
+            return attackableTiles.Exists(tile => attackAction.CanHitUnit(tile));
+        }
+
+        return false;
     }
 
     public void FinishedAction() {
