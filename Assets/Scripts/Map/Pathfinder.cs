@@ -362,7 +362,6 @@ public class Pathfinder : MonoBehaviour {
     }
 
     public List<Node> FindCleaveTargetTiles(Node node, AttackAction action, Node start) {
-        Debug.Log("finding cleave targets");
         //TODO write a smarter way of doing this
         bool attackingHorizontally = start.x != node.x;
         List<Node> targetTiles = findReachableTiles(node, action.aoeRange, Walkable.Flying, -1).basic.Keys.ToList();

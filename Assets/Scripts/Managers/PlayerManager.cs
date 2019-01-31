@@ -98,6 +98,7 @@ public class PlayerManager : MonoBehaviour {
         // Draw starting Hand
         mainPlayer.units.ForEach(unit => {
             unit.deck.Shuffle();
+            unit.deck.DrawCard(4);
         });
     }
 
@@ -108,9 +109,6 @@ public class PlayerManager : MonoBehaviour {
     public void StartNewTurn(Player player) {
         if (!player.ai) {
             player.StartTurn();
-            player.units.ForEach(unit => {
-                unit.deck.DrawCard(4);
-            });
         }
     }
 
@@ -118,6 +116,7 @@ public class PlayerManager : MonoBehaviour {
         if (!player.ai) {
             player.units.ForEach(unit => {
                 unit.hand.DiscardHand();
+                unit.deck.DrawCard(4);
             });
         }
     }
