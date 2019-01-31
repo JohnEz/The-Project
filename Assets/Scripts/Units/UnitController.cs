@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public struct AbilityTarget {
     public Node targetNode;
@@ -53,6 +54,8 @@ public class UnitController : MonoBehaviour {
     [System.NonSerialized]
     public Node myNode;
 
+    private Node forceMoveNode;
+
     //Gameplay variables
     public Player myPlayer;
 
@@ -86,6 +89,7 @@ public class UnitController : MonoBehaviour {
     // Update is called once per frame
     private void Update() {
         FollowPath();
+        UpdateForceMovement();
     }
 
     public bool IsAllyOf(UnitController other) {
@@ -208,6 +212,10 @@ public class UnitController : MonoBehaviour {
         }
     }
 
+    public bool IsBeingForceMoved() {
+        return forceMoveNode != null;
+    }
+
     public void FollowPath() {
         if (myPath.Count <= 0) {
             return;
@@ -227,6 +235,26 @@ public class UnitController : MonoBehaviour {
                 FinishWalking();
             }
             myPath.RemoveAt(0);
+        }
+    }
+
+    public void UpdateForceMovement() {
+        if (!IsBeingForceMoved()) {
+            return;
+        }
+
+        Vector3 my2DPosition = new Vector3(transform.position.x, 0, transform.position.z);
+        Vector3 target2DPosition = new Vector3(forceMoveNode.transform.position.x, 0, forceMoveNode.transform.position.z);
+        float distanceToNode = Vector3.Distance(my2DPosition, target2DPosition);
+
+        if (distanceToNode > 2f) {
+            Vector3 newPosition = Vector3.Lerp(my2DPosition, target2DPosition, 2f * Time.deltaTime);
+            newPosition.y = transform.position.y;
+            transform.position = newPosition;
+        } else {
+            target2DPosition.y = transform.position.y;
+            transform.position = target2DPosition;
+            forceMoveNode = null;
         }
     }
 
@@ -388,6 +416,62 @@ public class UnitController : MonoBehaviour {
         effectsToCreate = 0;
         projectilesToCreate = 0;
         abilityEffects.Clear();
+    }
+
+    public void Pull(Node pullOrigin, int distance) {
+        forceMoveNode = FindForceMoveNode(pullOrigin, distance, true);
+        myNode.myUnit = null;
+        forceMoveNode.myUnit = this;
+        myNode = forceMoveNode;
+    }
+
+    public void Push(Node pushOrigin, int distance) {
+        forceMoveNode = FindForceMoveNode(pushOrigin, distance, false);
+        myNode.myUnit = null;
+        forceMoveNode.myUnit = this;
+        myNode = forceMoveNode;
+    }
+
+    private Node FindForceMoveNode(Node origin, int distance, bool moveCloser) {
+        ReachableTiles tiles = TileMap.instance.pathfinder.findReachableTiles(myNode, distance, Walkable.Walkable, -1);
+            Vector2 forceDirection = new Vector2(origin.x - myNode.x, origin.y - myNode.y).normalized;
+            forceDirection = moveCloser ? forceDirection : -forceDirection;
+
+
+        return tiles.basic.Keys.ToList().Aggregate((n1, n2) => {
+            int n1Distance = n1.GridDistanceTo(origin);
+            int n2Distance = n2.GridDistanceTo(origin);
+
+            if (n1Distance == n2Distance) {
+
+                //compare direction from node
+                Vector2 n1Direction = new Vector2(n1.x - myNode.x, n1.y - myNode.y).normalized;
+                Vector2 n2Direction = new Vector2(n2.x - myNode.x, n2.y - myNode.y).normalized;
+
+                if (Vector2.Distance(n1Direction, forceDirection) == Vector2.Distance(n2Direction, forceDirection)) {
+                    Vector2 absoluteFacing = new Vector2(Mathf.Sign(facingDirection.x), Mathf.Sign(facingDirection.y));
+            
+                    Vector2 n1Neighbour = n1.previous.GetDirectionFrom(n1);
+                    Vector2 n1AbsoluteDirection = new Vector2(Mathf.Sign(n1Neighbour.x), Mathf.Sign(n1Neighbour.y));
+
+                    Vector2 n2Neighbour = n1.previous.GetDirectionFrom(n2);
+                    Vector2 n2AbsoluteDirection = new Vector2(Mathf.Sign(n2Neighbour.x), Mathf.Sign(n2Neighbour.y));
+
+                    return n1AbsoluteDirection.x == absoluteFacing.x && n1AbsoluteDirection.y == absoluteFacing.y ? n1 : n2;
+            
+                }
+
+                return Vector2.Distance(n1Direction, forceDirection) < Vector2.Distance(n2Direction, forceDirection) ? n1 : n2;
+            }
+ 
+            if (moveCloser) {
+                return n1Distance < n2Distance ? n1 : n2;
+            } else {
+                return n1Distance > n2Distance ? n1 : n2;
+            }
+            
+        });
+
     }
 
     public bool TakeDamage(UnitController attacker, int damage, bool ignoreArmour = false) {

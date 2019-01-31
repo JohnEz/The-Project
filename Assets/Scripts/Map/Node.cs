@@ -65,6 +65,12 @@ public class Node : MonoBehaviour {
         return Vector2.Distance(new Vector2(x, y), new Vector2(n.x, n.y));
     }
 
+    public int GridDistanceTo(Node n) {
+        int diffX = n.x - x;
+        int diffY = n.y - y;
+        return Mathf.Abs(diffX) + Mathf.Abs(diffY);
+    }
+
     public float Value {
         get { return cost + dist; }
     }
