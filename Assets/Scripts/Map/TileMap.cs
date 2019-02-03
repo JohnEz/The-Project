@@ -52,6 +52,7 @@ public class TileMap : MonoBehaviour {
 
         LevelLoaderJson lLoaderJson = GetComponent<LevelLoaderJson>();
         lLoaderJson.Initialise();
+        transform.Find(lLoaderJson.loadedLevel.name).gameObject.SetActive(true);
         GenerateMapJson(lLoaderJson.loadedLevel);
         CalculateNeighbours();
 

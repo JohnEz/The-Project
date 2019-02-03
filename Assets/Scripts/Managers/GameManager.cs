@@ -62,7 +62,8 @@ public class GameManager : MonoBehaviour {
 
         Player enemyAI = PlayerManager.singleton.AddAiPlayer(2);
 
-        SpawnStartMapUnits(enemyAI);
+        //SpawnStartMapUnits(enemyAI);
+        LoadMapUnits(enemyAI);
 
         TileMap.instance.ActivateRoom(humanPlayer.units[0].unit.myNode.room);
     }

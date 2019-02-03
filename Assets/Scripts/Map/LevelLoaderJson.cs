@@ -57,8 +57,6 @@ public class LevelLoaderJson : MonoBehaviour {
     private TiledMap loadedData;
     public MapData loadedLevel;
 
-    public string levelName;
-
     public Sprite backdrop;
 
     // Use this for initialization
@@ -77,7 +75,7 @@ public class LevelLoaderJson : MonoBehaviour {
             return;
         }
 
-        loadedLevel.name = levelName;
+        loadedLevel.name = GameDetails.MapName;
         loadedLevel.width = loadedData.width;
         loadedLevel.height = loadedData.height;
 
@@ -169,7 +167,7 @@ public class LevelLoaderJson : MonoBehaviour {
     public void LoadTiledData() {
         // Path.Combine combines strings into a file path
         // Application.StreamingAssets points to Assets/StreamingAssets in the Editor, and the StreamingAssets folder in a build
-        string filePath = Path.Combine(Application.streamingAssetsPath, levelName + ".json");
+        string filePath = Path.Combine(Application.streamingAssetsPath, GameDetails.MapName + ".json");
 
         if (File.Exists(filePath)) {
             // Read the json from the file into a string
