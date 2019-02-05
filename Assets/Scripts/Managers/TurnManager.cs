@@ -133,6 +133,11 @@ public class TurnManager : MonoBehaviour {
 
     public void FinishedAttacking() {
         // TODO check for triggers?
+        // check if all players are in the dead list
+        //for each player gameObject?
+        //if "isStillAlive == false" ?
+        // end game
+
         ChangeState(TurnPhase.WAITING_FOR_INPUT);
         UserInterfaceManager.singleton.FinishedAttacking();
     }
