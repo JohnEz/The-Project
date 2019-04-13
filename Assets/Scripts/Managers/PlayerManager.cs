@@ -7,39 +7,12 @@ public class Player {
     public bool ai;
     public int faction;
 
-    // private int currentInfluence;
-    // private int startingInfluence = 6;
-
-    // public int CurrentInfluence {
-    //     get { return currentInfluence; }
-    //     set {
-    //         currentInfluence = value;
-    //         GUIController.singleton.UpdateStamina(currentInfluence);
-    //     }
-    // }
-
     public void StartTurn() {
-        //CurrentInfluence = startingInfluence;
     }
 
     // Physical world objects
 
-    public List<PlayerUnit> units = new List<PlayerUnit>();
-
-    //public Hand myHand;
-    //public Deck myDeck;
-}
-
-public class PlayerUnit {
-    public UnitController unit;
-    public Deck deck;
-    public Hand hand;
-
-    public List<AbilityCardBase> deckList = new List<AbilityCardBase>();
-    private List<AbilityCardBase> handList = new List<AbilityCardBase>();
-    public Stack<AbilityCardBase> discardList = new Stack<AbilityCardBase>();
-
-    //public Hand hand;
+    public List<UnitController> units = new List<UnitController>();
 }
 
 public class PlayerManager : MonoBehaviour {
@@ -95,11 +68,6 @@ public class PlayerManager : MonoBehaviour {
     }
 
     public void StartGame() {
-        // Draw starting Hand
-        mainPlayer.units.ForEach(unit => {
-            unit.deck.Shuffle();
-            unit.deck.DrawCard(4);
-        });
     }
 
     public void StartNewTurn(int playerId) {
@@ -113,12 +81,6 @@ public class PlayerManager : MonoBehaviour {
     }
 
     public void EndTurn(Player player) {
-        if (!player.ai) {
-            player.units.ForEach(unit => {
-                unit.hand.DiscardHand();
-                unit.deck.DrawCard(4);
-            });
-        }
     }
 
     public int GetNumberOfPlayers() {

@@ -2,7 +2,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Attack Action", menuName = "Card/New Attack Action")]
-public class AttackAction : CardAction {
+public class AttackAction : AbilityAction {
     public int range = 1;
     public int minRange = 0;
 

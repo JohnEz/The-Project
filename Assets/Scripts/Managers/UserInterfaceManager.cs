@@ -21,21 +21,21 @@ public class UserInterfaceManager : MonoBehaviour {
         UserControls();
     }
 
-    public void ShowCard(CardSlot cardSlot) {
-        UnshowCard();
+    //public void ShowCard(CardSlot cardSlot) {
+    //    UnshowCard();
 
-        if (!CardManager.singleton.IsACardActive()) {
-            CardManager.singleton.ActiveCard = cardSlot;
-            ShowAction();
-        }
-    }
+    //    if (!CardManager.singleton.IsACardActive()) {
+    //        CardManager.singleton.ActiveCard = cardSlot;
+    //        ShowAction();
+    //    }
+    //}
 
-    public void UnshowCard() {
-        if (CardManager.singleton.ActiveCard != null) {
-            HighlightManager.singleton.UnhighlightTiles();
-            HighlightManager.singleton.ClearEffectedTiles();
-        }
-    }
+    //public void UnshowCard() {
+    //    if (CardManager.singleton.ActiveCard != null) {
+    //        HighlightManager.singleton.UnhighlightTiles();
+    //        HighlightManager.singleton.ClearEffectedTiles();
+    //    }
+    //}
 
     private void UserControls() {
         //temp for ai
@@ -45,23 +45,23 @@ public class UserInterfaceManager : MonoBehaviour {
 
         //Cancel (right click)
         if (Input.GetKeyUp(KeyCode.Escape)) {
-            if (CardManager.singleton.IsACardPlayed()) {
-                CardManager.singleton.CancelCurrentCard();
-            } else if (CardManager.singleton.IsACardInvoked()) {
-                //check to see if they have an available option
-                if (ActionHasAvailableOptions()) {
-                    GUIController.singleton.ShowErrorMessage("You have available options!");
-                } else {
-                    UnshowCard();
-                    CardManager.singleton.FinishedPlayingCard();
-                }
+            //if (CardManager.singleton.IsACardPlayed()) {
+            //    CardManager.singleton.CancelCurrentCard();
+            //} else if (CardManager.singleton.IsACardInvoked()) {
+            //    //check to see if they have an available option
+            //    if (ActionHasAvailableOptions()) {
+            //        GUIController.singleton.ShowErrorMessage("You have available options!");
+            //    } else {
+            //        UnshowCard();
+            //        CardManager.singleton.FinishedPlayingCard();
+            //    }
+            //} else {
+            if (PauseMenuController.gameIsPaused) {
+                pauseMenuController.Resume();
             } else {
-                if (PauseMenuController.gameIsPaused) {
-                    pauseMenuController.Resume();
-                } else {
-                    pauseMenuController.Pause();
-                }
+                pauseMenuController.Pause();
             }
+            //}
         }
 
         if (Input.GetKeyUp("space")) {
@@ -71,18 +71,19 @@ public class UserInterfaceManager : MonoBehaviour {
 
     public void EndTurn() {
         if (TurnManager.singleton.CurrentPhase == TurnPhase.WAITING_FOR_INPUT && !TurnManager.singleton.isAiTurn()) {
-            if (CardManager.singleton.IsACardPlayed()) {
-                CardManager.singleton.CancelCurrentCard();
-            }
+            //if (CardManager.singleton.IsACardPlayed()) {
+            //    CardManager.singleton.CancelCurrentCard();
+            //}
             TurnManager.singleton.EndTurn();
         }
     }
 
     public void TileHovered(Node node, SquareTarget target) {
         UnitManager.singleton.CurrentlyHoveredNode = node;
-        if (CardManager.singleton.IsACardActive() && (target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL)) {
-            UnitManager.singleton.HighlightEffectedTiles(CardManager.singleton.ActiveCard.card.caster, node);
-        } else if (target == SquareTarget.MOVEMENT || target == SquareTarget.DASH || ((target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL) && node.previousMoveNode != null)) {
+        //if (CardManager.singleton.IsACardActive() && (target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL)) {
+        //    UnitManager.singleton.HighlightEffectedTiles(CardManager.singleton.ActiveCard.card.caster, node);
+        //} else
+        if (target == SquareTarget.MOVEMENT || target == SquareTarget.DASH || ((target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL) && node.previousMoveNode != null)) {
             UnitManager.singleton.ShowPath(node);
         }
     }
@@ -114,95 +115,96 @@ public class UserInterfaceManager : MonoBehaviour {
     }
 
     public void ClickedAttack(Node node) {
-        if (UnitManager.singleton.AttackTile(CardManager.singleton.ActiveCard.card.caster, node)) {
-            UnshowCard();
-            CardManager.singleton.CardInvoked();
-        }
+        //if (UnitManager.singleton.AttackTile(CardManager.singleton.ActiveCard.card.caster, node)) {
+        //    UnshowCard();
+        //    CardManager.singleton.CardInvoked();
+        //}
     }
 
     public void ClickedMovement(Node node) {
-        UnitManager.singleton.MoveToTile(CardManager.singleton.ActiveCard.card.caster, node);
-        UnshowCard();
-        CardManager.singleton.CardInvoked();
+        //UnitManager.singleton.MoveToTile(CardManager.singleton.ActiveCard.card.caster, node);
+        //UnshowCard();
+        //CardManager.singleton.CardInvoked();
     }
 
     public void ClickedUnselected(Node node) {
     }
 
-    public void CardHovered(CardSlot card) {
-        if (CardManager.singleton.CanPlayCard()) {
-            ShowCard(card);
-        }
-    }
+    //public void CardHovered(CardSlot card) {
+    //    if (CardManager.singleton.CanPlayCard()) {
+    //        ShowCard(card);
+    //    }
+    //}
 
-    public void CardUnhovered() {
-        // if there isnt a played card, clear the display
-        if (!CardManager.singleton.IsACardActive()) {
-            UnshowCard();
-            CardManager.singleton.ActiveCard = null;
-        }
-    }
+    //public void CardUnhovered() {
+    //    // if there isnt a played card, clear the display
+    //    if (!CardManager.singleton.IsACardActive()) {
+    //        UnshowCard();
+    //        CardManager.singleton.ActiveCard = null;
+    //    }
+    //}
 
-    public bool PlayCard(CardSlot cardSlot) {
-        if (CardManager.singleton.CanPlayCard(cardSlot)) {
-            UnshowCard();
-            CardManager.singleton.PlayCard(cardSlot);
-            return true;
-        }
-        return false;
-    }
+    //public bool PlayCard(CardSlot cardSlot) {
+    //    if (CardManager.singleton.CanPlayCard(cardSlot)) {
+    //        UnshowCard();
+    //        CardManager.singleton.PlayCard(cardSlot);
+    //        return true;
+    //    }
+    //    return false;
+    //}
 
-    public bool RunNextCardAction(CardSlot card, int actionIndex) {
-        if (card && actionIndex < card.card.Actions.Count) {
-            CardAction currentAction = card.card.Actions[actionIndex];
-            if (currentAction.GetType() == typeof(MoveAction) || typeof(AttackAction).IsAssignableFrom(currentAction.GetType())) {
-                ShowAction();
-            } else if (currentAction.GetType() == typeof(DrawCardAction)) {
-                DrawCardAction drawAction = (DrawCardAction)currentAction;
-                CardManager.singleton.ActiveCard.myUnit.deck.DrawCard(drawAction.cardsToDraw);
-                FinishedAction();
-            }
-            return true;
-        }
+    //public bool RunNextCardAction(CardSlot card, int actionIndex) {
+    //    if (card && actionIndex < card.card.Actions.Count) {
+    //        AbilityAction currentAction = card.card.Actions[actionIndex];
+    //        if (currentAction.GetType() == typeof(MoveAction) || typeof(AttackAction).IsAssignableFrom(currentAction.GetType())) {
+    //            ShowAction();
+    //        } else if (currentAction.GetType() == typeof(DrawCardAction)) {
+    //            DrawCardAction drawAction = (DrawCardAction)currentAction;
+    //            CardManager.singleton.ActiveCard.myUnit.deck.DrawCard(drawAction.cardsToDraw);
+    //            FinishedAction();
+    //        }
+    //        return true;
+    //    }
 
-        return false;
-    }
+    //    return false;
+    //}
 
     public void ShowAction() {
-        CardSlot activeCard = CardManager.singleton.ActiveCard;
-        CardAction currentAction = activeCard.card.Actions[CardManager.singleton.CurrentActionIndex];
-        if (currentAction.GetType() == typeof(MoveAction)) {
-            MoveAction moveAction = (MoveAction)currentAction;
-            UnitManager.singleton.ShowMoveAction(activeCard.card.caster, moveAction.distance, moveAction.walkingType);
-        } else if (typeof(AttackAction).IsAssignableFrom(currentAction.GetType())) {
-            AttackAction attackAction = (AttackAction)currentAction;
-            UnitManager.singleton.ShowAttackAction(activeCard.card.caster, attackAction);
-        }
+        //CardSlot activeCard = CardManager.singleton.ActiveCard;
+        //AbilityAction currentAction = activeCard.card.Actions[CardManager.singleton.CurrentActionIndex];
+        //if (currentAction.GetType() == typeof(MoveAction)) {
+        //    MoveAction moveAction = (MoveAction)currentAction;
+        //    UnitManager.singleton.ShowMoveAction(activeCard.card.caster, moveAction.distance, moveAction.walkingType);
+        //} else if (typeof(AttackAction).IsAssignableFrom(currentAction.GetType())) {
+        //    AttackAction attackAction = (AttackAction)currentAction;
+        //    UnitManager.singleton.ShowAttackAction(activeCard.card.caster, attackAction);
+        //}
     }
 
+    // if there is another action to the ability, display it
     public bool ActionHasAvailableOptions() {
-        CardSlot activeCard = CardManager.singleton.ActiveCard;
-        CardAction currentAction = activeCard.card.Actions[CardManager.singleton.CurrentActionIndex];
-        UnitController unit = activeCard.card.caster;
-        if (currentAction.GetType() == typeof(MoveAction)) {
-            MoveAction moveAction = (MoveAction)currentAction;
-            ReachableTiles walkingTiles = TileMap.instance.pathfinder.findReachableTiles(unit.myNode, moveAction.distance, moveAction.walkingType, unit.myPlayer.faction);
-            return walkingTiles.basic.Keys.Count > 0;
-        } else if (typeof(AttackAction).IsAssignableFrom(currentAction.GetType())) {
-            AttackAction attackAction = (AttackAction)currentAction;
-            //UnitManager.singleton.ShowAttackAction(activeCard.card.caster, attackAction);
-            List<Node> attackableTiles = TileMap.instance.pathfinder.FindAttackableTiles(unit.myNode, attackAction);
-            return attackableTiles.Exists(tile => attackAction.CanHitUnit(tile));
-        }
+        //CardSlot activeCard = CardManager.singleton.ActiveCard;
+        //AbilityAction currentAction = activeCard.card.Actions[CardManager.singleton.CurrentActionIndex];
+        //UnitController unit = activeCard.card.caster;
+        //if (currentAction.GetType() == typeof(MoveAction)) {
+        //    MoveAction moveAction = (MoveAction)currentAction;
+        //    ReachableTiles walkingTiles = TileMap.instance.pathfinder.findReachableTiles(unit.myNode, moveAction.distance, moveAction.walkingType, unit.myPlayer.faction);
+        //    return walkingTiles.basic.Keys.Count > 0;
+        //} else if (typeof(AttackAction).IsAssignableFrom(currentAction.GetType())) {
+        //    AttackAction attackAction = (AttackAction)currentAction;
+        //    //UnitManager.singleton.ShowAttackAction(activeCard.card.caster, attackAction);
+        //    List<Node> attackableTiles = TileMap.instance.pathfinder.FindAttackableTiles(unit.myNode, attackAction);
+        //    return attackableTiles.Exists(tile => attackAction.CanHitUnit(tile));
+        //}
 
         return false;
     }
 
     public void FinishedAction() {
-        CardManager.singleton.CurrentActionIndex++;
-        if (!RunNextCardAction(CardManager.singleton.ActiveCard, CardManager.singleton.CurrentActionIndex)) {
-            CardManager.singleton.FinishedPlayingCard();
-        }
+        //CardManager.singleton.CurrentActionIndex++;
+        //if (!RunNextCardAction(CardManager.singleton.ActiveCard, CardManager.singleton.CurrentActionIndex)) {
+        //    CardManager.singleton.FinishedPlayingCard();
+        //}
     }
 
     public void FinishedAttacking() {

@@ -53,7 +53,7 @@ public struct EventActionLegacy {
 }
 
 [System.Serializable]
-public class CardAction : ScriptableObject {
+public class AbilityAction : ScriptableObject {
 
     [SerializeField]
     public List<EventAction> eventActions = new List<EventAction>();

@@ -5,7 +5,7 @@ public class ResourceManager : MonoBehaviour {
     public static ResourceManager singleton;
 
     [HideInInspector]
-    public Dictionary<string, AbilityCardBase> cards = new Dictionary<string, AbilityCardBase>();
+    public Dictionary<string, AbilityBase> cards = new Dictionary<string, AbilityBase>();
 
     [HideInInspector]
     public Dictionary<string, UnitObject> units = new Dictionary<string, UnitObject>();
@@ -23,10 +23,10 @@ public class ResourceManager : MonoBehaviour {
     }
 
     private void LoadCards() {
-        AbilityCardBase[] loadedCards = Resources.LoadAll<AbilityCardBase>("Cards");
+        AbilityBase[] loadedCards = Resources.LoadAll<AbilityBase>("Cards");
 
         for (int i = 0; i < loadedCards.Length; i++) {
-            AbilityCardBase newCard = loadedCards[i];
+            AbilityBase newCard = loadedCards[i];
             cards.Add(newCard.name, newCard);
         }
     }

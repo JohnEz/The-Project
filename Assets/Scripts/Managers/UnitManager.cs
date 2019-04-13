@@ -49,25 +49,6 @@ public class UnitManager : MonoBehaviour {
         return units.Where(unit => unit.myPlayer.id == playerId).ToList();
     }
 
-    public UnitController SpawnPlayerUnit(string unit, Player player, int x, int y, List<AbilityCardBase> deck) {
-        PlayerUnit newUnit = new PlayerUnit();
-        newUnit.unit = SpawnUnit(unit, player, x, y);
-        newUnit.deckList = deck;
-
-        Deck spawnedDeck = GUIController.singleton.CreateDeck().GetComponent<Deck>();
-        Hand spawnedHand = GUIController.singleton.CreateHand().GetComponent<Hand>();
-
-        newUnit.deck = spawnedDeck;
-        newUnit.hand = spawnedHand;
-        spawnedDeck.SetUnit(newUnit);
-        spawnedHand.SetUnit(newUnit);
-        spawnedDeck.SetHand(spawnedHand);
-
-        player.units.Add(newUnit);
-
-        return newUnit.unit;
-    }
-
     public UnitController SpawnUnit(string unit, Player player, int x, int y) {
         if (!ResourceManager.singleton.units.ContainsKey(unit)) {
             Debug.LogError("Could not spawn character " + unit);
@@ -95,6 +76,8 @@ public class UnitManager : MonoBehaviour {
         unitController.myManager = this;
         unitController.Initialise();
         units.Add(unitController);
+
+        player.units.Add(unitController);
 
         return unitController;
     }
@@ -131,7 +114,7 @@ public class UnitManager : MonoBehaviour {
         }
     }
 
-    public void CardPlayed(AbilityCardBase card) {
+    public void CardPlayed(AbilityBase card) {
     }
 
     // TODO this is probably needed for advanced cards but not for basic, fix later

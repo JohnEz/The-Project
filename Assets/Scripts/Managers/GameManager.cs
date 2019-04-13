@@ -44,28 +44,22 @@ public class GameManager : MonoBehaviour {
             }
         }
 
-        List<AbilityCardBase> fighterdeck = CardManager.singleton.LoadDeck(BasicDecks.starterFighter);
-        List<AbilityCardBase> barddeck = CardManager.singleton.LoadDeck(BasicDecks.starterBard);
-        List<AbilityCardBase> clericdeck = CardManager.singleton.LoadDeck(BasicDecks.starterCleric);
-        List<AbilityCardBase> elementalistdeck = CardManager.singleton.LoadDeck(BasicDecks.starterElementalist);
-        List<AbilityCardBase> criminalDeck = CardManager.singleton.LoadDeck(BasicDecks.starterCriminal);
-        List<AbilityCardBase> testDeck = CardManager.singleton.LoadDeck(BasicDecks.testDeck);
         //SpawnLocation playerSpawnLocation = TileMap.instance.spawnLocations.Find(sl => sl.name == "PlayerSpawn");
         //int playerSpawnX = playerSpawnLocation != null ? playerSpawnLocation.x : 5;
         //int playerSpawnY = playerSpawnLocation != null ? playerSpawnLocation.y : 6;
         //UnitManager.singleton.SpawnPlayerUnit(GameDetails.PlayerCharacter, humanPlayer, playerSpawnX, playerSpawnY, fighterdeck);
-        UnitManager.singleton.SpawnPlayerUnit("Fighter", humanPlayer, 4, 12, testDeck);
-        UnitManager.singleton.SpawnPlayerUnit("Cleric", humanPlayer, 5, 12, clericdeck);
-        UnitManager.singleton.SpawnPlayerUnit("Criminal", humanPlayer, 6, 12, criminalDeck);
+        UnitManager.singleton.SpawnUnit("Fighter", humanPlayer, 4, 12);
+        UnitManager.singleton.SpawnUnit("Cleric", humanPlayer, 5, 12);
+        UnitManager.singleton.SpawnUnit("Criminal", humanPlayer, 6, 12);
 
-        CameraManager.singleton.JumpToLocation(humanPlayer.units[0].unit.myNode);
+        CameraManager.singleton.JumpToLocation(humanPlayer.units[0].myNode);
 
         Player enemyAI = PlayerManager.singleton.AddAiPlayer(2);
 
         //SpawnStartMapUnits(enemyAI);
         LoadMapUnits(enemyAI);
 
-        TileMap.instance.ActivateRoom(humanPlayer.units[0].unit.myNode.room);
+        TileMap.instance.ActivateRoom(humanPlayer.units[0].myNode.room);
     }
 
     //TEMP
