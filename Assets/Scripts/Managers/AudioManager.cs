@@ -108,7 +108,7 @@ public class Music {
 }
 
 public class AudioManager : MonoBehaviour {
-    public static AudioManager singleton;
+    public static AudioManager instance;
 
     public AudioMixer masterMixer;
     public AudioMixerGroup masterMixerGroup;
@@ -125,11 +125,11 @@ public class AudioManager : MonoBehaviour {
     private Music currentMusic;
 
     private void Awake() {
-        if (singleton != null) {
+        if (instance != null) {
             Destroy(gameObject);
             return;
         } else {
-            singleton = this;
+            instance = this;
             DontDestroyOnLoad(gameObject);
         }
 

@@ -70,7 +70,7 @@ public class AITargetPicker {
     private List<Node> FindPossibleAttackNodes(UnitController unit) {
         List<Node> attackNodes = new List<Node>();
 
-        UnitManager.singleton.Units.ForEach(otherUnit => {
+        UnitManager.instance.Units.ForEach(otherUnit => {
             unit.myStats.Attacks.ForEach(attackAction => {
                 if (attackAction.CanHitUnit(otherUnit.myNode)) {
                     List<Node> nodesToAttackFrom = TileMap.instance.pathfinder.FindAttackableTiles(otherUnit.myNode, attackAction);
@@ -107,7 +107,7 @@ public class AITargetPicker {
     private Dictionary<UnitController, MovementPath> FindPathsToEnemies(UnitController unit) {
         Dictionary<UnitController, MovementPath> pathsToEnemies = new Dictionary<UnitController, MovementPath>();
 
-        UnitManager.singleton.Units.ForEach(otherUnit => {
+        UnitManager.instance.Units.ForEach(otherUnit => {
             if (otherUnit.myPlayer.faction != unit.myPlayer.faction) {
                 MovementPath pathToEnemy = TileMap.instance.pathfinder.FindShortestPathToUnit(unit.myNode, otherUnit.myNode, unit.myStats.walkingType, unit.myPlayer.faction);
                 // if there was a path found

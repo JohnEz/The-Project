@@ -13,7 +13,7 @@ public enum TurnPhase {
 }
 
 public class TurnManager : MonoBehaviour {
-    public static TurnManager singleton;
+    public static TurnManager instance;
 
     private TurnPhase currentPhase = TurnPhase.GAME_STARTING;
 
@@ -22,7 +22,7 @@ public class TurnManager : MonoBehaviour {
     private bool checkedIfTurnShouldEnd = true;
 
     private void Awake() {
-        singleton = this;
+        instance = this;
     }
 
     // Use this for initialization
@@ -33,7 +33,7 @@ public class TurnManager : MonoBehaviour {
     private void Update() {
         //check to see if the turn should end
         if (!checkedIfTurnShouldEnd) {
-            if (!isAiTurn() && currentPhase == TurnPhase.WAITING_FOR_INPUT && UnitManager.singleton.PlayerOutOfActions(playersTurn)) {
+            if (!isAiTurn() && currentPhase == TurnPhase.WAITING_FOR_INPUT && UnitManager.instance.PlayerOutOfActions(playersTurn)) {
                 EndTurn();
             } else {
                 checkedIfTurnShouldEnd = true;
@@ -42,14 +42,14 @@ public class TurnManager : MonoBehaviour {
     }
 
     public void StartGame() {
-        PlayerManager.singleton.StartGame();
+        PlayerManager.instance.StartGame();
 
         StartNewTurn();
     }
 
     private Player SetNextPlayersTurn() {
         playersTurn++;
-        playersTurn = playersTurn % PlayerManager.singleton.GetNumberOfPlayers();
+        playersTurn = playersTurn % PlayerManager.instance.GetNumberOfPlayers();
         return GetCurrentPlayer();
     }
 
@@ -58,36 +58,36 @@ public class TurnManager : MonoBehaviour {
         int previousPlayersTurn = playersTurn;
         Player currentPlayersTurn = SetNextPlayersTurn();
 
-        while (UnitManager.singleton.GetPlayersUnits(currentPlayersTurn.id).Count <= 0 || playersTurn == previousPlayersTurn) {
+        while (UnitManager.instance.GetPlayersUnits(currentPlayersTurn.id).Count <= 0 || playersTurn == previousPlayersTurn) {
             currentPlayersTurn = SetNextPlayersTurn();
         }
 
-        UnitManager.singleton.StartTurn(currentPlayersTurn);
-        bool alliedTurn = PlayerManager.singleton.mainPlayer.faction == currentPlayersTurn.faction;
+        UnitManager.instance.StartTurn(currentPlayersTurn);
+        bool alliedTurn = PlayerManager.instance.mainPlayer.faction == currentPlayersTurn.faction;
 
-        GUIController.singleton.StartNewTurn(alliedTurn, ObjectiveManager.singleton.getObjectives(currentPlayersTurn));
+        GUIController.instance.StartNewTurn(alliedTurn, ObjectiveManager.instance.getObjectives(currentPlayersTurn));
 
-        PlayerManager.singleton.StartNewTurn(currentPlayersTurn);
+        PlayerManager.instance.StartNewTurn(currentPlayersTurn);
 
         if (isAiTurn()) {
-            StartCoroutine(AIManager.singleton.NewTurn(playersTurn));
+            StartCoroutine(AIManager.instance.NewTurn(playersTurn));
         } else if (currentPlayersTurn.units.Count > 0) {
-            CameraManager.singleton.JumpToLocation(currentPlayersTurn.units[0].myNode);
+            CameraManager.instance.JumpToLocation(currentPlayersTurn.units[0].myNode);
         }
     }
 
     public void EndTurn() {
         ChangeState(TurnPhase.TURN_ENDING);
-        PlayerManager.singleton.EndTurn(GetCurrentPlayer());
+        PlayerManager.instance.EndTurn(GetCurrentPlayer());
         Player currentPlayersTurn = GetCurrentPlayer();
 
-        if (ObjectiveManager.singleton.CheckObjectives(currentPlayersTurn)) {
+        if (ObjectiveManager.instance.CheckObjectives(currentPlayersTurn)) {
             ChangeState(TurnPhase.GAME_OVER);
-            GUIController.singleton.GameOver(GetCurrentPlayer().faction == PlayerManager.singleton.mainPlayer.faction);
+            GUIController.instance.GameOver(GetCurrentPlayer().faction == PlayerManager.instance.mainPlayer.faction);
         } else {
-            UnitManager.singleton.EndTurn(currentPlayersTurn);
+            UnitManager.instance.EndTurn(currentPlayersTurn);
             StartNewTurn();
-            UserInterfaceManager.singleton.EndTurn();
+            UserInterfaceManager.instance.EndTurn();
         }
     }
 
@@ -102,11 +102,11 @@ public class TurnManager : MonoBehaviour {
     }
 
     public Player GetCurrentPlayer() {
-        return PlayerManager.singleton.GetPlayer(playersTurn);
+        return PlayerManager.instance.GetPlayer(playersTurn);
     }
 
     public bool IsPlayersTurn() {
-        return PlayerManager.singleton.IsMainPlayer(playersTurn);
+        return PlayerManager.instance.IsMainPlayer(playersTurn);
     }
 
     public void ChangeState(TurnPhase newPhase) {
@@ -124,7 +124,7 @@ public class TurnManager : MonoBehaviour {
 
     public void FinishedMoving() {
         ChangeState(TurnPhase.WAITING_FOR_INPUT);
-        UserInterfaceManager.singleton.FinishedMoving();
+        UserInterfaceManager.instance.FinishedMoving();
     }
 
     public void StartAttacking() {
@@ -134,7 +134,7 @@ public class TurnManager : MonoBehaviour {
     public void FinishedAttacking() {
         // TODO check for triggers?
         ChangeState(TurnPhase.WAITING_FOR_INPUT);
-        UserInterfaceManager.singleton.FinishedAttacking();
+        UserInterfaceManager.instance.FinishedAttacking();
     }
 
     public bool isAiTurn() {

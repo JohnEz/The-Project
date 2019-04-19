@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class GUIController : MonoBehaviour {
-    public static GUIController singleton;
+    public static GUIController instance;
 
     public GameObject turnTextPrefab;
     private bool showingTurn = false;
@@ -32,7 +32,7 @@ public class GUIController : MonoBehaviour {
     public Button endTurnButton;
 
     private void Awake() {
-        singleton = this;
+        instance = this;
         SetUIActive(false);
         //staminaPoints.SetActive(false);
     }
@@ -46,7 +46,7 @@ public class GUIController : MonoBehaviour {
         //TODO this should probably be some sort of timer so there is less of a chance the user can get stuck
         if (showingTurn) {
             if (turnText == null) {
-                TurnManager.singleton.FinishStartingTurn();
+                TurnManager.instance.FinishStartingTurn();
                 showingTurn = false;
             }
         }
@@ -62,18 +62,18 @@ public class GUIController : MonoBehaviour {
     }
 
     private void StartGame() {
-        GameManager.singleton.StartGame();
+        GameManager.instance.StartGame();
     }
 
     public void GameOver(bool playerWon) {
-        AudioManager.singleton.PlayMusic(playerWon ? "Victory" : "Defeat");
+        AudioManager.instance.PlayMusic(playerWon ? "Victory" : "Defeat");
         Instantiate(playerWon ? victoryMenuPrefab : defeatMenuPrefab, transform);
     }
 
     public void StartNewTurn(bool ally, List<Objective> objectives) {
         DisplayNewTurnText(ally);
         UpdateObjectiveText(objectives);
-        SetEndTurnEnabled(TurnManager.singleton.IsPlayersTurn());
+        SetEndTurnEnabled(TurnManager.instance.IsPlayersTurn());
     }
 
     private void DisplayNewTurnText(bool allyTurn) {
@@ -163,7 +163,7 @@ public class GUIController : MonoBehaviour {
             SlidingElement slider = child.GetComponent<SlidingElement>();
 
             if (slider != null) {
-                slider.OpenMenu(CameraManager.singleton.blendTime * 0.33f);
+                slider.OpenMenu(CameraManager.instance.blendTime * 0.33f);
             }
         }
     }
@@ -173,7 +173,7 @@ public class GUIController : MonoBehaviour {
             SlidingElement slider = child.GetComponent<SlidingElement>();
 
             if (slider != null && child.gameObject.activeSelf) {
-                slider.CloseMenu(CameraManager.singleton.blendTime * 0.33f);
+                slider.CloseMenu(CameraManager.instance.blendTime * 0.33f);
             }
         }
     }

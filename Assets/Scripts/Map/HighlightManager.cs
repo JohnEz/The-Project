@@ -2,13 +2,13 @@
 using UnityEngine;
 
 public class HighlightManager : MonoBehaviour {
-    public static HighlightManager singleton;
+    public static HighlightManager instance;
 
     private List<Node> currentlyHighlighted = new List<Node>();
     private List<Node> currentlyEffected = new List<Node>();
 
     private void Awake() {
-        singleton = this;
+        instance = this;
     }
 
     // Use this for initialization

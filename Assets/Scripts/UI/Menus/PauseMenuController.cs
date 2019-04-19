@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 public class PauseMenuController : MonoBehaviour {
-    public static PauseMenuController singleton;
+    public static PauseMenuController instance;
 
     public static bool gameIsPaused = false;
 
@@ -10,7 +10,7 @@ public class PauseMenuController : MonoBehaviour {
     public AudioClip buttonClickAudio;
 
     public void Awake() {
-        singleton = this;
+        instance = this;
     }
 
     public void Pause() {
@@ -29,7 +29,7 @@ public class PauseMenuController : MonoBehaviour {
         PlayOptions pressAudioOptions = new PlayOptions(buttonClickAudio, transform);
         pressAudioOptions.audioMixer = AudioMixers.UI;
         pressAudioOptions.persist = true;
-        AudioManager.singleton.Play(pressAudioOptions);
+        AudioManager.instance.Play(pressAudioOptions);
 
         Resume();
         SceneChanger.Instance.FadeToScene(Scenes.MAIN_MENU);
@@ -39,7 +39,7 @@ public class PauseMenuController : MonoBehaviour {
         PlayOptions pressAudioOptions = new PlayOptions(buttonClickAudio, transform);
         pressAudioOptions.audioMixer = AudioMixers.UI;
         pressAudioOptions.persist = true;
-        AudioManager.singleton.Play(pressAudioOptions);
+        AudioManager.instance.Play(pressAudioOptions);
 
         Application.Quit();
     }

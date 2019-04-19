@@ -16,7 +16,7 @@ public class AttackAction : AbilityAction {
 
     public List<AttackEffect> attackEffects = new List<AttackEffect>(0);
 
-    // AI Variables
+    // TODO remove for ability cooldown AI Variables
     private int cooldown;
 
     public int maxCooldown = 1;

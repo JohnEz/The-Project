@@ -112,11 +112,13 @@ public class UnitController : MonoBehaviour {
         myStats.NewTurn();
         myCounters.NewTurn();
         Stamina = myStats.MaxStamina;
+        ActionPoints = myStats.MaxActionPoints;
     }
 
     public void EndTurn() {
         myStats.EndTurn();
         myCounters.EndTurn();
+        ActionPoints = 0;
     }
 
     public void Spawn(Player player, Node startNode, UnitObject startingStats) {
@@ -129,14 +131,14 @@ public class UnitController : MonoBehaviour {
         myStats.isActive = true;
 
         // TODO sort this problem, it shouldnt try to create camera for allies and the player, only enemies
-        if (PlayerManager.singleton.mainPlayer == this.myPlayer) {
+        if (PlayerManager.instance.mainPlayer == this.myPlayer) {
             return;
         }
 
         if (!SavedVariables.HasEncounteredEnemy(myStats.className)) {
             SavedVariables.EncounteredEnemy(myStats.className);
 
-            CameraManager.singleton.AddEncounteredTarget(this);
+            CameraManager.instance.AddEncounteredTarget(this);
         }
     }
 
@@ -209,6 +211,14 @@ public class UnitController : MonoBehaviour {
         set {
             myStats.SetHealth(value);
             unitCanvasController.UpdateHP(myStats.Health, myStats.MaxHealth);
+        }
+    }
+
+    public int ActionPoints {
+        get { return myStats.ActionPoints; }
+        set {
+            myStats.ActionPoints = value;
+            unitCanvasController.UpdateActionPoints(value);
         }
     }
 
@@ -358,7 +368,7 @@ public class UnitController : MonoBehaviour {
         attackSoundOptions.audioMixer = AudioMixers.SFX;
         attackSoundOptions.pitch = UnityEngine.Random.Range(0.8f, 1.2f);
 
-        AudioManager.singleton.Play(attackSoundOptions);
+        AudioManager.instance.Play(attackSoundOptions);
     }
 
     public bool getAttackAnimationPlaying() {
@@ -434,23 +444,21 @@ public class UnitController : MonoBehaviour {
 
     private Node FindForceMoveNode(Node origin, int distance, bool moveCloser) {
         ReachableTiles tiles = TileMap.instance.pathfinder.findReachableTiles(myNode, distance, Walkable.Walkable, -1);
-            Vector2 forceDirection = new Vector2(origin.x - myNode.x, origin.y - myNode.y).normalized;
-            forceDirection = moveCloser ? forceDirection : -forceDirection;
-
+        Vector2 forceDirection = new Vector2(origin.x - myNode.x, origin.y - myNode.y).normalized;
+        forceDirection = moveCloser ? forceDirection : -forceDirection;
 
         return tiles.basic.Keys.ToList().Aggregate((n1, n2) => {
             int n1Distance = n1.GridDistanceTo(origin);
             int n2Distance = n2.GridDistanceTo(origin);
 
             if (n1Distance == n2Distance) {
-
                 //compare direction from node
                 Vector2 n1Direction = new Vector2(n1.x - myNode.x, n1.y - myNode.y).normalized;
                 Vector2 n2Direction = new Vector2(n2.x - myNode.x, n2.y - myNode.y).normalized;
 
                 if (Vector2.Distance(n1Direction, forceDirection) == Vector2.Distance(n2Direction, forceDirection)) {
                     Vector2 absoluteFacing = new Vector2(Mathf.Sign(facingDirection.x), Mathf.Sign(facingDirection.y));
-            
+
                     Vector2 n1Neighbour = n1.previous.GetDirectionFrom(n1);
                     Vector2 n1AbsoluteDirection = new Vector2(Mathf.Sign(n1Neighbour.x), Mathf.Sign(n1Neighbour.y));
 
@@ -458,20 +466,17 @@ public class UnitController : MonoBehaviour {
                     Vector2 n2AbsoluteDirection = new Vector2(Mathf.Sign(n2Neighbour.x), Mathf.Sign(n2Neighbour.y));
 
                     return n1AbsoluteDirection.x == absoluteFacing.x && n1AbsoluteDirection.y == absoluteFacing.y ? n1 : n2;
-            
                 }
 
                 return Vector2.Distance(n1Direction, forceDirection) < Vector2.Distance(n2Direction, forceDirection) ? n1 : n2;
             }
- 
+
             if (moveCloser) {
                 return n1Distance < n2Distance ? n1 : n2;
             } else {
                 return n1Distance > n2Distance ? n1 : n2;
             }
-            
         });
-
     }
 
     public bool TakeDamage(UnitController attacker, int damage, bool ignoreArmour = false) {
@@ -550,8 +555,8 @@ public class UnitController : MonoBehaviour {
 
     public void Summon(Node targetNode, UnitObject unitStats) {
         // TODO work out a clean way of getting allied player
-        Player owningPlayer = myPlayer.ai ? myPlayer : PlayerManager.singleton.GetPlayer(1);
-        UnitManager.singleton.SpawnUnit(unitStats, owningPlayer, targetNode.x, targetNode.y);
+        Player owningPlayer = myPlayer.ai ? myPlayer : PlayerManager.instance.GetPlayer(1);
+        UnitManager.instance.SpawnUnit(unitStats, owningPlayer, targetNode.x, targetNode.y);
     }
 
     public void CreateBuffEffect(Buff buff) {

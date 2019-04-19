@@ -7,7 +7,7 @@ public class EndGameMenuController : MonoBehaviour {
         PlayOptions pressAudioOptions = new PlayOptions(buttonClickAudio, transform);
         pressAudioOptions.audioMixer = AudioMixers.UI;
         pressAudioOptions.persist = true;
-        AudioManager.singleton.Play(pressAudioOptions);
+        AudioManager.instance.Play(pressAudioOptions);
 
         SceneChanger.Instance.FadeToScene(Scenes.MAIN_MENU);
     }
@@ -16,7 +16,7 @@ public class EndGameMenuController : MonoBehaviour {
         PlayOptions pressAudioOptions = new PlayOptions(buttonClickAudio, transform);
         pressAudioOptions.audioMixer = AudioMixers.UI;
         pressAudioOptions.persist = true;
-        AudioManager.singleton.Play(pressAudioOptions);
+        AudioManager.instance.Play(pressAudioOptions);
 
         SceneChanger.Instance.FadeToScene(Scenes.ARENA);
     }

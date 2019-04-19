@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraManager : MonoBehaviour {
-    public static CameraManager singleton;
+    public static CameraManager instance;
 
     public Camera physicalCamera;
     public CameraController3D controlledCamera;
@@ -25,7 +25,7 @@ public class CameraManager : MonoBehaviour {
     public static float CUTSCENE_TIME = 1.66f;
 
     private void Awake() {
-        singleton = this;
+        instance = this;
         encounterTargets = new Stack<UnitController>();
     }
 
@@ -52,36 +52,36 @@ public class CameraManager : MonoBehaviour {
     }
 
     public IEnumerator EncounterCutscene() {
-        yield return TurnManager.singleton.WaitForWaitingForInput();
+        yield return TurnManager.instance.WaitForWaitingForInput();
 
         if (encounterTargets.Count < 1) {
             yield break;
         }
 
-        TurnManager.singleton.StartingCutscene();
+        TurnManager.instance.StartingCutscene();
         UnitController target = encounterTargets.Pop();
         Transform targetTransform = target.transform.Find("Token");
 
         TurnOffCameras();
         CreatePersonalCamera(targetTransform);
 
-        GUIController.singleton.HideUI();
+        GUIController.instance.HideUI();
 
-        AudioManager.singleton.LowerMusic();
+        AudioManager.instance.LowerMusic();
 
         yield return new WaitForSeconds(blendTime);
 
-        GUIController.singleton.CreateFlyinText(target.myStats.className);
+        GUIController.instance.CreateFlyinText(target.myStats.className);
 
         PlayOptions encounterSFX = new PlayOptions(target.myStats.encounterSFX, targetTransform);
         encounterSFX.audioMixer = AudioMixers.SFX;
-        AudioManager.singleton.Play(encounterSFX);
+        AudioManager.instance.Play(encounterSFX);
 
         yield return new WaitForSeconds(CUTSCENE_TIME);
 
-        AudioManager.singleton.RaiseMusic();
+        AudioManager.instance.RaiseMusic();
 
-        GUIController.singleton.ShowUI();
+        GUIController.instance.ShowUI();
 
         if (activePersonalCamera != null) {
             Destroy(activePersonalCamera.gameObject, blendTime + 1f);
@@ -89,7 +89,7 @@ public class CameraManager : MonoBehaviour {
 
         TurnOffCameras();
 
-        TurnManager.singleton.EndedCutscene();
+        TurnManager.instance.EndedCutscene();
 
         controlledCamera.TurnOn();
     }

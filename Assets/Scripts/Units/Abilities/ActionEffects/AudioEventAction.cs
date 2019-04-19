@@ -16,7 +16,7 @@ public class AudioEventAction : EventAction {
             };
             PlayOptions soundOptions = new PlayOptions(audioClip, targetTransform);
             soundOptions.audioMixer = AudioMixers.SFX;
-            AudioManager.singleton.Play(soundOptions);
+            AudioManager.instance.Play(soundOptions);
         };
     }
 }

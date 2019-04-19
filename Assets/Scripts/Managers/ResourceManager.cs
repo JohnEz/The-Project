@@ -2,19 +2,19 @@
 using UnityEngine;
 
 public class ResourceManager : MonoBehaviour {
-    public static ResourceManager singleton;
+    public static ResourceManager instance;
 
     [HideInInspector]
-    public Dictionary<string, AbilityBase> cards = new Dictionary<string, AbilityBase>();
+    public Dictionary<string, Ability> cards = new Dictionary<string, Ability>();
 
     [HideInInspector]
     public Dictionary<string, UnitObject> units = new Dictionary<string, UnitObject>();
 
     private void Awake() {
-        if (singleton != null) {
+        if (instance != null) {
             Destroy(gameObject);
         } else {
-            singleton = this;
+            instance = this;
             DontDestroyOnLoad(gameObject);
         }
 
@@ -23,10 +23,10 @@ public class ResourceManager : MonoBehaviour {
     }
 
     private void LoadCards() {
-        AbilityBase[] loadedCards = Resources.LoadAll<AbilityBase>("Cards");
+        Ability[] loadedCards = Resources.LoadAll<Ability>("Cards");
 
         for (int i = 0; i < loadedCards.Length; i++) {
-            AbilityBase newCard = loadedCards[i];
+            Ability newCard = loadedCards[i];
             cards.Add(newCard.name, newCard);
         }
     }

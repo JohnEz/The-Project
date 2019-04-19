@@ -4,15 +4,12 @@ using System.Linq;
 using UnityEngine;
 
 public class UnitManager : MonoBehaviour {
-    public static UnitManager singleton;
+    public static UnitManager instance;
 
     public GameObject UnitPrefab;
-
-    private List<UnitController> units;
+    public List<UnitController> Units { get; private set; }
     private List<UnitController> unitsToRemove;
 
-    //currentSelect
-    //UnitController currentPlayerUnit = null;
     private AttackAction activeAbility = null;
 
     private List<Node> attackableTiles = new List<Node>();
@@ -20,7 +17,7 @@ public class UnitManager : MonoBehaviour {
     private Node currentlyHoveredNode;
 
     private void Awake() {
-        singleton = this;
+        instance = this;
     }
 
     public Node CurrentlyHoveredNode {
@@ -33,7 +30,7 @@ public class UnitManager : MonoBehaviour {
     }
 
     public void Initialise() {
-        units = new List<UnitController>();
+        Units = new List<UnitController>();
         unitsToRemove = new List<UnitController>();
     }
 
@@ -41,20 +38,16 @@ public class UnitManager : MonoBehaviour {
     private void Update() {
     }
 
-    public List<UnitController> Units {
-        get { return units; }
-    }
-
     public List<UnitController> GetPlayersUnits(int playerId) {
-        return units.Where(unit => unit.myPlayer.id == playerId).ToList();
+        return Units.Where(unit => unit.myPlayer.id == playerId).ToList();
     }
 
     public UnitController SpawnUnit(string unit, Player player, int x, int y) {
-        if (!ResourceManager.singleton.units.ContainsKey(unit)) {
+        if (!ResourceManager.instance.units.ContainsKey(unit)) {
             Debug.LogError("Could not spawn character " + unit);
             return null;
         }
-        UnitObject unitToSpawn = ResourceManager.singleton.units[unit];
+        UnitObject unitToSpawn = ResourceManager.instance.units[unit];
 
         return SpawnUnit(unitToSpawn, player, x, y);
     }
@@ -75,7 +68,7 @@ public class UnitManager : MonoBehaviour {
         unitController.FaceDirection(Vector2.down);
         unitController.myManager = this;
         unitController.Initialise();
-        units.Add(unitController);
+        Units.Add(unitController);
 
         player.units.Add(unitController);
 
@@ -89,14 +82,14 @@ public class UnitManager : MonoBehaviour {
 
     public void RemoveUnits() {
         unitsToRemove.ForEach((unit) => {
-            units.Remove(unit);
+            Units.Remove(unit);
         });
 
         unitsToRemove.Clear();
     }
 
     public void StartTurn(Player player) {
-        foreach (UnitController unit in units) {
+        foreach (UnitController unit in Units) {
             if (unit.myPlayer.id == player.id) {
                 // TODO sort player selection as this is a bad hack
                 //currentPlayerUnit = player.myCharacter;
@@ -107,14 +100,14 @@ public class UnitManager : MonoBehaviour {
     }
 
     public void EndTurn(Player player) {
-        foreach (UnitController unit in units) {
+        foreach (UnitController unit in Units) {
             if (unit.myPlayer.id == player.id) {
                 unit.EndTurn();
             }
         }
     }
 
-    public void CardPlayed(AbilityBase card) {
+    public void CardPlayed(Ability card) {
     }
 
     // TODO this is probably needed for advanced cards but not for basic, fix later
@@ -142,13 +135,14 @@ public class UnitManager : MonoBehaviour {
         }
 
         ReachableTiles walkingTiles = TileMap.instance.pathfinder.findReachableTiles(unit.myNode, moveDistance, walkingType, unit.myPlayer.faction);
-        HighlightManager.singleton.HighlightTiles(walkingTiles.basic.Keys.ToList(), SquareTarget.MOVEMENT);
+        HighlightManager.instance.HighlightTiles(walkingTiles.basic.Keys.ToList(), SquareTarget.MOVEMENT);
+        HighlightManager.instance.HighlightTile(unit.myNode, SquareTarget.NONE);
     }
 
     // Shows where the ability can target
     public bool ShowAttackAction(UnitController unit, AttackAction action) {
         if (unit == null) {
-            GUIController.singleton.ShowErrorMessage("Player doesn't have a character?!");
+            GUIController.instance.ShowErrorMessage("Player doesn't have a character?!");
             return false;
         }
 
@@ -162,10 +156,10 @@ public class UnitManager : MonoBehaviour {
         activeAbility = action;
 
         attackableTiles = TileMap.instance.pathfinder.FindAttackableTiles(unit.myNode, action);
-        HighlightManager.singleton.UnhighlightAllTiles();
-        HighlightManager.singleton.HighlightTile(unit.myNode, SquareTarget.NONE);
+        HighlightManager.instance.UnhighlightAllTiles();
+        HighlightManager.instance.HighlightTile(unit.myNode, SquareTarget.NONE);
         SquareTarget targetType = action.targets == TargetType.ALLY ? SquareTarget.HELPFULL : SquareTarget.ATTACK;
-        HighlightManager.singleton.HighlightTiles(attackableTiles, targetType);
+        HighlightManager.instance.HighlightTiles(attackableTiles, targetType);
 
         if (currentlyHoveredNode != null) {
             HighlightEffectedTiles(unit, currentlyHoveredNode);
@@ -178,20 +172,20 @@ public class UnitManager : MonoBehaviour {
     public void HighlightEffectedTiles(UnitController unit, Node target) {
         if (attackableTiles.Contains(target)) {
             List<Node> effectedNodes = TileMap.instance.pathfinder.FindEffectedTiles(unit.myNode, target, activeAbility);
-            HighlightManager.singleton.ShowAbilityTiles(effectedNodes, activeAbility);
+            HighlightManager.instance.ShowAbilityTiles(effectedNodes, activeAbility);
         }
     }
 
     // TODO i dont know why this is its own fucntion call?
     // unhighlight all tiles
     public void UnhiglightEffectedTiles() {
-        HighlightManager.singleton.ClearEffectedTiles();
+        HighlightManager.instance.ClearEffectedTiles();
     }
 
     // shows the path to the selected node
     public void ShowPath(Node targetNode) {
         MovementPath movementPath = TileMap.instance.pathfinder.getPathFromTile(targetNode);
-        HighlightManager.singleton.ShowPath(movementPath.path);
+        HighlightManager.instance.ShowPath(movementPath.path);
     }
 
     // Uses the specified ability of at the target location
@@ -236,17 +230,17 @@ public class UnitManager : MonoBehaviour {
 
     // Called when the unit starts following a path
     public void UnitStartedMoving() {
-        TurnManager.singleton.StartMoving();
+        TurnManager.instance.StartMoving();
     }
 
     // Called when a unit has reached the end of its path
     public void UnitFinishedMoving(UnitController unit) {
-        TurnManager.singleton.FinishedMoving();
+        TurnManager.instance.FinishedMoving();
     }
 
     // Called at the start of a unit attack
     public void UnitStartedAttacking() {
-        TurnManager.singleton.StartAttacking();
+        TurnManager.instance.StartAttacking();
     }
 
     // Called when a unit finishes its attack
@@ -254,7 +248,7 @@ public class UnitManager : MonoBehaviour {
         RemoveUnits();
 
         //TODO this is done to not jump around, should at least be a constant value
-        StartCoroutine(CallActionWithDelay(() => TurnManager.singleton.FinishedAttacking(), 0.2f));
+        StartCoroutine(CallActionWithDelay(() => TurnManager.instance.FinishedAttacking(), 0.2f));
     }
 
     private IEnumerator CallActionWithDelay(System.Action action, float seconds) {

@@ -41,7 +41,7 @@ public class Draggable : MonoBehaviour {
 
     //public void SetDragged(bool isBeingDragged) {
     //    beingDragged = isBeingDragged;
-    //    CardManager.singleton.currentlyDraggedCard = isBeingDragged ? this : null;
+    //    CardManager.instance.currentlyDraggedCard = isBeingDragged ? this : null;
     //}
 
     //public void SetTargetPosition(Vector3 target) {
@@ -49,7 +49,7 @@ public class Draggable : MonoBehaviour {
     //}
 
     //public bool CanHoverCard() {
-    //    return CardManager.singleton.currentlyDraggedCard == null || CardManager.singleton.currentlyDraggedCard == this;
+    //    return CardManager.instance.currentlyDraggedCard == null || CardManager.instance.currentlyDraggedCard == this;
     //}
 
     //public void OnPointerEnter(PointerEventData eventData) {

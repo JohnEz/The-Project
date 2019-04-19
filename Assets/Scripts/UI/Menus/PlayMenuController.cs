@@ -13,7 +13,7 @@ public class PlayMenuController : MonoBehaviour {
         PlayOptions pressAudioOptions = new PlayOptions(buttonClickAudio, transform);
         pressAudioOptions.audioMixer = AudioMixers.UI;
         pressAudioOptions.persist = true;
-        AudioManager.singleton.Play(pressAudioOptions);
+        AudioManager.instance.Play(pressAudioOptions);
 
         GameDetails.PlayerCharacter = "Mage";
         GameDetails.PlayerDeck = BasicDecks.starterElementalist;
@@ -25,7 +25,7 @@ public class PlayMenuController : MonoBehaviour {
         PlayOptions pressAudioOptions = new PlayOptions(buttonClickAudio, transform);
         pressAudioOptions.audioMixer = AudioMixers.UI;
         pressAudioOptions.persist = true;
-        AudioManager.singleton.Play(pressAudioOptions);
+        AudioManager.instance.Play(pressAudioOptions);
 
         GameDetails.PlayerCharacter = "Fighter";
         GameDetails.PlayerDeck = BasicDecks.starterFighter;
@@ -61,7 +61,7 @@ public class PlayMenuController : MonoBehaviour {
         PlayOptions pressAudioOptions = new PlayOptions(buttonClickAudio, transform);
         pressAudioOptions.audioMixer = AudioMixers.UI;
         pressAudioOptions.persist = true;
-        AudioManager.singleton.Play(pressAudioOptions);
+        AudioManager.instance.Play(pressAudioOptions);
 
         LoadArena();
     }
@@ -74,7 +74,7 @@ public class PlayMenuController : MonoBehaviour {
         PlayOptions pressAudioOptions = new PlayOptions(buttonClickAudio, transform);
         pressAudioOptions.audioMixer = AudioMixers.UI;
         pressAudioOptions.persist = true;
-        AudioManager.singleton.Play(pressAudioOptions);
+        AudioManager.instance.Play(pressAudioOptions);
 
         transform.parent.Find("MainMenu").GetComponent<MainMenuController>().OpenMenu();
         CloseMenu();

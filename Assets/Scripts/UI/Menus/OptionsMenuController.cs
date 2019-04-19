@@ -103,7 +103,7 @@ public class OptionsMenuController : MonoBehaviour {
         PlayOptions pressAudioOptions = new PlayOptions(buttonClickAudio, transform);
         pressAudioOptions.audioMixer = AudioMixers.UI;
         pressAudioOptions.persist = true;
-        AudioManager.singleton.Play(pressAudioOptions);
+        AudioManager.instance.Play(pressAudioOptions);
 
         SaveOptions();
 

@@ -81,7 +81,7 @@ public class AIInfoCollector {
         }
 
         List<HeatMap> heatmaps = new List<HeatMap>();
-        List<UnitController> units = UnitManager.singleton.Units.FindAll(unit => unit.myPlayer.faction != faction && !unit.IsStealthed());
+        List<UnitController> units = UnitManager.instance.Units.FindAll(unit => unit.myPlayer.faction != faction && !unit.IsStealthed());
 
         units.ForEach(unit => {
             HeatMap heatmap = new HeatMap(unit);

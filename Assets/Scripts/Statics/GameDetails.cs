@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 public static class GameDetails {
-    private static string mapName = "dungeon1";
+    private static string mapName = "starterMap";
     private static string playerCharacter = "Fighter";
     private static List<string> playerDeck = BasicDecks.starterBard;
 

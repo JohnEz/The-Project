@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 
 public class UserInterfaceManager : MonoBehaviour {
-    public static UserInterfaceManager singleton;
+    public static UserInterfaceManager instance;
 
     //Managers
     private PauseMenuController pauseMenuController;
 
     private void Awake() {
-        singleton = this;
+        instance = this;
     }
 
     // Use this for initialization
@@ -21,47 +21,83 @@ public class UserInterfaceManager : MonoBehaviour {
         UserControls();
     }
 
-    //public void ShowCard(CardSlot cardSlot) {
-    //    UnshowCard();
+    public void ShowAbility(Ability ability) {
+        UnshowAbility();
 
-    //    if (!CardManager.singleton.IsACardActive()) {
-    //        CardManager.singleton.ActiveCard = cardSlot;
-    //        ShowAction();
-    //    }
-    //}
+        if (!UnitSelectionManager.instance.IsAnAbilityActive()) {
+            UnitSelectionManager.instance.ActiveAbility = ability;
+            ShowAction();
+        }
+    }
 
-    //public void UnshowCard() {
-    //    if (CardManager.singleton.ActiveCard != null) {
-    //        HighlightManager.singleton.UnhighlightTiles();
-    //        HighlightManager.singleton.ClearEffectedTiles();
-    //    }
-    //}
+    public void UnshowAbility() {
+        HighlightManager.instance.UnhighlightTiles();
+        HighlightManager.instance.ClearEffectedTiles();
+    }
 
     private void UserControls() {
         //temp for ai
         //if (Input.GetKeyUp ("space")) {
-        //	TurnManager.singleton.EndTurn ();
+        //	TurnManager.instance.EndTurn ();
         //}
 
         //Cancel (right click)
-        if (Input.GetKeyUp(KeyCode.Escape)) {
-            //if (CardManager.singleton.IsACardPlayed()) {
-            //    CardManager.singleton.CancelCurrentCard();
-            //} else if (CardManager.singleton.IsACardInvoked()) {
-            //    //check to see if they have an available option
-            //    if (ActionHasAvailableOptions()) {
-            //        GUIController.singleton.ShowErrorMessage("You have available options!");
-            //    } else {
-            //        UnshowCard();
-            //        CardManager.singleton.FinishedPlayingCard();
-            //    }
-            //} else {
-            if (PauseMenuController.gameIsPaused) {
+        if (Input.GetKeyUp(KeyCode.Escape) || Input.GetMouseButtonUp(1)) {
+            // If the player is using an ability and has done atleast 1 action
+            if (UnitSelectionManager.instance.IsAnAbilityInprogress()) {
+                //check to see if they have an available option
+                if (ActionHasAvailableOptions()) {
+                    GUIController.instance.ShowErrorMessage("You have available options!");
+                } else {
+                    UnshowAbility();
+                    UnitSelectionManager.instance.FinishedUsingAbility();
+                }
+            } else if (UnitSelectionManager.instance.IsAnAbilitySelected()) {
+                UnitSelectionManager.instance.CancelCurrentAbility();
+                if (!ShowMovement()) {
+                    UnshowAbility();
+                    UnitSelectionManager.instance.UnselectUnit();
+                }
+            } else if (UnitSelectionManager.instance.IsDisplayingMovement()) {
+                UnshowAbility();
+                UnitSelectionManager.instance.UnselectUnit();
+            } else if (PauseMenuController.gameIsPaused) {
                 pauseMenuController.Resume();
             } else {
                 pauseMenuController.Pause();
             }
-            //}
+        }
+
+        if (UnitSelectionManager.instance.SelectedUnit) {
+            List<Ability> abilities = UnitSelectionManager.instance.SelectedUnit.myStats.instantiatedAbilities;
+
+            if (Input.GetKeyDown(KeyCode.Alpha1)) {
+                if (abilities.Count < 1) {
+                    return;
+                }
+                UseAbility(abilities[0]);
+            }
+
+            if (Input.GetKeyDown(KeyCode.Alpha2)) {
+                if (abilities.Count < 2) {
+                    return;
+                }
+                UseAbility(abilities[1]);
+            }
+
+            if (Input.GetKeyDown(KeyCode.Alpha3)) {
+                if (abilities.Count < 3) {
+                    return;
+                }
+                UseAbility(abilities[2]);
+            }
+
+            if (Input.GetKeyDown(KeyCode.Alpha4)) {
+                if (abilities.Count < 4) {
+                    return;
+                }
+                UseAbility(abilities[3]);
+            }
         }
 
         if (Input.GetKeyUp("space")) {
@@ -70,31 +106,30 @@ public class UserInterfaceManager : MonoBehaviour {
     }
 
     public void EndTurn() {
-        if (TurnManager.singleton.CurrentPhase == TurnPhase.WAITING_FOR_INPUT && !TurnManager.singleton.isAiTurn()) {
-            //if (CardManager.singleton.IsACardPlayed()) {
-            //    CardManager.singleton.CancelCurrentCard();
-            //}
-            TurnManager.singleton.EndTurn();
+        if (TurnManager.instance.CurrentPhase == TurnPhase.WAITING_FOR_INPUT && !TurnManager.instance.isAiTurn()) {
+            if (UnitSelectionManager.instance.IsAnAbilityActive()) {
+                UnitSelectionManager.instance.CancelCurrentAbility();
+            }
+            TurnManager.instance.EndTurn();
         }
     }
 
     public void TileHovered(Node node, SquareTarget target) {
-        UnitManager.singleton.CurrentlyHoveredNode = node;
-        //if (CardManager.singleton.IsACardActive() && (target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL)) {
-        //    UnitManager.singleton.HighlightEffectedTiles(CardManager.singleton.ActiveCard.card.caster, node);
-        //} else
-        if (target == SquareTarget.MOVEMENT || target == SquareTarget.DASH || ((target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL) && node.previousMoveNode != null)) {
-            UnitManager.singleton.ShowPath(node);
+        UnitManager.instance.CurrentlyHoveredNode = node;
+        if (UnitSelectionManager.instance.IsAnAbilityActive() && (target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL)) {
+            UnitManager.instance.HighlightEffectedTiles(UnitSelectionManager.instance.ActiveAbility.caster, node);
+        } else if (target == SquareTarget.MOVEMENT || target == SquareTarget.DASH || ((target == SquareTarget.ATTACK || target == SquareTarget.HELPFULL) && node.previousMoveNode != null)) {
+            UnitManager.instance.ShowPath(node);
         }
     }
 
     public void TileExit(Node node, SquareTarget target) {
-        UnitManager.singleton.CurrentlyHoveredNode = null;
-        UnitManager.singleton.UnhiglightEffectedTiles();
+        UnitManager.instance.CurrentlyHoveredNode = null;
+        UnitManager.instance.UnhiglightEffectedTiles();
     }
 
     public void TileClicked(Node node, SquareTarget target) {
-        if (TurnManager.singleton.CurrentPhase == TurnPhase.WAITING_FOR_INPUT && !TurnManager.singleton.isAiTurn()) {
+        if (TurnManager.instance.CurrentPhase == TurnPhase.WAITING_FOR_INPUT && !TurnManager.instance.isAiTurn()) {
             switch (target) {
                 case SquareTarget.HELPFULL:
                 case SquareTarget.ATTACK:
@@ -115,76 +150,107 @@ public class UserInterfaceManager : MonoBehaviour {
     }
 
     public void ClickedAttack(Node node) {
-        //if (UnitManager.singleton.AttackTile(CardManager.singleton.ActiveCard.card.caster, node)) {
-        //    UnshowCard();
-        //    CardManager.singleton.CardInvoked();
-        //}
+        if (UnitManager.instance.AttackTile(UnitSelectionManager.instance.ActiveAbility.caster, node)) {
+            UnshowAbility();
+            UnitSelectionManager.instance.SelectedUnit.ActionPoints -= UnitSelectionManager.instance.ActiveAbility.actionPointCost;
+            UnitSelectionManager.instance.AbilityInprogress();
+        }
     }
 
     public void ClickedMovement(Node node) {
-        //UnitManager.singleton.MoveToTile(CardManager.singleton.ActiveCard.card.caster, node);
-        //UnshowCard();
-        //CardManager.singleton.CardInvoked();
+        UnitSelectionManager.instance.SelectedUnit.ActionPoints -= (int)node.moveCost;
+        UnitManager.instance.MoveToTile(UnitSelectionManager.instance.SelectedUnit, node);
+        UnshowAbility();
     }
 
     public void ClickedUnselected(Node node) {
+        UnshowAbility();
+
+        if (!node.myUnit) {
+            UnitSelectionManager.instance.UnselectUnit();
+            return;
+        }
+
+        UnitSelectionManager.instance.SelectUnit(node.myUnit);
+        UnitController selectedUnit = UnitSelectionManager.instance.SelectedUnit;
+
+        if (TurnManager.instance.PlayersTurn == selectedUnit.myPlayer.id && selectedUnit.myStats.ActionPoints > 0) {
+            ShowMovement();
+        }
     }
 
-    //public void CardHovered(CardSlot card) {
-    //    if (CardManager.singleton.CanPlayCard()) {
-    //        ShowCard(card);
-    //    }
-    //}
+    public void AbilityHovered(Ability ability) {
+        if (UnitSelectionManager.instance.CanUseAbility()) {
+            ShowAbility(ability);
+        }
+    }
 
-    //public void CardUnhovered() {
-    //    // if there isnt a played card, clear the display
-    //    if (!CardManager.singleton.IsACardActive()) {
-    //        UnshowCard();
-    //        CardManager.singleton.ActiveCard = null;
-    //    }
-    //}
+    public void AbilityUnhovered() {
+        // if there isnt a played card, clear the display
+        if (!UnitSelectionManager.instance.IsAnAbilityActive()) {
+            UnshowAbility();
+            UnitSelectionManager.instance.ActiveAbility = null;
+        }
+    }
 
-    //public bool PlayCard(CardSlot cardSlot) {
-    //    if (CardManager.singleton.CanPlayCard(cardSlot)) {
-    //        UnshowCard();
-    //        CardManager.singleton.PlayCard(cardSlot);
-    //        return true;
-    //    }
-    //    return false;
-    //}
+    public bool ShowMovement() {
+        if (!UnitSelectionManager.instance.CanDisplayMovement()) {
+            return false;
+        }
 
-    //public bool RunNextCardAction(CardSlot card, int actionIndex) {
-    //    if (card && actionIndex < card.card.Actions.Count) {
-    //        AbilityAction currentAction = card.card.Actions[actionIndex];
-    //        if (currentAction.GetType() == typeof(MoveAction) || typeof(AttackAction).IsAssignableFrom(currentAction.GetType())) {
-    //            ShowAction();
-    //        } else if (currentAction.GetType() == typeof(DrawCardAction)) {
-    //            DrawCardAction drawAction = (DrawCardAction)currentAction;
-    //            CardManager.singleton.ActiveCard.myUnit.deck.DrawCard(drawAction.cardsToDraw);
-    //            FinishedAction();
-    //        }
-    //        return true;
-    //    }
+        UnitController selectedUnit = UnitSelectionManager.instance.SelectedUnit;
+        UnitManager.instance.ShowMoveAction(selectedUnit, selectedUnit.myStats.Speed, selectedUnit.myStats.WalkingType);
+        UnitSelectionManager.instance.DisplayMovement();
+        return true;
+    }
 
-    //    return false;
-    //}
+    public bool UseAbility(Ability ability) {
+        if (!UnitSelectionManager.instance.SelectedUnit) {
+            GUIController.instance.ShowErrorMessage("No unit Selected");
+            return false;
+        }
+
+        if (UnitSelectionManager.instance.SelectedUnit.myStats.ActionPoints < ability.actionPointCost) {
+            GUIController.instance.ShowErrorMessage("Not enough action points");
+            return false;
+        }
+
+        if (UnitSelectionManager.instance.CanUseAbility(ability)) {
+            UnshowAbility();
+            UnitSelectionManager.instance.UseAbility(ability);
+            return true;
+        }
+        return false;
+    }
+
+    public bool RunNextAbilityAction(Ability ability, int actionIndex) {
+        if (ability && actionIndex < ability.Actions.Count) {
+            AbilityAction currentAction = ability.Actions[actionIndex];
+            if (currentAction.GetType() == typeof(MoveAction) || typeof(AttackAction).IsAssignableFrom(currentAction.GetType())) {
+                ShowAction();
+            }
+            return true;
+        }
+
+        return false;
+    }
 
     public void ShowAction() {
-        //CardSlot activeCard = CardManager.singleton.ActiveCard;
-        //AbilityAction currentAction = activeCard.card.Actions[CardManager.singleton.CurrentActionIndex];
-        //if (currentAction.GetType() == typeof(MoveAction)) {
-        //    MoveAction moveAction = (MoveAction)currentAction;
-        //    UnitManager.singleton.ShowMoveAction(activeCard.card.caster, moveAction.distance, moveAction.walkingType);
-        //} else if (typeof(AttackAction).IsAssignableFrom(currentAction.GetType())) {
-        //    AttackAction attackAction = (AttackAction)currentAction;
-        //    UnitManager.singleton.ShowAttackAction(activeCard.card.caster, attackAction);
-        //}
+        Ability activeAbility = UnitSelectionManager.instance.ActiveAbility;
+        AbilityAction currentAction = activeAbility.Actions[UnitSelectionManager.instance.CurrentActionIndex];
+        if (currentAction.GetType() == typeof(MoveAction)) {
+            MoveAction moveAction = (MoveAction)currentAction;
+            UnitManager.instance.ShowMoveAction(activeAbility.caster, moveAction.distance, moveAction.walkingType);
+        } else if (typeof(AttackAction).IsAssignableFrom(currentAction.GetType())) {
+            AttackAction attackAction = (AttackAction)currentAction;
+            UnitManager.instance.ShowAttackAction(activeAbility.caster, attackAction);
+        }
     }
 
     // if there is another action to the ability, display it
     public bool ActionHasAvailableOptions() {
-        //CardSlot activeCard = CardManager.singleton.ActiveCard;
-        //AbilityAction currentAction = activeCard.card.Actions[CardManager.singleton.CurrentActionIndex];
+        //CardSlot activeCard = CardManager.instance.ActiveCard;
+        //AbilityAction currentAction = activeCard.card.Actions[CardManager.instance.CurrentActionIndex];
         //UnitController unit = activeCard.card.caster;
         //if (currentAction.GetType() == typeof(MoveAction)) {
         //    MoveAction moveAction = (MoveAction)currentAction;
@@ -192,7 +258,7 @@ public class UserInterfaceManager : MonoBehaviour {
         //    return walkingTiles.basic.Keys.Count > 0;
         //} else if (typeof(AttackAction).IsAssignableFrom(currentAction.GetType())) {
         //    AttackAction attackAction = (AttackAction)currentAction;
-        //    //UnitManager.singleton.ShowAttackAction(activeCard.card.caster, attackAction);
+        //    //UnitManager.instance.ShowAttackAction(activeCard.card.caster, attackAction);
         //    List<Node> attackableTiles = TileMap.instance.pathfinder.FindAttackableTiles(unit.myNode, attackAction);
         //    return attackableTiles.Exists(tile => attackAction.CanHitUnit(tile));
         //}
@@ -201,20 +267,20 @@ public class UserInterfaceManager : MonoBehaviour {
     }
 
     public void FinishedAction() {
-        //CardManager.singleton.CurrentActionIndex++;
-        //if (!RunNextCardAction(CardManager.singleton.ActiveCard, CardManager.singleton.CurrentActionIndex)) {
-        //    CardManager.singleton.FinishedPlayingCard();
-        //}
+        UnitSelectionManager.instance.CurrentActionIndex++;
+        if (!RunNextAbilityAction(UnitSelectionManager.instance.ActiveAbility, UnitSelectionManager.instance.CurrentActionIndex)) {
+            UnitSelectionManager.instance.FinishedUsingAbility();
+        }
     }
 
     public void FinishedAttacking() {
-        if (!TurnManager.singleton.isAiTurn()) {
+        if (!TurnManager.instance.isAiTurn()) {
             FinishedAction();
         }
     }
 
     public void FinishedMoving() {
-        if (!TurnManager.singleton.isAiTurn()) {
+        if (!TurnManager.instance.isAiTurn()) {
             FinishedAction();
         }
     }

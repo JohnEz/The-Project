@@ -39,9 +39,6 @@ public class UnitObject : ScriptableObject {
     //scaling consts
     private const int ACTION_POINTS_TO_STAMINA = 2;
 
-    //list of buffs and debuffs
-    private List<Buff> myBuffs = new List<Buff>();
-
     public int baseHealth = 100;
     private int currentHealth;
     public int baseStamina = 50;
@@ -49,7 +46,9 @@ public class UnitObject : ScriptableObject {
     public int baseBlock = 0;
     public int baseArmour = 0;
     public int baseActionPoints = 2;
-    public int actionPoints = 0;
+
+    [HideInInspector]
+    private int actionPoints;
 
     //Stats for AI
     public Walkable baseWalkingType = Walkable.Walkable;
@@ -64,6 +63,11 @@ public class UnitObject : ScriptableObject {
     [HideInInspector]
     public List<AttackAction> instantiatedAttacks;
 
+    public List<Ability> baseAbilities;
+
+    [HideInInspector]
+    public List<Ability> instantiatedAbilities;
+
     public void Initialise(UnitController myUnit) {
         currentHealth = MaxHealth;
         currentStamina = MaxStamina;
@@ -72,6 +76,12 @@ public class UnitObject : ScriptableObject {
             AttackAction instantaitedAttack = Instantiate(attack);
             instantaitedAttack.caster = myUnit;
             instantiatedAttacks.Add(instantaitedAttack);
+        });
+
+        baseAbilities.ForEach(ability => {
+            Ability instantaitedAbility = Instantiate(ability);
+            instantaitedAbility.caster = myUnit;
+            instantiatedAbilities.Add(instantaitedAbility);
         });
 
         // set graphics
@@ -89,7 +99,7 @@ public class UnitObject : ScriptableObject {
         int flatMods = 0;
         float percentMods = 1;
 
-        foreach (Buff buff in myBuffs) {
+        foreach (Buff buff in Buffs) {
             flatMods += buff.GetFlatMod((int)stat);
             percentMods *= buff.GetPercentMod((int)stat);
         }
@@ -131,6 +141,10 @@ public class UnitObject : ScriptableObject {
         get { return GetModifiedStat(baseStamina, Stats.STAMINA); }
     }
 
+    public int MaxActionPoints {
+        get { return GetModifiedStat(baseActionPoints, Stats.AP); }
+    }
+
     public int Block {
         get { return GetModifiedStat(baseBlock, Stats.BLOCK); }
     }
@@ -147,10 +161,7 @@ public class UnitObject : ScriptableObject {
         get { return GetModifiedStat(baseSpeed, Stats.SPEED); }
     }
 
-    public List<Buff> Buffs {
-        get { return myBuffs; }
-        set { myBuffs = value; }
-    }
+    public List<Buff> Buffs { get; set; } = new List<Buff>();
 
     public Walkable WalkingType {
         get { return walkingType; }

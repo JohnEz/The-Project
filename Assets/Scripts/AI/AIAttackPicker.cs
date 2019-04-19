@@ -35,7 +35,7 @@ public class AIAttackPicker {
         //     node
         //         .GetComponentInChildren<TileHighlighter>()
         //         .DebugSetText(
-        //             (nodeValues.Keys.Contains(node) ? 
+        //             (nodeValues.Keys.Contains(node) ?
         //                 nodeValues[node].ToString() :
         //                 "")
         //             .ToString()
@@ -52,9 +52,8 @@ public class AIAttackPicker {
             List<Node> reachableNodes = attacksToTiles[aiAttackAction].Where(node => nodeValues.Keys.Contains(node)).ToList();
 
             if (reachableNodes.Count > 0) {
-
                 Dictionary<Node, int> nodeAttackValues = new Dictionary<Node, int>();
-                
+
                 reachableNodes.ForEach(node => {
                     int attackValue = CalculateAttackWorth(myUnit, node, aiAttackAction.targetNode, aiAttackAction.attack);
                     nodeAttackValues.Add(node, attackValue);
@@ -90,7 +89,7 @@ public class AIAttackPicker {
     public Dictionary<AIAttackAction, List<Node>> FindPossibleAttackNodes(UnitController unit) {
         Dictionary<AIAttackAction, List<Node>> attacksToTiles = new Dictionary<AIAttackAction, List<Node>>();
 
-        UnitManager.singleton.Units.ForEach(otherUnit => {
+        UnitManager.instance.Units.ForEach(otherUnit => {
             unit.myStats.Attacks.ForEach(attackAction => {
                 List<Node> attackNodes = new List<Node>();
 
@@ -166,5 +165,4 @@ public class AIAttackPicker {
 
         return valueOfAttack;
     }
-
 }

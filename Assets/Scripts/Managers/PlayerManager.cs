@@ -16,12 +16,9 @@ public class Player {
 }
 
 public class PlayerManager : MonoBehaviour {
-    public static PlayerManager singleton;
+    public static PlayerManager instance;
 
     private List<Player> players = new List<Player>();
-
-    public GameObject player1Hand;
-    public GameObject player1Deck;
 
     private int humanCount = 0;
     private int cpuCount = 0;
@@ -30,7 +27,7 @@ public class PlayerManager : MonoBehaviour {
     public Player mainPlayer;
 
     private void Awake() {
-        singleton = this;
+        instance = this;
     }
 
     public Player AddPlayer(int faction, string name = null) {
@@ -40,14 +37,6 @@ public class PlayerManager : MonoBehaviour {
         newPlayer.name = name != null ? name : string.Format("Player %s", humanCount);
         newPlayer.ai = false;
         newPlayer.faction = faction;
-
-        // TODO i need to clean this up and let it scale probably
-        if (humanCount == 1) {
-            //newPlayer.myHand = player1Hand.GetComponent<Hand>();
-            //newPlayer.myDeck = player1Deck.GetComponent<Deck>();
-            //player1Deck.GetComponent<Deck>().SetPlayer(newPlayer);
-            //player1Hand.GetComponent<Hand>().SetPlayer(newPlayer);
-        }
 
         mainPlayer = newPlayer;
 

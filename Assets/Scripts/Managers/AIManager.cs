@@ -23,12 +23,12 @@ public class AIAttackAction {
 }
 
 public class AIManager : MonoBehaviour {
-    public static AIManager singleton;
+    public static AIManager instance;
 
     private List<UnitController> myUnits;
 
     private void Awake() {
-        singleton = this;
+        instance = this;
     }
 
     // Use this for initialization
@@ -54,9 +54,9 @@ public class AIManager : MonoBehaviour {
 
     // NewTurn is called at the start of each of the AIs turns.
     public IEnumerator NewTurn(int myPlayerId) {
-        myUnits = UnitManager.singleton.GetPlayersUnits(myPlayerId);
+        myUnits = UnitManager.instance.GetPlayersUnits(myPlayerId);
         // TODO make this async
-        int faction = PlayerManager.singleton.GetPlayer(myPlayerId).faction;
+        int faction = PlayerManager.instance.GetPlayer(myPlayerId).faction;
         AIInfoCollector.Instance.GenerateHostilityMap(faction);
 
         // Debug
@@ -67,8 +67,8 @@ public class AIManager : MonoBehaviour {
 
         foreach (UnitController unit in myUnits) {
             if (unit.myStats.isActive) {
-                CameraManager.singleton.FollowTarget(unit.transform);
-                yield return new WaitForSeconds(CameraManager.singleton.blendTime);
+                CameraManager.instance.FollowTarget(unit.transform);
+                yield return new WaitForSeconds(CameraManager.instance.blendTime);
                 //yield return PlanTurnTwoActions(unit);
                 yield return ExecutePlannedTurn(unit);
             }
@@ -78,11 +78,10 @@ public class AIManager : MonoBehaviour {
         //     TileMap.instance.GetNode(nodePos).GetComponentInChildren<TileHighlighter>().DebugSetText("");
         // });
 
-
         // TODO this shouldnt be needed if we skip ai turns with no active units
-        yield return TurnManager.singleton.WaitForWaitingForInput();
+        yield return TurnManager.instance.WaitForWaitingForInput();
 
-        TurnManager.singleton.EndTurn();
+        TurnManager.instance.EndTurn();
     }
 
     public IEnumerator ExecutePlannedTurn(UnitController unit) {
@@ -94,7 +93,7 @@ public class AIManager : MonoBehaviour {
                 turnPlan = AIAttackPicker.Instance.GetBestPlan(unit);
             }
 
-            yield return TurnManager.singleton.WaitForWaitingForInput();
+            yield return TurnManager.instance.WaitForWaitingForInput();
 
             if (turnPlan == null) {
                 // No actions to take
@@ -116,7 +115,7 @@ public class AIManager : MonoBehaviour {
 
                         // Tell unit to follow path
                         if (pathToNode.path.Count > 0) {
-                            UnitManager.singleton.SetUnitPath(unit, pathToNode);
+                            UnitManager.instance.SetUnitPath(unit, pathToNode);
                         } else {
                             unit.CreateBasicText("Pass");
                         }
@@ -128,8 +127,8 @@ public class AIManager : MonoBehaviour {
                 }
             } else if (turnPlan.attack != null) {
                 if (turnPlan.attack.targetNode != unit.myNode) {
-                    CameraManager.singleton.FollowTarget(turnPlan.attack.targetNode.transform);
-                    yield return new WaitForSeconds(CameraManager.singleton.blendTime);
+                    CameraManager.instance.FollowTarget(turnPlan.attack.targetNode.transform);
+                    yield return new WaitForSeconds(CameraManager.instance.blendTime);
                 }
 
                 AttackTile(unit, turnPlan.attack.targetNode, turnPlan.attack.attack);
@@ -145,7 +144,7 @@ public class AIManager : MonoBehaviour {
             yield return new WaitForSeconds(0.5f);
         }
 
-        yield return TurnManager.singleton.WaitForWaitingForInput();
+        yield return TurnManager.instance.WaitForWaitingForInput();
     }
 
     //If we only want AI to have a single move and a single attack
@@ -191,7 +190,7 @@ public class AIManager : MonoBehaviour {
         int actionPoints = 2;
 
         while (actionPoints > 0) {
-            yield return TurnManager.singleton.WaitForWaitingForInput();
+            yield return TurnManager.instance.WaitForWaitingForInput();
 
             Dictionary<AttackAction, List<Node>> potentialAbilityTargets = GetPotentialAbilityTargets(unit);
             Dictionary<AttackAction, List<Node>> filteredPotentialAbilityTargets = potentialAbilityTargets.Where(keyValuePair => keyValuePair.Value.Count > 0).ToDictionary(i => i.Key, i => i.Value);
@@ -226,14 +225,14 @@ public class AIManager : MonoBehaviour {
                 actionPoints = 0;
             }
         }
-        yield return TurnManager.singleton.WaitForWaitingForInput();
+        yield return TurnManager.instance.WaitForWaitingForInput();
     }
 
     // Finds all tiles that can attack an enemy
     public List<Node> FindPossibleAttackNodes(UnitController unit, AttackAction attackAction2) {
         List<Node> attackNodes = new List<Node>();
 
-        UnitManager.singleton.Units.ForEach(otherUnit => {
+        UnitManager.instance.Units.ForEach(otherUnit => {
             unit.myStats.Attacks.ForEach(attackAction => {
                 if (attackAction.CanHitUnit(otherUnit.myNode)) {
                     List<Node> nodesToAttackFrom = TileMap.instance.pathfinder.FindAttackableTiles(otherUnit.myNode, attackAction);
@@ -288,7 +287,7 @@ public class AIManager : MonoBehaviour {
     public void AttackTile(UnitController unit, Node targetTile, AttackAction attack) {
         // gets the first target of the first ability
         //Debug.Log("AI - attacking tile: " + targetTile);
-        UnitManager.singleton.AttackTile(unit, targetTile, attack);
+        UnitManager.instance.AttackTile(unit, targetTile, attack);
     }
 
     private MovementPath TripPathToWalkable(UnitController unit, MovementPath movementPath) {
@@ -317,6 +316,6 @@ public class AIManager : MonoBehaviour {
         // path should not use any none static node data in future
         shortestPath.path = Pathfinder.CleanPath(shortestPath.path, unit.myNode);
 
-        UnitManager.singleton.SetUnitPath(unit, shortestPath);
+        UnitManager.instance.SetUnitPath(unit, shortestPath);
     }
 }

@@ -2,7 +2,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Ability", menuName = "Ability/New Ability")]
-public class AbilityBase : ScriptableObject {
+public class Ability : ScriptableObject {
     public new string name = "UNNAMED";
     public string description = "No description set!";
     public Sprite icon;
@@ -12,16 +12,29 @@ public class AbilityBase : ScriptableObject {
     [HideInInspector]
     public List<AbilityAction> instansiatedActions;
 
+    public int baseActionPointCost = 1;
+    public int actionPointCost;
     public int staminaCost = 1;
 
     [HideInInspector]
     public UnitController caster;
 
+    public int cooldown;
+    public int baseCooldown = 1;
+    public int maxCooldown = 1;
+
     public void Awake() {
         instansiatedActions = new List<AbilityAction>(0);
         baseActions.ForEach(action => {
+            if (!action) {
+                Debug.LogError("Instantiated ability incorrectly: " + name);
+                return;
+            }
             instansiatedActions.Add(Instantiate(action));
         });
+        maxCooldown = baseCooldown;
+        cooldown = 0;
+        actionPointCost = baseActionPointCost;
     }
 
     public List<AbilityAction> Actions {
@@ -35,5 +48,19 @@ public class AbilityBase : ScriptableObject {
 
     public virtual string GetDescription() {
         return description;
+    }
+
+    public int Cooldown {
+        get { return cooldown; }
+        set { cooldown = value; }
+    }
+
+    public int MaxCooldown {
+        get { return maxCooldown; }
+        set { maxCooldown = value; }
+    }
+
+    public void SetOnCooldown(bool isOnCooldown) {
+        cooldown = isOnCooldown ? maxCooldown : 0;
     }
 }

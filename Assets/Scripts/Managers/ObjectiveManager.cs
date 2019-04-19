@@ -12,12 +12,12 @@ public struct Objective {
 }
 
 public class ObjectiveManager : MonoBehaviour {
-    public static ObjectiveManager singleton;
+    public static ObjectiveManager instance;
 
     private Dictionary<Player, List<Objective>> objectives = new Dictionary<Player, List<Objective>>();
 
     private void Awake() {
-        singleton = this;
+        instance = this;
     }
 
     public List<Objective> getObjectives(Player player) {
@@ -64,7 +64,7 @@ public class ObjectiveManager : MonoBehaviour {
     }
 
     private bool Annihilation(Player player) {
-        List<UnitController> units = UnitManager.singleton.Units;
+        List<UnitController> units = UnitManager.instance.Units;
 
         foreach (UnitController unit in units) {
             if (unit.myPlayer.faction != player.faction) {

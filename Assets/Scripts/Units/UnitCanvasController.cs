@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,9 +16,11 @@ public class UnitCanvasController : MonoBehaviour {
     public GameObject damageTextPrefab;
     public GameObject buffIconPrefab;
     public GameObject staminaBarPrefab;
+    public GameObject actionPointsPrefab;
 
     private StaminaBarController staminaBar;
     private HpBarController hpBar;
+    private TextMeshProUGUI actionPointsText;
     private List<GameObject> buffIcons = new List<GameObject>();
     private Queue<CombatText> combatTextQueue = new Queue<CombatText>();
 
@@ -44,6 +47,8 @@ public class UnitCanvasController : MonoBehaviour {
 
         staminaBar = Instantiate(staminaBarPrefab, transform, false).GetComponent<StaminaBarController>();
         staminaBar.Initialize(myUnit.myStats.MaxStamina);
+
+        actionPointsText = Instantiate(actionPointsPrefab, transform, false).GetComponentInChildren<TextMeshProUGUI>();
     }
 
     // Update is called once per frame
@@ -60,8 +65,8 @@ public class UnitCanvasController : MonoBehaviour {
     }
 
     public void FaceCamera() {
-        //Vector3 v = CameraManager.singleton.physicalCamera.transform.position - transform.position;
-        transform.LookAt(CameraManager.singleton.physicalCamera.transform.position);
+        //Vector3 v = CameraManager.instance.physicalCamera.transform.position - transform.position;
+        transform.LookAt(CameraManager.instance.physicalCamera.transform.position);
         transform.Rotate(0, 180, 0);
     }
 
@@ -105,6 +110,10 @@ public class UnitCanvasController : MonoBehaviour {
 
     public void UpdateStamina(int currentStamina, int maxStamina) {
         staminaBar.SetStamina(currentStamina, maxStamina);
+    }
+
+    public void UpdateActionPoints(int ap) {
+        actionPointsText.text = ap.ToString();
     }
 
     public void CreateDamageText(string damage) {

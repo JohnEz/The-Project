@@ -91,20 +91,20 @@ public class TileHighlighter : MonoBehaviour {
     public void OnMouseUp() {
         Node myNode = GetComponentInParent<Node>();
         if (myState.hovered) {
-            UserInterfaceManager.singleton.TileClicked(myNode, myTarget);
+            UserInterfaceManager.instance.TileClicked(myNode, myTarget);
         }
     }
 
     public void OnMouseEnter() {
         UpdateState("hovered", true);
         Node myNode = GetComponentInParent<Node>();
-        UserInterfaceManager.singleton.TileHovered(myNode, myTarget);
+        UserInterfaceManager.instance.TileHovered(myNode, myTarget);
     }
 
     public void OnMouseExit() {
         UpdateState("hovered", false);
         Node myNode = GetComponentInParent<Node>();
-        UserInterfaceManager.singleton.TileExit(myNode, myTarget);
+        UserInterfaceManager.instance.TileExit(myNode, myTarget);
     }
 
     public void SetHighlighted(bool highlighted) {
