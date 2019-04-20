@@ -18,6 +18,6 @@ public class EndGameMenuController : MonoBehaviour {
         pressAudioOptions.persist = true;
         AudioManager.instance.Play(pressAudioOptions);
 
-        SceneChanger.Instance.FadeToScene(Scenes.ARENA);
+        SceneChanger.Instance.FadeToScene(Scenes.BATTLE);
     }
 }

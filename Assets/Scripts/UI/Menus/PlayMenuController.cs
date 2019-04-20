@@ -15,8 +15,6 @@ public class PlayMenuController : MonoBehaviour {
         pressAudioOptions.persist = true;
         AudioManager.instance.Play(pressAudioOptions);
 
-        GameDetails.PlayerCharacter = "Mage";
-        GameDetails.PlayerDeck = BasicDecks.starterElementalist;
         UpdateSubmenu("Elementalist", "Description text for a Elementalist.");
         OpenSubMenu();
     }
@@ -27,8 +25,6 @@ public class PlayMenuController : MonoBehaviour {
         pressAudioOptions.persist = true;
         AudioManager.instance.Play(pressAudioOptions);
 
-        GameDetails.PlayerCharacter = "Fighter";
-        GameDetails.PlayerDeck = BasicDecks.starterFighter;
         UpdateSubmenu("Warrior", "Description text for a Fighter.");
         OpenSubMenu();
     }
@@ -67,7 +63,7 @@ public class PlayMenuController : MonoBehaviour {
     }
 
     private void LoadArena() {
-        SceneChanger.Instance.FadeToScene(Scenes.ARENA);
+        SceneChanger.Instance.FadeToScene(Scenes.BATTLE);
     }
 
     public void Back() {

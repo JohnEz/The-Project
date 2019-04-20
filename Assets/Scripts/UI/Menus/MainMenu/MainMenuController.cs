@@ -13,8 +13,7 @@ public class MainMenuController : MonoBehaviour {
         pressAudioOptions.persist = true;
         AudioManager.instance.Play(pressAudioOptions);
 
-        transform.parent.Find("PlayMenu").GetComponent<PlayMenuController>().OpenMenu();
-        CloseMenu(Vector2.left);
+        SceneChanger.Instance.FadeToScene(Scenes.PRE_GAME);
     }
 
     public void Options() {

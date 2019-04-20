@@ -1,18 +1,9 @@
 ﻿using System.Collections.Generic;
 
 public static class GameDetails {
-    private static string mapName = "starterMap";
-    private static string playerCharacter = "Fighter";
-    private static List<string> playerDeck = BasicDecks.starterBard;
-
-    public static string PlayerCharacter {
-        get {
-            return playerCharacter;
-        }
-        set {
-            playerCharacter = value;
-        }
-    }
+    private static string mapName;
+    private static int maxPartySize = 3;
+    private static List<UnitObject> party = new List<UnitObject>();
 
     public static string MapName {
         get {
@@ -23,12 +14,21 @@ public static class GameDetails {
         }
     }
 
-    public static List<string> PlayerDeck {
+    public static int MaxPartySize {
         get {
-            return playerDeck;
+            return maxPartySize;
         }
         set {
-            playerDeck = value;
+            maxPartySize = value;
+        }
+    }
+
+    public static List<UnitObject> Party {
+        get {
+            return party;
+        }
+        set {
+            party = value;
         }
     }
 }

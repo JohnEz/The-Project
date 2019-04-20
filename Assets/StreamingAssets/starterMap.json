@@ -75,8 +75,8 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":576,
-                 "y":318
+                 "x":574,
+                 "y":207
                 }, 
                 {
                  "height":0,
@@ -87,8 +87,32 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":829,
-                 "y":318
+                 "x":828,
+                 "y":206
+                }, 
+                {
+                 "height":0,
+                 "id":7,
+                 "name":"PlayerSpawn",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":576,
+                 "y":1601
+                }, 
+                {
+                 "height":0,
+                 "id":8,
+                 "name":"PlayerSpawn",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":833,
+                 "y":1601
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -97,10 +121,10 @@
          "y":0
         }],
  "nextlayerid":7,
- "nextobjectid":7,
+ "nextobjectid":9,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.2.1",
+ "tiledversion":"1.2.3",
  "tileheight":128,
  "tilesets":[
         {

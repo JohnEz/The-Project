@@ -34,23 +34,30 @@ public class GameManager : MonoBehaviour {
 
         if (ADD_ALLY) {
             Player allyAI = PlayerManager.instance.AddAiPlayer(1);
-
-            //UnitManager.instance.SpawnUnit("Criminal", allyAI, 4, 12);
-
-            if (GameDetails.PlayerCharacter == "Fighter") {
-                //UnitManager.instance.SpawnUnit("Scribe", allyAI, 6, 12);
-            } else {
-                //UnitManager.instance.SpawnUnit("Farmer", allyAI, 6, 12);
-            }
         }
 
-        //SpawnLocation playerSpawnLocation = TileMap.instance.spawnLocations.Find(sl => sl.name == "PlayerSpawn");
+        List<SpawnLocation> playerSpawnLocation = TileMap.instance.spawnLocations.FindAll(sl => sl.name == "PlayerSpawn");
         //int playerSpawnX = playerSpawnLocation != null ? playerSpawnLocation.x : 5;
         //int playerSpawnY = playerSpawnLocation != null ? playerSpawnLocation.y : 6;
         //UnitManager.instance.SpawnPlayerUnit(GameDetails.PlayerCharacter, humanPlayer, playerSpawnX, playerSpawnY, fighterdeck);
-        UnitManager.instance.SpawnUnit("Fighter", humanPlayer, 4, 12);
-        UnitManager.instance.SpawnUnit("Cleric", humanPlayer, 5, 12);
-        UnitManager.instance.SpawnUnit("Criminal", humanPlayer, 6, 12);
+        //UnitManager.instance.SpawnUnit("Fighter", humanPlayer, 4, 12);
+        //UnitManager.instance.SpawnUnit("Cleric", humanPlayer, 5, 12);
+        //UnitManager.instance.SpawnUnit("Criminal", humanPlayer, 6, 12);
+
+        int i = 0;
+        GameDetails.Party.ForEach((character) => {
+            if (i >= playerSpawnLocation.Count) {
+                Debug.LogError("No spawn location for player unit!");
+                return;
+            }
+
+            SpawnLocation spawnLocation = playerSpawnLocation[i];
+
+            UnitManager.instance.SpawnUnit(character, humanPlayer, playerSpawnLocation[i].x, playerSpawnLocation[i].y);
+            i++;
+        });
+
+        Debug.Log(GameDetails.Party.Count);
 
         CameraManager.instance.JumpToLocation(humanPlayer.units[0].myNode);
 
