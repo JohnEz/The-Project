@@ -163,12 +163,13 @@ public class AttackAction : AbilityAction {
         attackEffects.ForEach(attackEffect => {
             if (attackEffect.GetType() == typeof(DamageEffect)) {
                 damage += ((DamageEffect)attackEffect).damage;
-            } else if (attackEffect.GetType() == typeof(DamagePerStackEffect)) {
-                damage += ((DamagePerStackEffect)attackEffect).damageMod * 2;
-            } else if (attackEffect.GetType() == typeof(DamageWithMultiplierEffect)) {
-                DamageWithMultiplierEffect damageEffect = (DamageWithMultiplierEffect)attackEffect;
-                damage += damageEffect.baseDamage * (damageEffect.damageMod / 2);
             }
+            //    } else if (attackEffect.GetType() == typeof(DamagePerStackEffect)) {
+            //        damage += ((DamagePerStackEffect)attackEffect).damageMod * 2;
+            //    } else if (attackEffect.GetType() == typeof(DamageWithMultiplierEffect)) {
+            //        DamageWithMultiplierEffect damageEffect = (DamageWithMultiplierEffect)attackEffect;
+            //        damage += damageEffect.baseDamage * (damageEffect.damageMod / 2);
+            //    }
         });
 
         return damage;
