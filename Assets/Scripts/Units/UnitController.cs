@@ -192,7 +192,7 @@ public class UnitController : MonoBehaviour {
         facingDirection = dir;
     }
 
-    private Vector2 GetDirectionToTile(Node target) {
+    public Vector2 GetDirectionToTile(Node target) {
         if (myNode == target) {
             return new Vector2(0, 0);
         }
