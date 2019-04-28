@@ -4,6 +4,7 @@ using UnityEngine;
 
 public enum Stats {
     HEALTH,
+    SHIELD,
     STAMINA,
     SPEED,
     POWER,
@@ -12,7 +13,8 @@ public enum Stats {
     AP,
     DAMAGE,
     HEALING,
-    MANA
+    MANA,
+    LIFE_STEAL
 }
 
 [Serializable]
@@ -41,6 +43,7 @@ public class UnitObject : ScriptableObject {
 
     public int baseHealth = 100;
     private int currentHealth;
+    private int currentShield;
     public int baseStamina = 50;
     private int currentStamina = 0;
     public int baseBlock = 0;
@@ -70,6 +73,7 @@ public class UnitObject : ScriptableObject {
 
     public void Initialise(UnitController myUnit) {
         currentHealth = MaxHealth;
+        Shield = 0;
         currentStamina = MaxStamina;
 
         baseAttacks.ForEach(attack => {
@@ -127,10 +131,17 @@ public class UnitObject : ScriptableObject {
 
     public int Health {
         get { return currentHealth; }
+        set { currentHealth = Mathf.Clamp(value, 0, MaxHealth); }
+    }
+
+    public int Shield {
+        get { return currentShield; }
+        set { currentShield = Mathf.Clamp(value, 0, MaxHealth); }
     }
 
     public int Stamina {
         get { return currentStamina; }
+        set { currentStamina = Mathf.Clamp(value, 0, MaxStamina); }
     }
 
     public int MaxHealth {
@@ -159,6 +170,11 @@ public class UnitObject : ScriptableObject {
 
     public int Speed {
         get { return GetModifiedStat(baseSpeed, Stats.SPEED); }
+    }
+
+    // Stats have to be int so we divide lifesteal by 100
+    public float LifeSteal {
+        get { return (float)GetModifiedStat(0, Stats.LIFE_STEAL) / 100; }
     }
 
     public List<Buff> Buffs { get; set; } = new List<Buff>();
@@ -194,6 +210,12 @@ public class UnitObject : ScriptableObject {
             }
         });
 
+        instantiatedAbilities.ForEach(ability => {
+            if (ability.IsOnCooldown()) {
+                ability.Cooldown--;
+            }
+        });
+
         Buffs.ForEach((buff) => {
             buff.duration--;
             if (buff.duration <= 0) {
@@ -219,6 +241,10 @@ public class UnitObject : ScriptableObject {
 
     public Buff FindBuff(string name) {
         return Buffs.Find((buff) => buff.name == name);
+    }
+
+    public List<Buff> FindBuffs(string name) {
+        return Buffs.FindAll((buff) => buff.name == name);
     }
 
     public void RemoveBuff(Buff buff, bool withEffects = true) {

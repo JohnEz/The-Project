@@ -89,7 +89,9 @@ public class AIAttackPicker {
     public Dictionary<AIAttackAction, List<Node>> FindPossibleAttackNodes(UnitController unit) {
         Dictionary<AIAttackAction, List<Node>> attacksToTiles = new Dictionary<AIAttackAction, List<Node>>();
 
-        UnitManager.instance.Units.ForEach(otherUnit => {
+        List<UnitController> availableTargets = unit.IsTaunted() ? unit.GetTaunters() : UnitManager.instance.Units;
+
+        availableTargets.ForEach(otherUnit => {
             unit.myStats.Attacks.ForEach(attackAction => {
                 List<Node> attackNodes = new List<Node>();
 

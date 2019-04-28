@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Attack Action", menuName = "Card/Attack/New Summon Action")]
+[CreateAssetMenu(fileName = "New Attack Action", menuName = "Ability/Attack/New Summon Action")]
 public class SummonAction : AttackEffect {
     public UnitObject summonUnit;
 

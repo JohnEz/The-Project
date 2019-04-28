@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class HpBarController : MonoBehaviour {
     public Image hpBar;
+    public Image shieldBar;
 
     [SerializeField]
     public GameObject hpMarkerPrefab;
@@ -13,7 +14,8 @@ public class HpBarController : MonoBehaviour {
     private const int HP_MARKER_INTERVAL = 1;
 
     private float currentMax = 0;
-    private float targetPercent = 1;
+    private float targetHPPercent = 1;
+    private float targetShieldPercent = 0;
 
     // Use this for initialization
     public void Initialize(float maxHp) {
@@ -24,18 +26,34 @@ public class HpBarController : MonoBehaviour {
 
     // Update is called once per frame
     private void Update() {
-        if (targetPercent != hpBar.fillAmount) {
-            hpBar.fillAmount = Mathf.Lerp(hpBar.fillAmount, targetPercent, 2f * Time.deltaTime);
+        if (targetHPPercent != hpBar.fillAmount) {
+            hpBar.fillAmount = Mathf.Lerp(hpBar.fillAmount, targetHPPercent, 2f * Time.deltaTime);
+
+            float distance = Mathf.Abs(targetHPPercent - hpBar.fillAmount);
+            if (distance < 0.01f) {
+                hpBar.fillAmount = targetHPPercent;
+            }
+            UpdateShieldBarPosition();
+        }
+
+        if (targetShieldPercent != shieldBar.fillAmount) {
+            shieldBar.fillAmount = Mathf.Lerp(shieldBar.fillAmount, targetShieldPercent, 2f * Time.deltaTime);
+
+            float distance = Mathf.Abs(targetShieldPercent - shieldBar.fillAmount);
+            if (distance < 0.01f) {
+                shieldBar.fillAmount = targetShieldPercent;
+            }
         }
     }
 
-    public void SetHP(float currentHp, float maxHp) {
-        targetPercent = currentHp / maxHp;
+    public void SetHP(float currentHp, float maxHp, float shield) {
+        targetHPPercent = currentHp / (maxHp + shield);
+        targetShieldPercent = shield / (maxHp + shield);
 
-        if (maxHp != currentMax) {
-            currentMax = maxHp;
+        if (maxHp != currentMax + shield) {
+            currentMax = maxHp + shield;
             destroyMarkers();
-            createMarkers(maxHp);
+            createMarkers(maxHp + shield);
         }
     }
 
@@ -60,6 +78,11 @@ public class HpBarController : MonoBehaviour {
         newPosition.x = Mathf.RoundToInt((index + 1) * increment);
         newMarker.GetComponent<RectTransform>().anchoredPosition = newPosition;
         return newMarker;
+    }
+
+    private void UpdateShieldBarPosition() {
+        float hpBarEnd = hpBar.rectTransform.rect.width * hpBar.fillAmount;
+        shieldBar.rectTransform.anchoredPosition = new Vector3(hpBarEnd, 0, 0);
     }
 
     public void destroyMarkers() {

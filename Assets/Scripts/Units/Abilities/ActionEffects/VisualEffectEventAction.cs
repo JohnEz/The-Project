@@ -5,25 +5,31 @@ public class VisualEffectEventAction : EventAction {
     public GameObject effectObject = null;
     public float delay = 0;
 
+    public bool rotateWithCharacter = false;
+
     // Use this for initialization
     public VisualEffectEventAction() : base() {
         action = (UnitController caster, Node targetedTile) => {
+            EffectOptions options = new EffectOptions(effectObject, delay);
+            options.rotateWithCharacter = rotateWithCharacter;
             switch (eventTarget) {
                 case EventTarget.CASTER:
                     if (caster != null) {
-                        caster.CreateEffectWithDelay(effectObject, delay);
+                        caster.CreateEffect(options);
                     }
                     break;
 
                 case EventTarget.TARGETUNIT:
                     if (targetedTile != null) {
-                        caster.CreateEffectWithDelay(effectObject, delay, targetedTile);
+                        options.location = targetedTile;
+                        caster.CreateEffect(options);
                     }
                     break;
 
                 case EventTarget.TARGETEDTILE:
                     if (caster != null) {
-                        caster.CreateEffectWithDelay(effectObject, delay, targetedTile);
+                        options.location = targetedTile;
+                        caster.CreateEffect(options);
                     }
                     break;
             };

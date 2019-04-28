@@ -104,8 +104,8 @@ public class UnitCanvasController : MonoBehaviour {
         }
     }
 
-    public void UpdateHP(int currentHP, int maxHP) {
-        hpBar.SetHP(currentHP, maxHP);
+    public void UpdateHP(int currentHP, int maxHP, int shield) {
+        hpBar.SetHP(currentHP, maxHP, shield);
     }
 
     public void UpdateStamina(int currentStamina, int maxStamina) {
@@ -122,6 +122,10 @@ public class UnitCanvasController : MonoBehaviour {
 
     public void CreateHealText(string healing) {
         CreateCombatText(healing, new Color(0.7294f, 0.9569f, 0.1176f));
+    }
+
+    public void CreateShieldText(string shield) {
+        CreateCombatText(shield, new Color(0.745f, 0.7607f, 0.7961f));
     }
 
     public void CreateBasicText(string text) {

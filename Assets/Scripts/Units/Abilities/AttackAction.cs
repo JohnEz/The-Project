@@ -70,7 +70,6 @@ public class AttackAction : AbilityAction {
     // AOE on use
     public virtual void UseAbility(List<Node> effectedNodes, Node target) {
         OnUseAOEEventActions(effectedNodes, target);
-
         AbilityEffectNode(target);
         effectedNodes.ForEach(node => {
             if (CanHitUnit(node)) {
@@ -107,7 +106,7 @@ public class AttackAction : AbilityAction {
                 } else if (eventAction.eventTarget == EventTarget.TARGETUNIT) {
                     effectedNodes.ForEach((targetNode) => {
                         if (CanHitUnit(targetNode)) {
-                            eventAction.action(caster, target);
+                            eventAction.action(caster, targetNode);
                         }
                     });
                 }

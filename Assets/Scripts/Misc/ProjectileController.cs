@@ -82,7 +82,9 @@ public class ProjectileController : MonoBehaviour {
 
     public void ReachedTarget() {
         if (onHitEffect != null) {
-            myCaster.CreateEffectWithDelay(onHitEffect, 0, myTarget);
+            EffectOptions options = new EffectOptions(onHitEffect, 0);
+            options.location = myTarget;
+            myCaster.CreateEffect(options);
         }
 
         myCaster.ProjectileHit(this);

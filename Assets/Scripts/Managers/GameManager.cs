@@ -36,13 +36,26 @@ public class GameManager : MonoBehaviour {
             Player allyAI = PlayerManager.instance.AddAiPlayer(1);
         }
 
+        if (GameDetails.Party.Count == 0 && Debug.isDebugBuild) {
+            UnitManager.instance.SpawnUnit("Fighter", humanPlayer, 4, 12);
+            UnitManager.instance.SpawnUnit("Cleric", humanPlayer, 5, 12);
+            UnitManager.instance.SpawnUnit("Criminal", humanPlayer, 6, 12);
+        } else {
+            LoadPlayerCharacters(humanPlayer);
+        }
+
+        CameraManager.instance.JumpToLocation(humanPlayer.units[0].myNode);
+
+        Player enemyAI = PlayerManager.instance.AddAiPlayer(2);
+
+        //SpawnStartMapUnits(enemyAI);
+        LoadMapUnits(enemyAI);
+
+        TileMap.instance.ActivateRoom(humanPlayer.units[0].myNode.room);
+    }
+
+    private void LoadPlayerCharacters(Player humanPlayer) {
         List<SpawnLocation> playerSpawnLocation = TileMap.instance.spawnLocations.FindAll(sl => sl.name == "PlayerSpawn");
-        //int playerSpawnX = playerSpawnLocation != null ? playerSpawnLocation.x : 5;
-        //int playerSpawnY = playerSpawnLocation != null ? playerSpawnLocation.y : 6;
-        //UnitManager.instance.SpawnPlayerUnit(GameDetails.PlayerCharacter, humanPlayer, playerSpawnX, playerSpawnY, fighterdeck);
-        //UnitManager.instance.SpawnUnit("Fighter", humanPlayer, 4, 12);
-        //UnitManager.instance.SpawnUnit("Cleric", humanPlayer, 5, 12);
-        //UnitManager.instance.SpawnUnit("Criminal", humanPlayer, 6, 12);
 
         int i = 0;
         GameDetails.Party.ForEach((character) => {
@@ -56,17 +69,6 @@ public class GameManager : MonoBehaviour {
             UnitManager.instance.SpawnUnit(character, humanPlayer, playerSpawnLocation[i].x, playerSpawnLocation[i].y);
             i++;
         });
-
-        Debug.Log(GameDetails.Party.Count);
-
-        CameraManager.instance.JumpToLocation(humanPlayer.units[0].myNode);
-
-        Player enemyAI = PlayerManager.instance.AddAiPlayer(2);
-
-        //SpawnStartMapUnits(enemyAI);
-        LoadMapUnits(enemyAI);
-
-        TileMap.instance.ActivateRoom(humanPlayer.units[0].myNode.room);
     }
 
     //TEMP

@@ -1,16 +1,17 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Attack Action", menuName = "Card/Attack/Damage with Multiplier")]
+[CreateAssetMenu(fileName = "New Attack Action", menuName = "Ability/Attack/Damage with Multiplier")]
 public class DamageWithMultiplierEffect : DamagePerStackEffect {
 
     public override void AbilityEffect(UnitController caster, UnitController target) {
+        base.AbilityEffect(caster, target);
         Buff targetBuff = target.myStats.FindBuff(buffName);
         int damage = baseDamage * (targetBuff != null ? damageMod : 1);
 
-        caster.DealDamageTo(target, damage);
+        caster.DealDamageTo(TargetUnit, damage);
 
         if (consumeBuff) {
-            target.myStats.RemoveBuff(targetBuff);
+            TargetUnit.myStats.RemoveBuff(targetBuff);
         }
     }
 

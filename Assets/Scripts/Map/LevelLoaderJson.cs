@@ -68,6 +68,10 @@ public class LevelLoaderJson : MonoBehaviour {
     }
 
     public void LoadLevel() {
+        if (GameDetails.MapName.Equals("") && Debug.isDebugBuild) {
+            GameDetails.MapName = "Dungeon1";
+        }
+
         LoadTiledData();
 
         if (loadedData == null) {

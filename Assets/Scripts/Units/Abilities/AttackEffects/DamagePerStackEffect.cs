@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Attack Action", menuName = "Card/Attack/Damage Per Stack")]
+[CreateAssetMenu(fileName = "New Attack Action", menuName = "Ability/Attack/Damage Per Stack")]
 public class DamagePerStackEffect : AttackEffect {
     public int baseDamage = 1;
     public int damageMod = 1;
@@ -9,14 +9,15 @@ public class DamagePerStackEffect : AttackEffect {
     public bool consumeBuff = false;
 
     public override void AbilityEffect(UnitController caster, UnitController target) {
+        base.AbilityEffect(caster, target);
         Buff targetBuff = target.myStats.FindBuff(buffName);
         int numberOfStacks = targetBuff != null ? targetBuff.stacks : 0;
         int damage = baseDamage + (numberOfStacks * damageMod);
 
-        caster.DealDamageTo(target, damage);
+        caster.DealDamageTo(TargetUnit, damage);
 
         if (consumeBuff) {
-            target.myStats.RemoveBuff(targetBuff);
+            TargetUnit.myStats.RemoveBuff(targetBuff);
         }
     }
 

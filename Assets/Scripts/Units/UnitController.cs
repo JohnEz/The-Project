@@ -25,6 +25,20 @@ public struct Action {
     public AttackAction ability;
 }
 
+public struct EffectOptions {
+    public GameObject effect;
+    public float delay;
+    public Node location;
+    public bool rotateWithCharacter;
+
+    public EffectOptions(GameObject _effect, float _delay) {
+        effect = _effect;
+        delay = _delay;
+        location = null;
+        rotateWithCharacter = false;
+    }
+}
+
 public class UnitController : MonoBehaviour {
     public GameObject unitCanvasPrefab;
     public UnitObject baseStats;
@@ -100,6 +114,18 @@ public class UnitController : MonoBehaviour {
         return myStats.FindBuff("Stealth") != null;
     }
 
+    public bool IsStunned() {
+        return myStats.FindBuff("Stun") != null;
+    }
+
+    public bool IsTaunted() {
+        return myStats.FindBuff("Taunt") != null;
+    }
+
+    public List<UnitController> GetTaunters() {
+        return myStats.FindBuffs("Taunt").Select((taunt) => ((Taunt)taunt).taunter).ToList();
+    }
+
     public bool HasRemainingQueuedActions() {
         return actionQueue.Count > 0;
     }
@@ -109,10 +135,17 @@ public class UnitController : MonoBehaviour {
             (damage) => { this.TakeDamage(null, damage, true); },
             (healing) => { this.TakeHealing(null, healing); }
         );
+
+        if (IsStunned()) {
+            unitCanvasController.CreateBasicText("Stunned");
+        } else {
+            ActionPoints = myStats.MaxActionPoints;
+        }
+
         myStats.NewTurn();
         myCounters.NewTurn();
         Stamina = myStats.MaxStamina;
-        ActionPoints = myStats.MaxActionPoints;
+        Shield = 0;
     }
 
     public void EndTurn() {
@@ -210,7 +243,15 @@ public class UnitController : MonoBehaviour {
         get { return myStats.Health; }
         set {
             myStats.SetHealth(value);
-            unitCanvasController.UpdateHP(myStats.Health, myStats.MaxHealth);
+            unitCanvasController.UpdateHP(myStats.Health, myStats.MaxHealth, myStats.Shield);
+        }
+    }
+
+    public int Shield {
+        get { return myStats.Shield; }
+        set {
+            myStats.Shield = value;
+            unitCanvasController.UpdateHP(myStats.Health, myStats.MaxHealth, myStats.Shield);
         }
     }
 
@@ -479,9 +520,7 @@ public class UnitController : MonoBehaviour {
         });
     }
 
-    public bool TakeDamage(UnitController attacker, int damage, bool ignoreArmour = false) {
-        bool isStillAlive = true;
-
+    public int TakeDamage(UnitController attacker, int damage, bool ignoreArmour = false) {
         //if the damage has a source
         if (attacker) {
             //this could be used if the character as a reposte etc
@@ -496,7 +535,10 @@ public class UnitController : MonoBehaviour {
             unitCanvasController.CreateBasicText("Block");
         }
 
-        Health -= modifiedDamage;
+        int damageAfterShield = Mathf.Max(0, modifiedDamage - Shield);
+
+        Shield -= modifiedDamage;
+        Health -= damageAfterShield;
         unitCanvasController.CreateDamageText(modifiedDamage.ToString());
 
         myDialogController.Attacked();
@@ -508,23 +550,30 @@ public class UnitController : MonoBehaviour {
             // TODO add death
             PlayRandomDeathSound();
             myManager.UnitDied(this);
-            isStillAlive = false;
             DestroySelf();
         }
 
-        return isStillAlive;
+        return modifiedDamage;
     }
 
     public bool DealDamageTo(UnitController target, int damage, bool ignoreArmour = false) {
         float endDamage = damage + myStats.Power;
-        return target.TakeDamage(this, (int)endDamage, ignoreArmour);
+        int damageDealt = target.TakeDamage(this, (int)endDamage, ignoreArmour);
+
+        if (myStats.LifeSteal > 0) {
+            TakeHealing(this, (int)(damageDealt * myStats.LifeSteal));
+        }
+
+        return target.Health > 0;
     }
 
     public bool TakeHealing(UnitController caster, int healing) {
         Health += healing;
         unitCanvasController.CreateHealText(healing.ToString());
 
-        myDialogController.Helped();
+        if (caster != this) {
+            myDialogController.Helped();
+        }
 
         return true;
     }
@@ -532,9 +581,30 @@ public class UnitController : MonoBehaviour {
     public bool GiveHealingTo(UnitController target, float healing) {
         float endHealing = healing + myStats.Power;
 
-        myDialogController.Helping();
+        if (target != this) {
+            myDialogController.Helping();
+        }
 
         return target.TakeHealing(this, (int)endHealing);
+    }
+
+    public bool TakeShield(UnitController caster, int shield) {
+        Shield += shield;
+        unitCanvasController.CreateShieldText(shield.ToString());
+
+        myDialogController.Helped();
+
+        return true;
+    }
+
+    public bool GiveShieldTo(UnitController target, float shield) {
+        float endShield = shield;
+
+        if (target != this) {
+            myDialogController.Helping();
+        }
+
+        return target.TakeShield(this, (int)endShield);
     }
 
     public void ApplyBuff(Buff buff) {
@@ -565,27 +635,23 @@ public class UnitController : MonoBehaviour {
         buff.persistentFx = myEffect;
     }
 
-    private IEnumerator CreateEffect(GameObject effect, float delay = 0) {
-        return CreateEffectAtLocation(myNode, effect, delay);
+    public void CreateEffect(EffectOptions effectOptions) {
+        StartCoroutine(CreateEffectRoutine(effectOptions));
     }
 
-    private IEnumerator CreateEffectAtLocation(Node location, GameObject effect, float delay = 0) {
-        yield return new WaitForSeconds(delay);
+    public IEnumerator CreateEffectRoutine(EffectOptions effectOptions) {
+        Node location = effectOptions.location ? effectOptions.location : myNode;
+
+        yield return new WaitForSeconds(effectOptions.delay);
         Transform spawnTransform = location.myUnit != null ? location.myUnit.transform.Find("Token") : location.transform;
-        GameObject myEffect = Instantiate(effect, spawnTransform);
-        myEffect.transform.rotation = effect.transform.rotation;
+        GameObject myEffect = Instantiate(effectOptions.effect, spawnTransform);
+        if (!effectOptions.rotateWithCharacter) {
+            myEffect.transform.rotation = effectOptions.effect.transform.rotation;
+        }
         myEffect.transform.SetParent(location.transform, true);
         myEffect.GetComponent<SpriteFxController>().Initialise(this);
         abilityEffects.Add(myEffect);
         effectsToCreate--;
-    }
-
-    public void CreateEffectWithDelay(GameObject effect, float delay, Node location = null) {
-        if (location != null) {
-            StartCoroutine(CreateEffectAtLocation(location, effect, delay));
-        } else {
-            StartCoroutine(CreateEffect(effect, delay));
-        }
     }
 
     public void RemoveEffect(GameObject effectToRemove) {

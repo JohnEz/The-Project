@@ -31,6 +31,7 @@ public class UserInterfaceManager : MonoBehaviour {
     }
 
     public void UnshowAbility() {
+        ActionBar.instance.UnselectAbilities();
         HighlightManager.instance.UnhighlightTiles();
         HighlightManager.instance.ClearEffectedTiles();
     }
@@ -75,28 +76,28 @@ public class UserInterfaceManager : MonoBehaviour {
                 if (abilities.Count < 1) {
                     return;
                 }
-                UseAbility(abilities[0]);
+                UseAbility(0);
             }
 
             if (Input.GetKeyDown(KeyCode.Alpha2)) {
                 if (abilities.Count < 2) {
                     return;
                 }
-                UseAbility(abilities[1]);
+                UseAbility(1);
             }
 
             if (Input.GetKeyDown(KeyCode.Alpha3)) {
                 if (abilities.Count < 3) {
                     return;
                 }
-                UseAbility(abilities[2]);
+                UseAbility(2);
             }
 
             if (Input.GetKeyDown(KeyCode.Alpha4)) {
                 if (abilities.Count < 4) {
                     return;
                 }
-                UseAbility(abilities[3]);
+                UseAbility(3);
             }
         }
 
@@ -107,9 +108,11 @@ public class UserInterfaceManager : MonoBehaviour {
 
     public void EndTurn() {
         if (TurnManager.instance.CurrentPhase == TurnPhase.WAITING_FOR_INPUT && !TurnManager.instance.isAiTurn()) {
+            UnshowAbility();
             if (UnitSelectionManager.instance.IsAnAbilityActive()) {
                 UnitSelectionManager.instance.CancelCurrentAbility();
             }
+            UnitSelectionManager.instance.UnselectUnit();
             TurnManager.instance.EndTurn();
         }
     }
@@ -204,9 +207,16 @@ public class UserInterfaceManager : MonoBehaviour {
         return true;
     }
 
-    public bool UseAbility(Ability ability) {
+    public bool UseAbility(int i) {
         if (!UnitSelectionManager.instance.SelectedUnit) {
             GUIController.instance.ShowErrorMessage("No unit Selected");
+            return false;
+        }
+
+        Ability ability = UnitSelectionManager.instance.SelectedUnit.myStats.instantiatedAbilities[i];
+
+        if (ability.IsOnCooldown()) {
+            GUIController.instance.ShowErrorMessage("Ability is on cooldown");
             return false;
         }
 
@@ -217,6 +227,7 @@ public class UserInterfaceManager : MonoBehaviour {
 
         if (UnitSelectionManager.instance.CanUseAbility(ability)) {
             UnshowAbility();
+            ActionBar.instance.SelectAbility(i);
             UnitSelectionManager.instance.UseAbility(ability);
             return true;
         }

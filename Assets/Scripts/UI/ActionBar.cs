@@ -3,21 +3,36 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ActionBar : MonoBehaviour {
+    public static ActionBar instance;
 
     [HideInInspector]
     public UnitController currentlyDisplayedUnit;
 
     private List<AbilityIcon> abilityIcons;
 
+    public void Awake() {
+        instance = this;
+    }
+
     public void Start() {
         abilityIcons = new List<AbilityIcon>(GetComponentsInChildren<AbilityIcon>());
-        Debug.Log(abilityIcons.Count);
     }
 
     public void Update() {
         if (currentlyDisplayedUnit != UnitSelectionManager.instance.SelectedUnit) {
             DisplayUnit(UnitSelectionManager.instance.SelectedUnit);
         }
+    }
+
+    public void UnselectAbilities() {
+        abilityIcons.ForEach(icon => {
+            icon.Unselect();
+        });
+    }
+
+    public void SelectAbility(int i) {
+        UnselectAbilities();
+        abilityIcons[i].Select();
     }
 
     public void DisplayUnit(UnitController unitToDisplay) {

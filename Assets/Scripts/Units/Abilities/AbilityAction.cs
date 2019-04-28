@@ -58,6 +58,7 @@ public class AbilityAction : ScriptableObject {
     [SerializeField]
     public List<EventAction> eventActions = new List<EventAction>();
 
+    [HideInInspector]
     public UnitController caster;
 
     public string description = null;

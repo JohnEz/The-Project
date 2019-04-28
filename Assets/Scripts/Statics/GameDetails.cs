@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 public static class GameDetails {
-    private static string mapName;
+    private static string mapName = "";
     private static int maxPartySize = 3;
     private static List<UnitObject> party = new List<UnitObject>();
 

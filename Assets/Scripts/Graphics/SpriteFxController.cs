@@ -1,10 +1,14 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class SpriteFxController : MonoBehaviour {
     private UnitController myCreator;
+    public float selfdestruct_in = 0; // Setting this to 0 means no selfdestruct.
 
-    // Use this for initialization
     private void Start() {
+        if (selfdestruct_in != 0) {
+            StartCoroutine("DestroyEffectWithDelay");
+        }
     }
 
     public void Initialise(UnitController _myCreator) {
@@ -15,7 +19,7 @@ public class SpriteFxController : MonoBehaviour {
     private void Update() {
         Animator animator = GetComponent<Animator>();
         //TODO This may accidently skip past the last frame and get stuck, must be a better way
-        if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f) {
+        if (animator && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f) {
             DestroyEffect();
         }
     }
@@ -25,5 +29,10 @@ public class SpriteFxController : MonoBehaviour {
             myCreator.RemoveEffect(this.gameObject);
         }
         Destroy(this.gameObject);
+    }
+
+    public IEnumerator DestroyEffectWithDelay() {
+        yield return new WaitForSeconds(selfdestruct_in);
+        DestroyEffect();
     }
 }

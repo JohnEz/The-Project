@@ -86,8 +86,7 @@ public class AIManager : MonoBehaviour {
 
     public IEnumerator ExecutePlannedTurn(UnitController unit) {
         AITurnPlan turnPlan = null;
-        unit.myStats.ActionPoints = 2;
-        while (unit.myStats.ActionPoints > 0) {
+        while (unit.ActionPoints > 0) {
             //if (turnPlan.targetMoveNode == null && turnPlan.attack == null) {
             if (turnPlan == null) {
                 turnPlan = AIAttackPicker.Instance.GetBestPlan(unit);
@@ -98,7 +97,7 @@ public class AIManager : MonoBehaviour {
             if (turnPlan == null) {
                 // No actions to take
                 unit.CreateBasicText("Pass");
-                unit.myStats.ActionPoints = 0;
+                unit.ActionPoints = 0;
             } else if (turnPlan.targetMoveNode != null) {
                 // At the target
                 if (turnPlan.targetMoveNode == unit.myNode) {
@@ -120,7 +119,7 @@ public class AIManager : MonoBehaviour {
                             unit.CreateBasicText("Pass");
                         }
 
-                        unit.myStats.ActionPoints--;
+                        unit.ActionPoints--;
                     } else {
                         Debug.LogError(String.Format("Unit \"{0}\" cant move to node {1}", unit.name, turnPlan.targetMoveNode));
                     }
@@ -133,7 +132,7 @@ public class AIManager : MonoBehaviour {
 
                 AttackTile(unit, turnPlan.attack.targetNode, turnPlan.attack.attack);
                 turnPlan.attack = null;
-                unit.myStats.ActionPoints--;
+                unit.ActionPoints--;
             }
 
             if (turnPlan != null && turnPlan.targetMoveNode == null && turnPlan.attack == null) {
