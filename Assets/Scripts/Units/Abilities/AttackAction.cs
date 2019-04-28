@@ -13,6 +13,7 @@ public class AttackAction : AbilityAction {
     public TileTarget tileTarget = TileTarget.UNIT;
 
     public bool canTargetSelf = false;
+    public bool isAutoCast = false;
 
     public List<AttackEffect> attackEffects = new List<AttackEffect>(0);
 

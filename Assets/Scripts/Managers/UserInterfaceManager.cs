@@ -7,6 +7,8 @@ public class UserInterfaceManager : MonoBehaviour {
     //Managers
     private PauseMenuController pauseMenuController;
 
+    private Node lastAttackedNode;
+
     private void Awake() {
         instance = this;
     }
@@ -155,8 +157,12 @@ public class UserInterfaceManager : MonoBehaviour {
     public void ClickedAttack(Node node) {
         if (UnitManager.instance.AttackTile(UnitSelectionManager.instance.ActiveAbility.caster, node)) {
             UnshowAbility();
-            UnitSelectionManager.instance.SelectedUnit.ActionPoints -= UnitSelectionManager.instance.ActiveAbility.actionPointCost;
             UnitSelectionManager.instance.AbilityInprogress();
+            lastAttackedNode = node;
+
+            if (UnitSelectionManager.instance.CurrentActionIndex == 0) {
+                UnitSelectionManager.instance.SelectedUnit.ActionPoints -= UnitSelectionManager.instance.ActiveAbility.actionPointCost;
+            }
         }
     }
 
@@ -167,6 +173,7 @@ public class UserInterfaceManager : MonoBehaviour {
     }
 
     public void ClickedUnselected(Node node) {
+        // TODO, use same flow as cancel
         UnshowAbility();
 
         if (!node.myUnit) {
@@ -239,7 +246,12 @@ public class UserInterfaceManager : MonoBehaviour {
             AbilityAction currentAction = ability.Actions[actionIndex];
             if (currentAction.GetType() == typeof(MoveAction) || typeof(AttackAction).IsAssignableFrom(currentAction.GetType())) {
                 ShowAction();
+
+                if (typeof(AttackAction).IsAssignableFrom(currentAction.GetType()) && ((AttackAction)currentAction).isAutoCast) {
+                    ClickedAttack(lastAttackedNode);
+                }
             }
+
             return true;
         }
 
