@@ -240,16 +240,24 @@ public class UnitObject : ScriptableObject {
     }
 
     public Buff FindBuff(string name) {
-        return Buffs.Find((buff) => buff.name == name);
+        return Buffs.Find(buff => buff.name == name);
     }
 
     public List<Buff> FindBuffs(string name) {
-        return Buffs.FindAll((buff) => buff.name == name);
+        return Buffs.FindAll(buff => buff.name == name);
+    }
+
+    public List<Buff> FindBuffs(bool debuff) {
+        return Buffs.FindAll(buff => buff.isDebuff == debuff);
     }
 
     public void RemoveBuff(Buff buff, bool withEffects = true) {
         buff.Remove(withEffects);
         Buffs.Remove(buff);
+    }
+
+    public void RemoveBuffs(List<Buff> buffsToRemove, bool withEffects = true) {
+        buffsToRemove.ForEach(buff => RemoveBuff(buff, withEffects));
     }
 
     public bool ApplyBuff(Buff newBuff) {

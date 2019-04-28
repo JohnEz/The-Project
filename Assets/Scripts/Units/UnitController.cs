@@ -623,6 +623,11 @@ public class UnitController : MonoBehaviour {
         }
     }
 
+    public void DispellAll(bool debuff) {
+        List<Buff> buffsToDispell = myStats.FindBuffs(debuff);
+        myStats.RemoveBuffs(buffsToDispell);
+    }
+
     public void Summon(Node targetNode, UnitObject unitStats) {
         // TODO work out a clean way of getting allied player
         Player owningPlayer = myPlayer.ai ? myPlayer : PlayerManager.instance.GetPlayer(1);
