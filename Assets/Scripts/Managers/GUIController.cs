@@ -23,7 +23,7 @@ public class GUIController : MonoBehaviour {
     private Dictionary<string, RuntimeAnimatorController> abilityIconControllers = new Dictionary<string, RuntimeAnimatorController>();
 
     // Pre created ui elements
-    public GameObject startMenu;
+    public GameObject startBtn;
 
     public GameObject handLayout;
     public GameObject staminaPoints;
@@ -34,6 +34,7 @@ public class GUIController : MonoBehaviour {
     private void Awake() {
         instance = this;
         SetUIActive(false);
+        startBtn.SetActive(true);
         //staminaPoints.SetActive(false);
     }
 
@@ -54,8 +55,8 @@ public class GUIController : MonoBehaviour {
 
     public void BtnStartGame() {
         // TODO animate out
-        startMenu.SetActive(false);
-        Destroy(startMenu, 1f);
+        startBtn.SetActive(false);
+        Destroy(startBtn, 1f);
         SetUIActive(true);
         //staminaPoints.SetActive(true);
         Invoke("StartGame", 0.5f);

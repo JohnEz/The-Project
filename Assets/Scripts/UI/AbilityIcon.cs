@@ -37,9 +37,15 @@ public class AbilityIcon : MonoBehaviour, IPointerClickHandler, IPointerEnterHan
     }
 
     public void OnPointerEnter(PointerEventData eventData) {
+        if (displayAbility == null) {
+            return;
+        }
+
+        ActionBar.instance.abilityDescription.ShowDescription(displayAbility);
     }
 
     public void OnPointerExit(PointerEventData eventData) {
+        ActionBar.instance.abilityDescription.HideDescription();
     }
 
     public void Update() {

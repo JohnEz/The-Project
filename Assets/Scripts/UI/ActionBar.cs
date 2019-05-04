@@ -9,6 +9,7 @@ public class ActionBar : MonoBehaviour {
     public UnitController currentlyDisplayedUnit;
 
     private List<AbilityIcon> abilityIcons;
+    public AbilityDescriptionController abilityDescription;
 
     public void Awake() {
         instance = this;
