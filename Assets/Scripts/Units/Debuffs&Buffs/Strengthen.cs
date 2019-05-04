@@ -4,6 +4,6 @@
         name = "Strengthen";
         icon = "buffPower";
         maxStack = 5;
-        percentMod[(int)Stats.POWER] = 0.1f;
+        percentMod[(int)Stats.POWER] = 1.1f;
     }
 }

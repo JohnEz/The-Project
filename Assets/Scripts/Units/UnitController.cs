@@ -558,6 +558,11 @@ public class UnitController : MonoBehaviour {
 
     public bool DealDamageTo(UnitController target, int damage, bool ignoreArmour = false) {
         int endDamage = damage;
+
+        bool hasCrit = HasCrit();
+
+        endDamage *= hasCrit ? 2 : 1;
+
         int damageDealt = target.TakeDamage(this, endDamage, ignoreArmour);
 
         if (myStats.LifeSteal > 0) {
@@ -580,6 +585,10 @@ public class UnitController : MonoBehaviour {
 
     public bool GiveHealingTo(UnitController target, int healing) {
         int endHealing = healing;
+
+        bool hasCrit = HasCrit();
+
+        endHealing *= hasCrit ? 2 : 1;
 
         if (target != this) {
             myDialogController.Helping();
@@ -605,6 +614,10 @@ public class UnitController : MonoBehaviour {
         }
 
         return target.TakeShield(this, (int)endShield);
+    }
+
+    public bool HasCrit() {
+        return myStats.CritChance >= Random.Range(1, 100);
     }
 
     public void ApplyBuff(Buff buff) {

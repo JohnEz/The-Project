@@ -13,7 +13,7 @@ public enum Stats {
     AP,
     DAMAGE,
     HEALING,
-    MANA,
+    CRIT,
     LIFE_STEAL
 }
 
@@ -50,6 +50,7 @@ public class UnitObject : ScriptableObject {
     public int baseBlock = 0;
     public int baseArmour = 0;
     public int baseActionPoints = 2;
+    public int baseCritChance = 5;
 
     [HideInInspector]
     private int actionPoints;
@@ -171,6 +172,10 @@ public class UnitObject : ScriptableObject {
 
     public int Speed {
         get { return GetModifiedStat(baseSpeed, Stats.SPEED); }
+    }
+
+    public int CritChance {
+        get { return GetModifiedStat(baseCritChance, Stats.CRIT); }
     }
 
     // Stats have to be int so we divide lifesteal by 100
