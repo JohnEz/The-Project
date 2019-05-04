@@ -53,6 +53,7 @@ public class AbilityIcon : MonoBehaviour {
 
         displayAbility = newAbility;
         iconImage.sprite = newAbility.icon ? newAbility.icon : defaultImage;
+        UpdateCooldown();
     }
 
     public void SetEmptySlot() {
