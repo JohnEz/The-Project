@@ -11,7 +11,7 @@ public class HpBarController : MonoBehaviour {
 
     private List<GameObject> hpMarkers = new List<GameObject>();
 
-    private const int HP_MARKER_INTERVAL = 1;
+    private const int HP_MARKER_INTERVAL = 10;
 
     private float currentMax = 0;
     private float targetHPPercent = 1;

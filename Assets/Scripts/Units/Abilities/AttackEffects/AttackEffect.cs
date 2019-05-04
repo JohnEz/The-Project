@@ -19,4 +19,8 @@ public class AttackEffect : ScriptableObject {
     public virtual string ToDescription() {
         return null;
     }
+
+    public int PowerModToInt(int power, float mod) {
+        return Mathf.RoundToInt(power * mod);
+    }
 }

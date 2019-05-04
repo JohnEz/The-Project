@@ -1,10 +1,10 @@
 ﻿public class Bleed : Buff {
 
-    public Bleed(int maxDuration, int power) : base(maxDuration) {
+    public Bleed() : base(-1) {
         name = "Bleed";
         maxStack = 5;
         isDebuff = true;
-        flatMod[(int)Stats.DAMAGE] = (int)(power / 3);
+        percentMod[(int)Stats.DAMAGE] = 1 - 0.04f;
         icon = "buffBleed";
     }
 }

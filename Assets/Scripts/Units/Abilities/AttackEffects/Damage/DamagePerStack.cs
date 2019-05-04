@@ -6,7 +6,7 @@ public class DamagePerStack : DamageMod {
 
     public bool consumeBuff = false;
 
-    public override int Apply(int damage, UnitController caster, UnitController target) {
+    public override float Apply(float damage, UnitController caster, UnitController target) {
         Buff targetBuff = target.myStats.FindBuff(buffName);
         int numberOfStacks = targetBuff != null ? targetBuff.stacks : 0;
 

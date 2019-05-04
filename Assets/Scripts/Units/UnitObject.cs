@@ -46,6 +46,7 @@ public class UnitObject : ScriptableObject {
     private int currentShield;
     public int baseStamina = 50;
     private int currentStamina = 0;
+    public int basePower = 15;
     public int baseBlock = 0;
     public int baseArmour = 0;
     public int baseActionPoints = 2;
@@ -165,7 +166,7 @@ public class UnitObject : ScriptableObject {
     }
 
     public int Power {
-        get { return GetModifiedStat(baseBlock, Stats.POWER); }
+        get { return GetModifiedStat(basePower, Stats.POWER); }
     }
 
     public int Speed {
@@ -188,7 +189,9 @@ public class UnitObject : ScriptableObject {
         int healing = 0;
 
         Buffs.ForEach((buff) => {
+            damage += Mathf.RoundToInt(MaxHealth * (1 - buff.GetPercentMod((int)Stats.DAMAGE)));
             damage += buff.GetFlatMod((int)Stats.DAMAGE);
+            healing += Mathf.RoundToInt(MaxHealth * (buff.GetPercentMod((int)Stats.HEALING) - 1));
             healing += buff.GetFlatMod((int)Stats.HEALING);
         });
 
@@ -218,7 +221,7 @@ public class UnitObject : ScriptableObject {
 
         Buffs.ForEach((buff) => {
             buff.duration--;
-            if (buff.duration <= 0) {
+            if (buff.maxDuration != -1 && buff.duration <= 0) {
                 buffsToRemove.Add(buff);
             }
         });

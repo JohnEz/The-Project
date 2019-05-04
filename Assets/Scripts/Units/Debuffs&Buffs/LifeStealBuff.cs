@@ -1,6 +1,6 @@
-﻿public class LifeSteal : Buff {
+﻿public class LifeStealBuff : Buff {
 
-    public LifeSteal(int maxDuration) : base(maxDuration) {
+    public LifeStealBuff(int maxDuration) : base(maxDuration) {
         name = "Life Steal";
         //icon = "buffArmour";
         maxStack = 5;

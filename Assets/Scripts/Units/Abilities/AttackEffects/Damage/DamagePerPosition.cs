@@ -12,7 +12,7 @@ public class DamagePerPosition : DamageMod {
     public float damageMod = 1f;
     public RelativePosition position = RelativePosition.REAR;
 
-    public override int Apply(int damage, UnitController caster, UnitController target) {
+    public override float Apply(float damage, UnitController caster, UnitController target) {
         Vector2 direction = caster.GetDirectionToTile(target.myNode);
 
         bool isInPosition = false;
@@ -36,6 +36,6 @@ public class DamagePerPosition : DamageMod {
         }
 
         float finalDamageMod = isInPosition ? damageMod : 1f;
-        return (int)(damage * finalDamageMod);
+        return damage * finalDamageMod;
     }
 }

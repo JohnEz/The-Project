@@ -6,6 +6,6 @@ public class IncreaseSpeed : AttackEffect {
 
     public override void AbilityEffect(UnitController caster, UnitController target) {
         base.AbilityEffect(caster, target);
-        TargetUnit.ApplyBuff(new Momentum(turns));
+        TargetUnit.ApplyBuff(new SpeedBuff(turns));
     }
 }

@@ -5,6 +5,6 @@
         icon = "buffPower";
         maxStack = 5;
         isDebuff = true;
-        percentMod[(int)Stats.POWER] = 0.8f;
+        percentMod[(int)Stats.POWER] = 0.9f;
     }
 }

@@ -6,6 +6,6 @@ public class IncreasePower : AttackEffect {
 
     public override void AbilityEffect(UnitController caster, UnitController target) {
         base.AbilityEffect(caster, target);
-        TargetUnit.ApplyBuff(new Empower(turns));
+        TargetUnit.ApplyBuff(new Strengthen(turns));
     }
 }

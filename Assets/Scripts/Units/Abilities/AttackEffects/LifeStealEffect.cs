@@ -6,6 +6,6 @@ public class LifeStealEffect : AttackEffect {
 
     public override void AbilityEffect(UnitController caster, UnitController target) {
         base.AbilityEffect(caster, target);
-        TargetUnit.ApplyBuff(new LifeSteal(turns));
+        TargetUnit.ApplyBuff(new LifeStealBuff(turns));
     }
 }

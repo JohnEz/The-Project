@@ -4,7 +4,7 @@
 public class DamagePerStatistic : DamageMod {
     public StatisticTypes modifier = StatisticTypes.NONE;
 
-    public override int Apply(int damage, UnitController caster, UnitController target) {
+    public override float Apply(float damage, UnitController caster, UnitController target) {
         return damage * caster.myCounters.GetStatistic(modifier);
     }
 }

@@ -2,7 +2,7 @@
 
 public class DamageMod : ScriptableObject {
 
-    public virtual int Apply(int damage, UnitController caster, UnitController target) {
+    public virtual float Apply(float damage, UnitController caster, UnitController target) {
         return damage;
     }
 }
