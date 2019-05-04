@@ -76,6 +76,7 @@ public class UnitSelectionManager : MonoBehaviour {
         if (IsAnAbilitySelected()) {
             abilityState = AbilityState.NONE;
             UserInterfaceManager.instance.UnshowAbility();
+            ActiveAbility = null;
         }
     }
 
