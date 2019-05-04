@@ -16,6 +16,12 @@ public class ActionBar : MonoBehaviour {
 
     public void Start() {
         abilityIcons = new List<AbilityIcon>(GetComponentsInChildren<AbilityIcon>());
+
+        int slot = 0;
+        foreach (AbilityIcon icon in abilityIcons) {
+            icon.slot = slot;
+            slot++;
+        }
     }
 
     public void Update() {

@@ -204,7 +204,7 @@ public class UserInterfaceManager : MonoBehaviour {
     }
 
     public bool ShowMovement() {
-        if (!UnitSelectionManager.instance.CanDisplayMovement()) {
+        if (!UnitSelectionManager.instance.CanDisplayMovement() || UnitSelectionManager.instance.SelectedUnit == null) {
             return false;
         }
 

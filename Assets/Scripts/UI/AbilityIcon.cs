@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class AbilityIcon : MonoBehaviour {
+public class AbilityIcon : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler {
     public Sprite defaultImage;
     public Image iconImage;
     public Image cooldownImage;
@@ -18,6 +19,8 @@ public class AbilityIcon : MonoBehaviour {
     public Color borderColourUnselected;
     public Color borderColourSelected;
 
+    public int slot;
+
     public void Start() {
     }
 
@@ -27,6 +30,16 @@ public class AbilityIcon : MonoBehaviour {
 
     public void Unselect() {
         borderImage.color = borderColourUnselected;
+    }
+
+    public void OnPointerClick(PointerEventData eventData) {
+        UserInterfaceManager.instance.UseAbility(slot);
+    }
+
+    public void OnPointerEnter(PointerEventData eventData) {
+    }
+
+    public void OnPointerExit(PointerEventData eventData) {
     }
 
     public void Update() {
