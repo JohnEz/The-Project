@@ -8,4 +8,8 @@ public class HealEffect : AttackEffect {
         base.AbilityEffect(caster, target);
         caster.GiveHealingTo(TargetUnit, healing);
     }
+
+    public override int GetHealing(UnitController caster) {
+        return healing;
+    }
 }

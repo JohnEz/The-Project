@@ -66,4 +66,16 @@ public class AbilityAction : ScriptableObject {
     public void AddAbilityTarget(Node targetNode, System.Action ability) {
         caster.AddAbilityTarget(targetNode, ability);
     }
+
+    public virtual int GetDamage(UnitController caster) {
+        return 0;
+    }
+
+    public virtual int GetHealing(UnitController caster) {
+        return 0;
+    }
+
+    public virtual int GetShield(UnitController caster) {
+        return 0;
+    }
 }

@@ -17,7 +17,7 @@ public class AbilityDescriptionController : MonoBehaviour {
 
     public void SetDescription(Ability ability) {
         titleText.text = ability.Name;
-        descriptionText.text = ability.description;
+        descriptionText.text = ability.GetDescription();
         costText.text = ability.actionPointCost + " AP";
     }
 }

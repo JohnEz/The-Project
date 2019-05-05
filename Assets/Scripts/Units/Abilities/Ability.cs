@@ -54,7 +54,23 @@ public class Ability : ScriptableObject {
     }
 
     public virtual string GetDescription() {
-        return description;
+        string updatedDescription = description;
+
+        int damage = 0;
+        int healing = 0;
+        int shield = 0;
+
+        instansiatedActions.ForEach((action) => {
+            damage += action.GetDamage(caster);
+            healing += action.GetHealing(caster);
+            shield += action.GetShield(caster);
+        });
+
+        updatedDescription = updatedDescription.Replace("{damage}", damage + " damage");
+        updatedDescription = updatedDescription.Replace("{healing}", healing + " healing");
+        updatedDescription = updatedDescription.Replace("{shield}", shield + " shield");
+
+        return updatedDescription;
     }
 
     public int Cooldown {

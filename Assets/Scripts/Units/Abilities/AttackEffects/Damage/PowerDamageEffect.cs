@@ -18,4 +18,15 @@ public class PowerDamageEffect : AttackEffect {
 
         caster.DealDamageTo(TargetUnit, Mathf.RoundToInt(totalDamage));
     }
+
+    public override int GetDamage(UnitController caster) {
+        float totalDamage = caster.myStats.Power * powerMod;
+        DamagePerShield perShieldEffect = (DamagePerShield)damageMods.Find(effect => effect.GetType() == typeof(DamagePerShield));
+
+        if (perShieldEffect != null) {
+            totalDamage = perShieldEffect.Apply(totalDamage, caster, null);
+        }
+
+        return Mathf.RoundToInt(totalDamage);
+    }
 }

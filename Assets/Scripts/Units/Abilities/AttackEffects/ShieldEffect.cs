@@ -9,4 +9,8 @@ public class ShieldEffect : AttackEffect {
         int shielding = PowerModToInt(caster.myStats.Power, powerMod);
         caster.GiveShieldTo(TargetUnit, shielding);
     }
+
+    public override int GetShield(UnitController caster) {
+        return PowerModToInt(caster.myStats.Power, powerMod);
+    }
 }

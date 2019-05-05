@@ -9,4 +9,8 @@ public class PowerHealEffect : AttackEffect {
         int healing = PowerModToInt(caster.myStats.Power, powerMod);
         caster.GiveHealingTo(TargetUnit, healing);
     }
+
+    public override int GetHealing(UnitController caster) {
+        return PowerModToInt(caster.myStats.Power, powerMod);
+    }
 }

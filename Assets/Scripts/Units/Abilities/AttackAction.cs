@@ -154,6 +154,52 @@ public class AttackAction : AbilityAction {
         }
     }
 
+    public override int GetDamage(UnitController caster) {
+        int damage = 0;
+
+        attackEffects.ForEach(attackEffect => {
+            //if (attackEffect.GetType() == typeof(DamageEffect)) {
+            //    damage += ((DamageEffect)attackEffect).damage;
+            //} else if (attackEffect.GetType() == typeof(PowerDamageEffect)) {
+            //    PowerDamageEffect damageEffect = (PowerDamageEffect)attackEffect;
+            //    damage += damageEffect.PowerModToInt(power, damageEffect.powerMod);
+            //}
+            damage += attackEffect.GetDamage(caster);
+        });
+
+        return damage;
+    }
+
+    public override int GetHealing(UnitController caster) {
+        int healing = 0;
+
+        attackEffects.ForEach(attackEffect => {
+            //if (attackEffect.GetType() == typeof(HealEffect)) {
+            //    healing += ((HealEffect)attackEffect).healing;
+            //} else if (attackEffect.GetType() == typeof(PowerHealEffect)) {
+            //    PowerHealEffect healEffect = (PowerHealEffect)attackEffect;
+            //    healing += healEffect.PowerModToInt(power, healEffect.powerMod);
+            //}
+            healing += attackEffect.GetHealing(caster);
+        });
+
+        return healing;
+    }
+
+    public override int GetShield(UnitController caster) {
+        int shield = 0;
+
+        attackEffects.ForEach(attackEffect => {
+            //if (attackEffect.GetType() == typeof(ShieldEffect)) {
+            //    ShieldEffect healEffect = (ShieldEffect)attackEffect;
+            //    shield += healEffect.PowerModToInt(power, healEffect.powerMod);
+            //}
+            shield += attackEffect.GetShield(caster);
+        });
+
+        return shield;
+    }
+
     // AI Estimates //
     //////////////////
 
