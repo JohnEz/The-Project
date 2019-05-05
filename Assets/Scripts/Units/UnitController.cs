@@ -565,6 +565,8 @@ public class UnitController : MonoBehaviour {
 
         int damageDealt = target.TakeDamage(this, endDamage, ignoreArmour);
 
+        CameraManager.instance.ShakeCamera();
+
         if (myStats.LifeSteal > 0) {
             TakeHealing(this, (int)(damageDealt * myStats.LifeSteal));
         }

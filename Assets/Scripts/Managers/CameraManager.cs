@@ -150,4 +150,39 @@ public class CameraManager : MonoBehaviour {
             activePersonalCamera.Priority = 0;
         }
     }
+
+    public void ShakeCamera() {
+        StartCoroutine(_ProcessShake(1f, 0.125f));
+    }
+
+    private IEnumerator _ProcessShake(float shakeIntensity = 1f, float shakeTiming = 0.5f) {
+        Noise(1, shakeIntensity);
+        yield return new WaitForSeconds(shakeTiming);
+        Noise(0, 0);
+    }
+
+    public void Noise(float amplitudeGain, float frequencyGain) {
+        if (controlledCamera != null) {
+            CameraNoise(controlledCamera.cam, amplitudeGain, frequencyGain);
+        }
+
+        if (activeFollowCamera != null) {
+            CameraNoise(activeFollowCamera, amplitudeGain, frequencyGain);
+        }
+
+        if (activePersonalCamera != null) {
+            CameraNoise(activePersonalCamera, amplitudeGain, frequencyGain);
+        }
+    }
+
+    public void CameraNoise(CinemachineVirtualCamera camera, float amplitudeGain, float frequencyGain) {
+        if (camera == null) {
+            return;
+        }
+
+        CinemachineBasicMultiChannelPerlin noise = camera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+
+        noise.m_AmplitudeGain = amplitudeGain;
+        noise.m_FrequencyGain = frequencyGain;
+    }
 }
