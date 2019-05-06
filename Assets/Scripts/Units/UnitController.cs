@@ -176,7 +176,7 @@ public class UnitController : MonoBehaviour {
     }
 
     public void DestroySelf() {
-        Destroy(gameObject);
+        Destroy(gameObject, 1f);
     }
 
     public void FaceDirection(Vector2 dir) {
