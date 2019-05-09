@@ -94,7 +94,7 @@ public class UnitController : MonoBehaviour {
         unitCanvasController = unitCanvas.GetComponent<UnitCanvasController>();
 
         myCounters = new UnitStatistics();
-        myStats = Instantiate(baseStats);
+        //myStats = Instantiate(baseStats);
         myStats.Initialise(this);
         projectiles = new List<ProjectileController>();
         myDialogController = GetComponentInChildren<UnitDialogController>();
@@ -157,7 +157,7 @@ public class UnitController : MonoBehaviour {
     public void Spawn(Player player, Node startNode, UnitObject startingStats) {
         myPlayer = player;
         myNode = startNode;
-        baseStats = startingStats;
+        myStats = startingStats;
     }
 
     public void Activate() {

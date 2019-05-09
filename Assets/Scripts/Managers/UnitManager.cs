@@ -49,7 +49,7 @@ public class UnitManager : MonoBehaviour {
         }
         UnitObject unitToSpawn = ResourceManager.instance.units[unit];
 
-        return SpawnUnit(unitToSpawn, player, x, y);
+        return SpawnUnit(Instantiate(unitToSpawn), player, x, y);
     }
 
     public UnitController SpawnUnit(UnitObject unit, Player player, int x, int y, Vector2? dir = null) {
