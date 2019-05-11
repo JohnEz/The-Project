@@ -11,6 +11,9 @@ public class PartyList : MonoBehaviour {
         myDropzone.AddDropFilter("PartySize", PartySizeLimitFilter);
         myDropzone.AddDropListener("Add Character", AddCharacter);
         myDropzone.AddRemoveListener("Remove Character", RemoveCharacter);
+
+        // TODO maybe remove this and keep the last used party?
+        GameDetails.Party.Clear();
     }
 
     public bool PartySizeLimitFilter(GameObject go) {

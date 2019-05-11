@@ -26,6 +26,5 @@ public class LevelSelect : MonoBehaviour {
 
     public void SelectMap(int index) {
         GameDetails.MapName = maps[index];
-        Debug.Log("Set map to " + GameDetails.MapName);
     }
 }

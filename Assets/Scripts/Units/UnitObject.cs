@@ -74,9 +74,27 @@ public class UnitObject : ScriptableObject {
     public List<Ability> instantiatedAbilities;
 
     public void Initialise(UnitController myUnit) {
+        Reset(myUnit);
+
+        // set graphics
+        UnitToken selectedToken = unitTokens[UnityEngine.Random.Range(0, unitTokens.Length)];
+        Transform tokenTransform = myUnit.transform.Find("Token");
+
+        tokenTransform.Find("FrontSprite").GetComponent<SpriteRenderer>().sprite = selectedToken.frontSprite;
+        tokenTransform.Find("BackSprite").GetComponent<SpriteRenderer>().sprite = selectedToken.backSprite;
+
+        Vector3 tokenPos = tokenTransform.localPosition;
+        tokenTransform.localPosition = new Vector3(tokenPos.x, -((-selectedToken.frontSprite.rect.height) / 10), tokenPos.z);
+    }
+
+    public void Reset(UnitController myUnit = null) {
         currentHealth = MaxHealth;
         Shield = 0;
         currentStamina = MaxStamina;
+
+        Buffs.Clear();
+        instantiatedAttacks.Clear();
+        instantiatedAbilities.Clear();
 
         baseAttacks.ForEach(attack => {
             AttackAction instantaitedAttack = Instantiate(attack);
@@ -89,16 +107,6 @@ public class UnitObject : ScriptableObject {
             instantaitedAbility.caster = myUnit;
             instantiatedAbilities.Add(instantaitedAbility);
         });
-
-        // set graphics
-        UnitToken selectedToken = unitTokens[UnityEngine.Random.Range(0, unitTokens.Length)];
-        Transform tokenTransform = myUnit.transform.Find("Token");
-
-        tokenTransform.Find("FrontSprite").GetComponent<SpriteRenderer>().sprite = selectedToken.frontSprite;
-        tokenTransform.Find("BackSprite").GetComponent<SpriteRenderer>().sprite = selectedToken.backSprite;
-
-        Vector3 tokenPos = tokenTransform.localPosition;
-        tokenTransform.localPosition = new Vector3(tokenPos.x, -((-selectedToken.frontSprite.rect.height) / 10), tokenPos.z);
     }
 
     public int GetModifiedStat(int baseValue, Stats stat) {
@@ -285,5 +293,12 @@ public class UnitObject : ScriptableObject {
         Buffs.Add(newBuff);
 
         return true;
+    }
+
+    public override string ToString() {
+        return "Name: " + characterName + "\n" +
+            "Class: " + className + "\n" +
+            "level: " + 1 + "\n" +
+            "Health: " + Health + "\n";
     }
 }

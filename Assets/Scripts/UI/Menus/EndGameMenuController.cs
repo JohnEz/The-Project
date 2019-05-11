@@ -9,7 +9,7 @@ public class EndGameMenuController : MonoBehaviour {
         pressAudioOptions.persist = true;
         AudioManager.instance.Play(pressAudioOptions);
 
-        SceneChanger.Instance.FadeToScene(Scenes.MAIN_MENU);
+        SceneChanger.Instance.FadeToScene(Scenes.PRE_GAME);
     }
 
     public void Retry() {

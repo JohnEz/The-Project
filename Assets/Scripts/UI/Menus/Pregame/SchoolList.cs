@@ -15,6 +15,7 @@ public class SchoolList : MonoBehaviour {
 
     private void GenerateCharacterList() {
         PlayerSchool.Roster.ForEach((unit) => {
+            Debug.Log(unit.ToString());
             CreateCharacterCard(unit);
         });
     }
