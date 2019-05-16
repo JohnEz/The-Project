@@ -4,9 +4,6 @@ using System.Collections.Generic;
 public class UserInterfaceManager : MonoBehaviour {
     public static UserInterfaceManager instance;
 
-    //Managers
-    private PauseMenuController pauseMenuController;
-
     private Node lastAttackedNode;
 
     private void Awake() {
@@ -15,7 +12,6 @@ public class UserInterfaceManager : MonoBehaviour {
 
     // Use this for initialization
     private void Start() {
-        pauseMenuController = GetComponent<PauseMenuController>();
     }
 
     // Update is called once per frame
@@ -69,9 +65,9 @@ public class UserInterfaceManager : MonoBehaviour {
                 UnshowAbility();
                 UnitSelectionManager.instance.UnselectUnit();
             } else if (PauseMenuController.gameIsPaused) {
-                pauseMenuController.Resume();
+                PauseMenuController.instance.Resume();
             } else {
-                pauseMenuController.Pause();
+                PauseMenuController.instance.Pause();
             }
         }
 

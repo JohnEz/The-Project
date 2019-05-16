@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using DuloGames.UI;
+using UnityEngine;
 
 public class PauseMenuController : MonoBehaviour {
     public static PauseMenuController instance;
@@ -16,13 +17,19 @@ public class PauseMenuController : MonoBehaviour {
     public void Pause() {
         Time.timeScale = 0f;
         gameIsPaused = true;
-        pauseMenuUI.SetActive(true);
+        //pauseMenuUI.SetActive(true);
+        UIWindow.GetWindow(UIWindowID.GameMenu).Show();
     }
 
     public void Resume() {
+        PlayOptions pressAudioOptions = new PlayOptions(buttonClickAudio, transform);
+        pressAudioOptions.audioMixer = AudioMixers.UI;
+        pressAudioOptions.persist = true;
+        AudioManager.instance.Play(pressAudioOptions);
+
         Time.timeScale = 1f;
         gameIsPaused = false;
-        pauseMenuUI.SetActive(false);
+        UIWindow.GetWindow(UIWindowID.GameMenu).Hide();
     }
 
     public void LoadMainMenu() {
