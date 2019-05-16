@@ -27,8 +27,6 @@ public class GUIController : MonoBehaviour {
 
     public GameObject handLayout;
     public GameObject staminaPoints;
-    public TextMeshProUGUI objectiveHeader;
-    public TextMeshProUGUI objectivesBody;
     public Button endTurnButton;
 
     private void Awake() {
@@ -71,9 +69,8 @@ public class GUIController : MonoBehaviour {
         Instantiate(playerWon ? victoryMenuPrefab : defeatMenuPrefab, transform);
     }
 
-    public void StartNewTurn(bool ally, List<Objective> objectives) {
+    public void StartNewTurn(bool ally) {
         DisplayNewTurnText(ally);
-        UpdateObjectiveText(objectives);
         SetEndTurnEnabled(TurnManager.instance.IsPlayersTurn());
     }
 
@@ -90,11 +87,14 @@ public class GUIController : MonoBehaviour {
         Destroy(turnText, 1.917f);
     }
 
-    private void UpdateObjectiveText(List<Objective> objectives) {
-        if (objectivesBody == null) {
-            objectivesBody = transform.Find("Objectives").Find("ObjectivesBody").GetComponent<TextMeshProUGUI>();
+    public void AddObjectiveText(List<Objective> objectives) {
+        foreach (Objective objective in objectives) {
+            AddObjectiveText(objective);
         }
-        objectivesBody.text = CreateObjectiveText(objectives);
+    }
+
+    public void AddObjectiveText(Objective objective) {
+        QuestTracker.Instance.AddQuest("Annihilation", objective.text);
     }
 
     public void ClearAbilityIcons() {
@@ -137,14 +137,6 @@ public class GUIController : MonoBehaviour {
         return Instantiate(deckPrefab);
     }
 
-    private string CreateObjectiveText(List<Objective> objectives) {
-        string constructedObjectiveText = "";
-        foreach (Objective objective in objectives) {
-            constructedObjectiveText += objective.text + "\n";
-        }
-        return constructedObjectiveText;
-    }
-
     public void ShowErrorMessage(string message) {
         GameObject newDamageText = Instantiate(errorMessagePrefab);
         newDamageText.GetComponent<Text>().text = message;
@@ -153,8 +145,7 @@ public class GUIController : MonoBehaviour {
     }
 
     public void SetUIActive(bool isActive) {
-        objectiveHeader.gameObject.SetActive(isActive);
-        objectivesBody.gameObject.SetActive(isActive);
+        QuestTracker.Instance.gameObject.SetActive(isActive);
         endTurnButton.gameObject.SetActive(isActive);
         handLayout.SetActive(isActive);
     }

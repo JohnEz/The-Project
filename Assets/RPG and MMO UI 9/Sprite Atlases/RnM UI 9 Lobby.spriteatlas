@@ -1,0 +1,145 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: RnM UI 9 Lobby
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 4096
+      textureCompression: 0
+      filterMode: 0
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings:
+    - serializedVersion: 2
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 4096
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 0
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 0
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: ad265dde176530148a9043dbb84e5434, type: 3}
+    totalSpriteSurfaceArea: 2357936
+    bindAsDefault: 1
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: 34526180b93a48e478b94e7d4af53dec, type: 3}
+  - {fileID: 21300000, guid: 80d5f6d089e032e40873be910c322ecd, type: 3}
+  - {fileID: 21300000, guid: 521cc1f08e30e6d448aa7d32ce4b1e83, type: 3}
+  - {fileID: 21300000, guid: 63cc08f0a35481e429d7e66b4a461294, type: 3}
+  - {fileID: 21300000, guid: f7009731a2ad3804b97e7aab4df23834, type: 3}
+  - {fileID: 21300000, guid: 8697ab02de9071546ae236c2b98bbc23, type: 3}
+  - {fileID: 21300000, guid: 294b0552f9b02e740bf41bffda9b5f6c, type: 3}
+  - {fileID: 21300000, guid: 8c23f813376515b4c87a6ba09049e949, type: 3}
+  - {fileID: 21300000, guid: c90c2643e5faff341af9ff065720a391, type: 3}
+  - {fileID: 21300000, guid: 37f97873b3045e940bff3d4a08e77467, type: 3}
+  - {fileID: 21300000, guid: 3f6fdde3340a7084a902bbafc2bb923b, type: 3}
+  - {fileID: 21300000, guid: c490a064a7439034c9509a2da6bab2bf, type: 3}
+  - {fileID: 21300000, guid: b8b0dfb4e7cb1ad48bb2c20bad910a77, type: 3}
+  - {fileID: 21300000, guid: e3eed7f403b47524dbed323b730178e3, type: 3}
+  - {fileID: 21300000, guid: 87a7bbf49c1586f41b2481f299d2a82b, type: 3}
+  - {fileID: 21300000, guid: d2288d05e51be8e418f4ec27bff6f7c5, type: 3}
+  - {fileID: 21300000, guid: a56abf3574cfc084bbe63daca1322ceb, type: 3}
+  - {fileID: 21300000, guid: 3cd24cb5e7af4894cb4d850f91fdebe8, type: 3}
+  - {fileID: 21300000, guid: 733474c66b70a2b478792ca21c54b355, type: 3}
+  - {fileID: 21300000, guid: f7b449e6d0b96e74dae3b7b264d98016, type: 3}
+  - {fileID: 21300000, guid: ed48744708031b142a5778be729c3d6b, type: 3}
+  - {fileID: 21300000, guid: 00bc31578987b9a4bae2149a013f1fd0, type: 3}
+  - {fileID: 21300000, guid: 0ba4da877edd0524c9af7abea5c1a3c2, type: 3}
+  - {fileID: 21300000, guid: 81f24c87c3a6c5f47931e6b6c2d5da0a, type: 3}
+  - {fileID: 21300000, guid: 663a2bb8c292d1343b32b21b846f71a7, type: 3}
+  - {fileID: 21300000, guid: 7100f2399ecc0084ea3fd18650963c2b, type: 3}
+  - {fileID: 21300000, guid: 62a1a28959e4f9c4fa0c081dd538a4e9, type: 3}
+  - {fileID: 21300000, guid: 052f13996b677474094181eb12ea966a, type: 3}
+  - {fileID: 21300000, guid: 44928cc949852df498bd3ffa7397c853, type: 3}
+  - {fileID: 21300000, guid: 09e2d0d962fe36e418fa9876b92ec385, type: 3}
+  - {fileID: 21300000, guid: a0afcaf9e8876ab46b80081e7087ebba, type: 3}
+  - {fileID: 21300000, guid: 408fe70a8fce7bd40a7362623afd0558, type: 3}
+  - {fileID: 21300000, guid: 3aab0e0a2b19d2b439306617ce3b2781, type: 3}
+  - {fileID: 21300000, guid: 790b622a05c92c64599578c9cd5f7d4c, type: 3}
+  - {fileID: 21300000, guid: 9a9f72cad882bed41b52d9f81a4ec3d9, type: 3}
+  - {fileID: 21300000, guid: 1a2ca1cb63f1d8b42944eb82a1ea6034, type: 3}
+  - {fileID: 21300000, guid: 4c7c82cb6f75dca46a345aa8af81fabe, type: 3}
+  - {fileID: 21300000, guid: 06d9a04cdfd796041a9696026b9cd0b6, type: 3}
+  - {fileID: 21300000, guid: 8ce4ab6c245d72b45a1e8d8d656da43a, type: 3}
+  - {fileID: 21300000, guid: 1f2c629c5ba1f494d8d615ac0a85c78b, type: 3}
+  - {fileID: 21300000, guid: bf04ea9ca2dbd7042ae337379eae39fd, type: 3}
+  - {fileID: 21300000, guid: a4dfee9caa980a341909794b12c8bc42, type: 3}
+  - {fileID: 21300000, guid: d20aa38db0899c042b61fe62ed306adf, type: 3}
+  - {fileID: 21300000, guid: 1617b2ddd14731b4e85d37e1bf8b742c, type: 3}
+  - {fileID: 21300000, guid: 9d054d4e94fbaee4dbe2583e07c4ea94, type: 3}
+  - {fileID: 21300000, guid: e22d851fb5a404040a37402b59177484, type: 3}
+  - {fileID: 21300000, guid: d11dedcf36fd1d94e9cbcc8bdbcb712e, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - CC_SwitchSelect_Arrow
+  - CC_SwitchSelect_Background
+  - CSL_List_Header_Background
+  - Section_Header_Background
+  - CC_Box_Active
+  - CSL_List_Character_Avatar_Background
+  - Tooltip_Background
+  - CS3D_Button_Arrow_Foreground
+  - CSL_List_Character_Active
+  - CC_Box_Background
+  - BottomBar_Gradient
+  - CSL_Create_Background
+  - CSL_List_Header_Lines
+  - BottomBar_Background
+  - Faction_Engineers
+  - CSL_List_Character_Delete_Background
+  - Faction_Federation
+  - Tooltip_Horizontal_Lines
+  - Section_Glow
+  - Section_Header_Border
+  - Sword
+  - CC_Color_Border
+  - Tower
+  - Tooltip_Vertical_Arrow_Background
+  - Plus
+  - CSL_List_Character_Background
+  - CSL_List_Character_Delete_Border
+  - CS3D_Button_Arrow_Background
+  - CSL_List_Character_Delete_Icon
+  - CC_SwitchSelect_Arrow_Down
+  - Tooltip_Arrow_Effect
+  - CC_SwitchSelect_Arrow_Down_Fill
+  - HS_Hero_Box_Border
+  - Gender_Female
+  - CC_Box_Border
+  - Tooltip_Vertical_Lines
+  - Lobby_Glow_Left
+  - Shield
+  - HS_Hero_Box_Active
+  - BottomBar_Effect_Small
+  - Gender_Male
+  - Tooltip_Horizontal_Arrow_Background
+  - CSL_List_Character_Avatar_Border
+  - CC_SwitchSelect_Arrow_Overlay
+  - CC_Color_Active
+  - HS_Hero_Box_Background
+  - BottomBar_Effect_Large
+  m_Tag: RnM UI 9 Lobby
+  m_IsVariant: 0

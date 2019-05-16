@@ -41,11 +41,11 @@ public class AbilityIcon : MonoBehaviour, IPointerClickHandler, IPointerEnterHan
             return;
         }
 
-        ActionBar.instance.abilityDescription.ShowDescription(displayAbility);
+        //ActionBar.instance.abilityDescription.ShowDescription(displayAbility);
     }
 
     public void OnPointerExit(PointerEventData eventData) {
-        ActionBar.instance.abilityDescription.HideDescription();
+        //ActionBar.instance.abilityDescription.HideDescription();
     }
 
     public void Update() {

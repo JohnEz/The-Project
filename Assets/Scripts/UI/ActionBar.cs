@@ -1,28 +1,23 @@
-﻿using System.Collections;
+﻿using DuloGames.UI;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ActionBar : MonoBehaviour {
     public static ActionBar instance;
 
+    [SerializeField] private UISpellSlot slot;
+    private List<UISpellSlot> slots;
+
     [HideInInspector]
     public UnitController currentlyDisplayedUnit;
-
-    private List<AbilityIcon> abilityIcons;
-    public AbilityDescriptionController abilityDescription;
 
     public void Awake() {
         instance = this;
     }
 
     public void Start() {
-        abilityIcons = new List<AbilityIcon>(GetComponentsInChildren<AbilityIcon>());
-
-        int slot = 0;
-        foreach (AbilityIcon icon in abilityIcons) {
-            icon.slot = slot;
-            slot++;
-        }
+        slots = UISpellSlot.GetSlotsInGroup(UISpellSlot_Group.Main_1);
     }
 
     public void Update() {
@@ -32,27 +27,27 @@ public class ActionBar : MonoBehaviour {
     }
 
     public void UnselectAbilities() {
-        abilityIcons.ForEach(icon => {
-            icon.Unselect();
-        });
+        //slots.ForEach(slot => {
+        //    slot.Unassign();
+        //});
     }
 
     public void SelectAbility(int i) {
         UnselectAbilities();
-        abilityIcons[i].Select();
+        //abilityIcons[i].Select();
     }
 
     public void DisplayUnit(UnitController unitToDisplay) {
         currentlyDisplayedUnit = unitToDisplay;
 
         int index = 0;
-        abilityIcons.ForEach((abilityIcon) => {
+        slots.ForEach((slot) => {
             if (!unitToDisplay || unitToDisplay.myStats.instantiatedAbilities.Count <= index) {
-                abilityIcon.SetAbility(null);
+                slot.Unassign();
                 return;
             }
             Ability abilityToDisplay = unitToDisplay.myStats.instantiatedAbilities[index];
-            abilityIcon.SetAbility(abilityToDisplay);
+            slot.Assign(abilityToDisplay.ToSpellInfo());
 
             index++;
         });

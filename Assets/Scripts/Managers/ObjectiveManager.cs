@@ -29,6 +29,10 @@ public class ObjectiveManager : MonoBehaviour {
             List<Objective> newObjectives = new List<Objective>();
             newObjectives.Add(objective);
             objectives.Add(player, newObjectives);
+
+            if (!player.ai) {
+                GUIController.instance.AddObjectiveText(objective);
+            }
         } else {
             objectives[player].Add(objective);
         }

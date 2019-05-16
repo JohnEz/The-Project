@@ -23,6 +23,10 @@ public class UserInterfaceManager : MonoBehaviour {
         UserControls();
     }
 
+    public void ShowAbilityBySlot(int slot) {
+        ShowAbility(UnitSelectionManager.instance.SelectedUnit.myStats.instantiatedAbilities[slot]);
+    }
+
     public void ShowAbility(Ability ability) {
         UnshowAbility();
 

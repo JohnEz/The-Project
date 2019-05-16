@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using DuloGames.UI;
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Ability", menuName = "Ability/New Ability")]
@@ -89,5 +90,19 @@ public class Ability : ScriptableObject {
 
     public void SetOnCooldown(bool isOnCooldown) {
         cooldown = isOnCooldown ? maxCooldown : 0;
+    }
+
+    public UISpellInfo ToSpellInfo() {
+        UISpellInfo info = new UISpellInfo();
+
+        info.Name = Name;
+        info.Icon = icon;
+        info.Description = GetDescription();
+        info.Range = 0;
+        info.Cooldown = MaxCooldown;
+        info.CastTime = 0;
+        info.PowerCost = baseActionPointCost;
+
+        return info;
     }
 }

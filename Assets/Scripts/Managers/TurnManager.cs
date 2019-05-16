@@ -65,7 +65,7 @@ public class TurnManager : MonoBehaviour {
         UnitManager.instance.StartTurn(currentPlayersTurn);
         bool alliedTurn = PlayerManager.instance.mainPlayer.faction == currentPlayersTurn.faction;
 
-        GUIController.instance.StartNewTurn(alliedTurn, ObjectiveManager.instance.getObjectives(currentPlayersTurn));
+        GUIController.instance.StartNewTurn(alliedTurn);
 
         PlayerManager.instance.StartNewTurn(currentPlayersTurn);
 
