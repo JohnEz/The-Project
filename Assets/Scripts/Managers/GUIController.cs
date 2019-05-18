@@ -76,10 +76,7 @@ public class GUIController : MonoBehaviour {
 
     private void DisplayNewTurnText(bool allyTurn) {
         showingTurn = true;
-        turnText = (GameObject)Instantiate(turnTextPrefab, turnTextPrefab.transform.position, Quaternion.identity);
-        turnText.transform.SetParent(transform);
-        turnText.transform.localPosition = turnTextPrefab.transform.position;
-        turnText.transform.localScale = new Vector3(1, 1, 1);
+        turnText = Instantiate(turnTextPrefab, transform);
         turnText.transform.Find("AllyTurnImage").gameObject.SetActive(allyTurn);
         turnText.transform.Find("EnemyTurnImage").gameObject.SetActive(!allyTurn);
 
