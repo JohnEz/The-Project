@@ -41,6 +41,10 @@ public class CameraManager : MonoBehaviour {
     private void Update() {
     }
 
+    public Vector3 GetCameraRotation() {
+        return physicalCamera.transform.rotation.eulerAngles;
+    }
+
     public void AddEncounteredTarget(UnitController target) {
         if (target == null) {
             return;

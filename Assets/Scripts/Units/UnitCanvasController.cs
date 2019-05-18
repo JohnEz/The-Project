@@ -31,11 +31,12 @@ public class UnitCanvasController : MonoBehaviour {
 
     private Dictionary<string, Sprite[]> buffSprites = new Dictionary<string, Sprite[]>();
 
-    private Color[] teamColours = new Color[]{
+    private Color[] teamColours = new Color[] {
         new Color (0, 0.9647f, 1), //blue
         new Color (0.7294f, 0.9569f, 0.1176f), //green
-        new Color (0.8431f, 0.2f, 0.2f), //red
-	};
+        //new Color (0.8431f, 0.2f, 0.2f), //red
+        new Color(0.8039f, 0.4039f, 0.2039f),
+    };
 
     // Use this for initialization
     private void Start() {
@@ -45,10 +46,11 @@ public class UnitCanvasController : MonoBehaviour {
         hpBar.Initialize(myUnit.myStats.MaxHealth);
         hpBar.SetHPColor(teamColours[myTeam]);
 
-        staminaBar = Instantiate(staminaBarPrefab, transform, false).GetComponent<StaminaBarController>();
-        staminaBar.Initialize(myUnit.myStats.MaxStamina);
+        //staminaBar = Instantiate(staminaBarPrefab, transform, false).GetComponent<StaminaBarController>();
+        //staminaBar.Initialize(myUnit.myStats.MaxStamina);
 
-        actionPointsText = Instantiate(actionPointsPrefab, transform, false).GetComponentInChildren<TextMeshProUGUI>();
+        //actionPointsText = Instantiate(actionPointsPrefab, transform, false).GetComponentInChildren<TextMeshProUGUI>();
+        actionPointsText = hpBar.gameObject.GetComponentInChildren<TextMeshProUGUI>();
     }
 
     // Update is called once per frame
@@ -68,6 +70,10 @@ public class UnitCanvasController : MonoBehaviour {
         //Vector3 v = CameraManager.instance.physicalCamera.transform.position - transform.position;
         transform.LookAt(CameraManager.instance.physicalCamera.transform.position);
         transform.Rotate(0, 180, 0);
+
+        Vector3 currentRotation = transform.rotation.eulerAngles;
+        currentRotation.y = CameraManager.instance.GetCameraRotation().y;
+        transform.rotation = Quaternion.Euler(currentRotation);
     }
 
     public void UpdateBuffs(List<Buff> buffs) {
@@ -109,7 +115,7 @@ public class UnitCanvasController : MonoBehaviour {
     }
 
     public void UpdateStamina(int currentStamina, int maxStamina) {
-        staminaBar.SetStamina(currentStamina, maxStamina);
+        //staminaBar.SetStamina(currentStamina, maxStamina);
     }
 
     public void UpdateActionPoints(int ap) {

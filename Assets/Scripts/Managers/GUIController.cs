@@ -31,13 +31,13 @@ public class GUIController : MonoBehaviour {
 
     private void Awake() {
         instance = this;
-        SetUIActive(false);
         startBtn.SetActive(true);
         //staminaPoints.SetActive(false);
     }
 
     // Use this for initialization
     private void Start() {
+        SetUIActive(false);
     }
 
     // Update is called once per frame

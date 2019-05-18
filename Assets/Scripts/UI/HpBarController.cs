@@ -6,6 +6,8 @@ public class HpBarController : MonoBehaviour {
     public Image hpBar;
     public Image shieldBar;
 
+    public bool displayHPMarkers = true;
+
     [SerializeField]
     public GameObject hpMarkerPrefab;
 
@@ -19,9 +21,10 @@ public class HpBarController : MonoBehaviour {
 
     // Use this for initialization
     public void Initialize(float maxHp) {
-        hpBar = transform.Find("hpBar").GetComponent<Image>();
         currentMax = maxHp;
-        createMarkers(maxHp);
+        if (displayHPMarkers) {
+            createMarkers(maxHp);
+        }
     }
 
     // Update is called once per frame
@@ -30,7 +33,7 @@ public class HpBarController : MonoBehaviour {
             hpBar.fillAmount = Mathf.Lerp(hpBar.fillAmount, targetHPPercent, 2f * Time.deltaTime);
 
             float distance = Mathf.Abs(targetHPPercent - hpBar.fillAmount);
-            if (distance < 0.01f) {
+            if (distance < 0.005f) {
                 hpBar.fillAmount = targetHPPercent;
             }
             UpdateShieldBarPosition();
@@ -40,7 +43,7 @@ public class HpBarController : MonoBehaviour {
             shieldBar.fillAmount = Mathf.Lerp(shieldBar.fillAmount, targetShieldPercent, 2f * Time.deltaTime);
 
             float distance = Mathf.Abs(targetShieldPercent - shieldBar.fillAmount);
-            if (distance < 0.01f) {
+            if (distance < 0.005f) {
                 shieldBar.fillAmount = targetShieldPercent;
             }
         }
@@ -50,10 +53,12 @@ public class HpBarController : MonoBehaviour {
         targetHPPercent = currentHp / (maxHp + shield);
         targetShieldPercent = shield / (maxHp + shield);
 
-        if (maxHp != currentMax + shield) {
-            currentMax = maxHp + shield;
-            destroyMarkers();
-            createMarkers(maxHp + shield);
+        if (displayHPMarkers) {
+            if (maxHp != currentMax + shield) {
+                currentMax = maxHp + shield;
+                destroyMarkers();
+                createMarkers(maxHp + shield);
+            }
         }
     }
 
@@ -82,7 +87,7 @@ public class HpBarController : MonoBehaviour {
 
     private void UpdateShieldBarPosition() {
         float hpBarEnd = hpBar.rectTransform.rect.width * hpBar.fillAmount;
-        shieldBar.rectTransform.anchoredPosition = new Vector3(hpBarEnd, 0, 0);
+        shieldBar.rectTransform.anchoredPosition = new Vector3(hpBarEnd - 3, shieldBar.rectTransform.anchoredPosition.y, 0);
     }
 
     public void destroyMarkers() {
