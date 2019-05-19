@@ -63,11 +63,14 @@ public class UserInterfaceManager : MonoBehaviour {
                 }
             } else if (UnitSelectionManager.instance.IsDisplayingMovement()) {
                 UnshowAbility();
+                CancelMovement();
                 UnitSelectionManager.instance.UnselectUnit();
-            } else if (PauseMenuController.gameIsPaused) {
-                PauseMenuController.instance.Resume();
-            } else {
-                PauseMenuController.instance.Pause();
+            } else if (Input.GetKeyUp(KeyCode.Escape)) {
+                if (PauseMenuController.gameIsPaused) {
+                    PauseMenuController.instance.Resume();
+                } else {
+                    PauseMenuController.instance.Pause();
+                }
             }
         }
 
@@ -212,6 +215,14 @@ public class UserInterfaceManager : MonoBehaviour {
         UnitManager.instance.ShowMoveAction(selectedUnit, selectedUnit.myStats.Speed, selectedUnit.myStats.WalkingType);
         UnitSelectionManager.instance.DisplayMovement();
         return true;
+    }
+
+    public void CancelMovement() {
+        if (!UnitSelectionManager.instance.IsDisplayingMovement()) {
+            return;
+        }
+
+        UnitSelectionManager.instance.ResetState();
     }
 
     public bool UseAbility(int i) {

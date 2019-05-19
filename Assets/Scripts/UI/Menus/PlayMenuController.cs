@@ -72,7 +72,6 @@ public class PlayMenuController : MonoBehaviour {
         pressAudioOptions.persist = true;
         AudioManager.instance.Play(pressAudioOptions);
 
-        transform.parent.Find("MainMenu").GetComponent<MainMenuController>().OpenMenu();
         CloseMenu();
         CloseSubMenu();
     }

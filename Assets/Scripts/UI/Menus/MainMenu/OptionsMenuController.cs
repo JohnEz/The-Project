@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using DuloGames.UI;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -8,7 +9,7 @@ public class OptionsMenuController : MonoBehaviour {
     public static Vector3 OPEN_POSITION = new Vector3(0, 0, 0);
 
     public AudioMixer masterMixer;
-    public TMP_Dropdown resolutionDropdown;
+    public UISelectField resolutionSelectField;
     public Toggle fullscreenToggle;
 
     public Slider masterVolumeSlider;
@@ -25,38 +26,8 @@ public class OptionsMenuController : MonoBehaviour {
         LoadSettings();
     }
 
-    public void OpenMenu() {
-        //GetComponent<SlidingMenu>().SlideToPosition(OPEN_POSITION);
-        GetComponent<SlidingMenu>().OpenMenu();
-    }
-
-    public void CloseMenu() {
-        GetComponent<SlidingMenu>().CloseMenu();
-    }
-
     public void LoadSettings() {
-        resolutions = Screen.resolutions;
-
-        resolutionDropdown.ClearOptions();
-
-        List<string> options = new List<string>();
-        int currentResolutionIndex = 0;
-
-        for (int i = 0; i < resolutions.Length; i++) {
-            Resolution res = resolutions[i];
-            string option = string.Format("{0} x {1}", res.width, res.height);
-
-            // TODO this can be removed when i add refresh rate
-            options.Add(option);
-
-            if (res.width == Screen.currentResolution.width && res.height == Screen.currentResolution.height) {
-                currentResolutionIndex = i;
-            }
-        }
-
-        resolutionDropdown.AddOptions(options);
-        resolutionDropdown.value = currentResolutionIndex;
-        resolutionDropdown.RefreshShownValue();
+        SetupResolution();
 
         fullscreenToggle.isOn = PlayerPrefs.GetInt(FULL_SCREEN) == 1;
         Screen.fullScreen = PlayerPrefs.GetInt(FULL_SCREEN) == 1;
@@ -64,39 +35,72 @@ public class OptionsMenuController : MonoBehaviour {
         RefreshMusicSliders();
     }
 
+    protected void OnEnable() {
+        if (resolutionSelectField == null)
+            return;
+
+        resolutionSelectField.onChange.AddListener(OnResolutionSelectedOption);
+    }
+
+    protected void OnDisable() {
+        if (resolutionSelectField == null)
+            return;
+
+        resolutionSelectField.onChange.RemoveListener(OnResolutionSelectedOption);
+    }
+
+    protected void OnResolutionSelectedOption(int index, string option) {
+        Resolution res = Screen.resolutions[index];
+
+        if (res.Equals(Screen.currentResolution))
+            return;
+
+        Screen.SetResolution(res.width, res.height, true, res.refreshRate);
+    }
+
+    public void SetupResolution() {
+        if (resolutionSelectField == null) {
+            return;
+        }
+
+        resolutionSelectField.ClearOptions();
+
+        resolutions = Screen.resolutions;
+
+        foreach (Resolution res in resolutions) {
+            resolutionSelectField.AddOption(string.Format("{0} x {1} @{2}Hz", res.width, res.height, res.refreshRate));
+        }
+
+        Resolution currentResolution = Screen.currentResolution;
+
+        resolutionSelectField.SelectOption(string.Format("{0} x {1} @{2}Hz", currentResolution.width, currentResolution.height, currentResolution.refreshRate));
+    }
+
     public void RefreshMusicSliders() {
         float loadedMasterVolume = PlayerPrefs.GetFloat(AudioManager.MASTER_VOLUME);
-        masterVolumeSlider.value = loadedMasterVolume;
+        masterVolumeSlider.value = (loadedMasterVolume / 80) + 1;
 
         float loadedMusicVolume = PlayerPrefs.GetFloat(AudioManager.MUSIC_VOLUME);
-        musicVolumeSlider.value = loadedMusicVolume;
+        musicVolumeSlider.value = (loadedMusicVolume / 80) + 1;
 
         float loadedSFXVolume = PlayerPrefs.GetFloat(AudioManager.SFX_VOLUME);
-        sfxVolumeSlider.value = loadedSFXVolume;
+        sfxVolumeSlider.value = (loadedSFXVolume / 80) + 1;
     }
 
     public void SetMasterVolume(float volume) {
-        masterMixer.SetFloat(AudioManager.MASTER_VOLUME, volume);
+        masterMixer.SetFloat(AudioManager.MASTER_VOLUME, (volume - 1) * 80);
     }
 
     public void SetMusicVolume(float volume) {
-        masterMixer.SetFloat(AudioManager.MUSIC_VOLUME, volume);
+        masterMixer.SetFloat(AudioManager.MUSIC_VOLUME, (volume - 1) * 80);
     }
 
     public void SetSfxVolume(float volume) {
-        masterMixer.SetFloat(AudioManager.SFX_VOLUME, volume);
+        masterMixer.SetFloat(AudioManager.SFX_VOLUME, (volume - 1) * 80);
     }
 
     public void SetFullScreen(bool isFullscreen) {
         Screen.fullScreen = isFullscreen;
-    }
-
-    public void SetResolution(int index) {
-        Resolution resolution = resolutions[index];
-        Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
-
-        // TODO add option for not capped
-        //Application.targetFrameRate = resolution.refreshRate;
     }
 
     public void SaveAndExit() {
@@ -106,9 +110,6 @@ public class OptionsMenuController : MonoBehaviour {
         AudioManager.instance.Play(pressAudioOptions);
 
         SaveOptions();
-
-        transform.parent.Find("MainMenu").GetComponent<MainMenuController>().OpenMenu();
-        CloseMenu();
     }
 
     public void SaveOptions() {

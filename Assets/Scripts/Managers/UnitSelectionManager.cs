@@ -51,6 +51,10 @@ public class UnitSelectionManager : MonoBehaviour {
         abilityState = AbilityState.MOVEMENT;
     }
 
+    public void ResetState() {
+        abilityState = AbilityState.NONE;
+    }
+
     public bool CanDisplayMovement() {
         return abilityState != AbilityState.INPROGRESS;
     }

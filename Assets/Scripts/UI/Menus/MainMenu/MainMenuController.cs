@@ -11,7 +11,7 @@ public class MainMenuController : MonoBehaviour {
         AudioManager.instance.PlayMusic("Menu", true);
     }
 
-    public void Play() {
+    public void NewGame() {
         PlayOptions pressAudioOptions = new PlayOptions(buttonClickAudio, transform);
         pressAudioOptions.audioMixer = AudioMixers.UI;
         pressAudioOptions.persist = true;
@@ -35,17 +35,6 @@ public class MainMenuController : MonoBehaviour {
         pressAudioOptions.audioMixer = AudioMixers.UI;
         pressAudioOptions.persist = true;
         AudioManager.instance.Play(pressAudioOptions);
-
-        transform.parent.Find("OptionsMenu").GetComponent<OptionsMenuController>().OpenMenu();
-        CloseMenu(Vector2.down);
-    }
-
-    public void OpenMenu() {
-        GetComponent<SlidingMenu>().OpenMenu();
-    }
-
-    public void CloseMenu(Vector2 direction) {
-        GetComponent<SlidingMenu>().CloseMenu(direction);
     }
 
     public void Exit() {
