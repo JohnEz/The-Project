@@ -95,6 +95,7 @@ public class Ability : ScriptableObject {
     public UISpellInfo ToSpellInfo() {
         UISpellInfo info = new UISpellInfo();
 
+        info.ID = GetInstanceID();
         info.Name = Name;
         info.Icon = icon;
         info.Description = GetDescription();

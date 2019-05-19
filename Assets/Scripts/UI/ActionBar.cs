@@ -6,7 +6,6 @@ using UnityEngine;
 public class ActionBar : MonoBehaviour {
     public static ActionBar instance;
 
-    [SerializeField] private UISpellSlot slot;
     private List<UISpellSlot> slots;
 
     [HideInInspector]
@@ -27,14 +26,14 @@ public class ActionBar : MonoBehaviour {
     }
 
     public void UnselectAbilities() {
-        //slots.ForEach(slot => {
-        //    slot.Unassign();
-        //});
+        slots.ForEach(slot => {
+            slot.Unselect();
+        });
     }
 
     public void SelectAbility(int i) {
         UnselectAbilities();
-        //abilityIcons[i].Select();
+        slots[i].Select();
     }
 
     public void DisplayUnit(UnitController unitToDisplay) {

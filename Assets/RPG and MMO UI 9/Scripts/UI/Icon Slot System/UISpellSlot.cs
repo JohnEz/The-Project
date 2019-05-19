@@ -167,6 +167,14 @@ namespace DuloGames.UI {
                 this.m_Cooldown.OnUnassignSpell();
         }
 
+        public void Select() {
+            borderGraphic.color = new Color(1, 1, 1, 1);
+        }
+
+        public void Unselect() {
+            borderGraphic.color = new Color(0.36f, 0.33f, 0.32f, 1);
+        }
+
         /// <summary>
         /// Determines whether this slot can swap with the specified target slot.
         /// </summary>
