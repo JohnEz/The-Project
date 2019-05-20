@@ -4,15 +4,37 @@ using System.Collections.Generic;
 using System.IO;
 using TMPro;
 using System.Linq;
+using DuloGames.UI;
 
 public class LevelSelect : MonoBehaviour {
-    public TMP_Dropdown dropdown;
+    public UISelectField dropdown;
     private List<string> maps;
 
     public void Awake() {
         maps = LoadMaps();
-        dropdown.AddOptions(maps);
-        SelectMap(0);
+        foreach (string map in maps) {
+            dropdown.AddOption(map);
+        }
+
+        dropdown.SelectOption(maps[0]);
+    }
+
+    protected void OnEnable() {
+        if (dropdown == null)
+            return;
+
+        dropdown.onChange.AddListener(OnSelectedMapOption);
+    }
+
+    protected void OnDisable() {
+        if (dropdown == null)
+            return;
+
+        dropdown.onChange.RemoveListener(OnSelectedMapOption);
+    }
+
+    protected void OnSelectedMapOption(int index, string option) {
+        GameDetails.MapName = maps[index];
     }
 
     public List<string> LoadMaps() {
@@ -22,9 +44,5 @@ public class LevelSelect : MonoBehaviour {
         return filePaths.Select((filepath) => {
             return filepath.Replace(Application.streamingAssetsPath + "\\", "").Replace(".json", "");
         }).ToList();
-    }
-
-    public void SelectMap(int index) {
-        GameDetails.MapName = maps[index];
     }
 }
