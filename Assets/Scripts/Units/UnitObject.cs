@@ -73,18 +73,21 @@ public class UnitObject : ScriptableObject {
     [HideInInspector]
     public List<Ability> instantiatedAbilities;
 
+    [HideInInspector]
+    public UnitToken displayToken;
+
     public void Initialise(UnitController myUnit) {
         Reset(myUnit);
 
         // set graphics
-        UnitToken selectedToken = unitTokens[UnityEngine.Random.Range(0, unitTokens.Length)];
+        displayToken = unitTokens[UnityEngine.Random.Range(0, unitTokens.Length)];
         Transform tokenTransform = myUnit.transform.Find("Token");
 
-        tokenTransform.Find("FrontSprite").GetComponent<SpriteRenderer>().sprite = selectedToken.frontSprite;
-        tokenTransform.Find("BackSprite").GetComponent<SpriteRenderer>().sprite = selectedToken.backSprite;
+        tokenTransform.Find("FrontSprite").GetComponent<SpriteRenderer>().sprite = displayToken.frontSprite;
+        tokenTransform.Find("BackSprite").GetComponent<SpriteRenderer>().sprite = displayToken.backSprite;
 
         Vector3 tokenPos = tokenTransform.localPosition;
-        tokenTransform.localPosition = new Vector3(tokenPos.x, -((-selectedToken.frontSprite.rect.height) / 10), tokenPos.z);
+        tokenTransform.localPosition = new Vector3(tokenPos.x, displayToken.frontSprite.rect.height / 10, tokenPos.z);
     }
 
     public void Reset(UnitController myUnit = null) {

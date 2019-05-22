@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ActionBar : MonoBehaviour {
     public static ActionBar instance;
@@ -10,6 +11,8 @@ public class ActionBar : MonoBehaviour {
 
     [HideInInspector]
     public UnitController currentlyDisplayedUnit;
+
+    public Image avatarImage;
 
     public void Awake() {
         instance = this;
@@ -38,17 +41,37 @@ public class ActionBar : MonoBehaviour {
 
     public void DisplayUnit(UnitController unitToDisplay) {
         currentlyDisplayedUnit = unitToDisplay;
+        UpdateSlots();
+        UpdateAvatar();
+    }
 
+    public void UpdateSlots() {
         int index = 0;
         slots.ForEach((slot) => {
-            if (!unitToDisplay || unitToDisplay.myStats.instantiatedAbilities.Count <= index) {
+            if (!currentlyDisplayedUnit || currentlyDisplayedUnit.myStats.instantiatedAbilities.Count <= index) {
                 slot.Unassign();
                 return;
             }
-            Ability abilityToDisplay = unitToDisplay.myStats.instantiatedAbilities[index];
+            Ability abilityToDisplay = currentlyDisplayedUnit.myStats.instantiatedAbilities[index];
             slot.Assign(abilityToDisplay.ToAbilityInfo());
 
             index++;
         });
+    }
+
+    public void UpdateAvatar() {
+        if (currentlyDisplayedUnit == null) {
+            avatarImage.sprite = null;
+            avatarImage.enabled = false;
+            return;
+        }
+
+        avatarImage.enabled = true;
+        Sprite avatar = currentlyDisplayedUnit.myStats.displayToken.frontSprite;
+        avatarImage.sprite = avatar;
+        avatarImage.rectTransform.sizeDelta = avatar.rect.size;
+
+        Vector3 currentImagePosition = avatarImage.rectTransform.anchoredPosition;
+        avatarImage.rectTransform.anchoredPosition = new Vector3(currentImagePosition.x, -(avatar.rect.height / 4), currentImagePosition.z);
     }
 }
