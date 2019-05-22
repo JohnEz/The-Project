@@ -46,7 +46,7 @@ public class ActionBar : MonoBehaviour {
                 return;
             }
             Ability abilityToDisplay = unitToDisplay.myStats.instantiatedAbilities[index];
-            slot.Assign(abilityToDisplay.ToSpellInfo());
+            slot.Assign(abilityToDisplay.ToAbilityInfo());
 
             index++;
         });
