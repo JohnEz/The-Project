@@ -15,10 +15,8 @@ public class UnitCanvasController : MonoBehaviour {
     public GameObject hpBarPrefab;
     public GameObject damageTextPrefab;
     public GameObject buffIconPrefab;
-    public GameObject staminaBarPrefab;
     public GameObject actionPointsPrefab;
 
-    private StaminaBarController staminaBar;
     private HpBarController hpBar;
     private TextMeshProUGUI actionPointsText;
     private List<GameObject> buffIcons = new List<GameObject>();
@@ -46,10 +44,6 @@ public class UnitCanvasController : MonoBehaviour {
         hpBar.Initialize(myUnit.myStats.MaxHealth);
         hpBar.SetHPColor(teamColours[myTeam]);
 
-        //staminaBar = Instantiate(staminaBarPrefab, transform, false).GetComponent<StaminaBarController>();
-        //staminaBar.Initialize(myUnit.myStats.MaxStamina);
-
-        //actionPointsText = Instantiate(actionPointsPrefab, transform, false).GetComponentInChildren<TextMeshProUGUI>();
         actionPointsText = hpBar.gameObject.GetComponentInChildren<TextMeshProUGUI>();
     }
 
@@ -67,7 +61,6 @@ public class UnitCanvasController : MonoBehaviour {
     }
 
     public void FaceCamera() {
-        //Vector3 v = CameraManager.instance.physicalCamera.transform.position - transform.position;
         transform.LookAt(CameraManager.instance.physicalCamera.transform.position);
         transform.Rotate(0, 180, 0);
 
@@ -112,10 +105,6 @@ public class UnitCanvasController : MonoBehaviour {
 
     public void UpdateHP(int currentHP, int maxHP, int shield) {
         hpBar.SetHP(currentHP, maxHP, shield);
-    }
-
-    public void UpdateStamina(int currentStamina, int maxStamina) {
-        //staminaBar.SetStamina(currentStamina, maxStamina);
     }
 
     public void UpdateActionPoints(int ap) {

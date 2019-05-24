@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public enum Stats {
     HEALTH,
     SHIELD,
-    STAMINA,
     SPEED,
     POWER,
     BLOCK,
-    ARMOUR,
     AP,
     DAMAGE,
     HEALING,
@@ -41,11 +40,13 @@ public class UnitObject : ScriptableObject {
     //scaling consts
     private const int ACTION_POINTS_TO_STAMINA = 2;
 
+    [Serializable] public class OnStatChangeEvent : UnityEvent { }
+
+    public OnStatChangeEvent onStatChange = new OnStatChangeEvent();
+
     public int baseHealth = 100;
     private int currentHealth;
     private int currentShield;
-    public int baseStamina = 50;
-    private int currentStamina = 0;
     public int basePower = 15;
     public int baseBlock = 0;
     public int baseArmour = 0;
@@ -76,11 +77,15 @@ public class UnitObject : ScriptableObject {
     [HideInInspector]
     public UnitToken displayToken;
 
+    public void Awake() {
+        Reset();
+        displayToken = unitTokens[UnityEngine.Random.Range(0, unitTokens.Length)];
+    }
+
     public void Initialise(UnitController myUnit) {
         Reset(myUnit);
 
         // set graphics
-        displayToken = unitTokens[UnityEngine.Random.Range(0, unitTokens.Length)];
         Transform tokenTransform = myUnit.transform.Find("Token");
 
         tokenTransform.Find("FrontSprite").GetComponent<SpriteRenderer>().sprite = displayToken.frontSprite;
@@ -93,7 +98,6 @@ public class UnitObject : ScriptableObject {
     public void Reset(UnitController myUnit = null) {
         currentHealth = MaxHealth;
         Shield = 0;
-        currentStamina = MaxStamina;
 
         Buffs.Clear();
         instantiatedAttacks.Clear();
@@ -128,41 +132,38 @@ public class UnitObject : ScriptableObject {
         get { return instantiatedAttacks; }
     }
 
-    public void SetHealth(int health) {
-        currentHealth = Mathf.Clamp(health, 0, MaxHealth);
-    }
-
-    public void SetStamina(int stamina) {
-        //currentStamina = Mathf.Clamp(stamina, -MaxStamina, MaxStamina);
-        currentStamina = Mathf.Clamp(stamina, 0, MaxStamina);
-    }
-
     public int ActionPoints {
         get { return actionPoints; }
-        set { actionPoints = value; }
+        set {
+            actionPoints = value;
+
+            if (this.onStatChange != null)
+                this.onStatChange.Invoke();
+        }
     }
 
     public int Health {
         get { return currentHealth; }
-        set { currentHealth = Mathf.Clamp(value, 0, MaxHealth); }
+        set {
+            currentHealth = Mathf.Clamp(value, 0, MaxHealth);
+
+            if (this.onStatChange != null)
+                this.onStatChange.Invoke();
+        }
     }
 
     public int Shield {
         get { return currentShield; }
-        set { currentShield = Mathf.Clamp(value, 0, MaxHealth); }
-    }
+        set {
+            currentShield = Mathf.Clamp(value, 0, MaxHealth);
 
-    public int Stamina {
-        get { return currentStamina; }
-        set { currentStamina = Mathf.Clamp(value, 0, MaxStamina); }
+            if (this.onStatChange != null)
+                this.onStatChange.Invoke();
+        }
     }
 
     public int MaxHealth {
         get { return GetModifiedStat(baseHealth, Stats.HEALTH); }
-    }
-
-    public int MaxStamina {
-        get { return GetModifiedStat(baseStamina, Stats.STAMINA); }
     }
 
     public int MaxActionPoints {
@@ -171,10 +172,6 @@ public class UnitObject : ScriptableObject {
 
     public int Block {
         get { return GetModifiedStat(baseBlock, Stats.BLOCK); }
-    }
-
-    public int Armour {
-        get { return GetModifiedStat(baseArmour, Stats.ARMOUR); }
     }
 
     public int Power {
@@ -189,9 +186,13 @@ public class UnitObject : ScriptableObject {
         get { return GetModifiedStat(baseCritChance, Stats.CRIT); }
     }
 
+    public int LifeSteal {
+        get { return GetModifiedStat(0, Stats.LIFE_STEAL); }
+    }
+
     // Stats have to be int so we divide lifesteal by 100
-    public float LifeSteal {
-        get { return (float)GetModifiedStat(0, Stats.LIFE_STEAL) / 100; }
+    public float LifeStealAsPercent {
+        get { return (float)LifeSteal / 100; }
     }
 
     public List<Buff> Buffs { get; set; } = new List<Buff>();
@@ -273,6 +274,9 @@ public class UnitObject : ScriptableObject {
     public void RemoveBuff(Buff buff, bool withEffects = true) {
         buff.Remove(withEffects);
         Buffs.Remove(buff);
+
+        if (this.onStatChange != null)
+            this.onStatChange.Invoke();
     }
 
     public void RemoveBuffs(List<Buff> buffsToRemove, bool withEffects = true) {
@@ -294,6 +298,9 @@ public class UnitObject : ScriptableObject {
         }
 
         Buffs.Add(newBuff);
+
+        if (this.onStatChange != null)
+            this.onStatChange.Invoke();
 
         return true;
     }

@@ -233,18 +233,6 @@ public class AttackAction : AbilityAction {
         return healing;
     }
 
-    public int GetArmourEstimate() {
-        int armour = 0;
-
-        attackEffects.ForEach(attackEffect => {
-            if (attackEffect.GetType() == typeof(IncreaseArmour)) {
-                armour += ((IncreaseArmour)attackEffect).armourIncrease;
-            }
-        });
-
-        return armour;
-    }
-
     public bool AppliesStealth() {
         return attackEffects.Exists(attackEffect => attackEffect.GetType() == typeof(StealthEffect));
     }

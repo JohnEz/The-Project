@@ -41,7 +41,6 @@ public class UnitInfoController : MonoBehaviour {
 
         //return $"HP: {stats.Health}/{stats.MaxHealth}\nPower: {stats.Power}\nArmour: {stats.Armour}\nSpeed: {stats.Speed}\nBuffs:\n{buffsString}\nDebuffs:\n{debuffsString}";
         return "HP: " + stats.Health + "/" + stats.MaxHealth +
-        "\nArmour: " + stats.Armour +
         "\nBuffs:\n" + buffsString +
         "\nDebuffs:\n" + debuffsString;
     }

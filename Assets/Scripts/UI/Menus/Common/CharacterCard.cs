@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using UnityEngine.UI;
+using DuloGames.UI;
 
 public class CharacterCard : MonoBehaviour {
     private UnitObject myCharacter;
@@ -27,5 +28,14 @@ public class CharacterCard : MonoBehaviour {
     private void SetMyCharacter(UnitObject newCharacter) {
         myCharacter = newCharacter;
         UpdateDisplay();
+    }
+
+    public void OnClickInfo() {
+        CharacterInfoWindow characterInfoWindow = UIWindow.GetWindow(UIWindowID.Character).GetComponent<CharacterInfoWindow>();
+        if (characterInfoWindow == null) {
+            return;
+        }
+
+        characterInfoWindow.Character = myCharacter;
     }
 }

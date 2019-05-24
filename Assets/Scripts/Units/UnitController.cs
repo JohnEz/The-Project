@@ -144,7 +144,6 @@ public class UnitController : MonoBehaviour {
 
         myStats.NewTurn();
         myCounters.NewTurn();
-        Stamina = myStats.MaxStamina;
         Shield = 0;
     }
 
@@ -231,18 +230,10 @@ public class UnitController : MonoBehaviour {
     public void RemoveTurn() {
     }
 
-    public int Stamina {
-        get { return myStats.Stamina; }
-        set {
-            myStats.SetStamina(value);
-            unitCanvasController.UpdateStamina(myStats.Stamina, myStats.MaxStamina);
-        }
-    }
-
     public int Health {
         get { return myStats.Health; }
         set {
-            myStats.SetHealth(value);
+            myStats.Health = value;
             unitCanvasController.UpdateHP(myStats.Health, myStats.MaxHealth, myStats.Shield);
         }
     }
@@ -526,7 +517,7 @@ public class UnitController : MonoBehaviour {
             //this could be used if the character as a reposte etc
         }
 
-        int modifiedDamage = ignoreArmour ? damage : Mathf.Max(damage - myStats.Armour, 0);
+        int modifiedDamage = damage;
 
         //check to see if attack was blocked
         float blockRoll = Random.value * 100;
@@ -567,8 +558,8 @@ public class UnitController : MonoBehaviour {
 
         CameraManager.instance.ShakeCamera(damageDealt / myStats.Power);
 
-        if (myStats.LifeSteal > 0) {
-            TakeHealing(this, (int)(damageDealt * myStats.LifeSteal));
+        if (myStats.LifeStealAsPercent > 0) {
+            TakeHealing(this, (int)(damageDealt * myStats.LifeStealAsPercent));
         }
 
         return target.Health > 0;

@@ -86,7 +86,6 @@ public class Ability : ScriptableObject {
         set {
             cooldown = value;
 
-            // Invoke the on assign event
             if (this.onCooldownChange != null)
                 this.onCooldownChange.Invoke(ToAbilityInfo());
         }
