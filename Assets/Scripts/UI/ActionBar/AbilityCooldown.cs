@@ -6,6 +6,7 @@ using TMPro;
 
 public class AbilityCooldown : MonoBehaviour {
     private Image cooldownImage;
+    private Ability targetAbility;
 
     public TextMeshProUGUI text;
     public UISpellSlot targetSlot;
@@ -32,15 +33,17 @@ public class AbilityCooldown : MonoBehaviour {
     private void OnSlotAssign(UISpellSlot spellSlot) {
         UIAbilityInfo abilityInfo = (UIAbilityInfo)spellSlot.GetSpellInfo();
         if (abilityInfo != null) {
-            abilityInfo.ability.onCooldownChange.AddListener(UpdateCooldown);
+            targetAbility = abilityInfo.ability;
+            targetAbility.onCooldownChange.AddListener(UpdateCooldown);
             UpdateCooldown(abilityInfo);
         }
     }
 
     private void OnSlotUnassign(UISpellSlot spellSlot) {
         UIAbilityInfo abilityInfo = (UIAbilityInfo)spellSlot.GetSpellInfo();
-        if (abilityInfo != null) {
-            abilityInfo.ability.onCooldownChange.RemoveListener(UpdateCooldown);
+        if (targetAbility != null) {
+            targetAbility.onCooldownChange.RemoveListener(UpdateCooldown);
+            targetAbility = null;
         }
         ResetCooldown();
     }
