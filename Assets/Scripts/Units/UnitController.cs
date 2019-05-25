@@ -548,13 +548,16 @@ public class UnitController : MonoBehaviour {
     }
 
     public bool DealDamageTo(UnitController target, int damage, bool ignoreArmour = false) {
-        int endDamage = damage;
+        float endDamage = damage;
 
         bool hasCrit = HasCrit();
 
+        //Random mod
+        endDamage *= Random.Range(0.75f, 1.25f);
+
         endDamage *= hasCrit ? 2 : 1;
 
-        float damageDealt = target.TakeDamage(this, endDamage, ignoreArmour);
+        float damageDealt = target.TakeDamage(this, Mathf.RoundToInt(endDamage), ignoreArmour);
 
         CameraManager.instance.ShakeCamera(damageDealt / myStats.Power);
 
@@ -577,9 +580,12 @@ public class UnitController : MonoBehaviour {
     }
 
     public bool GiveHealingTo(UnitController target, int healing) {
-        int endHealing = healing;
+        float endHealing = healing;
 
         bool hasCrit = HasCrit();
+
+        //Random mod
+        endHealing *= Random.Range(0.75f, 1.25f);
 
         endHealing *= hasCrit ? 2 : 1;
 
@@ -587,7 +593,7 @@ public class UnitController : MonoBehaviour {
             myDialogController.Helping();
         }
 
-        return target.TakeHealing(this, endHealing);
+        return target.TakeHealing(this, Mathf.RoundToInt(endHealing));
     }
 
     public bool TakeShield(UnitController caster, int shield) {
@@ -602,11 +608,18 @@ public class UnitController : MonoBehaviour {
     public bool GiveShieldTo(UnitController target, float shield) {
         float endShield = shield;
 
+        bool hasCrit = HasCrit();
+
+        //Random mod
+        endShield *= Random.Range(0.75f, 1.25f);
+
+        endShield *= hasCrit ? 2 : 1;
+
         if (target != this) {
             myDialogController.Helping();
         }
 
-        return target.TakeShield(this, (int)endShield);
+        return target.TakeShield(this, Mathf.RoundToInt(endShield));
     }
 
     public bool HasCrit() {
