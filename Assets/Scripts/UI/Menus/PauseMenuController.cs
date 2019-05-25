@@ -6,8 +6,6 @@ public class PauseMenuController : MonoBehaviour {
 
     public static bool gameIsPaused = false;
 
-    public GameObject pauseMenuUI;
-
     public AudioClip buttonClickAudio;
 
     public void Awake() {
@@ -32,14 +30,12 @@ public class PauseMenuController : MonoBehaviour {
         PlayButtonSound();
 
         Resume();
-        SceneChanger.Instance.FadeToScene(Scenes.PRE_GAME);
     }
 
     public void LoadMainMenu() {
         PlayButtonSound();
 
         Resume();
-        SceneChanger.Instance.FadeToScene(Scenes.MAIN_MENU);
     }
 
     public void ExitGame() {

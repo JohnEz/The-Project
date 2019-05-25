@@ -63,7 +63,7 @@ public class PlayMenuController : MonoBehaviour {
     }
 
     private void LoadArena() {
-        SceneChanger.Instance.FadeToScene(Scenes.BATTLE);
+        //SceneChanger.Instance.FadeToScene(Scenes.BATTLE);
     }
 
     public void Back() {
