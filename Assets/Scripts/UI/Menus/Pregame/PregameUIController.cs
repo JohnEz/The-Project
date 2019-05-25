@@ -7,6 +7,7 @@ public class PregameUIController : MonoBehaviour {
             return;
         }
 
+        SaveSystem.Save();
         SceneChanger.Instance.FadeToScene(Scenes.BATTLE);
     }
 }

@@ -12,10 +12,7 @@ public class MainMenuController : MonoBehaviour {
     }
 
     public void NewGame() {
-        PlayOptions pressAudioOptions = new PlayOptions(buttonClickAudio, transform);
-        pressAudioOptions.audioMixer = AudioMixers.UI;
-        pressAudioOptions.persist = true;
-        AudioManager.instance.Play(pressAudioOptions);
+        PlayButtonSound();
 
         // TEMP add starting characters to a string list in static data
         if (PlayerSchool.Roster.Count <= 0) {
@@ -24,10 +21,22 @@ public class MainMenuController : MonoBehaviour {
             });
         }
 
+        SaveSystem.Save();
         SceneChanger.Instance.FadeToScene(Scenes.PRE_GAME);
     }
 
     public void LoadGame() {
+        PlayButtonSound();
+
+        SaveSystem.Load();
+        SceneChanger.Instance.FadeToScene(Scenes.PRE_GAME);
+    }
+
+    public void PlayButtonSound() {
+        PlayOptions pressAudioOptions = new PlayOptions(buttonClickAudio, transform);
+        pressAudioOptions.audioMixer = AudioMixers.UI;
+        pressAudioOptions.persist = true;
+        AudioManager.instance.Play(pressAudioOptions);
     }
 
     public void Options() {

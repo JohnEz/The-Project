@@ -13,11 +13,12 @@ public class SceneLoader : MonoBehaviour {
     }
 
     private IEnumerator LoadAsync(int sceneIndex) {
+        Debug.Log("Loading Async scene " + sceneIndex);
         AsyncOperation operation = SceneManager.LoadSceneAsync(sceneIndex);
 
         while (!operation.isDone) {
             //Load progress
-            Debug.Log(operation.progress);
+            //Debug.Log(operation.progress);
 
             yield return null;
         }

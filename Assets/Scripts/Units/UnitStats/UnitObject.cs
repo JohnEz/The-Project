@@ -311,4 +311,7 @@ public class UnitObject : ScriptableObject {
             "level: " + 1 + "\n" +
             "Health: " + Health + "\n";
     }
+
+    public void SaveData() {
+    }
 }
