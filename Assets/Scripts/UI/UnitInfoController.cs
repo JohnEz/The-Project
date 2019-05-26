@@ -23,7 +23,7 @@ public class UnitInfoController : MonoBehaviour {
         string buffsString = "";
         string debuffsString = "";
 
-        stats.Buffs.ForEach(buff => {
+        stats.buffs.GetBuffs().ForEach(buff => {
             if (buff.isDebuff) {
                 debuffsString += buff.name + ", ";
             } else {

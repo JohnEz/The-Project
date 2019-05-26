@@ -77,7 +77,10 @@ public class UnitObject : ScriptableObject {
     [HideInInspector]
     public UnitToken displayToken;
 
+    public UnitBuffs buffs;
+
     public void Awake() {
+        buffs = new UnitBuffs();
         Reset();
         displayToken = unitTokens[UnityEngine.Random.Range(0, unitTokens.Length)];
     }
@@ -99,7 +102,7 @@ public class UnitObject : ScriptableObject {
         currentHealth = MaxHealth;
         Shield = 0;
 
-        Buffs.Clear();
+        buffs.Clear();
         instantiatedAttacks.Clear();
         instantiatedAbilities.Clear();
 
@@ -120,7 +123,7 @@ public class UnitObject : ScriptableObject {
         int flatMods = 0;
         float percentMods = 1;
 
-        foreach (Buff buff in Buffs) {
+        foreach (Buff buff in buffs.GetBuffs()) {
             flatMods += buff.GetFlatMod((int)stat);
             percentMods *= buff.GetPercentMod((int)stat);
         }
@@ -195,8 +198,6 @@ public class UnitObject : ScriptableObject {
         get { return (float)LifeSteal / 100; }
     }
 
-    public List<Buff> Buffs { get; set; } = new List<Buff>();
-
     public Walkable WalkingType {
         get { return walkingType; }
     }
@@ -205,7 +206,7 @@ public class UnitObject : ScriptableObject {
         int damage = 0;
         int healing = 0;
 
-        Buffs.ForEach((buff) => {
+        buffs.GetBuffs().ForEach((buff) => {
             damage += Mathf.RoundToInt(MaxHealth * (1 - buff.GetPercentMod((int)Stats.DAMAGE)));
             damage += buff.GetFlatMod((int)Stats.DAMAGE);
             healing += Mathf.RoundToInt(MaxHealth * (buff.GetPercentMod((int)Stats.HEALING) - 1));
@@ -222,8 +223,6 @@ public class UnitObject : ScriptableObject {
     }
 
     public void NewTurn() {
-        List<Buff> buffsToRemove = new List<Buff>();
-
         Attacks.ForEach(attack => {
             if (attack.IsOnCooldown()) {
                 attack.Cooldown--;
@@ -236,73 +235,37 @@ public class UnitObject : ScriptableObject {
             }
         });
 
-        Buffs.ForEach((buff) => {
-            buff.duration--;
-            if (buff.maxDuration != -1 && buff.duration <= 0) {
-                buffsToRemove.Add(buff);
-            }
-        });
+        buffs.NewTurn();
 
-        buffsToRemove.ForEach((buff) => {
-            RemoveBuff(buff);
-        });
+        OnStatChange();
     }
 
     public void EndTurn() {
     }
 
-    public Buff FindOldestBuff(bool debuff) {
-        return Buffs.Find(buff => buff.isDebuff = debuff);
-    }
-
-    public Buff FindNewestBuff(bool debuff) {
-        return Buffs.FindLast(buff => buff.isDebuff == debuff);
-    }
-
-    public Buff FindBuff(string name) {
-        return Buffs.Find(buff => buff.name == name);
-    }
-
-    public List<Buff> FindBuffs(string name) {
-        return Buffs.FindAll(buff => buff.name == name);
-    }
-
-    public List<Buff> FindBuffs(bool debuff) {
-        return Buffs.FindAll(buff => buff.isDebuff == debuff);
-    }
-
-    public void RemoveBuff(Buff buff, bool withEffects = true) {
-        buff.Remove(withEffects);
-        Buffs.Remove(buff);
-
+    public void OnStatChange() {
         if (this.onStatChange != null)
             this.onStatChange.Invoke();
-    }
-
-    public void RemoveBuffs(List<Buff> buffsToRemove, bool withEffects = true) {
-        buffsToRemove.ForEach(buff => RemoveBuff(buff, withEffects));
     }
 
     public bool ApplyBuff(Buff newBuff) {
-        Buff currentBuff = FindBuff(newBuff.name);
+        buffs.ApplyBuff(newBuff);
 
-        if (currentBuff != null) {
-            int newDuration = Math.Max(currentBuff.duration, newBuff.maxDuration);
-            int newStacks = Math.Min(currentBuff.stacks + 1, currentBuff.maxStack);
-
-            newBuff.maxDuration = newDuration;
-            newBuff.duration = newDuration;
-            newBuff.stacks = newStacks;
-
-            RemoveBuff(currentBuff, false);
-        }
-
-        Buffs.Add(newBuff);
-
-        if (this.onStatChange != null)
-            this.onStatChange.Invoke();
+        OnStatChange();
 
         return true;
+    }
+
+    public void RemoveBuff(Buff buff, bool withEffects = true) {
+        buffs.RemoveBuff(buff);
+
+        OnStatChange();
+    }
+
+    public void RemoveBuffs(List<Buff> buffsToRemove, bool withEffects = true) {
+        buffs.RemoveBuffs(buffsToRemove, withEffects);
+
+        OnStatChange();
     }
 
     public override string ToString() {
@@ -310,8 +273,5 @@ public class UnitObject : ScriptableObject {
             "Class: " + className + "\n" +
             "level: " + 1 + "\n" +
             "Health: " + Health + "\n";
-    }
-
-    public void SaveData() {
     }
 }

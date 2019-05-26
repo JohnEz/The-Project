@@ -18,6 +18,7 @@ public class UnitCanvasController : MonoBehaviour {
     public GameObject actionPointsPrefab;
 
     private HpBarController hpBar;
+    private BuffController buffs;
     private TextMeshProUGUI actionPointsText;
     private List<GameObject> buffIcons = new List<GameObject>();
     private Queue<CombatText> combatTextQueue = new Queue<CombatText>();
@@ -40,15 +41,13 @@ public class UnitCanvasController : MonoBehaviour {
     private void Start() {
         myUnit = GetComponentInParent<UnitController>();
         myTeam = myUnit.myPlayer.id;
-        SetupHPBar();
+        SetupUnitFrame();
 
         actionPointsText = hpBar.gameObject.GetComponentInChildren<TextMeshProUGUI>();
     }
 
     // Update is called once per frame
     private void Update() {
-        //TODO this is really bad to delete and make these buffs each time
-        UpdateBuffs(myUnit.myStats.Buffs);
         //TODO there might be a better way to not check for this each time as well
         if (combatTextQueue.Count > 0 && canCreateCombatText) {
             CombatText combatText = combatTextQueue.Dequeue();
@@ -58,8 +57,10 @@ public class UnitCanvasController : MonoBehaviour {
         FaceCamera();
     }
 
-    public void SetupHPBar() {
+    public void SetupUnitFrame() {
         hpBar = Instantiate(hpBarPrefab, transform, false).GetComponent<HpBarController>();
+        buffs = hpBar.GetComponent<BuffController>();
+
         hpBar.Initialize(myUnit.myStats.MaxHealth);
         hpBar.SetHPColor(teamColours[myTeam]);
 
@@ -67,6 +68,8 @@ public class UnitCanvasController : MonoBehaviour {
         Vector3 anchoredposition = hpRect.anchoredPosition;
         anchoredposition.y += myUnit.myStats.displayToken.frontSprite.rect.height / 5;
         hpRect.anchoredPosition = anchoredposition;
+
+        buffs.Initialise(myUnit.myStats.buffs);
     }
 
     public void FaceCamera() {
@@ -76,40 +79,6 @@ public class UnitCanvasController : MonoBehaviour {
         Vector3 currentRotation = transform.rotation.eulerAngles;
         currentRotation.y = CameraManager.instance.GetCameraRotation().y;
         transform.rotation = Quaternion.Euler(currentRotation);
-    }
-
-    public void UpdateBuffs(List<Buff> buffs) {
-        buffIcons.ForEach((buff) => Destroy(buff));
-        buffIcons.Clear();
-
-        buffs.ForEach((buff) => AddBuffIcon(buff));
-    }
-
-    public Sprite LoadBuffSprite(Buff buff) {
-        if (!buffSprites.ContainsKey(buff.icon)) {
-            buffSprites.Add(buff.icon, Resources.LoadAll<Sprite>("Graphics/UI/InGame/Icons/" + buff.icon));
-        }
-
-        //TODO there might be a better way for this but can just use 5 for now (what if only stacks twice but image has more)
-        int imageOffset = buff.isDebuff ? buff.maxStack : 0;
-        int stackIndex = buff.stacks - 1 + imageOffset;
-
-        return buffSprites[buff.icon][stackIndex];
-    }
-
-    public void AddBuffIcon(Buff buff) {
-        Sprite buffSprite = LoadBuffSprite(buff);
-        GameObject newBuffIcon = Instantiate(buffIconPrefab, transform, false);
-
-        Vector3 newPosition = newBuffIcon.transform.localPosition;
-        newPosition.x = -28 + (buffIcons.Count * 25);
-        newBuffIcon.transform.localPosition = newPosition;
-
-        buffIcons.Add(newBuffIcon);
-
-        if (buffSprite != null) {
-            newBuffIcon.GetComponent<Image>().sprite = buffSprite;
-        }
     }
 
     public void UpdateHP(int currentHP, int maxHP, int shield) {

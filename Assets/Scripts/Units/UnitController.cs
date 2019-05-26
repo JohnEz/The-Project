@@ -40,6 +40,11 @@ public struct EffectOptions {
 }
 
 public class UnitController : MonoBehaviour {
+    private const float DAMAGE_LOWER_BOUND = 0.75f;
+    private const float DAMAGE_UPPER_BOUND = 1.25f;
+    private const float BLOCK_MODIFIER = 0F;
+    private const float CRIT_MODIFIER = 2F;
+
     public GameObject unitCanvasPrefab;
     public UnitObject baseStats;
 
@@ -111,19 +116,19 @@ public class UnitController : MonoBehaviour {
     }
 
     public bool IsStealthed() {
-        return myStats.FindBuff("Stealth") != null;
+        return myStats.buffs.FindBuff("Stealth") != null;
     }
 
     public bool IsStunned() {
-        return myStats.FindBuff("Stun") != null;
+        return myStats.buffs.FindBuff("Stun") != null;
     }
 
     public bool IsTaunted() {
-        return myStats.FindBuff("Taunt") != null;
+        return myStats.buffs.FindBuff("Taunt") != null;
     }
 
     public List<UnitController> GetTaunters() {
-        return myStats.FindBuffs("Taunt").Select((taunt) => ((Taunt)taunt).taunter).ToList();
+        return myStats.buffs.FindBuffs("Taunt").Select((taunt) => ((Taunt)taunt).taunter).ToList();
     }
 
     public bool HasRemainingQueuedActions() {
@@ -522,7 +527,7 @@ public class UnitController : MonoBehaviour {
         //check to see if attack was blocked
         float blockRoll = Random.value * 100;
         if (!ignoreArmour && blockRoll <= myStats.Block) {
-            modifiedDamage = (int)(modifiedDamage * 0.5f);
+            modifiedDamage = (int)(modifiedDamage * BLOCK_MODIFIER);
             unitCanvasController.CreateBasicText("Block");
         }
 
@@ -553,9 +558,9 @@ public class UnitController : MonoBehaviour {
         bool hasCrit = HasCrit();
 
         //Random mod
-        endDamage *= Random.Range(0.75f, 1.25f);
+        endDamage *= Random.Range(DAMAGE_LOWER_BOUND, DAMAGE_UPPER_BOUND);
 
-        endDamage *= hasCrit ? 2 : 1;
+        endDamage *= hasCrit ? CRIT_MODIFIER : 1;
 
         float damageDealt = target.TakeDamage(this, Mathf.RoundToInt(endDamage), ignoreArmour);
 
@@ -585,9 +590,9 @@ public class UnitController : MonoBehaviour {
         bool hasCrit = HasCrit();
 
         //Random mod
-        endHealing *= Random.Range(0.75f, 1.25f);
+        endHealing *= Random.Range(DAMAGE_LOWER_BOUND, DAMAGE_UPPER_BOUND);
 
-        endHealing *= hasCrit ? 2 : 1;
+        endHealing *= hasCrit ? CRIT_MODIFIER : 1;
 
         if (target != this) {
             myDialogController.Helping();
@@ -611,9 +616,9 @@ public class UnitController : MonoBehaviour {
         bool hasCrit = HasCrit();
 
         //Random mod
-        endShield *= Random.Range(0.75f, 1.25f);
+        endShield *= Random.Range(DAMAGE_LOWER_BOUND, DAMAGE_UPPER_BOUND);
 
-        endShield *= hasCrit ? 2 : 1;
+        endShield *= hasCrit ? CRIT_MODIFIER : 1;
 
         if (target != this) {
             myDialogController.Helping();
@@ -634,8 +639,8 @@ public class UnitController : MonoBehaviour {
     }
 
     public void Dispell(bool debuff) {
-        if (myStats.Buffs.Count > 0) {
-            Buff buffToDispell = myStats.FindNewestBuff(debuff);
+        if (myStats.buffs.GetBuffs().Count > 0) {
+            Buff buffToDispell = myStats.buffs.FindNewestBuff(debuff);
             if (buffToDispell != null) {
                 myStats.RemoveBuff(buffToDispell, true);
             }
@@ -643,7 +648,7 @@ public class UnitController : MonoBehaviour {
     }
 
     public void DispellAll(bool debuff) {
-        List<Buff> buffsToDispell = myStats.FindBuffs(debuff);
+        List<Buff> buffsToDispell = myStats.buffs.FindBuffs(debuff);
         myStats.RemoveBuffs(buffsToDispell);
     }
 

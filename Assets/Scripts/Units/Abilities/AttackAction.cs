@@ -84,7 +84,7 @@ public class AttackAction : AbilityAction {
         Cooldown = MaxCooldown;
 
         if (caster.IsStealthed()) {
-            Buff stealthBuff = caster.myStats.FindBuff("Stealth");
+            Buff stealthBuff = caster.myStats.buffs.FindBuff("Stealth");
             caster.myStats.RemoveBuff(stealthBuff);
         }
     }
