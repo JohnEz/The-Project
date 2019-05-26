@@ -80,7 +80,7 @@ public class HpBarController : MonoBehaviour {
         GameObject newMarker = Instantiate(hpMarkerPrefab);
         Vector3 newPosition = newMarker.transform.position;
         newMarker.transform.SetParent(hpBar.transform, false);
-        newPosition.x = Mathf.RoundToInt((index + 1) * increment);
+        newPosition.x = Mathf.RoundToInt((index + 1) * increment) - (hpBar.rectTransform.rect.width / 2);
         newMarker.GetComponent<RectTransform>().anchoredPosition = newPosition;
         return newMarker;
     }
