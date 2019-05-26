@@ -16,6 +16,7 @@ public class LevelSelect : MonoBehaviour {
             dropdown.AddOption(map);
         }
 
+        GameDetails.MapName = maps[0];
         dropdown.SelectOption(maps[0]);
     }
 
