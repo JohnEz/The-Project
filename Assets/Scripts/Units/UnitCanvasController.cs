@@ -40,9 +40,7 @@ public class UnitCanvasController : MonoBehaviour {
     private void Start() {
         myUnit = GetComponentInParent<UnitController>();
         myTeam = myUnit.myPlayer.id;
-        hpBar = Instantiate(hpBarPrefab, transform, false).GetComponent<HpBarController>();
-        hpBar.Initialize(myUnit.myStats.MaxHealth);
-        hpBar.SetHPColor(teamColours[myTeam]);
+        SetupHPBar();
 
         actionPointsText = hpBar.gameObject.GetComponentInChildren<TextMeshProUGUI>();
     }
@@ -58,6 +56,17 @@ public class UnitCanvasController : MonoBehaviour {
         }
 
         FaceCamera();
+    }
+
+    public void SetupHPBar() {
+        hpBar = Instantiate(hpBarPrefab, transform, false).GetComponent<HpBarController>();
+        hpBar.Initialize(myUnit.myStats.MaxHealth);
+        hpBar.SetHPColor(teamColours[myTeam]);
+
+        RectTransform hpRect = hpBar.GetComponent<RectTransform>();
+        Vector3 anchoredposition = hpRect.anchoredPosition;
+        anchoredposition.y += myUnit.myStats.displayToken.frontSprite.rect.height / 5;
+        hpRect.anchoredPosition = anchoredposition;
     }
 
     public void FaceCamera() {
