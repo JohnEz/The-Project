@@ -20,7 +20,7 @@ public class UserInterfaceManager : MonoBehaviour {
     }
 
     public void ShowAbilityBySlot(int slot) {
-        ShowAbility(UnitSelectionManager.instance.SelectedUnit.myStats.instantiatedAbilities[slot]);
+        UseAbility(slot);
     }
 
     public void ShowAbility(Ability ability) {
