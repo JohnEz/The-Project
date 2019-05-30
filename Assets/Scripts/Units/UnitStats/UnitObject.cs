@@ -13,7 +13,9 @@ public enum Stats {
     DAMAGE,
     HEALING,
     CRIT,
-    LIFE_STEAL
+    LIFE_STEAL,
+    ACCURRACY,
+    DODGE,
 }
 
 [Serializable]
@@ -52,6 +54,8 @@ public class UnitObject : ScriptableObject {
     public int baseArmour = 0;
     public int baseActionPoints = 2;
     public int baseCritChance = 5;
+    public int baseAccuracy = 9;
+    public int baseDodge = 10;
 
     [HideInInspector]
     private int actionPoints;
@@ -191,6 +195,14 @@ public class UnitObject : ScriptableObject {
 
     public int LifeSteal {
         get { return GetModifiedStat(0, Stats.LIFE_STEAL); }
+    }
+
+    public int Accuracy {
+        get { return GetModifiedStat(baseAccuracy, Stats.ACCURRACY); }
+    }
+
+    public int Dodge {
+        get { return GetModifiedStat(baseDodge, Stats.DODGE); }
     }
 
     // Stats have to be int so we divide lifesteal by 100

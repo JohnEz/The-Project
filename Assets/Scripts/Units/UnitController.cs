@@ -519,7 +519,6 @@ public class UnitController : MonoBehaviour {
     public int TakeDamage(UnitController attacker, int damage, bool ignoreArmour = false) {
         //if the damage has a source
         if (attacker) {
-            //this could be used if the character as a reposte etc
         }
 
         int modifiedDamage = damage;

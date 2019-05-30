@@ -13,7 +13,7 @@ public class UnitCanvasController : MonoBehaviour {
     private const float COMBAT_TEXT_THROTTLE = 0.5f;
 
     public GameObject hpBarPrefab;
-    public GameObject damageTextPrefab;
+    public GameObject combatTextPrefab;
     public GameObject buffIconPrefab;
     public GameObject actionPointsPrefab;
 
@@ -118,9 +118,9 @@ public class UnitCanvasController : MonoBehaviour {
 
     public void SpawnCombatText(string text, Color color) {
         canCreateCombatText = false;
-        GameObject newDamageText = Instantiate(damageTextPrefab, transform);
-        newDamageText.GetComponent<Text>().text = text;
-        newDamageText.GetComponent<Text>().color = color;
+        GameObject newDamageText = Instantiate(combatTextPrefab, transform);
+        newDamageText.GetComponent<TextMeshProUGUI>().text = text;
+        newDamageText.GetComponent<TextMeshProUGUI>().color = color;
         StartCoroutine(AllowCreateCombatText());
     }
 
