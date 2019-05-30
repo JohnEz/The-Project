@@ -4,7 +4,7 @@
     public Taunt(int maxDuration, UnitController _taunter) : base(maxDuration) {
         name = "Taunt";
         icon = "buffArmour";
-        maxStack = 1;
+        isDebuff = true;
         taunter = _taunter;
     }
 }

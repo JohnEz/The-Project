@@ -36,6 +36,7 @@ public class BuffController : MonoBehaviour {
         }
 
         targetBuffs.onAddBuff.AddListener(OnBuffAdded);
+        targetBuffs.onRemoveBuff.AddListener(OnBuffRemoved);
     }
 
     private void RemoveListeners() {
@@ -44,6 +45,7 @@ public class BuffController : MonoBehaviour {
         }
 
         targetBuffs.onAddBuff.RemoveListener(OnBuffAdded);
+        targetBuffs.onRemoveBuff.RemoveListener(OnBuffRemoved);
     }
 
     public void OnBuffAdded(Buff buff) {
@@ -84,6 +86,8 @@ public class BuffController : MonoBehaviour {
         //TODO there might be a better way for this but can just use 5 for now (what if only stacks twice but image has more)
         int imageOffset = buff.isDebuff ? buff.maxStack : 0;
         int stackIndex = buff.stacks - 1 + imageOffset;
+
+        stackIndex = Mathf.Clamp(stackIndex, 0, buffSprites[buff.icon].Length - 1);
 
         return buffSprites[buff.icon][stackIndex];
     }

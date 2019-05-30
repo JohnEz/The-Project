@@ -42,8 +42,8 @@ public struct EffectOptions {
 public class UnitController : MonoBehaviour {
     private const float DAMAGE_LOWER_BOUND = 0.75f;
     private const float DAMAGE_UPPER_BOUND = 1.25f;
-    private const float BLOCK_MODIFIER = 0F;
-    private const float CRIT_MODIFIER = 2F;
+    private const float BLOCK_MODIFIER = 0.5f;
+    private const float CRIT_MODIFIER = 2f;
 
     public GameObject unitCanvasPrefab;
     public UnitObject baseStats;
@@ -631,6 +631,7 @@ public class UnitController : MonoBehaviour {
     }
 
     public void ApplyBuff(Buff buff) {
+        CreateBasicText(buff.name);
         bool buffAdded = myStats.ApplyBuff(buff);
         if (buffAdded && buff.persistentFxPrefab) {
             CreateBuffEffect(buff);

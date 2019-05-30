@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Attack Action", menuName = "Card/New Attack Action")]
+[CreateAssetMenu(fileName = "New Attack Action", menuName = "Ability/New Attack Action")]
 public class AttackAction : AbilityAction {
     public int range = 1;
     public int minRange = 0;

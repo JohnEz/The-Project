@@ -131,7 +131,6 @@ public class UnitObject : ScriptableObject {
             flatMods += buff.GetFlatMod((int)stat);
             percentMods *= buff.GetPercentMod((int)stat);
         }
-
         return (int)((baseValue + flatMods) * percentMods);
     }
 
