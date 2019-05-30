@@ -2,6 +2,6 @@
 
     public Stun(int maxDuration) : base(maxDuration) {
         name = "Stun";
-        maxStack = 1;
+        isDebuff = true;
     }
 }
