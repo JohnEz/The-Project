@@ -31,6 +31,7 @@ public static class SaveSystem {
 
     public static void LoadRoster() {
         UnitData[] rosterData = ES2.LoadArray<UnitData>(ROSTER);
+        PlayerSchool.Roster.Clear();
 
         foreach (UnitData data in rosterData) {
             if (!ResourceManager.instance.units.ContainsKey(data.unitPrefab)) {
