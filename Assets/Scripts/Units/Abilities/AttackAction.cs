@@ -14,6 +14,7 @@ public class AttackAction : AbilityAction {
 
     public bool canTargetSelf = false;
     public bool isAutoCast = false;
+    public bool canDodge = true;
 
     public List<AttackEffect> attackEffects = new List<AttackEffect>(0);
 
@@ -42,13 +43,13 @@ public class AttackAction : AbilityAction {
     }
 
     private void AbilityEffectUnit(UnitController target) {
-        float hitChance = (float)caster.myStats.Accuracy / target.myStats.Dodge;
-        float dodgeRoll = Random.value;
-        if (hitChance < dodgeRoll) {
-            Debug.Log("dodgeRoll = " + dodgeRoll);
-            Debug.Log("hitChance = " + hitChance);
-            target.CreateBasicText("Dodge");
-            return;
+        if (canDodge) {
+            float hitChance = (float)caster.myStats.Accuracy / target.myStats.Dodge;
+            float dodgeRoll = Random.value;
+            if (hitChance < dodgeRoll) {
+                target.CreateBasicText("Dodge");
+                return;
+            }
         }
 
         AddAbilityTarget(target.myNode, () => {
