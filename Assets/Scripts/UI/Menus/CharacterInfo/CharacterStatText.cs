@@ -12,6 +12,8 @@ public enum UnitStatText {
     POWER,
     BLOCK,
     CRIT,
+    ACCURACY,
+    DODGE,
     LIFE_STEAL
 }
 
@@ -77,6 +79,8 @@ public class CharacterStatText : MonoBehaviour {
             case UnitStatText.POWER: return currentCharacter.Power.ToString();
             case UnitStatText.BLOCK: return currentCharacter.Block.ToString();
             case UnitStatText.CRIT: return currentCharacter.CritChance.ToString();
+            case UnitStatText.ACCURACY: return currentCharacter.Accuracy.ToString();
+            case UnitStatText.DODGE: return currentCharacter.Dodge.ToString();
             case UnitStatText.LIFE_STEAL: return currentCharacter.LifeSteal.ToString();
         }
 
