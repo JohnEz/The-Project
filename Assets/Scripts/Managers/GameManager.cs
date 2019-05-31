@@ -37,9 +37,11 @@ public class GameManager : MonoBehaviour {
         }
 
         if (GameDetails.Party.Count == 0 && Debug.isDebugBuild) {
-            UnitManager.instance.SpawnUnit("Fighter", humanPlayer, 4, 12);
-            UnitManager.instance.SpawnUnit("Cleric", humanPlayer, 5, 12);
-            UnitManager.instance.SpawnUnit("Criminal", humanPlayer, 6, 12);
+            List<SpawnLocation> playerSpawnLocation = TileMap.instance.spawnLocations.FindAll(sl => sl.name == "PlayerSpawn");
+
+            UnitManager.instance.SpawnUnit("Fighter", humanPlayer, playerSpawnLocation[0].x, playerSpawnLocation[0].y);
+            UnitManager.instance.SpawnUnit("Cleric", humanPlayer, playerSpawnLocation[1].x, playerSpawnLocation[1].y);
+            UnitManager.instance.SpawnUnit("Criminal", humanPlayer, playerSpawnLocation[2].x, playerSpawnLocation[2].y);
         } else {
             LoadPlayerCharacters(humanPlayer);
         }
@@ -48,7 +50,6 @@ public class GameManager : MonoBehaviour {
 
         Player enemyAI = PlayerManager.instance.AddAiPlayer(2);
 
-        //SpawnStartMapUnits(enemyAI);
         LoadMapUnits(enemyAI);
 
         TileMap.instance.ActivateRoom(humanPlayer.units[0].myNode.room);
@@ -100,29 +101,5 @@ public class GameManager : MonoBehaviour {
                 UnitManager.instance.SpawnUnit(sl.name, enemyAI, sl.x, sl.y);
             }
         });
-    }
-
-    private void SpawnStartMapUnits(Player enemyAI) {
-        UnitManager.instance.SpawnUnit("Goblin Warrior", enemyAI, 7, 2);
-        UnitManager.instance.SpawnUnit("Goblin Archer", enemyAI, 5, 1);
-        UnitManager.instance.SpawnUnit("Goblin Warrior", enemyAI, 3, 1);
-
-        UnitManager.instance.SpawnUnit("Goblin Warrior", enemyAI, 4, 9);
-        //UnitManager.instance.SpawnUnit("Goblin Warrior", enemyAI, 5, 10);
-        UnitManager.instance.SpawnUnit("Goblin Warrior", enemyAI, 6, 9);
-    }
-
-    // TEMP
-    private void SpawnDungeon1Units(Player enemyAI) {
-        UnitManager.instance.SpawnUnit("Goblin Warrior", enemyAI, 5, 8);
-        UnitManager.instance.SpawnUnit("Goblin Warrior", enemyAI, 5, 9);
-        UnitManager.instance.SpawnUnit("Goblin Warrior", enemyAI, 5, 10);
-
-        UnitManager.instance.SpawnUnit("Goblin Archer", enemyAI, 14, 8);
-        UnitManager.instance.SpawnUnit("Goblin Archer", enemyAI, 14, 10);
-
-        UnitManager.instance.SpawnUnit("Goblin Warrior", enemyAI, 10, 2);
-        UnitManager.instance.SpawnUnit("Goblin Archer", enemyAI, 11, 1);
-        UnitManager.instance.SpawnUnit("Goblin Warrior", enemyAI, 12, 2);
     }
 }

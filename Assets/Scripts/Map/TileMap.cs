@@ -53,12 +53,9 @@ public class TileMap : MonoBehaviour {
         LevelLoaderJson lLoaderJson = GetComponent<LevelLoaderJson>();
         lLoaderJson.Initialise();
         transform.Find(lLoaderJson.loadedLevel.name).gameObject.SetActive(true);
-        GenerateMapJson(lLoaderJson.loadedLevel);
+        GenerateMap(lLoaderJson.loadedLevel);
         CalculateNeighbours();
 
-        //LevelLoader lLoader = GetComponent<LevelLoader> ();
-        //lLoader.Initialise ();
-        //GenerateMap (lLoader.GetLevel(0));
         isMapLoaded = true;
     }
 
@@ -109,7 +106,7 @@ public class TileMap : MonoBehaviour {
         return direction.normalized;
     }
 
-    private void GenerateMapJson(MapData data) {
+    private void GenerateMap(MapData data) {
         tiles = new Node[data.width * data.height];
 
         spawnLocations = data.spawnLocations;
@@ -141,69 +138,6 @@ public class TileMap : MonoBehaviour {
 
             AddNodeToRoom(data.roomData[i], tiles[i]);
         }
-    }
-
-    private void GenerateMap(Level level) {
-        tiles = new Node[level.maxSizeX * level.maxSizeY];
-        bool[] overriden = new bool[level.maxSizeX * level.maxSizeY];
-
-        mapWidth = level.maxSizeX;
-        mapHeight = level.maxSizeY;
-
-        for (int j = 0; j < level.layers.Length; ++j) {
-            for (int i = 0; i < level.layers[j].tiles.Length; ++i) {
-                Quaternion rot = basicNodePrefab.transform.rotation;
-                int x = i % level.maxSizeY;
-                int y = i / level.maxSizeX;
-                Vector3 pos = new Vector3(x * TILE_SIZE, -y * TILE_SIZE, 0);
-
-                int id = level.layers[j].tiles[i] - 1;
-
-                if (tiles[i] == null) {
-                    GameObject baseNode = Instantiate(basicNodePrefab, pos, rot);
-                    baseNode.transform.parent = this.transform;
-
-                    baseNode.GetComponentInChildren<TileHighlighter>().Initialise();
-
-                    tiles[i] = baseNode.GetComponent<Node>();
-                    tiles[i].x = x;
-                    tiles[i].y = y;
-                    tiles[i].height = level.heightMap[i];
-                }
-
-                if (id >= 0) {
-                    pos = Vector3.zero;
-
-                    GameObject visual = (GameObject)Instantiate(tileTemplatePrefab, pos, rot);
-
-                    //visual.GetComponent<SpriteRenderer> ().sprite = level.textures [id];
-
-                    visual.transform.parent = tiles[i].transform;
-
-                    visual.transform.localPosition = Vector3.zero;
-
-                    visual.GetComponent<SpriteRenderer>().sortingOrder = level.layers[j].depth;
-
-                    //this might not need to be a node if it just stores walkable
-                    visual.GetComponent<Node>().walkable = level.tileInfo[id].walkable;
-
-                    //overriden is used for stairs, bridges etc.
-                    if (!overriden[i]) {
-                        if (level.tileInfo[id].overrideWalkability) {
-                            overriden[i] = true;
-                            tiles[i].walkable = visual.GetComponent<Node>().walkable;
-                        } else if (tiles[i].walkable < visual.GetComponent<Node>().walkable) {
-                            tiles[i].walkable = visual.GetComponent<Node>().walkable;
-                        }
-                    }
-
-                    if (tiles[i].moveCost < visual.GetComponent<Node>().moveCost) {
-                        tiles[i].moveCost = visual.GetComponent<Node>().moveCost;
-                    }
-                }
-            }
-        }
-        CalculateNeighbours();
     }
 
     private void AddNeighbour(Node startNode, int dirX, int dirY) {
