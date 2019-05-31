@@ -14,7 +14,7 @@
          "y":0
         }, 
         {
-         "data":[2, 2, 2, 2, 2, 2, 2, 2, 4, 4, 4, 4, 4, 4, 4, 4, 2, 2, 2, 2, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 2, 4, 4, 4, 4, 4, 4, 4, 4, 2, 4, 2, 2, 2, 2, 2, 2, 4, 4, 2, 2, 2, 2, 2, 4, 2, 4, 4, 4, 2, 4, 4, 4, 4, 4, 2, 2, 2, 2, 2, 4, 4, 4, 4, 4, 2, 4, 4, 4, 4, 4, 2, 2, 2, 2, 2, 4, 4, 2, 2, 2, 2, 2, 2, 2, 4, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4, 4, 2, 2, 2, 2, 2, 4, 4, 2, 2, 2, 2, 2, 2, 2, 4, 4, 2, 2, 2, 2, 2, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 2, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4, 4, 4, 4, 4, 4, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 2, 2, 0, 0, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
          "height":14,
          "id":2,
          "name":"Walkable",
@@ -44,7 +44,7 @@
          "name":"Rooms",
          "opacity":1,
          "type":"tilelayer",
-         "visible":true,
+         "visible":false,
          "width":16,
          "x":0,
          "y":0
@@ -152,30 +152,6 @@
                 }, 
                 {
                  "height":0,
-                 "id":10,
-                 "name":"Goblin Warrior",
-                 "point":true,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":1342,
-                 "y":700
-                }, 
-                {
-                 "height":0,
-                 "id":11,
-                 "name":"Goblin Warrior",
-                 "point":true,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":1602,
-                 "y":710
-                }, 
-                {
-                 "height":0,
                  "id":12,
                  "name":"Goblin Archer",
                  "point":true,
@@ -212,18 +188,6 @@
                 }, 
                 {
                  "height":0,
-                 "id":15,
-                 "name":"Goblin Archer",
-                 "point":true,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":1472,
-                 "y":196
-                }, 
-                {
-                 "height":0,
                  "id":16,
                  "name":"Goblin Archer",
                  "point":true,
@@ -231,8 +195,20 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":1594,
-                 "y":194
+                 "x":1595,
+                 "y":200
+                }, 
+                {
+                 "height":0,
+                 "id":17,
+                 "name":"Ogre",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1468,
+                 "y":338
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -241,7 +217,7 @@
          "y":0
         }],
  "nextlayerid":7,
- "nextobjectid":17,
+ "nextobjectid":18,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.2.3",
@@ -249,15 +225,15 @@
  "tilesets":[
         {
          "firstgid":1,
-         "source":"Dungeon1.tsx"
+         "source":"..\/..\/..\/Arts\/Maps\/Dungeon1.tsx"
         }, 
         {
          "firstgid":2,
-         "source":"HeightMapTilemap.tsx"
+         "source":"..\/..\/..\/Arts\/Maps\/HeightMapTilemap.tsx"
         }, 
         {
          "firstgid":10,
-         "source":"DungeonTilemap.tsx"
+         "source":"..\/..\/..\/Arts\/Maps\/DungeonTilemap.tsx"
         }],
  "tilewidth":128,
  "type":"map",

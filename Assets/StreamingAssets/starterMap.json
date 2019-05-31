@@ -44,7 +44,7 @@
          "name":"Rooms",
          "opacity":1,
          "type":"tilelayer",
-         "visible":true,
+         "visible":false,
          "width":11,
          "x":0,
          "y":0
@@ -69,26 +69,26 @@
                 {
                  "height":0,
                  "id":5,
-                 "name":"Goblin Warrior",
+                 "name":"Goblin Archer",
                  "point":true,
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":0,
                  "x":574,
-                 "y":207
+                 "y":215
                 }, 
                 {
                  "height":0,
                  "id":6,
-                 "name":"Goblin Warrior",
+                 "name":"Goblin Archer",
                  "point":true,
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":828,
-                 "y":206
+                 "x":825,
+                 "y":227
                 }, 
                 {
                  "height":0,
@@ -113,6 +113,66 @@
                  "width":0,
                  "x":833,
                  "y":1601
+                }, 
+                {
+                 "height":0,
+                 "id":9,
+                 "name":"Goblin Warrior",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":574,
+                 "y":1357
+                }, 
+                {
+                 "height":0,
+                 "id":10,
+                 "name":"Goblin Warrior",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":702,
+                 "y":1230
+                }, 
+                {
+                 "height":0,
+                 "id":11,
+                 "name":"Goblin Warrior",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":830,
+                 "y":1345
+                }, 
+                {
+                 "height":0,
+                 "id":12,
+                 "name":"Goblin Warrior",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":576,
+                 "y":457
+                }, 
+                {
+                 "height":0,
+                 "id":13,
+                 "name":"Goblin Warrior",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":834,
+                 "y":453
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -121,7 +181,7 @@
          "y":0
         }],
  "nextlayerid":7,
- "nextobjectid":9,
+ "nextobjectid":15,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.2.3",
@@ -129,15 +189,15 @@
  "tilesets":[
         {
          "firstgid":1,
-         "source":"StarterMap.tsx"
+         "source":"..\/..\/..\/Arts\/Maps\/StarterMap.tsx"
         }, 
         {
          "firstgid":2,
-         "source":"HeightMapTilemap.tsx"
+         "source":"..\/..\/..\/Arts\/Maps\/HeightMapTilemap.tsx"
         }, 
         {
          "firstgid":10,
-         "source":"DungeonTilemap.tsx"
+         "source":"..\/..\/..\/Arts\/Maps\/DungeonTilemap.tsx"
         }],
  "tilewidth":128,
  "type":"map",
