@@ -104,7 +104,7 @@ public class AIManager : MonoBehaviour {
                     turnPlan.targetMoveNode = null;
                 } else {
                     // Move towards target Node
-                    MovementPath pathToNode = TileMap.instance.pathfinder.FindPath(unit.myNode, turnPlan.targetMoveNode, unit.myStats.walkingType, unit.myPlayer.faction);
+                    MovementPath pathToNode = TileMap.instance.pathfinder.FindPath(unit.myNode, turnPlan.targetMoveNode, unit.myStats.walkingType, new PathSearchOptions(unit.myPlayer.faction));
 
                     // Check there is a path to that node
                     if (pathToNode.movementCost > -1) {
@@ -255,7 +255,7 @@ public class AIManager : MonoBehaviour {
         List<MovementPath> pathsToNodes = new List<MovementPath>();
 
         targetNodes.ForEach(targetNode => {
-            MovementPath pathToNode = TileMap.instance.pathfinder.FindPath(unit.myNode, targetNode, unit.myStats.walkingType, unit.myPlayer.faction);
+            MovementPath pathToNode = TileMap.instance.pathfinder.FindPath(unit.myNode, targetNode, unit.myStats.walkingType, new PathSearchOptions(unit.myPlayer.faction));
             if (pathToNode.movementCost != -1) {
                 pathsToNodes.Add(pathToNode);
             }

@@ -25,7 +25,7 @@ public class HeatMap {
                 });
 
                 // Move and attack nodes
-                List<Node> moveAttackNodes = TileMap.instance.pathfinder.findReachableTiles(unit.myNode, unit.myStats.Speed, Walkable.Walkable, unit.myPlayer.faction).basic.Keys.ToList();
+                List<Node> moveAttackNodes = TileMap.instance.pathfinder.findReachableTiles(unit.myNode, unit.myStats.Speed, Walkable.Walkable, new PathSearchOptions(unit.myPlayer.faction)).basic.Keys.ToList();
                 moveAttackNodes.ForEach(baseNode => {
                     TileMap.instance.pathfinder.FindAttackableTiles(baseNode, attack).ForEach(attackNode => {
                         SetHeatForNode(attackNode, damagePotential);

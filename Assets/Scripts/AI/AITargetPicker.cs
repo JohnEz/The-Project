@@ -25,7 +25,7 @@ public class AITargetPicker {
         Dictionary<Node, int> nodeValues = new Dictionary<Node, int>();
 
         nodes.ForEach(node => {
-            MovementPath shortestPathToNode = TileMap.instance.pathfinder.FindPath(unit.myNode, node, unit.myStats.walkingType, unit.myPlayer.faction);
+            MovementPath shortestPathToNode = TileMap.instance.pathfinder.FindPath(unit.myNode, node, unit.myStats.walkingType, new PathSearchOptions(unit.myPlayer.faction));
 
             if (shortestPathToNode.movementCost > -1) {
                 nodeValues.Add(node, ConvertPathToValue(unit, shortestPathToNode, includeHostility));
@@ -94,7 +94,7 @@ public class AITargetPicker {
         List<MovementPath> pathsToNodes = new List<MovementPath>();
 
         targetNodes.ForEach(targetNode => {
-            MovementPath pathToNode = TileMap.instance.pathfinder.FindPath(unit.myNode, targetNode, unit.myStats.walkingType, unit.myPlayer.faction);
+            MovementPath pathToNode = TileMap.instance.pathfinder.FindPath(unit.myNode, targetNode, unit.myStats.walkingType, new PathSearchOptions(unit.myPlayer.faction));
             if (pathToNode.movementCost != -1) {
                 pathsToNodes.Add(pathToNode);
             }
@@ -109,7 +109,7 @@ public class AITargetPicker {
 
         UnitManager.instance.Units.ForEach(otherUnit => {
             if (otherUnit.myPlayer.faction != unit.myPlayer.faction) {
-                MovementPath pathToEnemy = TileMap.instance.pathfinder.FindShortestPathToUnit(unit.myNode, otherUnit.myNode, unit.myStats.walkingType, unit.myPlayer.faction);
+                MovementPath pathToEnemy = TileMap.instance.pathfinder.FindShortestPathToUnit(unit.myNode, otherUnit.myNode, unit.myStats.walkingType, new PathSearchOptions(unit.myPlayer.faction));
                 // if there was a path found
                 if (pathToEnemy.movementCost != -1) {
                     pathsToEnemies.Add(otherUnit, pathToEnemy);

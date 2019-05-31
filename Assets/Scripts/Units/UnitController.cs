@@ -480,7 +480,7 @@ public class UnitController : MonoBehaviour {
     }
 
     private Node FindForceMoveNode(Node origin, int distance, bool moveCloser) {
-        ReachableTiles tiles = TileMap.instance.pathfinder.findReachableTiles(myNode, distance, Walkable.Walkable, -1);
+        ReachableTiles tiles = TileMap.instance.pathfinder.findReachableTiles(myNode, distance, Walkable.Walkable, new PathSearchOptions(false, false, myPlayer.faction));
         Vector2 forceDirection = new Vector2(origin.x - myNode.x, origin.y - myNode.y).normalized;
         forceDirection = moveCloser ? forceDirection : -forceDirection;
 

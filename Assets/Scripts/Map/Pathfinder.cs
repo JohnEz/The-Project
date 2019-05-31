@@ -20,6 +20,25 @@ public struct MovementAndAttackPath {
     public List<Node> attackTiles;
 }
 
+public class PathSearchOptions {
+    public bool canDash = false;
+    public bool canPassThroughAllies = true;
+    public int faction = -1;
+
+    public PathSearchOptions() {
+    }
+
+    public PathSearchOptions(int _faction) {
+        faction = _faction;
+    }
+
+    public PathSearchOptions(bool _canDash, bool _canPassThroughAllies, int _faction) {
+        canDash = _canDash;
+        canPassThroughAllies = _canPassThroughAllies;
+        faction = _faction;
+    }
+}
+
 public class Pathfinder : MonoBehaviour {
     private TileMap map;
 
@@ -53,14 +72,15 @@ public class Pathfinder : MonoBehaviour {
     }
 
     // find all nodes that can be reached
-    public ReachableTiles findReachableTiles(Node startNode, float distance, Walkable walkingType, int faction, bool canDash = false) {
+    public ReachableTiles findReachableTiles(Node startNode, float distance, Walkable walkingType, PathSearchOptions pSOptions) {
+        PathSearchOptions options = pSOptions == null ? new PathSearchOptions() : pSOptions;
         map.resetTiles();
 
         List<Node> openList = new List<Node>();
         List<Node> currentList;
         Dictionary<Node, float> reachableNodes = new Dictionary<Node, float>();
 
-        float maxDistance = canDash ? distance * 2 : distance;
+        float maxDistance = options.canDash ? distance * 2 : distance;
 
         bool changed = true;
 
@@ -80,7 +100,7 @@ public class Pathfinder : MonoBehaviour {
                     Node neighbourNode = neighbour.GetOppositeNode(node);
 
                     // if the new node is not the starting node, there isnt a door in the way and can be walked on
-                    if (neighbourNode != startNode && !neighbour.HasDoor() && IsTileWalkable(node, neighbourNode, walkingType, faction)) {
+                    if (neighbourNode != startNode && !neighbour.HasDoor() && IsTileWalkable(node, neighbourNode, walkingType, options)) {
                         // caclulate the cost to move here
                         float totalCost = node.cost + neighbourNode.moveCost;
 
@@ -102,7 +122,7 @@ public class Pathfinder : MonoBehaviour {
         }
 
         //if you cant end your path on a unit THIS IS DANGEROUS
-        if (faction != -1) {
+        if (options.faction != -1) {
             reachableNodes = reachableNodes.Where(item => item.Key.myUnit == null).ToDictionary(item => item.Key, item => item.Value);
         }
 
@@ -113,7 +133,8 @@ public class Pathfinder : MonoBehaviour {
         return reachableTiles;
     }
 
-    public MovementPath FindShortestPathToUnit(Node source, Node target, Walkable walkingType, int faction) {
+    public MovementPath FindShortestPathToUnit(Node source, Node target, Walkable walkingType, PathSearchOptions pSOptions) {
+        PathSearchOptions options = pSOptions == null ? new PathSearchOptions() : pSOptions;
         List<MovementPath> paths = new List<MovementPath>();
         map.resetTiles();
 
@@ -122,7 +143,7 @@ public class Pathfinder : MonoBehaviour {
             // check to see if we can stand on the tile
             Node neighbourNode = neighbour.GetOppositeNode(target);
             if (neighbourNode.myUnit == null && UnitCanStandOnTile(neighbourNode, walkingType)) {
-                paths.Add(FindPath(source, neighbourNode, walkingType, faction));
+                paths.Add(FindPath(source, neighbourNode, walkingType, options));
             }
         });
 
@@ -153,7 +174,8 @@ public class Pathfinder : MonoBehaviour {
     }
 
     // this finds the fastest path ONTO a tile
-    public MovementPath FindPath(Node source, Node target, Walkable walkingType, int faction) {
+    public MovementPath FindPath(Node source, Node target, Walkable walkingType, PathSearchOptions pSOptions) {
+        PathSearchOptions options = pSOptions == null ? new PathSearchOptions() : pSOptions;
         MovementPath path = new MovementPath();
         path.movementCost = -1;
 
@@ -193,7 +215,7 @@ public class Pathfinder : MonoBehaviour {
                 Node neighbourNode = neighbour.GetOppositeNode(currentNode);
 
                 // if the new node is not the starting node, there isnt a door in the way and can be walked on
-                if (neighbourNode != source && !neighbour.HasDoor() && IsTileWalkable(currentNode, neighbourNode, walkingType, faction)) {
+                if (neighbourNode != source && !neighbour.HasDoor() && IsTileWalkable(currentNode, neighbourNode, walkingType, options)) {
                     // caclulate the cost to move here
                     float totalCost = currentNode.cost + neighbourNode.moveCost;
 
@@ -281,16 +303,22 @@ public class Pathfinder : MonoBehaviour {
     //	return reachableTiles;
     //}
 
-    public static bool IsTileWalkable(Node startNode, Node endNode, Walkable walkingType, int faction) {
-        return UnitCanStandOnTile(endNode, walkingType) && !UnitInTheWay(endNode, faction, walkingType) && UnitCanChangeLevel(startNode, endNode, walkingType);
+    public static bool IsTileWalkable(Node startNode, Node endNode, Walkable walkingType, PathSearchOptions options) {
+        return UnitCanStandOnTile(endNode, walkingType) && !UnitInTheWay(endNode, walkingType, options) && UnitCanChangeLevel(startNode, endNode, walkingType);
     }
 
     public static bool UnitCanStandOnTile(Node node, Walkable walkingType) {
         return node.walkable <= walkingType;
     }
 
-    public static bool UnitInTheWay(Node node, int faction, Walkable walkingType) {
-        return node.myUnit != null && node.myUnit.myPlayer.faction != faction && faction != -1 && walkingType != Walkable.Flying;
+    public static bool UnitInTheWay(Node node, Walkable walkingType, PathSearchOptions options) {
+        bool hasUnit = node.myUnit != null;
+        bool ignoreFaction = options.faction == -1;
+        bool unitIsSameFaction = hasUnit && node.myUnit.myPlayer.faction == options.faction;
+        bool canWalkThroughUnit = ignoreFaction || (unitIsSameFaction && options.canPassThroughAllies);
+        bool movementIsFlying = walkingType == Walkable.Flying;
+
+        return hasUnit && !canWalkThroughUnit && !movementIsFlying;
     }
 
     public static bool UnitCanChangeLevel(Node startNode, Node endNode, Walkable walkingType) {
@@ -335,13 +363,13 @@ public class Pathfinder : MonoBehaviour {
     }
 
     private List<Node> FindSingleTargetTiles(Node startNode, AttackAction action) {
-        List<Node> reachableTiles = findReachableTiles(startNode, action.range, Walkable.Flying, -1).basic.Keys.ToList();
+        List<Node> reachableTiles = findReachableTiles(startNode, action.range, Walkable.Flying, null).basic.Keys.ToList();
         if (action.CanTargetSelf) {
             reachableTiles.Insert(0, startNode);
         }
 
-        reachableTiles = reachableTiles.FindAll(node => 
-            HasLineOfSight(startNode, node) && 
+        reachableTiles = reachableTiles.FindAll(node =>
+            HasLineOfSight(startNode, node) &&
             // TODO this wont work when we have slowing terrain
             node.cost >= action.minRange
         );
@@ -356,7 +384,7 @@ public class Pathfinder : MonoBehaviour {
     }
 
     public List<Node> FindAOEHitTiles(Node node, AttackAction action) {
-        List<Node> targetTiles = findReachableTiles(node, action.aoeRange, Walkable.Flying, -1).basic.Keys.ToList();
+        List<Node> targetTiles = findReachableTiles(node, action.aoeRange, Walkable.Flying, null).basic.Keys.ToList();
         targetTiles.Insert(0, node);
         return targetTiles;
     }
@@ -364,7 +392,7 @@ public class Pathfinder : MonoBehaviour {
     public List<Node> FindCleaveTargetTiles(Node node, AttackAction action, Node start) {
         //TODO write a smarter way of doing this
         bool attackingHorizontally = start.x != node.x;
-        List<Node> targetTiles = findReachableTiles(node, action.aoeRange, Walkable.Flying, -1).basic.Keys.ToList();
+        List<Node> targetTiles = findReachableTiles(node, action.aoeRange, Walkable.Flying, null).basic.Keys.ToList();
         List<Node> removeTiles = new List<Node>();
         targetTiles.Insert(0, node);
         if (attackingHorizontally) {

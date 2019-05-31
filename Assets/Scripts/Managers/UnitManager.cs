@@ -134,7 +134,7 @@ public class UnitManager : MonoBehaviour {
             throw new System.Exception("Current player not selected!");
         }
 
-        ReachableTiles walkingTiles = TileMap.instance.pathfinder.findReachableTiles(unit.myNode, moveDistance, walkingType, unit.myPlayer.faction);
+        ReachableTiles walkingTiles = TileMap.instance.pathfinder.findReachableTiles(unit.myNode, moveDistance, walkingType, new PathSearchOptions(unit.myPlayer.faction));
         HighlightManager.instance.HighlightTiles(walkingTiles.basic.Keys.ToList(), SquareTarget.MOVEMENT);
         HighlightManager.instance.HighlightTile(unit.myNode, SquareTarget.NONE);
     }
@@ -200,7 +200,7 @@ public class UnitManager : MonoBehaviour {
 
         if (targetNode.previousMoveNode) {
             //MovementPath movementPath = myMap.pathfinder.getPathFromTile (targetNode.previousMoveNode);
-            MovementPath movementPath = TileMap.instance.pathfinder.FindPath(unit.myNode, targetNode.previousMoveNode, unit.myStats.WalkingType, unit.myPlayer.faction);
+            MovementPath movementPath = TileMap.instance.pathfinder.FindPath(unit.myNode, targetNode.previousMoveNode, unit.myStats.WalkingType, new PathSearchOptions(unit.myPlayer.faction));
             SetUnitPath(unit, movementPath);
         }
 
