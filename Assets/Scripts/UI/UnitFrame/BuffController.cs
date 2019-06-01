@@ -18,7 +18,10 @@ public class BuffController : MonoBehaviour {
     }
 
     public void Initialise(UnitBuffs unitBuffs) {
+        RemoveListeners();
+
         targetBuffs = unitBuffs;
+        SetupBuffs();
         AddListeners();
     }
 
@@ -56,6 +59,18 @@ public class BuffController : MonoBehaviour {
         RemoveBuff(buff);
     }
 
+    public void SetupBuffs() {
+        Clear();
+
+        if (targetBuffs == null) {
+            return;
+        }
+
+        targetBuffs.Buffs.ForEach(buff => {
+            AddBuff(buff);
+        });
+    }
+
     public void AddBuff(Buff addedBuff) {
         // remove if it already existed so we can update
         RemoveBuff(addedBuff);
@@ -68,6 +83,12 @@ public class BuffController : MonoBehaviour {
         if (buffSprite != null) {
             newBuffIcon.GetComponent<Image>().sprite = buffSprite;
         }
+
+        BuffIcon buffIcon = newBuffIcon.GetComponent<BuffIcon>();
+
+        if (buffIcon != null) {
+            buffIcon.SetBuff(addedBuff);
+        }
     }
 
     public void RemoveBuff(Buff removedBuff) {
@@ -75,6 +96,14 @@ public class BuffController : MonoBehaviour {
             Destroy(buffs[removedBuff.name]);
             buffs.Remove(removedBuff.name);
         }
+    }
+
+    public void Clear() {
+        foreach (GameObject buffIcon in buffs.Values) {
+            Destroy(buffIcon);
+        }
+
+        buffs.Clear();
     }
 
     // TODO move to resource manager

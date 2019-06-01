@@ -14,6 +14,8 @@ public class ActionBar : MonoBehaviour {
 
     public Image avatarImage;
 
+    public BuffController buffController;
+
     public void Awake() {
         instance = this;
     }
@@ -43,6 +45,7 @@ public class ActionBar : MonoBehaviour {
         currentlyDisplayedUnit = unitToDisplay;
         UpdateSlots();
         UpdateAvatar();
+        UpdateBuffController();
     }
 
     public void UpdateSlots() {
@@ -73,5 +76,14 @@ public class ActionBar : MonoBehaviour {
 
         Vector3 currentImagePosition = avatarImage.rectTransform.anchoredPosition;
         avatarImage.rectTransform.anchoredPosition = new Vector3(currentImagePosition.x, -(avatar.rect.height / 4), currentImagePosition.z);
+    }
+
+    public void UpdateBuffController() {
+        if (buffController == null) {
+            return;
+        }
+
+        UnitBuffs buffs = currentlyDisplayedUnit != null ? currentlyDisplayedUnit.myStats.buffs : null;
+        buffController.Initialise(buffs);
     }
 }

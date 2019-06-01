@@ -52,4 +52,8 @@ public class Buff {
             persistentFx.GetComponent<PersistentFxController>().Remove(withEffects);
         }
     }
+
+    public virtual string GetDescription() {
+        return "No description set!";
+    }
 }

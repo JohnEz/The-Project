@@ -8,4 +8,8 @@ public class Snare : Buff {
         isDebuff = true;
         icon = "buffSnare";
     }
+
+    public override string GetDescription() {
+        return "Speed reduced to 0 for one turn.";
+    }
 }

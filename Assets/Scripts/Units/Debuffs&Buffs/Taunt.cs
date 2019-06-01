@@ -7,4 +7,8 @@
         isDebuff = true;
         taunter = _taunter;
     }
+
+    public override string GetDescription() {
+        return "Forced to attack " + taunter.myStats.characterName + " for one turn.";
+    }
 }
