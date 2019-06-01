@@ -1,19 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 public class Dropzone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler {
     public Transform zoneTransform;
 
-    private Dictionary<string, System.Func<GameObject, bool>> dropFilters;
-    private Dictionary<string, System.Action<GameObject>> dropListeners;
-    private Dictionary<string, System.Action<GameObject>> removeListeners;
+    [Serializable] public class OnDropEvent : UnityEvent<GameObject> { }
 
-    private void Awake() {
-        dropFilters = new Dictionary<string, System.Func<GameObject, bool>>();
-        dropListeners = new Dictionary<string, System.Action<GameObject>>();
-        removeListeners = new Dictionary<string, System.Action<GameObject>>();
-    }
+    [Serializable] public class OnRemoveEvent : UnityEvent<GameObject> { }
+
+    public OnDropEvent onDrop = new OnDropEvent();
+    public OnRemoveEvent onRemove = new OnRemoveEvent();
+
+    private Dictionary<string, System.Func<GameObject, bool>> dropFilters;
 
     public Transform ZoneTransform {
         get { return zoneTransform ? zoneTransform : transform; }
@@ -50,51 +51,43 @@ public class Dropzone : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPoin
             return;
         }
 
-        bool failedFilter = false;
-        foreach (System.Func<GameObject, bool> filter in dropFilters.Values) {
-            if (!filter(eventData.pointerDrag)) {
-                failedFilter = true;
+        if (dropFilters != null) {
+            bool failedFilter = false;
+            foreach (System.Func<GameObject, bool> filter in dropFilters.Values) {
+                if (!filter(eventData.pointerDrag)) {
+                    failedFilter = true;
+                }
             }
-        }
 
-        if (failedFilter) {
-            return;
+            if (failedFilter) {
+                return;
+            }
         }
 
         draggedItem.SetNewParent(this);
 
-        foreach (System.Action<GameObject> listener in dropListeners.Values) {
-            listener(eventData.pointerDrag);
+        if (onDrop != null) {
+            onDrop.Invoke(eventData.pointerDrag);
         }
     }
 
     public void RemoveDraggedItem(GameObject go) {
-        foreach (System.Action<GameObject> listener in removeListeners.Values) {
-            listener(go);
+        if (onRemove != null) {
+            onRemove.Invoke(go);
         }
     }
 
     public void AddDropFilter(string id, System.Func<GameObject, bool> filter) {
+        if (dropFilters == null) {
+            dropFilters = new Dictionary<string, System.Func<GameObject, bool>>();
+        }
         dropFilters.Add(id, filter);
     }
 
     public void RemoveDropFilter(string id) {
+        if (dropFilters == null) {
+            return;
+        }
         dropFilters.Remove(id);
-    }
-
-    public void AddDropListener(string id, System.Action<GameObject> listener) {
-        dropListeners.Add(id, listener);
-    }
-
-    public void RemoveDropListener(string id) {
-        dropListeners.Remove(id);
-    }
-
-    public void AddRemoveListener(string id, System.Action<GameObject> listener) {
-        removeListeners.Add(id, listener);
-    }
-
-    public void RemoveRemoveListener(string id) {
-        removeListeners.Remove(id);
     }
 }

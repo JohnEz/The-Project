@@ -8,16 +8,17 @@ using DuloGames.UI;
 
 public class LevelSelect : MonoBehaviour {
     public UISelectField dropdown;
-    private List<string> maps;
+    private List<LevelObject> levels;
 
     public void Awake() {
-        maps = LoadMaps();
-        foreach (string map in maps) {
-            dropdown.AddOption(map);
+        levels = LoadLevels();
+        levels.Sort((l, r) => { return l.index - r.index; });
+        foreach (LevelObject level in levels) {
+            dropdown.AddOption(level.levelName);
         }
 
-        GameDetails.MapName = maps[0];
-        dropdown.SelectOption(maps[0]);
+        GameDetails.Level = levels[0];
+        dropdown.SelectOption(levels[0].levelName);
     }
 
     protected void OnEnable() {
@@ -35,10 +36,14 @@ public class LevelSelect : MonoBehaviour {
     }
 
     protected void OnSelectedMapOption(int index, string option) {
-        GameDetails.MapName = maps[index];
+        GameDetails.Level = levels[index];
     }
 
-    public List<string> LoadMaps() {
+    public List<LevelObject> LoadLevels() {
+        return new List<LevelObject>(Resources.LoadAll<LevelObject>("Levels"));
+    }
+
+    public List<string> LoadMapsLEGACY() {
         List<string> filePaths = new List<string>(Directory.GetFiles(Application.streamingAssetsPath, "*.json",
                                          SearchOption.AllDirectories));
 

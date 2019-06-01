@@ -18,17 +18,39 @@ public class PartyList : MonoBehaviour {
     public void Start() {
         myDropzone = GetComponentInChildren<Dropzone>();
 
-        myDropzone.AddDropFilter("PartySize", PartySizeLimitFilter);
-        myDropzone.AddDropListener("Add Character", AddCharacter);
-        myDropzone.AddRemoveListener("Remove Character", RemoveCharacter);
-
         // TODO maybe remove this and keep the last used party?
         GameDetails.Party.Clear();
         UpdatePartyLimitText();
     }
 
+    public void OnEnable() {
+        if (myDropzone == null) {
+            myDropzone = GetComponentInChildren<Dropzone>();
+        }
+
+        myDropzone.AddDropFilter("PartySize", PartySizeLimitFilter);
+        myDropzone.onDrop.AddListener(AddCharacter);
+        myDropzone.onRemove.AddListener(RemoveCharacter);
+        GameDetails.onLevelChange.AddListener(OnLevelChange);
+    }
+
+    public void OnDisable() {
+        myDropzone.RemoveDropFilter("PartySize");
+        myDropzone.onDrop.RemoveListener(AddCharacter);
+        myDropzone.onRemove.RemoveListener(RemoveCharacter);
+        GameDetails.onLevelChange.RemoveListener(OnLevelChange);
+    }
+
     public bool PartySizeLimitFilter(GameObject go) {
         return GameDetails.Party.Count < GameDetails.MaxPartySize;
+    }
+
+    public void UpdatePartyLimitText() {
+        if (partyLimitText == null) {
+            return;
+        }
+
+        partyLimitText.text = GameDetails.Party.Count + "/" + GameDetails.MaxPartySize;
     }
 
     public void AddCharacter(GameObject go) {
@@ -76,11 +98,7 @@ public class PartyList : MonoBehaviour {
         }
     }
 
-    public void UpdatePartyLimitText() {
-        if (partyLimitText == null) {
-            return;
-        }
-
-        partyLimitText.text = GameDetails.Party.Count + "/" + GameDetails.MaxPartySize;
+    public void OnLevelChange(LevelObject level) {
+        UpdatePartyLimitText();
     }
 }

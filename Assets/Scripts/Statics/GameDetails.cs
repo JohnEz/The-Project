@@ -1,25 +1,30 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine.Events;
 
 public static class GameDetails {
-    private static string mapName = "";
-    private static int maxPartySize = 3;
+    private static LevelObject level;
     private static List<UnitObject> party = new List<UnitObject>();
 
-    public static string MapName {
+    [Serializable] public class OnLevelChange : UnityEvent<LevelObject> { }
+
+    public static OnLevelChange onLevelChange = new OnLevelChange();
+
+    public static LevelObject Level {
         get {
-            return mapName;
+            return level;
         }
         set {
-            mapName = value;
+            level = value;
+            if (onLevelChange != null) {
+                onLevelChange.Invoke(level);
+            }
         }
     }
 
     public static int MaxPartySize {
         get {
-            return maxPartySize;
-        }
-        set {
-            maxPartySize = value;
+            return level != null ? level.maxCharacters : 0;
         }
     }
 

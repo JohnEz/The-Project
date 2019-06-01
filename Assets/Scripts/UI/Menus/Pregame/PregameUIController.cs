@@ -10,13 +10,15 @@ public class PregameUIController : MonoBehaviour {
     }
 
     public void OnEnable() {
-        partList.onAdd.AddListener(UpdateButton);
-        partList.onRemove.AddListener(UpdateButton);
+        partList.onAdd.AddListener(OnPartyChange);
+        partList.onRemove.AddListener(OnPartyChange);
+        GameDetails.onLevelChange.AddListener(OnLevelChange);
     }
 
     public void OnDisable() {
-        partList.onAdd.RemoveListener(UpdateButton);
-        partList.onRemove.RemoveListener(UpdateButton);
+        partList.onAdd.RemoveListener(OnPartyChange);
+        partList.onRemove.RemoveListener(OnPartyChange);
+        GameDetails.onLevelChange.RemoveListener(OnLevelChange);
     }
 
     public void StartGame() {
@@ -27,11 +29,19 @@ public class PregameUIController : MonoBehaviour {
         SaveSystem.Save();
     }
 
-    public void UpdateButton(int size) {
+    public void OnPartyChange(int size) {
+        UpdateButton();
+    }
+
+    public void OnLevelChange(LevelObject level) {
+        UpdateButton();
+    }
+
+    public void UpdateButton() {
         if (startButton == null) {
             return;
         }
 
-        startButton.interactable = size > 0;
+        startButton.interactable = GameDetails.Party.Count > 0 && GameDetails.Party.Count <= GameDetails.MaxPartySize;
     }
 }
