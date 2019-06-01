@@ -82,10 +82,18 @@ public class UnitCanvasController : MonoBehaviour {
     }
 
     public void UpdateHP(int currentHP, int maxHP, int shield) {
+        if (hpBar == null) {
+            return;
+        }
+
         hpBar.SetHP(currentHP, maxHP, shield);
     }
 
     public void UpdateActionPoints(int ap) {
+        if (actionPointsText == null) {
+            return;
+        }
+
         actionPointsText.text = ap.ToString();
     }
 

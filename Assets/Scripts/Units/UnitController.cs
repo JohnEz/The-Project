@@ -103,6 +103,8 @@ public class UnitController : MonoBehaviour {
         myStats.Initialise(this);
         projectiles = new List<ProjectileController>();
         myDialogController = GetComponentInChildren<UnitDialogController>();
+
+        gameObject.SetActive(myStats.isActive);
     }
 
     // Update is called once per frame
@@ -166,6 +168,7 @@ public class UnitController : MonoBehaviour {
 
     public void Activate() {
         myStats.isActive = true;
+        gameObject.SetActive(true);
 
         // TODO sort this problem, it shouldnt try to create camera for allies and the player, only enemies
         if (PlayerManager.instance.mainPlayer == this.myPlayer) {
@@ -255,7 +258,9 @@ public class UnitController : MonoBehaviour {
         get { return myStats.ActionPoints; }
         set {
             myStats.ActionPoints = value;
-            unitCanvasController.UpdateActionPoints(value);
+            if (unitCanvasController != null) {
+                unitCanvasController.UpdateActionPoints(value);
+            }
         }
     }
 

@@ -1,12 +1,15 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class PregameUIController : MonoBehaviour {
     public Button startButton;
     public PartyList partList;
+    public TextMeshProUGUI descriptionText;
 
     public void Start() {
         startButton.interactable = false;
+        UpdateLevelDescription();
     }
 
     public void OnEnable() {
@@ -35,6 +38,7 @@ public class PregameUIController : MonoBehaviour {
 
     public void OnLevelChange(LevelObject level) {
         UpdateButton();
+        UpdateLevelDescription();
     }
 
     public void UpdateButton() {
@@ -43,5 +47,9 @@ public class PregameUIController : MonoBehaviour {
         }
 
         startButton.interactable = GameDetails.Party.Count > 0 && GameDetails.Party.Count <= GameDetails.MaxPartySize;
+    }
+
+    public void UpdateLevelDescription() {
+        descriptionText.text = GameDetails.Level.description;
     }
 }

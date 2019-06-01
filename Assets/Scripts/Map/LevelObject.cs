@@ -8,4 +8,7 @@ public class LevelObject : ScriptableObject {
     public int maxCharacters = 3;
     public string fileName;
     public GameObject mapObject;
+
+    [TextArea]
+    public string description = "";
 }
