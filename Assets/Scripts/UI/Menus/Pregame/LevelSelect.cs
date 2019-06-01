@@ -12,6 +12,12 @@ public class LevelSelect : MonoBehaviour {
 
     public void Awake() {
         levels = LoadLevels();
+
+        if (!Debug.isDebugBuild) {
+            LevelObject devLevel = levels.Find(level => level.index == -1);
+            levels.Remove(devLevel);
+        }
+
         levels.Sort((l, r) => { return l.index - r.index; });
         foreach (LevelObject level in levels) {
             dropdown.AddOption(level.levelName);

@@ -21,15 +21,15 @@ public class MainMenuController : MonoBehaviour {
             });
         }
 
+        SavedVariables.encounteredEnemies.Clear();
+
         SaveSystem.Save();
-        //SceneChanger.Instance.FadeToScene(Scenes.PRE_GAME);
     }
 
     public void LoadGame() {
         PlayButtonSound();
 
         SaveSystem.Load();
-        //SceneChanger.Instance.FadeToScene(Scenes.PRE_GAME);
     }
 
     public void PlayButtonSound() {
