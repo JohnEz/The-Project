@@ -315,10 +315,10 @@ namespace DuloGames.UI {
                 }
 
                 // Cast time
-                if (spellInfo.CastTime == 0f)
-                    UITooltip.AddLineColumn("Instant", "SpellAttribute");
-                else
-                    UITooltip.AddLineColumn(spellInfo.CastTime.ToString("0.0") + " sec cast", "SpellAttribute");
+                //if (spellInfo.CastTime == 0f)
+                //    UITooltip.AddLineColumn("Instant", "SpellAttribute");
+                //else
+                //    UITooltip.AddLineColumn(spellInfo.CastTime.ToString("0.0") + " sec cast", "SpellAttribute");
 
                 // Cooldown
                 if (spellInfo.Cooldown > 0f)

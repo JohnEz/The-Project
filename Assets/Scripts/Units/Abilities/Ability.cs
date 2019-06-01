@@ -110,7 +110,7 @@ public class Ability : ScriptableObject {
         info.ID = GetInstanceID();
         info.Name = Name;
         info.Icon = icon;
-        info.Description = GetDescription();
+        info.Description = caster != null ? GetDescription() : "";
         info.Range = 0;
         info.Cooldown = cooldown;
         info.MaxCooldown = MaxCooldown;
