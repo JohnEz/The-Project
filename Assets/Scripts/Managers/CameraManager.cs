@@ -67,7 +67,7 @@ public class CameraManager : MonoBehaviour {
         Transform targetTransform = target.transform.Find("Token");
 
         TurnOffCameras();
-        CreatePersonalCamera(targetTransform);
+        CreatePersonalCamera(targetTransform, target.myStats.displayToken.frontSprite.rect.height / (3 * 10));
 
         GUIController.instance.HideUI();
 
@@ -128,7 +128,7 @@ public class CameraManager : MonoBehaviour {
         activeFollowCamera = newFollowCamera;
     }
 
-    public void CreatePersonalCamera(Transform target) {
+    public void CreatePersonalCamera(Transform target, float yOffset = 0) {
         TurnOffCameras();
         GameObject personalCamera = Instantiate(personalCameraPrefab);
         CinemachineVirtualCamera newPersonalCamera = personalCamera.GetComponent<CinemachineVirtualCamera>();
@@ -136,6 +136,12 @@ public class CameraManager : MonoBehaviour {
         newPersonalCamera.Follow = target;
         newPersonalCamera.LookAt = target;
         newPersonalCamera.Priority = 10;
+
+        CinemachineTransposer cameraTransposer = newPersonalCamera.GetCinemachineComponent<CinemachineTransposer>();
+        cameraTransposer.m_FollowOffset.y = yOffset;
+
+        CinemachineComposer cameraComposer = newPersonalCamera.GetCinemachineComponent<CinemachineComposer>();
+        cameraComposer.m_TrackedObjectOffset.y = yOffset;
 
         if (activePersonalCamera != null) {
             Destroy(activePersonalCamera.gameObject, blendTime + 1f);
