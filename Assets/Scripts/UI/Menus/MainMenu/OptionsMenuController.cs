@@ -11,6 +11,7 @@ public class OptionsMenuController : MonoBehaviour {
     public AudioMixer masterMixer;
     public UISelectField resolutionSelectField;
     public Toggle fullscreenToggle;
+    public Toggle mouseCanControlCameraToggle;
 
     public Slider masterVolumeSlider;
     public Slider musicVolumeSlider;
@@ -21,6 +22,7 @@ public class OptionsMenuController : MonoBehaviour {
     private Resolution[] resolutions;
 
     public const string FULL_SCREEN = "fullScreen";
+    public const string MOUSE_CAN_CONTROL_CAMERA = "mouseCanControlCamera";
 
     private void Start() {
         LoadSettings();
@@ -29,8 +31,24 @@ public class OptionsMenuController : MonoBehaviour {
     public void LoadSettings() {
         SetupResolution();
 
-        fullscreenToggle.isOn = PlayerPrefs.GetInt(FULL_SCREEN) == 1;
-        Screen.fullScreen = PlayerPrefs.GetInt(FULL_SCREEN) == 1;
+        int fullscreenValue = PlayerPrefs.GetInt(FULL_SCREEN);
+        if (fullscreenValue == 0) {
+            fullscreenToggle.isOn = Screen.fullScreen;
+        } else {
+            bool isFullscreen = fullscreenValue == 1;
+            fullscreenToggle.isOn = isFullscreen;
+            Screen.fullScreen = isFullscreen;
+        }
+
+        int mouseCanControlCameraValue = PlayerPrefs.GetInt(MOUSE_CAN_CONTROL_CAMERA);
+        if (fullscreenValue == 0) {
+            mouseCanControlCameraToggle.isOn = true;
+            GameSettings.MouseCanMoveCamera = true;
+        } else {
+            bool mouseCanControlCamera = mouseCanControlCameraValue == 1;
+            mouseCanControlCameraToggle.isOn = mouseCanControlCamera;
+            GameSettings.MouseCanMoveCamera = mouseCanControlCamera;
+        }
 
         RefreshMusicSliders();
     }
@@ -103,6 +121,10 @@ public class OptionsMenuController : MonoBehaviour {
         Screen.fullScreen = isFullscreen;
     }
 
+    public void SetMouseCameraControl(bool mouseCanControlCamera) {
+        GameSettings.MouseCanMoveCamera = mouseCanControlCamera;
+    }
+
     public void SaveAndExit() {
         PlayOptions pressAudioOptions = new PlayOptions(buttonClickAudio, transform);
         pressAudioOptions.audioMixer = AudioMixers.UI;
@@ -125,6 +147,8 @@ public class OptionsMenuController : MonoBehaviour {
         masterMixer.GetFloat(AudioManager.SFX_VOLUME, out sfxVolume);
         PlayerPrefs.SetFloat(AudioManager.SFX_VOLUME, sfxVolume);
 
-        PlayerPrefs.SetInt(FULL_SCREEN, fullscreenToggle.isOn ? 1 : 0);
+        PlayerPrefs.SetInt(FULL_SCREEN, fullscreenToggle.isOn ? 1 : -1);
+
+        PlayerPrefs.SetInt(MOUSE_CAN_CONTROL_CAMERA, mouseCanControlCameraToggle.isOn ? 1 : -1);
     }
 }
