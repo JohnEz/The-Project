@@ -35,12 +35,12 @@ public class QuestTracker : MonoBehaviour {
     }
 
     // TODO allow multiple objectives
-    public int AddQuest(string title, Objective objective) {
+    public int AddQuest(Objective objective) {
         GameObject questObject = Instantiate(questPrefab, questsGroup);
 
         QuestController quest = questObject.GetComponent<QuestController>();
 
-        quest.Initiate(title, objective);
+        quest.Initiate(objective);
 
         quests.Add(quest);
 

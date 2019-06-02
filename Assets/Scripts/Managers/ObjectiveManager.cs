@@ -20,6 +20,7 @@ public enum GameOutcome {
     LOSS,
 }
 
+[Serializable]
 public class Objective {
 
     [Serializable] public class OnObjectiveUpdatedEvent : UnityEvent<ObjectiveStatus> { }
@@ -27,8 +28,13 @@ public class Objective {
     public OnObjectiveUpdatedEvent onObjectiveUpdated = new OnObjectiveUpdatedEvent();
 
     public ObjectiveType type;
+    public string title;
     public string text;
     public bool optional;
+
+    // TODO this needs to be specific to save unit etc
+    public string additionalInfo;
+
     private ObjectiveStatus status;
 
     public ObjectiveStatus Status {
@@ -70,12 +76,12 @@ public class ObjectiveManager : MonoBehaviour {
             List<Objective> newObjectives = new List<Objective>();
             newObjectives.Add(objective);
             objectives.Add(player, newObjectives);
-
-            if (!player.ai) {
-                GUIController.instance.AddObjectiveText(objective);
-            }
         } else {
             objectives[player].Add(objective);
+        }
+
+        if (!player.ai) {
+            GUIController.instance.AddObjectiveText(objective);
         }
     }
 
@@ -87,11 +93,8 @@ public class ObjectiveManager : MonoBehaviour {
     }
 
     public void UpdateObjectives() {
-        Debug.Log("Updating objectives");
         foreach (Player player in objectives.Keys) {
-            Debug.Log("Looping player " + player);
             foreach (Objective objective in objectives[player]) {
-                Debug.Log("Looping objective");
                 UpdateObjective(player, objective);
             }
         }

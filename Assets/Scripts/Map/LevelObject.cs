@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 [CreateAssetMenu(fileName = "New Level", menuName = "Level")]
 public class LevelObject : ScriptableObject {
@@ -11,4 +12,6 @@ public class LevelObject : ScriptableObject {
 
     [TextArea]
     public string description = "";
+
+    public List<Objective> playerObjectives;
 }

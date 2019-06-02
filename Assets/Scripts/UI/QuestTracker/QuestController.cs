@@ -10,8 +10,8 @@ public class QuestController : MonoBehaviour {
     public GameObject completeGraphic;
     public GameObject failedGraphic;
 
-    public void Initiate(string titleString, Objective objective) {
-        title.text = titleString;
+    public void Initiate(Objective objective) {
+        title.text = objective.title;
         objectiveText.text = objective.text;
         objective.onObjectiveUpdated.AddListener(OnObjectiveUpdate);
     }

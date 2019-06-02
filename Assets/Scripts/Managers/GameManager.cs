@@ -70,27 +70,28 @@ public class GameManager : MonoBehaviour {
         });
     }
 
-    //TEMP
     private void AddObjectives() {
-        Objective objective = new Objective();
-        objective.optional = false;
-        objective.text = "Kill all enemies!";
-        objective.type = ObjectiveType.ANNIHILATION;
-        ObjectiveManager.instance.AddObjective(PlayerManager.instance.GetPlayer(0), objective);
+        GameDetails.Level.playerObjectives.ForEach(objective => {
+            ObjectiveManager.instance.AddObjective(PlayerManager.instance.GetPlayer(0), objective);
+        });
 
+        // Temp
+        if (GameDetails.Level.playerObjectives.Count == 0) {
+            Objective objective = new Objective();
+            objective.optional = false;
+            objective.title = "ANNIHILATION";
+            objective.text = "Kill all enemies!";
+            objective.type = ObjectiveType.ANNIHILATION;
+            ObjectiveManager.instance.AddObjective(PlayerManager.instance.GetPlayer(0), objective);
+        }
+
+        // Temp
         Objective objective2 = new Objective();
         objective2.optional = false;
+        objective2.title = "ANNIHILATION";
         objective2.text = "Kill all enemies!";
         objective2.type = ObjectiveType.ANNIHILATION;
         ObjectiveManager.instance.AddObjective(PlayerManager.instance.GetPlayer(1), objective2);
-
-        if (ADD_ALLY) {
-            Objective objective3 = new Objective();
-            objective3.optional = false;
-            objective3.text = "Kill all enemies!";
-            objective3.type = ObjectiveType.ANNIHILATION;
-            ObjectiveManager.instance.AddObjective(PlayerManager.instance.GetPlayer(2), objective3);
-        }
     }
 
     private void LoadMapUnits(Player enemyAI, Player allyAI) {
