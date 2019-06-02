@@ -25,6 +25,7 @@ public class ActionBar : MonoBehaviour {
     }
 
     public void Update() {
+        // TODO change this to use an event listener
         if (currentlyDisplayedUnit != UnitSelectionManager.instance.SelectedUnit) {
             DisplayUnit(UnitSelectionManager.instance.SelectedUnit);
         }

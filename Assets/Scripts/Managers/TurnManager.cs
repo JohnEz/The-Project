@@ -81,13 +81,20 @@ public class TurnManager : MonoBehaviour {
         PlayerManager.instance.EndTurn(GetCurrentPlayer());
         Player currentPlayersTurn = GetCurrentPlayer();
 
-        if (ObjectiveManager.instance.CheckObjectives(currentPlayersTurn)) {
-            ChangeState(TurnPhase.GAME_OVER);
-            GUIController.instance.GameOver(GetCurrentPlayer().faction == PlayerManager.instance.mainPlayer.faction);
-        } else {
+        GameOutcome gameOutcome = ObjectiveManager.instance.CheckObjectives(currentPlayersTurn);
+
+        if (gameOutcome == GameOutcome.NONE) {
             UnitManager.instance.EndTurn(currentPlayersTurn);
             StartNewTurn();
             UserInterfaceManager.instance.EndTurn();
+        } else {
+            ChangeState(TurnPhase.GAME_OVER);
+
+            // TODO we shouldnt need to check if the ai won imo
+            bool isVictory = gameOutcome == GameOutcome.WIN;
+            bool isPlayer = GetCurrentPlayer().faction == PlayerManager.instance.mainPlayer.faction;
+            bool playerWon = (isPlayer && isVictory) || (!isPlayer && !isVictory);
+            GUIController.instance.GameOver(playerWon);
         }
     }
 

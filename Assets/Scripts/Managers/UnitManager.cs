@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class UnitManager : MonoBehaviour {
     public static UnitManager instance;
@@ -15,6 +17,10 @@ public class UnitManager : MonoBehaviour {
     private List<Node> attackableTiles = new List<Node>();
 
     private Node currentlyHoveredNode;
+
+    [Serializable] public class OnUnitDieEvent : UnityEvent<UnitController> { }
+
+    public OnUnitDieEvent onUnitDie = new OnUnitDieEvent();
 
     private void Awake() {
         instance = this;
@@ -259,6 +265,10 @@ public class UnitManager : MonoBehaviour {
     // Called when a unit dies, removes them from the game
     public void UnitDied(UnitController unit) {
         AddUnitToRemove(unit);
+
+        if (onUnitDie != null) {
+            onUnitDie.Invoke(unit);
+        }
     }
 
     // Check to see if a specified player has run out of moves
