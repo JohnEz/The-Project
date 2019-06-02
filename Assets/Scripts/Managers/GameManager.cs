@@ -92,6 +92,8 @@ public class GameManager : MonoBehaviour {
         objective2.text = "Kill all enemies!";
         objective2.type = ObjectiveType.ANNIHILATION;
         ObjectiveManager.instance.AddObjective(PlayerManager.instance.GetPlayer(1), objective2);
+
+        ObjectiveManager.instance.UpdateObjectives();
     }
 
     private void LoadMapUnits(Player enemyAI, Player allyAI) {

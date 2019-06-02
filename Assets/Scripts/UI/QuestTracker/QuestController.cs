@@ -25,9 +25,11 @@ public class QuestController : MonoBehaviour {
 
             case ObjectiveStatus.COMPLETE:
                 completeGraphic.SetActive(true);
+                failedGraphic.SetActive(false);
                 break;
 
             case ObjectiveStatus.FAILED:
+                completeGraphic.SetActive(false);
                 failedGraphic.SetActive(true);
                 break;
         }

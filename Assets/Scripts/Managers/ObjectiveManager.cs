@@ -70,8 +70,6 @@ public class ObjectiveManager : MonoBehaviour {
     }
 
     public void AddObjective(Player player, Objective objective) {
-        objective.Status = ObjectiveStatus.NONE;
-
         if (!objectives.ContainsKey(player)) {
             List<Objective> newObjectives = new List<Objective>();
             newObjectives.Add(objective);
@@ -107,7 +105,7 @@ public class ObjectiveManager : MonoBehaviour {
                 break;
 
             case ObjectiveType.UNIT_SURVIVE:
-                objective.Status = GetUnitSurviveStatus();
+                objective.Status = GetUnitSurviveStatus(objective.additionalInfo);
                 break;
         }
     }
@@ -185,7 +183,10 @@ public class ObjectiveManager : MonoBehaviour {
         return aliveEnemyUnits.Count <= 0 ? ObjectiveStatus.COMPLETE : ObjectiveStatus.NONE;
     }
 
-    private ObjectiveStatus GetUnitSurviveStatus() {
-        return ObjectiveStatus.NONE;
+    private ObjectiveStatus GetUnitSurviveStatus(string characterName) {
+        UnitController targetUnit = UnitManager.instance.Units.Find(unit => unit.myStats.characterName == characterName);
+        bool unitIsAlive = targetUnit != null && targetUnit.Health > 0;
+
+        return unitIsAlive ? ObjectiveStatus.COMPLETE : ObjectiveStatus.FAILED;
     }
 }
