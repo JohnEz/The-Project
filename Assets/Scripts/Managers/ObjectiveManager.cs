@@ -21,20 +21,31 @@ public enum GameOutcome {
 }
 
 public class Objective {
+
+    [Serializable] public class OnObjectiveUpdatedEvent : UnityEvent<ObjectiveStatus> { }
+
+    public OnObjectiveUpdatedEvent onObjectiveUpdated = new OnObjectiveUpdatedEvent();
+
     public ObjectiveType type;
     public string text;
     public bool optional;
-    public ObjectiveStatus status;
+    private ObjectiveStatus status;
+
+    public ObjectiveStatus Status {
+        get { return status; }
+        set {
+            status = value;
+            if (onObjectiveUpdated != null) {
+                onObjectiveUpdated.Invoke(status);
+            }
+        }
+    }
 }
 
 public class ObjectiveManager : MonoBehaviour {
     public static ObjectiveManager instance;
 
     private Dictionary<Player, List<Objective>> objectives = new Dictionary<Player, List<Objective>>();
-
-    [Serializable] public class OnObjectiveUpdatedEvent : UnityEvent { }
-
-    public OnObjectiveUpdatedEvent onObjectiveUpdated = new OnObjectiveUpdatedEvent();
 
     private void Awake() {
         instance = this;
@@ -53,7 +64,7 @@ public class ObjectiveManager : MonoBehaviour {
     }
 
     public void AddObjective(Player player, Objective objective) {
-        objective.status = ObjectiveStatus.NONE;
+        objective.Status = ObjectiveStatus.NONE;
 
         if (!objectives.ContainsKey(player)) {
             List<Objective> newObjectives = new List<Objective>();
@@ -89,11 +100,11 @@ public class ObjectiveManager : MonoBehaviour {
     private void UpdateObjective(Player player, Objective objective) {
         switch (objective.type) {
             case ObjectiveType.ANNIHILATION:
-                objective.status = GetAnnihilationStatus(player);
+                objective.Status = GetAnnihilationStatus(player);
                 break;
 
             case ObjectiveType.UNIT_SURVIVE:
-                objective.status = GetUnitSurviveStatus();
+                objective.Status = GetUnitSurviveStatus();
                 break;
         }
     }
@@ -105,11 +116,11 @@ public class ObjectiveManager : MonoBehaviour {
             bool isDeafted = false;
 
             foreach (Objective objective in playerObjectives) {
-                if (objective.status == ObjectiveStatus.NONE) {
+                if (objective.Status == ObjectiveStatus.NONE) {
                     if (!objective.optional) {
                         isVictorious = false;
                     }
-                } else if (objective.status == ObjectiveStatus.FAILED) {
+                } else if (objective.Status == ObjectiveStatus.FAILED) {
                     if (!objective.optional) {
                         isVictorious = false;
                         isDeafted = true;

@@ -91,7 +91,7 @@ public class GUIController : MonoBehaviour {
     }
 
     public void AddObjectiveText(Objective objective) {
-        QuestTracker.Instance.AddQuest("Annihilation", objective.text);
+        QuestTracker.Instance.AddQuest("Annihilation", objective);
     }
 
     public void ClearAbilityIcons() {
