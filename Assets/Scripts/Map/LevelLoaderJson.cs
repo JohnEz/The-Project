@@ -16,6 +16,8 @@ public class TileSet {
 public class SpawnLocation {
     public string name;
     public int x, y;
+    public string type;
+    public bool isAllied;
 
     public override string ToString() {
         return string.Format("[ x: {0}, y: {1}, unit: {2} ]", x, y, name);
@@ -158,6 +160,8 @@ public class LevelLoaderJson : MonoBehaviour {
             foreach (SpawnLocation spawnLocation in spawnLocationLayer.objects) {
                 spawnLocation.x = Mathf.FloorToInt(spawnLocation.x / TileMap.TILE_SIZE);
                 spawnLocation.y = Mathf.FloorToInt(spawnLocation.y / TileMap.TILE_SIZE);
+
+                spawnLocation.isAllied = spawnLocation.type.Equals("ally");
 
                 spawnLocations.Add(spawnLocation);
             }

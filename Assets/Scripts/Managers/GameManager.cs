@@ -32,9 +32,7 @@ public class GameManager : MonoBehaviour {
     private void AddPlayers() {
         Player humanPlayer = PlayerManager.instance.AddPlayer(1, "Jonesy");
 
-        if (ADD_ALLY) {
-            Player allyAI = PlayerManager.instance.AddAiPlayer(1);
-        }
+        Player allyAI = PlayerManager.instance.AddAiPlayer(1);
 
         if (GameDetails.Party.Count == 0 && Debug.isDebugBuild) {
             List<SpawnLocation> playerSpawnLocation = TileMap.instance.spawnLocations.FindAll(sl => sl.name == "PlayerSpawn");
@@ -50,7 +48,7 @@ public class GameManager : MonoBehaviour {
 
         Player enemyAI = PlayerManager.instance.AddAiPlayer(2);
 
-        LoadMapUnits(enemyAI);
+        LoadMapUnits(enemyAI, allyAI);
 
         TileMap.instance.ActivateRoom(humanPlayer.units[0].myNode.room);
     }
@@ -95,10 +93,10 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    private void LoadMapUnits(Player enemyAI) {
+    private void LoadMapUnits(Player enemyAI, Player allyAI) {
         TileMap.instance.spawnLocations.ForEach(sl => {
             if (sl.name != "PlayerSpawn") {
-                UnitManager.instance.SpawnUnit(sl.name, enemyAI, sl.x, sl.y);
+                UnitManager.instance.SpawnUnit(sl.name, sl.isAllied ? allyAI : enemyAI, sl.x, sl.y);
             }
         });
     }

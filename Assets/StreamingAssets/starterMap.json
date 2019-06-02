@@ -173,6 +173,18 @@
                  "width":0,
                  "x":834,
                  "y":453
+                }, 
+                {
+                 "height":0,
+                 "id":15,
+                 "name":"Glog",
+                 "point":true,
+                 "rotation":0,
+                 "type":"ally",
+                 "visible":true,
+                 "width":0,
+                 "x":705,
+                 "y":1476
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -181,7 +193,7 @@
          "y":0
         }],
  "nextlayerid":7,
- "nextobjectid":15,
+ "nextobjectid":16,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.2.3",
