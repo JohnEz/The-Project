@@ -32,9 +32,9 @@ public class UnitCanvasController : MonoBehaviour {
 
     private Color[] teamColours = new Color[] {
         new Color (0, 0.9647f, 1), //blue
+        new Color(0.8039f, 0.4039f, 0.2039f), //red
         new Color (0.7294f, 0.9569f, 0.1176f), //green
         //new Color (0.8431f, 0.2f, 0.2f), //red
-        new Color(0.8039f, 0.4039f, 0.2039f),
     };
 
     // Use this for initialization

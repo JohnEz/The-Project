@@ -32,8 +32,6 @@ public class GameManager : MonoBehaviour {
     private void AddPlayers() {
         Player humanPlayer = PlayerManager.instance.AddPlayer(1, "Jonesy");
 
-        Player allyAI = PlayerManager.instance.AddAiPlayer(1);
-
         if (GameDetails.Party.Count == 0 && Debug.isDebugBuild) {
             List<SpawnLocation> playerSpawnLocation = TileMap.instance.spawnLocations.FindAll(sl => sl.name == "PlayerSpawn");
 
@@ -47,6 +45,7 @@ public class GameManager : MonoBehaviour {
         CameraManager.instance.JumpToLocation(humanPlayer.units[0].myNode);
 
         Player enemyAI = PlayerManager.instance.AddAiPlayer(2);
+        Player allyAI = PlayerManager.instance.AddAiPlayer(1);
 
         LoadMapUnits(enemyAI, allyAI);
 
