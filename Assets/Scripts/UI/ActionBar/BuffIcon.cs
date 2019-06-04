@@ -48,7 +48,8 @@ public class BuffIcon : UITooltipShow {
         UITooltip.AddLine(buff.name, "SpellTitle");
 
         if (buff.maxDuration != -1) {
-            UITooltip.AddLineColumn(buff.duration + " Turn", "SpellAttribute");
+            // TODO fix when buffs are fixed
+            UITooltip.AddLineColumn("1 Turn", "SpellAttribute");
         }
 
         UITooltip.AddSpacer();
