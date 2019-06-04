@@ -9,7 +9,7 @@ public class AbilityCooldown : MonoBehaviour {
     private Ability targetAbility;
 
     public TextMeshProUGUI text;
-    public UISpellSlot targetSlot;
+    public AbilitySlot targetSlot;
 
     // Use this for initialization
     private void Start() {

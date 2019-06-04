@@ -104,6 +104,21 @@ public class Ability : ScriptableObject {
         Cooldown = isOnCooldown ? maxCooldown : 0;
     }
 
+    private int GetRange() {
+        //TEMP
+        AbilityAction firstAttackAction = instansiatedActions.Find(action => action.GetType() == typeof(AttackAction));
+
+        if (firstAttackAction != null) {
+            AttackAction attackAction = (AttackAction)firstAttackAction;
+            switch (attackAction.areaOfEffect) {
+                case AreaOfEffect.AURA: return attackAction.aoeRange;
+                default: return attackAction.range;
+            }
+        }
+
+        return 1;
+    }
+
     public UIAbilityInfo ToAbilityInfo() {
         UIAbilityInfo info = new UIAbilityInfo();
 
@@ -111,12 +126,12 @@ public class Ability : ScriptableObject {
         info.Name = Name;
         info.Icon = icon;
         info.Description = caster != null ? GetDescription() : "";
-        info.Range = 0;
         info.Cooldown = cooldown;
         info.MaxCooldown = MaxCooldown;
         info.CastTime = 0;
         info.PowerCost = baseActionPointCost;
         info.ability = this;
+        info.Range = GetRange();
 
         return info;
     }

@@ -47,6 +47,10 @@ public class BuffIcon : UITooltipShow {
         // Set the spell name as title
         UITooltip.AddLine(buff.name, "SpellTitle");
 
+        if (buff.maxDuration != -1) {
+            UITooltip.AddLineColumn(buff.duration + " Turn", "SpellAttribute");
+        }
+
         UITooltip.AddSpacer();
 
         UITooltip.AddLine(buff.GetDescription(), "SpellDescription");
