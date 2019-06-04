@@ -471,23 +471,35 @@ public class UnitController : MonoBehaviour {
     }
 
     public void Pull(Node pullOrigin, int distance) {
-        forceMoveNode = FindForceMoveNode(pullOrigin, distance, true);
-        myNode.myUnit = null;
-        forceMoveNode.myUnit = this;
-        myNode = forceMoveNode;
+        ForceMove(pullOrigin, distance, true);
     }
 
     public void Push(Node pushOrigin, int distance) {
-        forceMoveNode = FindForceMoveNode(pushOrigin, distance, false);
+        ForceMove(pushOrigin, distance, false);
+    }
+
+    private void ForceMove(Node origin, int distance, bool isPull) {
+        Node nodeToMoveTo = FindForceMoveNode(origin, distance, isPull);
+
+        if (nodeToMoveTo == null) {
+            return;
+        }
+
+        forceMoveNode = nodeToMoveTo;
         myNode.myUnit = null;
         forceMoveNode.myUnit = this;
         myNode = forceMoveNode;
     }
 
-    private Node FindForceMoveNode(Node origin, int distance, bool moveCloser) {
+    private Node FindForceMoveNode(Node origin, int distance, bool isPull) {
         ReachableTiles tiles = TileMap.instance.pathfinder.findReachableTiles(myNode, distance, Walkable.Walkable, new PathSearchOptions(false, false, myPlayer.faction));
         Vector2 forceDirection = new Vector2(origin.x - myNode.x, origin.y - myNode.y).normalized;
-        forceDirection = moveCloser ? forceDirection : -forceDirection;
+        forceDirection = isPull ? forceDirection : -forceDirection;
+
+        // No tiles to move to
+        if (tiles.basic.Count == 0) {
+            return null;
+        }
 
         return tiles.basic.Keys.ToList().Aggregate((n1, n2) => {
             int n1Distance = n1.GridDistanceTo(origin);
@@ -513,7 +525,7 @@ public class UnitController : MonoBehaviour {
                 return Vector2.Distance(n1Direction, forceDirection) < Vector2.Distance(n2Direction, forceDirection) ? n1 : n2;
             }
 
-            if (moveCloser) {
+            if (isPull) {
                 return n1Distance < n2Distance ? n1 : n2;
             } else {
                 return n1Distance > n2Distance ? n1 : n2;
