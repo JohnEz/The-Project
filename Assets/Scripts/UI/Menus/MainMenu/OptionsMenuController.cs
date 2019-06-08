@@ -88,8 +88,6 @@ public class OptionsMenuController : MonoBehaviour {
             refreshRate = currentResolution.refreshRate;
         }
 
-        Debug.LogError(string.Format("{0} x {1} @{2}Hz", resWidth, resHeight, refreshRate));
-
         resolutionSelectField.SelectOption(string.Format("{0} x {1} @{2}Hz", resWidth, resHeight, refreshRate));
     }
 

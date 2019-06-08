@@ -12,7 +12,12 @@ public class UnitSelectionManager : MonoBehaviour {
     public static UnitSelectionManager instance;
 
     public UnitController CurrentPlayer { get; private set; }
-    public UnitController SelectedUnit { get; private set; }
+
+    public UnitController selectedUnit;
+
+    public UnitController SelectedUnit {
+        get { return selectedUnit; }
+    }
 
     private AbilityState abilityState = AbilityState.NONE;
 
@@ -94,10 +99,16 @@ public class UnitSelectionManager : MonoBehaviour {
     }
 
     public void SelectUnit(UnitController unitToSelect) {
-        SelectedUnit = unitToSelect;
+        if (selectedUnit != null) {
+            UnselectUnit();
+        }
+
+        selectedUnit = unitToSelect;
+        HighlightManager.instance.SetEffectedTile(selectedUnit.myNode, SquareTarget.SELECTED_UNIT);
     }
 
     public void UnselectUnit() {
-        SelectedUnit = null;
+        HighlightManager.instance.UnhighlightTile(selectedUnit.myNode);
+        selectedUnit = null;
     }
 }

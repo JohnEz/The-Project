@@ -142,7 +142,6 @@ public class UnitManager : MonoBehaviour {
 
         ReachableTiles walkingTiles = TileMap.instance.pathfinder.findReachableTiles(unit.myNode, moveDistance, walkingType, new PathSearchOptions(unit.myPlayer.faction));
         HighlightManager.instance.HighlightTiles(walkingTiles.basic.Keys.ToList(), SquareTarget.MOVEMENT);
-        HighlightManager.instance.HighlightTile(unit.myNode, SquareTarget.NONE);
     }
 
     // Shows where the ability can target
@@ -163,7 +162,6 @@ public class UnitManager : MonoBehaviour {
 
         attackableTiles = TileMap.instance.pathfinder.FindAttackableTiles(unit.myNode, action);
         HighlightManager.instance.UnhighlightAllTiles();
-        HighlightManager.instance.HighlightTile(unit.myNode, SquareTarget.NONE);
         SquareTarget targetType = action.targets == TargetType.ALLY ? SquareTarget.HELPFULL : SquareTarget.ATTACK;
         HighlightManager.instance.HighlightTiles(attackableTiles, targetType);
 

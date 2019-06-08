@@ -35,15 +35,9 @@ public class HighlightManager : MonoBehaviour {
 
         effectedTiles.ForEach((tile) => {
             TileHighlighter highlighter = tile.GetComponentInChildren<TileHighlighter>();
-            highlighter.SetEffected(true);
-            if (targetType != SquareTarget.UNDEFINED) {
-                highlighter.SetTargetType(targetType);
-            }
-            highlighter.SetHighlighted(true);
 
-            if (tile.myUnit != null && action != null && action.CanHitUnit(tile)) {
-                highlighter.AddDecal(SquareDecal.TARGET);
-            }
+            SetEffectedTile(tile, targetType);
+
             if (path) {
                 // if we are not at the end node, set the next direction to the direction between this and the next node
                 Vector2 previousDirection = tile.previous.GetDirectionFrom(tile);
@@ -51,14 +45,28 @@ public class HighlightManager : MonoBehaviour {
 
                 highlighter.CreateArrowDecal(previousDirection, nextDirection);
             }
-            currentlyEffected.Add(tile);
             i++;
         });
     }
 
-    public void ClearEffectedTiles() {
+    public void SetEffectedTile(Node tileToHighlight, SquareTarget targetType) {
+        currentlyEffected.Add(tileToHighlight);
+        TileHighlighter highlighter = tileToHighlight.GetComponentInChildren<TileHighlighter>();
+        highlighter.SetEffected(true);
+        highlighter.SetHighlighted(true);
+
+        if (targetType != SquareTarget.UNDEFINED) {
+            highlighter.SetTargetType(targetType);
+        }
+    }
+
+    public void ClearEffectedTiles(bool clearSelectedUnit = false) {
         currentlyEffected.ForEach((tile) => {
             TileHighlighter highlighter = tile.GetComponentInChildren<TileHighlighter>();
+            if (!clearSelectedUnit && highlighter.myTarget == SquareTarget.SELECTED_UNIT) {
+                return;
+            }
+
             highlighter.SetEffected(false);
             if (!currentlyHighlighted.Contains(tile)) {
                 highlighter.CleanHighlight();

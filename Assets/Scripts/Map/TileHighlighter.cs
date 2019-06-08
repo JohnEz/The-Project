@@ -8,6 +8,7 @@ public enum SquareTarget {
     MOVEMENT,
     DASH,
     HELPFULL,
+    SELECTED_UNIT,
     ATTACK
 }
 
@@ -41,28 +42,29 @@ internal struct TileState {
 }
 
 public class TileHighlighter : MonoBehaviour {
-
-    //Highlights
-    public Sprite basicSprite;
-
-    public Sprite highlightedSprite;
-    public Sprite effectedSprite;
-    public Sprite hoverSprite;
-
-    //Decals
-    public Sprite targetDecal;
-
-    public Sprite arrowStraight;
-    public Sprite arrowCorner;
-    public Sprite arrowEnd;
-
-    public GameObject tileDecalPrefab;
+    //Colours
 
     private Color blue = new Color(0, 0.9647f, 1);
     private Color red = new Color(0.8431f, 0.2f, 0.2f);
     private Color green = new Color(0.7294f, 0.9569f, 0.1176f);
     private Color yellow = new Color(0.9569f, 0.7294f, 0.1176f);
     private Color white = new Color(1, 1, 1);
+
+    //Highlights
+
+    public Sprite basicSprite;
+    public Sprite highlightedSprite;
+    public Sprite effectedSprite;
+    public Sprite hoverSprite;
+
+    //Decals
+
+    public Sprite targetDecal;
+    public Sprite arrowStraight;
+    public Sprite arrowCorner;
+    public Sprite arrowEnd;
+
+    public GameObject tileDecalPrefab;
 
     private TileState myState;
 
@@ -237,8 +239,8 @@ public class TileHighlighter : MonoBehaviour {
         myDecals.Add(newDecal);
     }
 
-    public void DebugSetColour(float update, Color color) {
-        updateAlpha(update);
+    public void DebugSetColour(float alpha, Color color) {
+        updateAlpha(alpha);
         mySpriteRenderer.color = color;
     }
 
