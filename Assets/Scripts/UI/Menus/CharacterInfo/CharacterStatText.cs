@@ -61,7 +61,11 @@ public class CharacterStatText : MonoBehaviour {
         }
 
         currentCharacter = character;
-        currentCharacter.onStatChange.AddListener(OnStatUpdate);
+
+        if (currentCharacter != null) {
+            currentCharacter.onStatChange.AddListener(OnStatUpdate);
+        }
+
         OnStatUpdate();
     }
 
@@ -70,6 +74,10 @@ public class CharacterStatText : MonoBehaviour {
     }
 
     public string GetStat(UnitStatText stat) {
+        if (currentCharacter == null) {
+            return "";
+        }
+
         switch (stat) {
             case UnitStatText.NAME: return currentCharacter.characterName;
             case UnitStatText.CLASS: return currentCharacter.className;

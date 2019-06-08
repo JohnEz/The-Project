@@ -47,6 +47,8 @@ public class ActionBar : MonoBehaviour {
         UpdateSlots();
         UpdateAvatar();
         UpdateBuffController();
+
+        UpdateCharacterInfoWindow(false);
     }
 
     public void UpdateSlots() {
@@ -86,5 +88,26 @@ public class ActionBar : MonoBehaviour {
 
         UnitBuffs buffs = currentlyDisplayedUnit != null ? currentlyDisplayedUnit.myStats.buffs : null;
         buffController.Initialise(buffs);
+    }
+
+    public void OpenCharacterInfoWindow() {
+        UpdateCharacterInfoWindow(true);
+    }
+
+    public void UpdateCharacterInfoWindow(bool show) {
+        UIWindow characterWindow = UIWindow.GetWindow(UIWindowID.Character);
+        if (characterWindow == null) {
+            return;
+        }
+        CharacterInfoWindow characterInfoWindow = characterWindow.GetComponent<CharacterInfoWindow>();
+        if (characterInfoWindow == null) {
+            return;
+        }
+
+        if (show) {
+            characterWindow.Show();
+        }
+
+        characterInfoWindow.Character = currentlyDisplayedUnit != null ? currentlyDisplayedUnit.myStats : null;
     }
 }
