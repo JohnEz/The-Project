@@ -72,7 +72,7 @@ public class TurnManager : MonoBehaviour {
         if (isAiTurn()) {
             StartCoroutine(AIManager.instance.NewTurn(playersTurn));
         } else if (currentPlayersTurn.units.Count > 0) {
-            CameraManager.instance.JumpToLocation(currentPlayersTurn.units[0].myNode);
+            UserInterfaceManager.instance.SelectNextUnit();
         }
     }
 

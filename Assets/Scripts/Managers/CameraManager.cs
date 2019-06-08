@@ -93,6 +93,8 @@ public class CameraManager : MonoBehaviour {
 
         TurnOffCameras();
 
+        yield return new WaitForSeconds(blendTime);
+
         TurnManager.instance.EndedCutscene();
 
         controlledCamera.TurnOn();
