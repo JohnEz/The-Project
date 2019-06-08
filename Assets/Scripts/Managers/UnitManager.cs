@@ -140,7 +140,7 @@ public class UnitManager : MonoBehaviour {
             throw new System.Exception("Current player not selected!");
         }
 
-        PathSearchOptions movementOptions = new PathSearchOptions(true, true, unit.myPlayer.faction);
+        PathSearchOptions movementOptions = new PathSearchOptions(unit.ActionPoints > 1, true, unit.myPlayer.faction);
 
         ReachableTiles walkingTiles = TileMap.instance.pathfinder.findReachableTiles(unit.myNode, moveDistance, walkingType, movementOptions);
         HighlightManager.instance.HighlightTiles(walkingTiles.basic.Keys.ToList(), SquareTarget.MOVEMENT);

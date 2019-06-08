@@ -53,7 +53,6 @@ public class HighlightManager : MonoBehaviour {
         currentlyEffected.Add(tileToHighlight);
         TileHighlighter highlighter = tileToHighlight.GetComponentInChildren<TileHighlighter>();
         highlighter.SetEffected(true);
-        highlighter.SetHighlighted(true);
 
         if (targetType != SquareTarget.UNDEFINED) {
             highlighter.SetTargetType(targetType);
@@ -73,7 +72,7 @@ public class HighlightManager : MonoBehaviour {
             }
             highlighter.ClearDecals();
         });
-        currentlyEffected.Clear();
+        currentlyEffected = currentlyEffected.FindAll(tile => tile.GetComponentInChildren<TileHighlighter>().GetEffected());
     }
 
     public void HighlightTiles(List<Node> tilesToHighlight, SquareTarget targetType) {

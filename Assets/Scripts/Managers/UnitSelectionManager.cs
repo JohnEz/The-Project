@@ -19,15 +19,15 @@ public class UnitSelectionManager : MonoBehaviour {
         get { return selectedUnit; }
     }
 
+    public Ability ActiveAbility { get; set; }
+
+    public int CurrentActionIndex { get; set; } = 0;
+
     private AbilityState abilityState = AbilityState.NONE;
 
     private void Awake() {
         instance = this;
     }
-
-    public Ability ActiveAbility { get; set; }
-
-    public int CurrentActionIndex { get; set; } = 0;
 
     // Using Ability
     /////////////////
@@ -104,6 +104,11 @@ public class UnitSelectionManager : MonoBehaviour {
         }
 
         selectedUnit = unitToSelect;
+
+        if (selectedUnit == null) {
+            return;
+        }
+
         HighlightManager.instance.SetEffectedTile(selectedUnit.myNode, SquareTarget.SELECTED_UNIT);
     }
 
@@ -114,5 +119,30 @@ public class UnitSelectionManager : MonoBehaviour {
 
         HighlightManager.instance.UnhighlightTile(selectedUnit.myNode);
         selectedUnit = null;
+    }
+
+    public UnitController SelectNextUnit() {
+        SelectUnit(FindNextUnit());
+
+        return selectedUnit;
+    }
+
+    public UnitController FindNextUnit() {
+        Player currentPlayer = TurnManager.instance.GetCurrentPlayer();
+        List<UnitController> playerUnits = UnitManager.instance.GetPlayersUnits(currentPlayer.id);
+        int currentSelectedIndex = selectedUnit != null ? playerUnits.IndexOf(selectedUnit) : -1;
+
+        int index = (currentSelectedIndex + 1) % playerUnits.Count;
+        bool isNextUnitFound = false;
+
+        while (index != currentSelectedIndex && !isNextUnitFound) {
+            if (playerUnits[index].ActionPoints > 0) {
+                isNextUnitFound = true;
+            } else {
+                index = (index + 1) % playerUnits.Count;
+            }
+        }
+
+        return isNextUnitFound ? playerUnits[index] : null;
     }
 }

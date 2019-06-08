@@ -32,10 +32,10 @@ public class UserInterfaceManager : MonoBehaviour {
         }
     }
 
-    public void UnshowAbility() {
+    public void UnshowAbility(bool clearSelectedUnit = false) {
         ActionBar.instance.UnselectAbilities();
         HighlightManager.instance.UnhighlightTiles();
-        HighlightManager.instance.ClearEffectedTiles();
+        HighlightManager.instance.ClearEffectedTiles(clearSelectedUnit);
     }
 
     private void UserControls() {
@@ -170,11 +170,12 @@ public class UserInterfaceManager : MonoBehaviour {
     }
 
     public void ClickedMovement(Node node) {
+        UnshowAbility(true);
+
         int cost = Mathf.CeilToInt(node.cost / UnitSelectionManager.instance.SelectedUnit.myStats.Speed);
 
         UnitSelectionManager.instance.SelectedUnit.ActionPoints -= cost;
         UnitManager.instance.MoveToTile(UnitSelectionManager.instance.SelectedUnit, node);
-        UnshowAbility();
     }
 
     public void ClickedUnselected(Node node) {
@@ -302,10 +303,41 @@ public class UserInterfaceManager : MonoBehaviour {
         return false;
     }
 
+    public bool ReselectUnit() {
+        UnitController lastSelectedCharacter = UnitSelectionManager.instance.selectedUnit;
+        if (lastSelectedCharacter != null && lastSelectedCharacter.ActionPoints > 0) {
+            UnitSelectionManager.instance.SelectUnit(lastSelectedCharacter);
+            ShowMovement();
+            return true;
+        }
+        return false;
+    }
+
+    public void SelectNextUnit() {
+        UnitController nextUnit = UnitSelectionManager.instance.SelectNextUnit();
+        if (nextUnit != null) {
+            CameraManager.instance.JumpToLocation(nextUnit.myNode);
+            ShowMovement();
+        }
+    }
+
+    //public void SelectPreviousUnit() {
+    //    UnitController nextUnit = unitManager.GetPreviousUnit(turnManager.PlayersTurn);
+    //    if (nextUnit != null) {
+    //        GetComponent<CameraManager>().MoveToLocation(nextUnit.myNode);
+    //        SelectUnit(nextUnit);
+    //        ShowMovement();
+    //    }
+    //}
+
     public void FinishedAction() {
         UnitSelectionManager.instance.CurrentActionIndex++;
         if (!RunNextAbilityAction(UnitSelectionManager.instance.ActiveAbility, UnitSelectionManager.instance.CurrentActionIndex)) {
             UnitSelectionManager.instance.FinishedUsingAbility();
+
+            if (!ReselectUnit()) {
+                SelectNextUnit();
+            }
         }
     }
 

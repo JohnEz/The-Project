@@ -18,7 +18,12 @@ public enum SquareDecal {
     ARROW
 }
 
+//TODO SORT THIS TRASH WHY TF DIDNT I USE SOME FORM OF DICTIONARY?
 internal struct TileState {
+    public const string HOVERED = "hovered";
+    public const string HIGHLIGHTED = "highlighted";
+    public const string EFFECTED = "effected";
+
     public bool hovered;
     public bool highlighted;
     public bool effected;
@@ -26,18 +31,33 @@ internal struct TileState {
     public void SetValue(string key, bool value) {
         //TODO there must be a clean way to do this in c#
         switch (key) {
-            case "hovered":
+            case HOVERED:
                 hovered = value;
                 break;
 
-            case "highlighted":
+            case HIGHLIGHTED:
                 highlighted = value;
                 break;
 
-            case "effected":
+            case EFFECTED:
                 effected = value;
                 break;
         }
+    }
+
+    public bool GetValue(string key) {
+        //TODO there must be a clean way to do this in c#
+        switch (key) {
+            case HOVERED:
+                return hovered;
+
+            case HIGHLIGHTED:
+                return highlighted;
+
+            case EFFECTED:
+                return effected;
+        }
+        return false;
     }
 }
 
@@ -98,29 +118,36 @@ public class TileHighlighter : MonoBehaviour {
     }
 
     public void OnMouseEnter() {
-        UpdateState("hovered", true);
+        UpdateState(TileState.HOVERED, true);
         Node myNode = GetComponentInParent<Node>();
         UserInterfaceManager.instance.TileHovered(myNode, myTarget);
     }
 
     public void OnMouseExit() {
-        UpdateState("hovered", false);
+        UpdateState(TileState.HOVERED, false);
         Node myNode = GetComponentInParent<Node>();
         UserInterfaceManager.instance.TileExit(myNode, myTarget);
     }
 
+    public bool GetHighlighted() {
+        return myState.GetValue(TileState.HIGHLIGHTED);
+    }
+
     public void SetHighlighted(bool highlighted) {
-        UpdateState("highlighted", highlighted);
+        UpdateState(TileState.HIGHLIGHTED, highlighted);
+    }
+
+    public bool GetEffected() {
+        return myState.GetValue(TileState.EFFECTED);
     }
 
     public void SetEffected(bool effected) {
-        UpdateState("effected", effected);
+        UpdateState(TileState.EFFECTED, effected);
     }
 
     public void CleanHighlight() {
-        myState.effected = false;
-        myState.highlighted = false;
-        mySpriteRenderer.sprite = GetCurrentHighlight();
+        SetEffected(false);
+        SetHighlighted(false);
         mySpriteRenderer.color = white;
         myTarget = SquareTarget.NONE;
         ClearDecals();
