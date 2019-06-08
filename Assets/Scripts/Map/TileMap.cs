@@ -60,6 +60,10 @@ public class TileMap : MonoBehaviour {
         isMapLoaded = true;
     }
 
+    public List<Node> GetNodes() {
+        return new List<Node>(tiles);
+    }
+
     public Node GetNode(Vector2 pos) {
         return GetNode((int)pos.x, (int)pos.y);
     }

@@ -4,9 +4,6 @@ using UnityEngine;
 public class HighlightManager : MonoBehaviour {
     public static HighlightManager instance;
 
-    private List<Node> currentlyHighlighted = new List<Node>();
-    private List<Node> currentlyEffected = new List<Node>();
-
     private void Awake() {
         instance = this;
     }
@@ -17,6 +14,14 @@ public class HighlightManager : MonoBehaviour {
 
     // Update is called once per frame
     private void Update() {
+    }
+
+    public List<Node> GetHighlightedTiles() {
+        return TileMap.instance.GetNodes().FindAll(node => node.GetComponentInChildren<TileHighlighter>().GetHighlighted());
+    }
+
+    public List<Node> GetEffectedTiles() {
+        return TileMap.instance.GetNodes().FindAll(node => node.GetComponentInChildren<TileHighlighter>().GetEffected());
     }
 
     public void ShowPath(List<Node> effectedTiles) {
@@ -50,7 +55,6 @@ public class HighlightManager : MonoBehaviour {
     }
 
     public void SetEffectedTile(Node tileToHighlight, SquareTarget targetType) {
-        currentlyEffected.Add(tileToHighlight);
         TileHighlighter highlighter = tileToHighlight.GetComponentInChildren<TileHighlighter>();
         highlighter.SetEffected(true);
 
@@ -60,24 +64,23 @@ public class HighlightManager : MonoBehaviour {
     }
 
     public void ClearEffectedTiles(bool clearSelectedUnit = false) {
-        currentlyEffected.ForEach((tile) => {
+        List<Node> currentlyHighlightedNodes = GetHighlightedTiles();
+        GetEffectedTiles().ForEach((tile) => {
             TileHighlighter highlighter = tile.GetComponentInChildren<TileHighlighter>();
             if (!clearSelectedUnit && highlighter.myTarget == SquareTarget.SELECTED_UNIT) {
                 return;
             }
 
             highlighter.SetEffected(false);
-            if (!currentlyHighlighted.Contains(tile)) {
+            if (!currentlyHighlightedNodes.Contains(tile)) {
                 highlighter.CleanHighlight();
             }
             highlighter.ClearDecals();
         });
-        currentlyEffected = currentlyEffected.FindAll(tile => tile.GetComponentInChildren<TileHighlighter>().GetEffected());
     }
 
     public void HighlightTiles(List<Node> tilesToHighlight, SquareTarget targetType) {
         foreach (Node n in tilesToHighlight) {
-            currentlyHighlighted.Add(n);
             TileHighlighter highlighter = n.GetComponentInChildren<TileHighlighter>();
             highlighter.SetTargetType(targetType);
             highlighter.SetHighlighted(true);
@@ -85,16 +88,14 @@ public class HighlightManager : MonoBehaviour {
     }
 
     public void HighlightTile(Node tileToHighlight, SquareTarget targetType) {
-        currentlyHighlighted.Add(tileToHighlight);
         tileToHighlight.GetComponentInChildren<TileHighlighter>().SetTargetType(targetType);
         tileToHighlight.GetComponentInChildren<TileHighlighter>().SetHighlighted(true);
     }
 
     public void UnhighlightTiles() {
-        foreach (Node n in currentlyHighlighted) {
+        foreach (Node n in GetHighlightedTiles()) {
             UnhighlightTile(n);
         }
-        currentlyHighlighted = new List<Node>();
     }
 
     public void UnhighlightAllTiles() {
