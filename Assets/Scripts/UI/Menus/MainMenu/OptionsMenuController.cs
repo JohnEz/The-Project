@@ -21,6 +21,9 @@ public class OptionsMenuController : MonoBehaviour {
 
     private Resolution[] resolutions;
 
+    public const string RESOLUTION_WIDTH = "resolutionWidth";
+    public const string RESOLUTION_HEIGHT = "resolutionHeight";
+    public const string REFRESH_RATE = "refreshRate";
     public const string FULL_SCREEN = "fullScreen";
     public const string MOUSE_CAN_CONTROL_CAMERA = "mouseCanControlCamera";
 
@@ -31,26 +34,11 @@ public class OptionsMenuController : MonoBehaviour {
     public void LoadSettings() {
         SetupResolution();
 
-        int fullscreenValue = PlayerPrefs.GetInt(FULL_SCREEN);
-        if (fullscreenValue == 0) {
-            fullscreenToggle.isOn = Screen.fullScreen;
-        } else {
-            bool isFullscreen = fullscreenValue == 1;
-            fullscreenToggle.isOn = isFullscreen;
-            Screen.fullScreen = isFullscreen;
-        }
+        SetupFullScreen();
 
-        int mouseCanControlCameraValue = PlayerPrefs.GetInt(MOUSE_CAN_CONTROL_CAMERA);
-        if (fullscreenValue == 0) {
-            mouseCanControlCameraToggle.isOn = true;
-            GameSettings.MouseCanMoveCamera = true;
-        } else {
-            bool mouseCanControlCamera = mouseCanControlCameraValue == 1;
-            mouseCanControlCameraToggle.isOn = mouseCanControlCamera;
-            GameSettings.MouseCanMoveCamera = mouseCanControlCamera;
-        }
+        SetupMouseCanControlCamera();
 
-        RefreshMusicSliders();
+        SetupMusicSliders();
     }
 
     protected void OnEnable() {
@@ -73,7 +61,7 @@ public class OptionsMenuController : MonoBehaviour {
         if (res.Equals(Screen.currentResolution))
             return;
 
-        Screen.SetResolution(res.width, res.height, true, res.refreshRate);
+        Screen.SetResolution(res.width, res.height, Screen.fullScreen, res.refreshRate);
     }
 
     public void SetupResolution() {
@@ -89,12 +77,23 @@ public class OptionsMenuController : MonoBehaviour {
             resolutionSelectField.AddOption(string.Format("{0} x {1} @{2}Hz", res.width, res.height, res.refreshRate));
         }
 
-        Resolution currentResolution = Screen.currentResolution;
+        int resWidth = PlayerPrefs.GetInt(RESOLUTION_WIDTH);
+        int resHeight = PlayerPrefs.GetInt(RESOLUTION_HEIGHT);
+        int refreshRate = PlayerPrefs.GetInt(REFRESH_RATE);
 
-        resolutionSelectField.SelectOption(string.Format("{0} x {1} @{2}Hz", currentResolution.width, currentResolution.height, currentResolution.refreshRate));
+        if (resWidth == 0 || resHeight == 0 || refreshRate == 0) {
+            Resolution currentResolution = Screen.currentResolution;
+            resWidth = currentResolution.width;
+            resHeight = currentResolution.height;
+            refreshRate = currentResolution.refreshRate;
+        }
+
+        Debug.LogError(string.Format("{0} x {1} @{2}Hz", resWidth, resHeight, refreshRate));
+
+        resolutionSelectField.SelectOption(string.Format("{0} x {1} @{2}Hz", resWidth, resHeight, refreshRate));
     }
 
-    public void RefreshMusicSliders() {
+    public void SetupMusicSliders() {
         float loadedMasterVolume = PlayerPrefs.GetFloat(AudioManager.MASTER_VOLUME);
         masterVolumeSlider.value = (loadedMasterVolume / 80) + 1;
 
@@ -103,6 +102,29 @@ public class OptionsMenuController : MonoBehaviour {
 
         float loadedSFXVolume = PlayerPrefs.GetFloat(AudioManager.SFX_VOLUME);
         sfxVolumeSlider.value = (loadedSFXVolume / 80) + 1;
+    }
+
+    public void SetupFullScreen() {
+        int fullscreenValue = PlayerPrefs.GetInt(FULL_SCREEN);
+        if (fullscreenValue == 0) {
+            fullscreenToggle.isOn = Screen.fullScreen;
+        } else {
+            bool isFullscreen = fullscreenValue == 1;
+            fullscreenToggle.isOn = isFullscreen;
+            Screen.fullScreen = isFullscreen;
+        }
+    }
+
+    public void SetupMouseCanControlCamera() {
+        int mouseCanControlCameraValue = PlayerPrefs.GetInt(MOUSE_CAN_CONTROL_CAMERA);
+        if (mouseCanControlCameraValue == 0) {
+            mouseCanControlCameraToggle.isOn = true;
+            GameSettings.MouseCanMoveCamera = true;
+        } else {
+            bool mouseCanControlCamera = mouseCanControlCameraValue == 1;
+            mouseCanControlCameraToggle.isOn = mouseCanControlCamera;
+            GameSettings.MouseCanMoveCamera = mouseCanControlCamera;
+        }
     }
 
     public void SetMasterVolume(float volume) {
@@ -135,6 +157,11 @@ public class OptionsMenuController : MonoBehaviour {
     }
 
     public void SaveOptions() {
+        Resolution currentResolution = Screen.currentResolution;
+        PlayerPrefs.SetInt(RESOLUTION_WIDTH, currentResolution.width);
+        PlayerPrefs.SetInt(RESOLUTION_HEIGHT, currentResolution.height);
+        PlayerPrefs.SetInt(REFRESH_RATE, currentResolution.refreshRate);
+
         float masterVolume = 0;
         masterMixer.GetFloat(AudioManager.MASTER_VOLUME, out masterVolume);
         PlayerPrefs.SetFloat(AudioManager.MASTER_VOLUME, masterVolume);
