@@ -108,6 +108,10 @@ public class UnitSelectionManager : MonoBehaviour {
     }
 
     public void UnselectUnit() {
+        if (selectedUnit == null) {
+            return;
+        }
+
         HighlightManager.instance.UnhighlightTile(selectedUnit.myNode);
         selectedUnit = null;
     }

@@ -140,8 +140,11 @@ public class UnitManager : MonoBehaviour {
             throw new System.Exception("Current player not selected!");
         }
 
-        ReachableTiles walkingTiles = TileMap.instance.pathfinder.findReachableTiles(unit.myNode, moveDistance, walkingType, new PathSearchOptions(unit.myPlayer.faction));
+        PathSearchOptions movementOptions = new PathSearchOptions(true, true, unit.myPlayer.faction);
+
+        ReachableTiles walkingTiles = TileMap.instance.pathfinder.findReachableTiles(unit.myNode, moveDistance, walkingType, movementOptions);
         HighlightManager.instance.HighlightTiles(walkingTiles.basic.Keys.ToList(), SquareTarget.MOVEMENT);
+        HighlightManager.instance.HighlightTiles(walkingTiles.extended.Keys.ToList(), SquareTarget.DASH);
     }
 
     // Shows where the ability can target

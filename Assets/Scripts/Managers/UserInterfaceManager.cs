@@ -170,7 +170,9 @@ public class UserInterfaceManager : MonoBehaviour {
     }
 
     public void ClickedMovement(Node node) {
-        UnitSelectionManager.instance.SelectedUnit.ActionPoints -= (int)node.moveCost;
+        int cost = Mathf.CeilToInt(node.cost / UnitSelectionManager.instance.SelectedUnit.myStats.Speed);
+
+        UnitSelectionManager.instance.SelectedUnit.ActionPoints -= cost;
         UnitManager.instance.MoveToTile(UnitSelectionManager.instance.SelectedUnit, node);
         UnshowAbility();
     }
