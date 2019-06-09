@@ -1,13 +1,26 @@
 ﻿using UnityEngine;
 using System.Collections;
 using DuloGames.UI;
+using TMPro;
+using UnityEngine.UI;
 
 public class BuffIcon : UITooltipShow {
     public static int BUFF_TOOLTIP_WIDTH = 512;
     private Buff buff;
 
-    public void SetBuff(Buff _buff) {
+    public bool showTooltip = true;
+    public TextMeshProUGUI stackCounterText;
+
+    public void SetBuff(Buff _buff, Sprite icon = null) {
         buff = _buff;
+
+        if (buff == null) {
+            return;
+        }
+
+        stackCounterText.text = buff.stacks > 1 ? buff.stacks.ToString() : "";
+
+        GetComponent<Image>().sprite = icon;
     }
 
     /// <summary>
@@ -15,7 +28,7 @@ public class BuffIcon : UITooltipShow {
     /// </summary>
     /// <param name="show">If set to <c>true</c> show.</param>
     public override void OnTooltip(bool show) {
-        if (this.buff == null)
+        if (this.buff == null || !showTooltip)
             return;
 
         base.OnTooltip(show);

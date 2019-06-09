@@ -3,7 +3,7 @@
 
     public Strengthen(int maxDuration) : base(maxDuration) {
         name = "Strengthen";
-        icon = "buffPower";
+        icon = "icon_strengthen";
         maxStack = 5;
         percentMod[(int)Stats.POWER] = 1 + percentIncrease;
     }

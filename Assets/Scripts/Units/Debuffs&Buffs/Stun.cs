@@ -2,6 +2,7 @@
 
     public Stun(int maxDuration) : base(maxDuration) {
         name = "Stun";
+        icon = "icon_stun";
         isDebuff = true;
     }
 

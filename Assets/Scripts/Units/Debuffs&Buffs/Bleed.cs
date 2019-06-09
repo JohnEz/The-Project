@@ -6,7 +6,7 @@
         maxStack = 5;
         isDebuff = true;
         percentMod[(int)Stats.DAMAGE] = 1 - percentDamage;
-        icon = "buffBleed";
+        icon = "icon_bleed";
     }
 
     public override string GetDescription() {

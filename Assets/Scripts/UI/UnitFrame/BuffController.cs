@@ -80,14 +80,10 @@ public class BuffController : MonoBehaviour {
 
         buffs.Add(addedBuff.name, newBuffIcon);
 
-        if (buffSprite != null) {
-            newBuffIcon.GetComponent<Image>().sprite = buffSprite;
-        }
-
         BuffIcon buffIcon = newBuffIcon.GetComponent<BuffIcon>();
 
         if (buffIcon != null) {
-            buffIcon.SetBuff(addedBuff);
+            buffIcon.SetBuff(addedBuff, buffSprite);
         }
     }
 

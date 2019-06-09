@@ -17,7 +17,7 @@ public class Buff {
     public GameObject persistentFx;
 
     public string name = "Buff Default";
-    public string icon = "buffPower";
+    public string icon = "icon_poison";
 
     public Buff(int _maxDuration, GameObject _persistentFxPrefab = null) {
         flatMod = new int[Enum.GetNames(typeof(Stats)).Length];
