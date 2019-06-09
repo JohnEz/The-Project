@@ -1,5 +1,5 @@
 ﻿public class Strengthen : Buff {
-    private float percentIncrease = 0.1f;
+    private float percentIncrease = 0.2f;
 
     public Strengthen(int maxDuration) : base(maxDuration) {
         name = "Strengthen";
