@@ -4,14 +4,15 @@ using UnityEngine;
 using UnityEngine.Events;
 
 public enum Stats {
-    HEALTH,
+    MAX_HEALTH,
+    MAX_SHIELD,
     SHIELD,
     SPEED,
     POWER,
     BLOCK,
     AP,
     DAMAGE,
-    HEALING,
+    HEALTH,
     CRIT,
     LIFE_STEAL,
     ACCURRACY,
@@ -161,7 +162,7 @@ public class UnitObject : ScriptableObject {
     public int Shield {
         get { return currentShield; }
         set {
-            currentShield = Mathf.Clamp(value, 0, MaxHealth);
+            currentShield = Mathf.Clamp(value, 0, MaxShield);
 
             if (this.onStatChange != null)
                 this.onStatChange.Invoke();
@@ -169,7 +170,11 @@ public class UnitObject : ScriptableObject {
     }
 
     public int MaxHealth {
-        get { return GetModifiedStat(baseHealth, Stats.HEALTH); }
+        get { return GetModifiedStat(baseHealth, Stats.MAX_HEALTH); }
+    }
+
+    public int MaxShield {
+        get { return GetModifiedStat(MaxHealth, Stats.MAX_SHIELD); }
     }
 
     public int MaxActionPoints {
@@ -220,8 +225,8 @@ public class UnitObject : ScriptableObject {
         buffs.GetBuffs().ForEach((buff) => {
             damage += Mathf.RoundToInt(MaxHealth * (1 - buff.GetPercentMod((int)Stats.DAMAGE)));
             damage += buff.GetFlatMod((int)Stats.DAMAGE);
-            healing += Mathf.RoundToInt(MaxHealth * (buff.GetPercentMod((int)Stats.HEALING) - 1));
-            healing += buff.GetFlatMod((int)Stats.HEALING);
+            healing += Mathf.RoundToInt(MaxHealth * (buff.GetPercentMod((int)Stats.HEALTH) - 1));
+            healing += buff.GetFlatMod((int)Stats.HEALTH);
         });
 
         if (damage > 0) {
