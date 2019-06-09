@@ -87,7 +87,7 @@ public class HpBarController : MonoBehaviour {
 
     private void UpdateShieldBarPosition() {
         float hpBarEnd = hpBar.rectTransform.rect.width * hpBar.fillAmount;
-        shieldBar.rectTransform.anchoredPosition = new Vector3(hpBarEnd - 3, shieldBar.rectTransform.anchoredPosition.y, 0);
+        shieldBar.rectTransform.anchoredPosition = new Vector3(hpBarEnd - 1, shieldBar.rectTransform.anchoredPosition.y, 0);
     }
 
     public void destroyMarkers() {
