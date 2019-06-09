@@ -144,8 +144,7 @@ public class UnitObject : ScriptableObject {
         set {
             actionPoints = value;
 
-            if (this.onStatChange != null)
-                this.onStatChange.Invoke();
+            OnStatChange();
         }
     }
 
@@ -154,8 +153,7 @@ public class UnitObject : ScriptableObject {
         set {
             currentHealth = Mathf.Clamp(value, 0, MaxHealth);
 
-            if (this.onStatChange != null)
-                this.onStatChange.Invoke();
+            OnStatChange();
         }
     }
 
@@ -164,8 +162,7 @@ public class UnitObject : ScriptableObject {
         set {
             currentShield = Mathf.Clamp(value, 0, MaxShield);
 
-            if (this.onStatChange != null)
-                this.onStatChange.Invoke();
+            OnStatChange();
         }
     }
 

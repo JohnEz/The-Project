@@ -99,7 +99,6 @@ public class UnitController : MonoBehaviour {
         unitCanvasController = unitCanvas.GetComponent<UnitCanvasController>();
 
         myCounters = new UnitStatistics();
-        //myStats = Instantiate(baseStats);
         myStats.Initialise(this);
         projectiles = new List<ProjectileController>();
         myDialogController = GetComponentInChildren<UnitDialogController>();
@@ -240,18 +239,12 @@ public class UnitController : MonoBehaviour {
 
     public int Health {
         get { return myStats.Health; }
-        set {
-            myStats.Health = value;
-            unitCanvasController.UpdateHP(myStats.Health, myStats.MaxHealth, myStats.Shield);
-        }
+        set { myStats.Health = value; }
     }
 
     public int Shield {
         get { return myStats.Shield; }
-        set {
-            myStats.Shield = value;
-            unitCanvasController.UpdateHP(myStats.Health, myStats.MaxHealth, myStats.Shield);
-        }
+        set { myStats.Shield = value; }
     }
 
     public int ActionPoints {

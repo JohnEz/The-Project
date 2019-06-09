@@ -61,7 +61,7 @@ public class UnitCanvasController : MonoBehaviour {
         hpBar = Instantiate(hpBarPrefab, transform, false).GetComponent<HpBarController>();
         buffs = hpBar.GetComponent<BuffController>();
 
-        hpBar.Initialize(myUnit.myStats.MaxHealth);
+        hpBar.Initialize(myUnit.myStats);
         hpBar.SetHPColor(teamColours[myTeam]);
 
         RectTransform hpRect = hpBar.GetComponent<RectTransform>();
@@ -79,14 +79,6 @@ public class UnitCanvasController : MonoBehaviour {
         Vector3 currentRotation = transform.rotation.eulerAngles;
         currentRotation.y = CameraManager.instance.GetCameraRotation().y;
         transform.rotation = Quaternion.Euler(currentRotation);
-    }
-
-    public void UpdateHP(int currentHP, int maxHP, int shield) {
-        if (hpBar == null) {
-            return;
-        }
-
-        hpBar.SetHP(currentHP, maxHP, shield);
     }
 
     public void UpdateActionPoints(int ap) {

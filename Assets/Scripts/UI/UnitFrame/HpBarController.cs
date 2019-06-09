@@ -19,11 +19,22 @@ public class HpBarController : MonoBehaviour {
     private float targetHPPercent = 1;
     private float targetShieldPercent = 0;
 
+    private UnitObject targetStats;
+
     // Use this for initialization
-    public void Initialize(float maxHp) {
-        currentMax = maxHp;
+    public void Initialize(UnitObject stats) {
+        targetStats = stats;
+        currentMax = stats.MaxHealth;
         if (displayHPMarkers) {
-            createMarkers(maxHp);
+            createMarkers(stats.MaxHealth);
+        }
+
+        targetStats.onStatChange.AddListener(SetHp);
+    }
+
+    public void OnDisable() {
+        if (targetStats != null) {
+            targetStats.onStatChange.RemoveListener(SetHp);
         }
     }
 
@@ -49,15 +60,19 @@ public class HpBarController : MonoBehaviour {
         }
     }
 
-    public void SetHP(float currentHp, float maxHp, float shield) {
-        targetHPPercent = currentHp / (maxHp + shield);
-        targetShieldPercent = shield / (maxHp + shield);
+    public void SetHp() {
+        float health = targetStats.Health;
+        float shield = targetStats.Shield;
+        float maxHealth = targetStats.MaxHealth;
+
+        targetHPPercent = health / (maxHealth + shield);
+        targetShieldPercent = shield / (maxHealth + shield);
 
         if (displayHPMarkers) {
-            if (maxHp != currentMax + shield) {
-                currentMax = maxHp + shield;
+            if (maxHealth != currentMax + shield) {
+                currentMax = maxHealth + shield;
                 destroyMarkers();
-                createMarkers(maxHp + shield);
+                createMarkers(maxHealth + shield);
             }
         }
     }
