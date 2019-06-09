@@ -110,7 +110,7 @@ public class ObjectiveManager : MonoBehaviour {
         }
     }
 
-    public GameOutcome CheckObjectives(Player player) {
+    public GameOutcome CheckObjectivesLegacy(Player player) {
         if (objectives.ContainsKey(player)) {
             List<Objective> playerObjectives = objectives[player];
             bool isVictorious = true;
@@ -133,6 +133,35 @@ public class ObjectiveManager : MonoBehaviour {
                 return GameOutcome.WIN;
             } else if (isDeafted) {
                 return GameOutcome.LOSS;
+            }
+        }
+        return GameOutcome.NONE;
+    }
+
+    //TODO this needs cleaning up and adapting for multiple allies and enemies
+    public GameOutcome CheckObjectives(Player mainPlayer) {
+        foreach (KeyValuePair<Player, List<Objective>> entry in objectives) {
+            bool isMainPlayer = entry.Key == mainPlayer;
+            bool isVictorious = true;
+            bool isDeafted = false;
+
+            foreach (Objective objective in entry.Value) {
+                if (objective.Status == ObjectiveStatus.NONE) {
+                    if (!objective.optional) {
+                        isVictorious = false;
+                    }
+                } else if (objective.Status == ObjectiveStatus.FAILED) {
+                    if (!objective.optional) {
+                        isVictorious = false;
+                        isDeafted = true;
+                    }
+                }
+            }
+
+            if (isVictorious) {
+                return isMainPlayer ? GameOutcome.WIN : GameOutcome.LOSS;
+            } else if (isDeafted) {
+                return isMainPlayer ? GameOutcome.LOSS : GameOutcome.WIN;
             }
         }
         return GameOutcome.NONE;

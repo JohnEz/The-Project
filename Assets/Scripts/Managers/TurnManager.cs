@@ -121,8 +121,20 @@ public class TurnManager : MonoBehaviour {
         checkedIfTurnShouldEnd = false;
     }
 
+    public void ChangeToWaitingForInput() {
+        GameOutcome gameOutcome = ObjectiveManager.instance.CheckObjectives(PlayerManager.instance.mainPlayer);
+
+        if (gameOutcome != GameOutcome.NONE) {
+            ChangeState(TurnPhase.GAME_OVER);
+
+            GUIController.instance.GameOver(gameOutcome == GameOutcome.WIN);
+        } else {
+            ChangeState(TurnPhase.WAITING_FOR_INPUT);
+        }
+    }
+
     public void FinishStartingTurn() {
-        ChangeState(TurnPhase.WAITING_FOR_INPUT);
+        ChangeToWaitingForInput();
     }
 
     public void StartMoving() {
@@ -130,7 +142,7 @@ public class TurnManager : MonoBehaviour {
     }
 
     public void FinishedMoving() {
-        ChangeState(TurnPhase.WAITING_FOR_INPUT);
+        ChangeToWaitingForInput();
         UserInterfaceManager.instance.FinishedMoving();
     }
 
@@ -140,7 +152,7 @@ public class TurnManager : MonoBehaviour {
 
     public void FinishedAttacking() {
         // TODO check for triggers?
-        ChangeState(TurnPhase.WAITING_FOR_INPUT);
+        ChangeToWaitingForInput();
         UserInterfaceManager.instance.FinishedAttacking();
     }
 
