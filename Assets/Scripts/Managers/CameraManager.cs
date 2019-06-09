@@ -93,7 +93,9 @@ public class CameraManager : MonoBehaviour {
 
         TurnOffCameras();
 
-        yield return new WaitForSeconds(blendTime);
+        if (encounterTargets.Count < 1) {
+            yield return new WaitForSeconds(blendTime);
+        }
 
         TurnManager.instance.EndedCutscene();
 
