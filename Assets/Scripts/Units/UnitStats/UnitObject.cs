@@ -33,6 +33,10 @@ public class UnitObject : ScriptableObject {
 
     public UnitToken[] unitTokens;
 
+    public UnitBuffs buffs;
+
+    public UnitEquipment equipment;
+
     // Audio
     public AudioClip encounterSFX;
 
@@ -82,10 +86,9 @@ public class UnitObject : ScriptableObject {
     [HideInInspector]
     public UnitToken displayToken;
 
-    public UnitBuffs buffs;
-
     public void Awake() {
         buffs = new UnitBuffs();
+        equipment = equipment != null ? equipment : new UnitEquipment();
         Reset();
         displayToken = unitTokens[UnityEngine.Random.Range(0, unitTokens.Length)];
     }
@@ -127,6 +130,9 @@ public class UnitObject : ScriptableObject {
     public int GetModifiedStat(int baseValue, Stats stat) {
         int flatMods = 0;
         float percentMods = 1;
+
+        // get stats from equipment
+        flatMods += equipment.GetModifiedStat(stat);
 
         foreach (Buff buff in buffs.GetBuffs()) {
             flatMods += buff.GetFlatMod((int)stat);
