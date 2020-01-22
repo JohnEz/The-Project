@@ -1,11 +1,15 @@
 fileFormatVersion: 2
 guid: 71fb004c3b2b82d4a8cb2887a577945b
 TextureImporter:
-  fileIDToRecycleName:
-    21300000: ClericStrip_0
-    21300002: ClericStrip_1
+  internalIDToNameTable:
+  - first:
+      213: 21300000
+    second: ClericStrip_0
+  - first:
+      213: 21300002
+    second: ClericStrip_1
   externalObjects: {}
-  serializedVersion: 7
+  serializedVersion: 10
   mipmaps:
     mipMapMode: 0
     enableMipMap: 1
@@ -47,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 5
+  spritePixelsToUnits: 50
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -123,6 +127,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 8f12791832d646e4386c1fad4f5147b7
+      internalID: 21300000
       vertices: []
       indices: 
       edges: []
@@ -143,6 +148,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: b142733b820938d4ba58f8ad9a7d9269
+      internalID: 21300002
       vertices: []
       indices: 
       edges: []
@@ -151,10 +157,12 @@ TextureImporter:
     physicsShape: []
     bones: []
     spriteID: 5152af8ad45093b4993534dbb8508785
+    internalID: 0
     vertices: []
     indices: 
     edges: []
     weights: []
+    secondaryTextures: []
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

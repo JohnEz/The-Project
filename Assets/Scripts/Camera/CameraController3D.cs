@@ -2,7 +2,7 @@
 using UnityEngine;
 
 public class CameraController3D : MonoBehaviour {
-    private const float MOVE_SPEED = 1200; //speed the camera moves
+    private const float MOVE_SPEED = 120; //speed the camera moves
     private const float ZOOM_SPEED = 0.1f; // speed the camera zooms
     private const float ZOOM_CHANGE = 1f; //change in camera zoom
     private const float ZOOM_CLOSE_ENOUGH = 0.02f; // how close the zoom needs to be before it snaps
@@ -29,7 +29,7 @@ public class CameraController3D : MonoBehaviour {
     //[HideInInspector]
     public float maxZ = 100000;
 
-    private float textureSize = 128;
+    private float textureSize = 12.8f;
 
     private float currentZoom = 1f;
     private float targetZoom = 1f;

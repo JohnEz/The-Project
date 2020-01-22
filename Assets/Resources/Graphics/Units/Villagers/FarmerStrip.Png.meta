@@ -1,11 +1,15 @@
 fileFormatVersion: 2
 guid: eb3486a044638fb458e2dca97b93f0f8
 TextureImporter:
-  fileIDToRecycleName:
-    21300000: FarmerStrip_0
-    21300002: FarmerStrip_1
+  internalIDToNameTable:
+  - first:
+      213: 21300000
+    second: FarmerStrip_0
+  - first:
+      213: 21300002
+    second: FarmerStrip_1
   externalObjects: {}
-  serializedVersion: 7
+  serializedVersion: 10
   mipmaps:
     mipMapMode: 0
     enableMipMap: 1
@@ -47,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 5
+  spritePixelsToUnits: 50
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -123,6 +127,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 2b61a257972759241956d6e3a6233f4f
+      internalID: 21300000
       vertices: []
       indices: 
       edges: []
@@ -143,6 +148,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 544bf441ba5dd234b88da4b54d0d6feb
+      internalID: 21300002
       vertices: []
       indices: 
       edges: []
@@ -151,10 +157,12 @@ TextureImporter:
     physicsShape: []
     bones: []
     spriteID: ecb81ff8c53bc7a40ac6793b4416ae88
+    internalID: 0
     vertices: []
     indices: 
     edges: []
     weights: []
+    secondaryTextures: []
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

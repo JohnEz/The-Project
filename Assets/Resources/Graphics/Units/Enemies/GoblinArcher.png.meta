@@ -1,15 +1,27 @@
 fileFormatVersion: 2
 guid: 6a7ee0942ab37554b992898f1ebf2007
 TextureImporter:
-  fileIDToRecycleName:
-    21300000: GoblinArcher_0
-    21300002: GoblinArcher_1
-    21300004: GoblinArcher_2
-    21300006: GoblinArcher_3
-    21300008: GoblinArcher_4
-    21300010: GoblinArcher_5
+  internalIDToNameTable:
+  - first:
+      213: 21300000
+    second: GoblinArcher_0
+  - first:
+      213: 21300002
+    second: GoblinArcher_1
+  - first:
+      213: 21300004
+    second: GoblinArcher_2
+  - first:
+      213: 21300006
+    second: GoblinArcher_3
+  - first:
+      213: 21300008
+    second: GoblinArcher_4
+  - first:
+      213: 21300010
+    second: GoblinArcher_5
   externalObjects: {}
-  serializedVersion: 7
+  serializedVersion: 10
   mipmaps:
     mipMapMode: 0
     enableMipMap: 1
@@ -51,7 +63,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 5
+  spritePixelsToUnits: 50
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -127,6 +139,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 43ee5e7134928514faf26052a158f7e7
+      internalID: 21300000
       vertices: []
       indices: 
       edges: []
@@ -147,6 +160,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 376265d5ae16f194fb477ebe7252f932
+      internalID: 21300002
       vertices: []
       indices: 
       edges: []
@@ -167,6 +181,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 25006f33c4ef5324d9aa5f2d85534d92
+      internalID: 21300004
       vertices: []
       indices: 
       edges: []
@@ -187,6 +202,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 5af94ded6c2dffd40b1be03b9fa9d6dc
+      internalID: 21300006
       vertices: []
       indices: 
       edges: []
@@ -207,6 +223,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 479ae3571b3ed8847803b5ed873b09cb
+      internalID: 21300008
       vertices: []
       indices: 
       edges: []
@@ -227,6 +244,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: a7035de55a6f6cd41b39fbbc3ff56bda
+      internalID: 21300010
       vertices: []
       indices: 
       edges: []
@@ -235,10 +253,12 @@ TextureImporter:
     physicsShape: []
     bones: []
     spriteID: 84374d54023d1be47a73a8f2e7065f15
+    internalID: 0
     vertices: []
     indices: 
     edges: []
     weights: []
+    secondaryTextures: []
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

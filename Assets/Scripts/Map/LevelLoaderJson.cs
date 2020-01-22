@@ -158,8 +158,8 @@ public class LevelLoaderJson : MonoBehaviour {
             Debug.LogWarning("No spawn location layer");
         } else {
             foreach (SpawnLocation spawnLocation in spawnLocationLayer.objects) {
-                spawnLocation.x = Mathf.FloorToInt(spawnLocation.x / TileMap.TILE_SIZE);
-                spawnLocation.y = Mathf.FloorToInt(spawnLocation.y / TileMap.TILE_SIZE);
+                spawnLocation.x = Mathf.FloorToInt(spawnLocation.x / 128);
+                spawnLocation.y = Mathf.FloorToInt(spawnLocation.y / 128);
 
                 spawnLocation.isAllied = spawnLocation.type.Equals("ally");
 

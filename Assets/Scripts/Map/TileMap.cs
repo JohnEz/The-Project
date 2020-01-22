@@ -20,7 +20,7 @@ public class Room {
 }
 
 public class TileMap : MonoBehaviour {
-    public const int TILE_SIZE = 128;
+    public const float TILE_SIZE = 12.8f;
 
     public static TileMap instance;
 
@@ -112,11 +112,12 @@ public class TileMap : MonoBehaviour {
     }
 
     private void GenerateMap(MapData data) {
-        tiles = new Node[data.width * data.height];
-
-        spawnLocations = data.spawnLocations;
         mapWidth = data.width;
         mapHeight = data.height;
+        tiles = new Node[mapWidth * mapHeight];
+
+        spawnLocations = data.spawnLocations;
+
         float halfTileSize = TILE_SIZE / 2;
 
         //Generate empty nodes

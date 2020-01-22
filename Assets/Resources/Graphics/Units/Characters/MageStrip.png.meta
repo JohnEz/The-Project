@@ -1,11 +1,15 @@
 fileFormatVersion: 2
 guid: 6143f6a1ae1cf9d4f81b7a947115b741
 TextureImporter:
-  fileIDToRecycleName:
-    21300000: MageStrip_0
-    21300002: MageStrip_1
+  internalIDToNameTable:
+  - first:
+      213: 21300000
+    second: MageStrip_0
+  - first:
+      213: 21300002
+    second: MageStrip_1
   externalObjects: {}
-  serializedVersion: 7
+  serializedVersion: 10
   mipmaps:
     mipMapMode: 0
     enableMipMap: 1
@@ -47,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 5
+  spritePixelsToUnits: 50
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -123,6 +127,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 24c342a3149fc6647856600c7f16c494
+      internalID: 21300000
       vertices: []
       indices: 
       edges: []
@@ -143,6 +148,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: e10f9f029bee77246b3715942edf9b9b
+      internalID: 21300002
       vertices: []
       indices: 
       edges: []
@@ -151,10 +157,12 @@ TextureImporter:
     physicsShape: []
     bones: []
     spriteID: 5c955b44f6aba9f4e8be65aace4c58ed
+    internalID: 0
     vertices: []
     indices: 
     edges: []
     weights: []
+    secondaryTextures: []
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

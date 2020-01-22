@@ -63,7 +63,7 @@ public class UnitController : MonoBehaviour {
     public Vector2 facingDirection;
 
     //constants
-    private const float WALKSPEED = 325f;
+    private const float WALKSPEED = 32.5f;
 
     private const float CLOSE_ENOUGH_TO_TILE = 0.005f;
 

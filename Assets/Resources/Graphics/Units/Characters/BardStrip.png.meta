@@ -1,11 +1,15 @@
 fileFormatVersion: 2
 guid: 11096252131a9234a92277cdfa6fbeda
 TextureImporter:
-  fileIDToRecycleName:
-    21300000: BardStrip_0
-    21300002: BardStrip_1
+  internalIDToNameTable:
+  - first:
+      213: 21300000
+    second: BardStrip_0
+  - first:
+      213: 21300002
+    second: BardStrip_1
   externalObjects: {}
-  serializedVersion: 7
+  serializedVersion: 10
   mipmaps:
     mipMapMode: 0
     enableMipMap: 1
@@ -47,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 5
+  spritePixelsToUnits: 50
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -123,6 +127,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 5c7aa07407a732a4b8f85413137c099f
+      internalID: 21300000
       vertices: []
       indices: 
       edges: []
@@ -143,6 +148,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: e52b3df6f13c4254db5550044fa94b1c
+      internalID: 21300002
       vertices: []
       indices: 
       edges: []
@@ -151,10 +157,12 @@ TextureImporter:
     physicsShape: []
     bones: []
     spriteID: 371ced559d3797641bea61cb4dae4aab
+    internalID: 0
     vertices: []
     indices: 
     edges: []
     weights: []
+    secondaryTextures: []
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

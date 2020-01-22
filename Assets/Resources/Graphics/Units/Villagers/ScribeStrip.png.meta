@@ -1,11 +1,15 @@
 fileFormatVersion: 2
 guid: 4f24226bed9464d48ad34e696b9e3451
 TextureImporter:
-  fileIDToRecycleName:
-    21300000: ScribeStrip_0
-    21300002: ScribeStrip_1
+  internalIDToNameTable:
+  - first:
+      213: 21300000
+    second: ScribeStrip_0
+  - first:
+      213: 21300002
+    second: ScribeStrip_1
   externalObjects: {}
-  serializedVersion: 7
+  serializedVersion: 10
   mipmaps:
     mipMapMode: 0
     enableMipMap: 1
@@ -47,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 5
+  spritePixelsToUnits: 50
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -123,6 +127,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 1c0f1aa188d7eda47b2cafe289a8568c
+      internalID: 21300000
       vertices: []
       indices: 
       edges: []
@@ -143,6 +148,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 1366271f63aef7241a8cc65272c710b4
+      internalID: 21300002
       vertices: []
       indices: 
       edges: []
@@ -151,10 +157,12 @@ TextureImporter:
     physicsShape: []
     bones: []
     spriteID: 913b5ef2a3d072840a769736a4f3f8d7
+    internalID: 0
     vertices: []
     indices: 
     edges: []
     weights: []
+    secondaryTextures: []
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

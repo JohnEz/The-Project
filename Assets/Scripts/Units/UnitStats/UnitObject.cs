@@ -103,7 +103,7 @@ public class UnitObject : ScriptableObject {
         tokenTransform.Find("BackSprite").GetComponent<SpriteRenderer>().sprite = displayToken.backSprite;
 
         Vector3 tokenPos = tokenTransform.localPosition;
-        tokenTransform.localPosition = new Vector3(tokenPos.x, displayToken.frontSprite.rect.height / 10, tokenPos.z);
+        tokenTransform.localPosition = new Vector3(tokenPos.x, displayToken.frontSprite.rect.height / 96, tokenPos.z);
     }
 
     public void Reset(UnitController myUnit = null) {
