@@ -182,9 +182,21 @@ public class TileMap : MonoBehaviour {
             //set all neighbours
             if (x > 0) {
                 AddNeighbour(node, -1, 0);
+                //if (y > 0) {
+                //    AddNeighbour(node, -1, -1);
+                //}
+                //if (y < mapHeight - 1) {
+                //    AddNeighbour(node, -1, 1);
+                //}
             }
             if (x < mapWidth - 1) {
                 AddNeighbour(node, 1, 0);
+                //if (y > 0) {
+                //    AddNeighbour(node, 1, -1);
+                //}
+                //if (y < mapHeight - 1) {
+                //    AddNeighbour(node, 1, 1);
+                //}
             }
             if (y > 0) {
                 AddNeighbour(node, 0, -1);
