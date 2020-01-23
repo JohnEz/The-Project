@@ -67,7 +67,7 @@ public class CameraManager : MonoBehaviour {
         Transform targetTransform = target.transform.Find("Token");
 
         TurnOffCameras();
-        CreatePersonalCamera(targetTransform, target.myStats.displayToken.frontSprite.rect.height / (3 * 10));
+        CreatePersonalCamera(targetTransform, target.myStats.displayToken.frontSprite.rect.height / (3 * 100));
 
         GUIController.instance.HideUI();
 
