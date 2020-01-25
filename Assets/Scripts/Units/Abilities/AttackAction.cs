@@ -14,7 +14,6 @@ public class AttackAction : AbilityAction {
 
     public bool canTargetSelf = false;
     public bool isAutoCast = false;
-    public bool canDodge = true;
 
     public List<AttackEffect> attackEffects = new List<AttackEffect>(0);
 
@@ -42,14 +41,13 @@ public class AttackAction : AbilityAction {
         return Cooldown > 0;
     }
 
-    private void AbilityEffectUnit(UnitController target) {
-        if (canDodge) {
-            float hitChance = (float)caster.myStats.Accuracy / target.myStats.Dodge;
-            float dodgeRoll = Random.value;
-            if (hitChance < dodgeRoll) {
-                target.CreateBasicText("Dodge");
-                return;
-            }
+    private void AbilityEffectUnit(UnitController caster, UnitController target) {
+        // todo this should be effected by varing stats and weapon types
+        float hitRoll = Random.Range(0, 20) + caster.myStats.Agility;
+
+        if (hitRoll < target.myStats.AC) {
+            target.CreateBasicText("Miss");
+            return;
         }
 
         AddAbilityTarget(target.myNode, () => {
@@ -59,7 +57,7 @@ public class AttackAction : AbilityAction {
         });
     }
 
-    private void AbilityEffectNode(Node targetNode) {
+    private void AbilityEffectNode(UnitController caster, Node targetNode) {
         AddAbilityTarget(targetNode, () => {
             attackEffects.ForEach(attackEffect => {
                 attackEffect.AbilityEffect(caster, targetNode);
@@ -68,12 +66,12 @@ public class AttackAction : AbilityAction {
     }
 
     // Single target on use
-    public virtual void UseAbility(Node target) {
+    public virtual void UseAbility(UnitController caster, Node target) {
         OnUseSingleEventActions(target);
         if (tileTarget == TileTarget.UNIT) {
-            AbilityEffectUnit(target.myUnit);
+            AbilityEffectUnit(caster, target.myUnit);
         } else {
-            AbilityEffectNode(target);
+            AbilityEffectNode(caster, target);
         }
         AbilityUsed();
     }
@@ -81,10 +79,10 @@ public class AttackAction : AbilityAction {
     // AOE on use
     public virtual void UseAbility(List<Node> effectedNodes, Node target) {
         OnUseAOEEventActions(effectedNodes, target);
-        AbilityEffectNode(target);
+        AbilityEffectNode(caster, target);
         effectedNodes.ForEach(node => {
             if (CanHitUnit(node)) {
-                AbilityEffectUnit(node.myUnit);
+                AbilityEffectUnit(caster, node.myUnit);
             }
         });
         AbilityUsed();
@@ -162,88 +160,5 @@ public class AttackAction : AbilityAction {
             default:
                 return false;
         }
-    }
-
-    public override int GetDamage(UnitController caster) {
-        int damage = 0;
-
-        attackEffects.ForEach(attackEffect => {
-            //if (attackEffect.GetType() == typeof(DamageEffect)) {
-            //    damage += ((DamageEffect)attackEffect).damage;
-            //} else if (attackEffect.GetType() == typeof(PowerDamageEffect)) {
-            //    PowerDamageEffect damageEffect = (PowerDamageEffect)attackEffect;
-            //    damage += damageEffect.PowerModToInt(power, damageEffect.powerMod);
-            //}
-            damage += attackEffect.GetDamage(caster);
-        });
-
-        return damage;
-    }
-
-    public override int GetHealing(UnitController caster) {
-        int healing = 0;
-
-        attackEffects.ForEach(attackEffect => {
-            //if (attackEffect.GetType() == typeof(HealEffect)) {
-            //    healing += ((HealEffect)attackEffect).healing;
-            //} else if (attackEffect.GetType() == typeof(PowerHealEffect)) {
-            //    PowerHealEffect healEffect = (PowerHealEffect)attackEffect;
-            //    healing += healEffect.PowerModToInt(power, healEffect.powerMod);
-            //}
-            healing += attackEffect.GetHealing(caster);
-        });
-
-        return healing;
-    }
-
-    public override int GetShield(UnitController caster) {
-        int shield = 0;
-
-        attackEffects.ForEach(attackEffect => {
-            //if (attackEffect.GetType() == typeof(ShieldEffect)) {
-            //    ShieldEffect healEffect = (ShieldEffect)attackEffect;
-            //    shield += healEffect.PowerModToInt(power, healEffect.powerMod);
-            //}
-            shield += attackEffect.GetShield(caster);
-        });
-
-        return shield;
-    }
-
-    // AI Estimates //
-    //////////////////
-
-    public int GetDamageEstimate() {
-        int damage = 0;
-
-        attackEffects.ForEach(attackEffect => {
-            if (attackEffect.GetType() == typeof(DamageEffect)) {
-                damage += ((DamageEffect)attackEffect).damage;
-            }
-            //    } else if (attackEffect.GetType() == typeof(DamagePerStackEffect)) {
-            //        damage += ((DamagePerStackEffect)attackEffect).damageMod * 2;
-            //    } else if (attackEffect.GetType() == typeof(DamageWithMultiplierEffect)) {
-            //        DamageWithMultiplierEffect damageEffect = (DamageWithMultiplierEffect)attackEffect;
-            //        damage += damageEffect.baseDamage * (damageEffect.damageMod / 2);
-            //    }
-        });
-
-        return damage;
-    }
-
-    public int GetHealingEstimate() {
-        int healing = 0;
-
-        attackEffects.ForEach(attackEffect => {
-            if (attackEffect.GetType() == typeof(HealEffect)) {
-                healing += ((HealEffect)attackEffect).healing;
-            }
-        });
-
-        return healing;
-    }
-
-    public bool AppliesStealth() {
-        return attackEffects.Exists(attackEffect => attackEffect.GetType() == typeof(StealthEffect));
     }
 }

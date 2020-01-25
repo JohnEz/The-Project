@@ -15,18 +15,16 @@ public class ItemInfo : ScriptableObject {
     public ItemQuality quality;
     public EquipmentType equipType;
     public WeaponType weaponType;
+    public Ability ability;
 
     // Stats
 
-    public int maxHealth;
-    public int maxShield;
-    public int shieldPerTurn;
+    public int strength;
+    public int agility;
+    public int constitution;
+    public int wisdom;
+    public int intelligence;
+    public int armour;
     public int speed;
-    public int power;
-    public int block;
     public int actionPoints;
-    public int critChance;
-    public int lifeSteal;
-    public int accuracy;
-    public int dodge;
 }

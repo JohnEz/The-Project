@@ -61,9 +61,6 @@ public class UnitCanvasController : MonoBehaviour {
         hpBar = Instantiate(hpBarPrefab, transform, false).GetComponent<HpBarController>();
         buffs = hpBar.GetComponent<BuffController>();
 
-        hpBar.Initialize(myUnit.myStats);
-        hpBar.SetHPColor(teamColours[myTeam]);
-
         RectTransform hpRect = hpBar.GetComponent<RectTransform>();
         Vector3 anchoredposition = hpRect.anchoredPosition;
         anchoredposition.y += myUnit.myStats.displayToken.frontSprite.rect.height / 5;

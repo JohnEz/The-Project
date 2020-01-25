@@ -27,17 +27,14 @@ public class UnitEquipment {
         }
 
         switch (stat) {
-            case Stats.MAX_HEALTH: return item.maxHealth;
-            case Stats.MAX_SHIELD: return item.maxShield;
-            case Stats.SHIELD: return item.shieldPerTurn;
+            case Stats.STRENGTH: return item.strength;
+            case Stats.AGILITY: return item.agility;
+            case Stats.CONSTITUTION: return item.constitution;
+            case Stats.WISDOM: return item.wisdom;
+            case Stats.INTELLIGENCE: return item.intelligence;
             case Stats.SPEED: return item.speed;
-            case Stats.POWER: return item.power;
-            case Stats.BLOCK: return item.block;
+            case Stats.AC: return item.armour;
             case Stats.AP: return item.actionPoints;
-            case Stats.CRIT: return item.critChance;
-            case Stats.LIFE_STEAL: return item.lifeSteal;
-            case Stats.ACCURRACY: return item.accuracy;
-            case Stats.DODGE: return item.dodge;
         }
 
         return 0;

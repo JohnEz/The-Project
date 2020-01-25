@@ -137,11 +137,6 @@ public class UnitController : MonoBehaviour {
     }
 
     public void NewTurn() {
-        myStats.ApplyStartingTurnBuffs(
-            (damage) => { this.TakeDamage(null, damage, true); },
-            (healing) => { this.TakeHealing(null, healing); }
-        );
-
         if (IsStunned()) {
             unitCanvasController.CreateBasicText("Stunned");
         } else {
@@ -150,7 +145,6 @@ public class UnitController : MonoBehaviour {
 
         myStats.NewTurn();
         myCounters.NewTurn();
-        Shield = 0;
     }
 
     public void EndTurn() {
@@ -232,19 +226,6 @@ public class UnitController : MonoBehaviour {
 
     public void SetSelected(bool selected) {
         //anim.IsSelected(selected);
-    }
-
-    public void RemoveTurn() {
-    }
-
-    public int Health {
-        get { return myStats.Health; }
-        set { myStats.Health = value; }
-    }
-
-    public int Shield {
-        get { return myStats.Shield; }
-        set { myStats.Shield = value; }
     }
 
     public int ActionPoints {
@@ -360,7 +341,7 @@ public class UnitController : MonoBehaviour {
     public void AttackTarget(List<Node> targetNodes, AttackAction action) {
         currentAbilityTarget = targetNodes[0];
         if (action.areaOfEffect == AreaOfEffect.SINGLE) {
-            action.UseAbility(currentAbilityTarget);
+            action.UseAbility(this, currentAbilityTarget);
             FaceDirection(GetDirectionToTile(targetNodes[0]));
         } else {
             action.UseAbility(targetNodes, currentAbilityTarget);
@@ -524,120 +505,6 @@ public class UnitController : MonoBehaviour {
                 return n1Distance > n2Distance ? n1 : n2;
             }
         });
-    }
-
-    public int TakeDamage(UnitController attacker, int damage, bool ignoreArmour = false) {
-        //if the damage has a source
-        if (attacker) {
-        }
-
-        int modifiedDamage = damage;
-
-        //check to see if attack was blocked
-        float blockRoll = Random.value * 100;
-        if (!ignoreArmour && blockRoll <= myStats.Block) {
-            modifiedDamage = (int)(modifiedDamage * BLOCK_MODIFIER);
-            unitCanvasController.CreateBasicText("Block");
-        }
-
-        int damageAfterShield = Mathf.Max(0, modifiedDamage - Shield);
-
-        Shield -= modifiedDamage;
-        Health -= damageAfterShield;
-        unitCanvasController.CreateDamageText(modifiedDamage.ToString());
-
-        myDialogController.Attacked();
-
-        if (myStats.Health > 0) {
-            //anim.PlayHitAnimation();
-            PlayRandomWoundSound();
-        } else {
-            // TODO add death
-            PlayRandomDeathSound();
-            myManager.UnitDied(this);
-            DestroySelf();
-        }
-
-        return modifiedDamage;
-    }
-
-    public bool DealDamageTo(UnitController target, int damage, bool ignoreArmour = false) {
-        float endDamage = damage;
-
-        bool hasCrit = HasCrit();
-
-        //Random mod
-        endDamage *= Random.Range(DAMAGE_LOWER_BOUND, DAMAGE_UPPER_BOUND);
-
-        endDamage *= hasCrit ? CRIT_MODIFIER : 1;
-
-        float damageDealt = target.TakeDamage(this, Mathf.RoundToInt(endDamage), ignoreArmour);
-
-        CameraManager.instance.ShakeCamera(damageDealt / myStats.Power);
-
-        if (myStats.LifeStealAsPercent > 0) {
-            TakeHealing(this, (int)(damageDealt * myStats.LifeStealAsPercent));
-        }
-
-        return target.Health > 0;
-    }
-
-    public bool TakeHealing(UnitController caster, int healing) {
-        Health += healing;
-        unitCanvasController.CreateHealText(healing.ToString());
-
-        if (caster != this) {
-            myDialogController.Helped();
-        }
-
-        return true;
-    }
-
-    public bool GiveHealingTo(UnitController target, int healing) {
-        float endHealing = healing;
-
-        bool hasCrit = HasCrit();
-
-        //Random mod
-        endHealing *= Random.Range(DAMAGE_LOWER_BOUND, DAMAGE_UPPER_BOUND);
-
-        endHealing *= hasCrit ? CRIT_MODIFIER : 1;
-
-        if (target != this) {
-            myDialogController.Helping();
-        }
-
-        return target.TakeHealing(this, Mathf.RoundToInt(endHealing));
-    }
-
-    public bool TakeShield(UnitController caster, int shield) {
-        Shield += shield;
-        unitCanvasController.CreateShieldText(shield.ToString());
-
-        myDialogController.Helped();
-
-        return true;
-    }
-
-    public bool GiveShieldTo(UnitController target, float shield) {
-        float endShield = shield;
-
-        bool hasCrit = HasCrit();
-
-        //Random mod
-        endShield *= Random.Range(DAMAGE_LOWER_BOUND, DAMAGE_UPPER_BOUND);
-
-        endShield *= hasCrit ? CRIT_MODIFIER : 1;
-
-        if (target != this) {
-            myDialogController.Helping();
-        }
-
-        return target.TakeShield(this, Mathf.RoundToInt(endShield));
-    }
-
-    public bool HasCrit() {
-        return myStats.CritChance >= Random.Range(1, 100);
     }
 
     public void ApplyBuff(Buff buff) {

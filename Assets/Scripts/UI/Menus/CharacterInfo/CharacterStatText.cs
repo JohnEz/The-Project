@@ -6,19 +6,11 @@ using TMPro;
 public enum UnitStatText {
     NAME,
     CLASS,
-    HEALTH,
-    SHIELD,
     SPEED,
-    POWER,
-    BLOCK,
-    CRIT,
-    ACCURACY,
-    DODGE,
-    LIFE_STEAL
 }
 
 public class CharacterStatText : MonoBehaviour {
-    public UnitStatText watchedStat = UnitStatText.HEALTH;
+    public UnitStatText watchedStat = UnitStatText.NAME;
     public bool displayAsPercentage = false;
 
     private UnitObject currentCharacter;
@@ -81,15 +73,7 @@ public class CharacterStatText : MonoBehaviour {
         switch (stat) {
             case UnitStatText.NAME: return currentCharacter.characterName;
             case UnitStatText.CLASS: return currentCharacter.className;
-            case UnitStatText.HEALTH: return currentCharacter.Health + " / " + currentCharacter.MaxHealth.ToString();
-            case UnitStatText.SHIELD: return currentCharacter.Shield.ToString() + " / " + currentCharacter.MaxShield.ToString();
             case UnitStatText.SPEED: return currentCharacter.Speed.ToString();
-            case UnitStatText.POWER: return currentCharacter.Power.ToString();
-            case UnitStatText.BLOCK: return currentCharacter.Block.ToString();
-            case UnitStatText.CRIT: return currentCharacter.CritChance.ToString();
-            case UnitStatText.ACCURACY: return currentCharacter.Accuracy.ToString();
-            case UnitStatText.DODGE: return currentCharacter.Dodge.ToString();
-            case UnitStatText.LIFE_STEAL: return currentCharacter.LifeSteal.ToString();
         }
 
         return "";

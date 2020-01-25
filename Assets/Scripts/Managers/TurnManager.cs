@@ -70,7 +70,7 @@ public class TurnManager : MonoBehaviour {
         PlayerManager.instance.StartNewTurn(currentPlayersTurn);
 
         if (isAiTurn()) {
-            StartCoroutine(AIManager.instance.NewTurn(playersTurn));
+            AIManager.instance.NewTurn(playersTurn);
         } else if (currentPlayersTurn.units.Count > 0) {
             UserInterfaceManager.instance.SelectNextUnit();
         }

@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class Buff {
+public class Buff : ScriptableObject {
     public int[] flatMod;
     public float[] percentMod;
 

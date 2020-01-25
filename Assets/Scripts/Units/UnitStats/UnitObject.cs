@@ -4,19 +4,14 @@ using UnityEngine;
 using UnityEngine.Events;
 
 public enum Stats {
-    MAX_HEALTH,
-    MAX_SHIELD,
-    SHIELD,
+    STRENGTH,
+    AGILITY,
+    CONSTITUTION,
+    WISDOM,
+    INTELLIGENCE,
+    AC,
     SPEED,
-    POWER,
-    BLOCK,
     AP,
-    DAMAGE,
-    HEALTH,
-    CRIT,
-    LIFE_STEAL,
-    ACCURRACY,
-    DODGE,
 }
 
 [Serializable]
@@ -44,25 +39,20 @@ public class UnitObject : ScriptableObject {
     public AudioClip[] woundSFX;
     public AudioClip[] deathSFX;
 
-    //scaling consts
-    private const int ACTION_POINTS_TO_STAMINA = 2;
-
     [Serializable] public class OnStatChangeEvent : UnityEvent { }
 
     public OnStatChangeEvent onStatChange = new OnStatChangeEvent();
 
-    public int baseHealth = 100;
-    private int currentHealth;
-    private int currentShield;
-    public int basePower = 15;
-    public int baseBlock = 0;
-    public int baseArmour = 0;
+    public HitLocations myHitLocations;
+    public int baseStrength = 1;
+    public int baseAgility = 1;
+    public int baseConstitution = 1;
+    public int baseWisdom = 1;
+    public int baseIntelligence = 1;
+    public int baseAC = 10;
+    public int baseSpeed = 3;
     public int baseActionPoints = 2;
-    public int baseCritChance = 5;
-    public int baseAccuracy = 9;
-    public int baseDodge = 10;
 
-    [HideInInspector]
     private int actionPoints;
 
     //Stats for AI
@@ -70,13 +60,12 @@ public class UnitObject : ScriptableObject {
 
     public Walkable walkingType;
 
-    public int baseSpeed = 3;
     public bool isActive = false;
-
-    public List<AttackAction> baseAttacks;
 
     [HideInInspector]
     public List<AttackAction> instantiatedAttacks;
+
+    public Ability unarmedAbility;
 
     public List<Ability> baseAbilities;
 
@@ -107,18 +96,20 @@ public class UnitObject : ScriptableObject {
     }
 
     public void Reset(UnitController myUnit = null) {
-        currentHealth = MaxHealth;
-        Shield = 0;
-
         buffs.Clear();
         instantiatedAttacks.Clear();
         instantiatedAbilities.Clear();
 
-        baseAttacks.ForEach(attack => {
-            AttackAction instantaitedAttack = Instantiate(attack);
-            instantaitedAttack.caster = myUnit;
-            instantiatedAttacks.Add(instantaitedAttack);
-        });
+        ItemInfo mainHandItem = equipment.GetItemInSlot(EquipmentSlotType.MainHand);
+        Ability mainHandAbility;
+        if (mainHandItem == null || mainHandItem.ability == null) {
+            mainHandAbility = Instantiate(unarmedAbility);
+        } else {
+            mainHandAbility = Instantiate(mainHandItem.ability);
+        }
+
+        mainHandAbility.caster = myUnit;
+        instantiatedAbilities.Add(mainHandAbility);
 
         baseAbilities.ForEach(ability => {
             Ability instantaitedAbility = Instantiate(ability);
@@ -154,67 +145,36 @@ public class UnitObject : ScriptableObject {
         }
     }
 
-    public int Health {
-        get { return currentHealth; }
-        set {
-            currentHealth = Mathf.Clamp(value, 0, MaxHealth);
-
-            OnStatChange();
-        }
-    }
-
-    public int Shield {
-        get { return currentShield; }
-        set {
-            currentShield = Mathf.Clamp(value, 0, MaxShield);
-
-            OnStatChange();
-        }
-    }
-
-    public int MaxHealth {
-        get { return GetModifiedStat(baseHealth, Stats.MAX_HEALTH); }
-    }
-
-    public int MaxShield {
-        get { return GetModifiedStat(MaxHealth, Stats.MAX_SHIELD); }
-    }
-
     public int MaxActionPoints {
-        get { return GetModifiedStat(baseActionPoints, Stats.AP); }
+        get { return baseActionPoints; }
     }
 
-    public int Block {
-        get { return GetModifiedStat(baseBlock, Stats.BLOCK); }
+    public int Strength {
+        get { return GetModifiedStat(baseStrength, Stats.STRENGTH); }
     }
 
-    public int Power {
-        get { return GetModifiedStat(basePower, Stats.POWER); }
+    public int Agility {
+        get { return GetModifiedStat(baseAgility, Stats.AGILITY); }
+    }
+
+    public int Constitution {
+        get { return GetModifiedStat(baseConstitution, Stats.CONSTITUTION); }
+    }
+
+    public int Wisdom {
+        get { return GetModifiedStat(baseWisdom, Stats.WISDOM); }
+    }
+
+    public int Intelligence {
+        get { return GetModifiedStat(baseIntelligence, Stats.INTELLIGENCE); }
+    }
+
+    public int AC {
+        get { return GetModifiedStat(baseAC, Stats.AC); }
     }
 
     public int Speed {
         get { return GetModifiedStat(baseSpeed, Stats.SPEED); }
-    }
-
-    public int CritChance {
-        get { return GetModifiedStat(baseCritChance, Stats.CRIT); }
-    }
-
-    public int LifeSteal {
-        get { return GetModifiedStat(0, Stats.LIFE_STEAL); }
-    }
-
-    public int Accuracy {
-        get { return GetModifiedStat(baseAccuracy, Stats.ACCURRACY); }
-    }
-
-    public int Dodge {
-        get { return GetModifiedStat(baseDodge, Stats.DODGE); }
-    }
-
-    // Stats have to be int so we divide lifesteal by 100
-    public float LifeStealAsPercent {
-        get { return (float)LifeSteal / 100; }
     }
 
     public Walkable WalkingType {
@@ -222,23 +182,6 @@ public class UnitObject : ScriptableObject {
     }
 
     public void ApplyStartingTurnBuffs(System.Action<int> takeDamage, System.Action<int> takeHealing) {
-        int damage = 0;
-        int healing = 0;
-
-        buffs.GetBuffs().ForEach((buff) => {
-            damage += Mathf.RoundToInt(MaxHealth * (1 - buff.GetPercentMod((int)Stats.DAMAGE)));
-            damage += buff.GetFlatMod((int)Stats.DAMAGE);
-            healing += Mathf.RoundToInt(MaxHealth * (buff.GetPercentMod((int)Stats.HEALTH) - 1));
-            healing += buff.GetFlatMod((int)Stats.HEALTH);
-        });
-
-        if (damage > 0) {
-            takeDamage(damage);
-        }
-
-        if (healing > 0) {
-            takeHealing(healing);
-        }
     }
 
     public void NewTurn() {
@@ -287,10 +230,13 @@ public class UnitObject : ScriptableObject {
         OnStatChange();
     }
 
+    public HitLocationData GetRandomHitLocation(DamageType damageType) {
+        return myHitLocations.RandomHitLocation(damageType);
+    }
+
     public override string ToString() {
         return "Name: " + characterName + "\n" +
             "Class: " + className + "\n" +
-            "level: " + 1 + "\n" +
-            "Health: " + Health + "\n";
+            "level: " + 1 + "\n";
     }
 }

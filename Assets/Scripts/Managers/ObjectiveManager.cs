@@ -207,14 +207,14 @@ public class ObjectiveManager : MonoBehaviour {
 
     private ObjectiveStatus GetAnnihilationStatus(Player player) {
         // TODO the health check seems hacky to me, what if i want a unit to not die at 0 health
-        List<UnitController> aliveEnemyUnits = UnitManager.instance.Units.FindAll(unit => (unit.myPlayer.faction != player.faction && unit.Health > 0));
+        List<UnitController> aliveEnemyUnits = UnitManager.instance.Units.FindAll(unit => (unit.myPlayer.faction != player.faction));
 
         return aliveEnemyUnits.Count <= 0 ? ObjectiveStatus.COMPLETE : ObjectiveStatus.NONE;
     }
 
     private ObjectiveStatus GetUnitSurviveStatus(string characterName) {
         UnitController targetUnit = UnitManager.instance.Units.Find(unit => unit.myStats.characterName == characterName);
-        bool unitIsAlive = targetUnit != null && targetUnit.Health > 0;
+        bool unitIsAlive = targetUnit != null;
 
         return unitIsAlive ? ObjectiveStatus.COMPLETE : ObjectiveStatus.FAILED;
     }

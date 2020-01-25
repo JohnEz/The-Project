@@ -103,22 +103,16 @@ public class ItemSlot : UISlotBase, IntrItemSlot {
         }
         UITooltip.AddLineColumn(EquipTypeToString(itemInfo.equipType), "ItemAttribute");
 
-        if (itemInfo.weaponType == WeaponType.Shield) {
-            UITooltip.AddLineColumn(itemInfo.block.ToString() + "% Block", "ItemAttribute");
-        }
-
         UITooltip.AddSpacer();
 
-        ItemSlot.AddStatToTooltip("Health", itemInfo.maxHealth);
-        ItemSlot.AddStatToTooltip("Shield", itemInfo.maxShield);
-        ItemSlot.AddStatToTooltip("Shield per turn", itemInfo.shieldPerTurn);
+        ItemSlot.AddStatToTooltip("Strength", itemInfo.strength);
+        ItemSlot.AddStatToTooltip("Agility", itemInfo.agility);
+        ItemSlot.AddStatToTooltip("Constitution", itemInfo.constitution);
+        ItemSlot.AddStatToTooltip("Wisdom", itemInfo.wisdom);
+        ItemSlot.AddStatToTooltip("Intelligence", itemInfo.intelligence);
         ItemSlot.AddStatToTooltip("Speed", itemInfo.speed);
-        ItemSlot.AddStatToTooltip("Power", itemInfo.power);
         ItemSlot.AddStatToTooltip("Action Points", itemInfo.actionPoints);
-        ItemSlot.AddStatToTooltip("Crit Chance", itemInfo.critChance);
-        ItemSlot.AddStatToTooltip("Life Steal", itemInfo.lifeSteal);
-        ItemSlot.AddStatToTooltip("Accuracy", itemInfo.accuracy);
-        ItemSlot.AddStatToTooltip("Dodge", itemInfo.dodge);
+        ItemSlot.AddStatToTooltip("Armour", itemInfo.armour);
 
         UITooltip.AddSpacer();
 

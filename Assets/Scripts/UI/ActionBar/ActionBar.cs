@@ -15,8 +15,6 @@ public class ActionBar : MonoBehaviour {
     public Image avatarImage;
 
     public BuffController buffController;
-    public StatBar healthBar;
-    public StatBar shieldBar;
 
     public void Awake() {
         instance = this;
@@ -126,20 +124,5 @@ public class ActionBar : MonoBehaviour {
     }
 
     private void OnStatChange() {
-        if (healthBar) {
-            if (currentlyDisplayedUnit == null) {
-                healthBar.Clear();
-            } else {
-                healthBar.UpdateValues(currentlyDisplayedUnit.myStats.Health, currentlyDisplayedUnit.myStats.MaxHealth);
-            }
-        }
-
-        if (shieldBar) {
-            if (currentlyDisplayedUnit == null) {
-                shieldBar.Clear();
-            } else {
-                shieldBar.UpdateValues(currentlyDisplayedUnit.myStats.Shield, currentlyDisplayedUnit.myStats.MaxShield);
-            }
-        }
     }
 }
