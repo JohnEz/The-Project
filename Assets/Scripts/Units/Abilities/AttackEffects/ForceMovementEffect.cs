@@ -11,12 +11,12 @@ public class ForceMovementEffect : AttackEffect {
 
     public int distance = 1;
 
-    public override void AbilityEffect(UnitController caster, UnitController target) {
-        base.AbilityEffect(caster, target);
+    public override void AbilityEffect(UnitController caster, Node targetNode) {
+        base.AbilityEffect(caster, targetNode);
         if (movementType == ForcedMovementType.PUSH) {
-            TargetUnit.Push(caster.myNode, distance);
+            targetNode.MyUnit.Push(caster.myTile, distance);
         } else {
-            TargetUnit.Pull(caster.myNode, distance);
+            targetNode.MyUnit.Pull(caster.myTile, distance);
         }
     }
 }

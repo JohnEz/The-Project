@@ -11,7 +11,7 @@ public class NeighbourLegacy {
     }
 }
 
-public enum Walkable {
+public enum WalkableLevel {
     Walkable,
     Flying,
     Impassable
@@ -22,52 +22,21 @@ public enum LineOfSight {
     Blocked
 }
 
-public class Node : MonoBehaviour {
-
-    [System.NonSerialized]
-    public int x;
-
-    [System.NonSerialized]
-    public int y;
-
-    [System.NonSerialized]
-    public List<Neighbour> neighbours;
-
-    [System.NonSerialized]
-    public Neighbour previous;
-
-    [System.NonSerialized]
-    public float cost = 0;
-
-    [System.NonSerialized]
-    public float dist = 0;
-
-    public float moveCost = 1;
-    public Walkable walkable;
+public class Node : Tile {
     public LineOfSight lineOfSight = LineOfSight.Full;
     public int height = 0;
     public int room = 0;
 
-    //Game engine variables
-    public UnitController myUnit;
-
     public Node previousMoveNode; //used for move and attack
-
-    // Use this for initialization
-    private void Start() {
-    }
-
-    // Update is called once per frame
-    private void Update() {
-    }
 
     public float distanceTo(Node n) {
         return Vector2.Distance(new Vector2(x, y), new Vector2(n.x, n.y));
     }
 
-    public int GridDistanceTo(Node n) {
-        int diffX = n.x - x;
-        int diffY = n.y - y;
+    public int GridDistanceTo(NodeCollection collection) {
+        //TODO double check the outcome of this int rounding
+        int diffX = (int)collection.x - x;
+        int diffY = (int)collection.y - y;
         return Mathf.Abs(diffX) + Mathf.Abs(diffY);
     }
 
@@ -85,22 +54,10 @@ public class Node : MonoBehaviour {
         return neighbours.Exists(n => n.HasDoor());
     }
 
-    public void OpenDoors() {
-        neighbours.ForEach(n => {
-            if (n.HasDoor()) {
-                n.OpenDoor();
-            }
-        });
-    }
-
     public void Activate() {
         if (myUnit != null) {
             myUnit.Activate();
         }
-    }
-
-    public Neighbour FindNeighbourTo(Node target) {
-        return neighbours.Find(neighbour => neighbour.GetOppositeNode(this) == target);
     }
 
     public override string ToString() {

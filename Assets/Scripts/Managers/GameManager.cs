@@ -42,14 +42,14 @@ public class GameManager : MonoBehaviour {
             LoadPlayerCharacters(humanPlayer);
         }
 
-        CameraManager.instance.JumpToLocation(humanPlayer.units[0].myNode);
+        CameraManager.instance.JumpToLocation(humanPlayer.units[0].myTile);
 
         Player enemyAI = PlayerManager.instance.AddAiPlayer(2);
         Player allyAI = PlayerManager.instance.AddAiPlayer(1);
 
         LoadMapUnits(enemyAI, allyAI);
 
-        TileMap.instance.ActivateRoom(humanPlayer.units[0].myNode.room);
+        TileMap.instance.ActivateRoom(0);
     }
 
     private void LoadPlayerCharacters(Player humanPlayer) {

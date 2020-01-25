@@ -69,7 +69,7 @@ public class UnitManager : MonoBehaviour {
         Node startingNode = TileMap.instance.GetNode(x, y);
         UnitController unitController = newUnit.GetComponent<UnitController>();
 
-        startingNode.myUnit = unitController;
+        startingNode.MyUnit = unitController;
         unitController.Spawn(player, startingNode, unit);
         unitController.FaceDirection(Vector2.down);
         unitController.myManager = this;
@@ -82,7 +82,7 @@ public class UnitManager : MonoBehaviour {
     }
 
     public void AddUnitToRemove(UnitController unit) {
-        unit.myNode.myUnit = null;
+        unit.myTile.MyUnit = null;
         unitsToRemove.Add(unit);
     }
 
@@ -135,16 +135,19 @@ public class UnitManager : MonoBehaviour {
     //	return reachableTiles;
     //}
 
-    public void ShowMoveAction(UnitController unit, int moveDistance, Walkable walkingType) {
+    public void ShowMoveAction(UnitController unit, int moveDistance, WalkableLevel walkingType) {
         if (unit == null) {
             throw new System.Exception("Current player not selected!");
         }
 
-        PathSearchOptions movementOptions = new PathSearchOptions(unit.ActionPoints > 1, true, unit.myPlayer.faction);
+        PathSearchOptions movementOptions = new PathSearchOptions(unit.ActionPoints > 1, true, unit.myPlayer.faction, unit.myStats.size);
 
-        ReachableTiles walkingTiles = TileMap.instance.pathfinder.findReachableTiles(unit.myNode, moveDistance, walkingType, movementOptions);
-        HighlightManager.instance.HighlightTiles(walkingTiles.basic.Keys.ToList(), SquareTarget.MOVEMENT);
-        HighlightManager.instance.HighlightTiles(walkingTiles.extended.Keys.ToList(), SquareTarget.DASH);
+        ReachableTiles walkingTiles = TileMap.instance.pathfinder.findReachableTiles(unit.myTile, moveDistance, walkingType, movementOptions);
+
+        List<Node> basicNodes = ReachableTiles.GetBasicNodes(walkingTiles);
+        List<Node> extendedNodes = ReachableTiles.GetExtendedNodes(walkingTiles);
+        HighlightManager.instance.HighlightNodes(basicNodes, SquareTarget.MOVEMENT);
+        HighlightManager.instance.HighlightNodes(extendedNodes, SquareTarget.DASH);
     }
 
     // Shows where the ability can target
@@ -163,10 +166,10 @@ public class UnitManager : MonoBehaviour {
         action.caster = unit;
         activeAbility = action;
 
-        attackableTiles = TileMap.instance.pathfinder.FindAttackableTiles(unit.myNode, action);
-        HighlightManager.instance.UnhighlightAllTiles();
+        attackableTiles = TileMap.instance.pathfinder.FindAttackableTiles(unit.myTile, action);
+        HighlightManager.instance.UnhighlightAllNodes();
         SquareTarget targetType = action.targets == TargetType.ALLY ? SquareTarget.HELPFULL : SquareTarget.ATTACK;
-        HighlightManager.instance.HighlightTiles(attackableTiles, targetType);
+        HighlightManager.instance.HighlightNodes(attackableTiles, targetType);
 
         if (currentlyHoveredNode != null) {
             HighlightEffectedTiles(unit, currentlyHoveredNode);
@@ -178,21 +181,22 @@ public class UnitManager : MonoBehaviour {
     // Highlight the tiles effected by the ability
     public void HighlightEffectedTiles(UnitController unit, Node target) {
         if (attackableTiles.Contains(target)) {
-            List<Node> effectedNodes = TileMap.instance.pathfinder.FindEffectedTiles(unit.myNode, target, activeAbility);
-            HighlightManager.instance.ShowAbilityTiles(effectedNodes, activeAbility);
+            List<Node> effectedNodes = TileMap.instance.pathfinder.FindEffectedTiles(unit.myTile, target, activeAbility);
+            HighlightManager.instance.ShowAbilityNodes(effectedNodes, activeAbility);
         }
     }
 
     // TODO i dont know why this is its own fucntion call?
     // unhighlight all tiles
     public void UnhiglightEffectedTiles() {
-        HighlightManager.instance.ClearEffectedTiles();
+        HighlightManager.instance.ClearEffectedNodes();
     }
 
     // shows the path to the selected node
     public void ShowPath(Node targetNode) {
         MovementPath movementPath = TileMap.instance.pathfinder.getPathFromTile(targetNode);
-        HighlightManager.instance.ShowPath(movementPath.path);
+        Debug.Log("Need to fix path drawing");
+        //HighlightManager.instance.ShowPath(movementPath.path);
     }
 
     // Uses the specified ability of at the target location
@@ -205,16 +209,17 @@ public class UnitManager : MonoBehaviour {
             return false;
         }
 
+        //Used for moving and attacking
         if (targetNode.previousMoveNode) {
             //MovementPath movementPath = myMap.pathfinder.getPathFromTile (targetNode.previousMoveNode);
-            MovementPath movementPath = TileMap.instance.pathfinder.FindPath(unit.myNode, targetNode.previousMoveNode, unit.myStats.WalkingType, new PathSearchOptions(unit.myPlayer.faction));
-            SetUnitPath(unit, movementPath);
+            //MovementPath movementPath = TileMap.instance.pathfinder.FindPath(unit.myTile, targetNode.previousMoveNode, unit.myStats.WalkingType, new PathSearchOptions(unit.myPlayer.faction));
+            //SetUnitPath(unit, movementPath);
         }
 
         Action action = new Action();
         action.type = ActionType.ATTACK;
         action.ability = attackAction;
-        action.nodes = TileMap.instance.pathfinder.FindEffectedTiles(unit.myNode, targetNode, attackAction);
+        action.effectedNodes = TileMap.instance.pathfinder.FindEffectedTiles(unit.myTile, targetNode, attackAction);
 
         unit.AddAction(action);
 
@@ -225,7 +230,7 @@ public class UnitManager : MonoBehaviour {
     public void SetUnitPath(UnitController unit, MovementPath movementPath) {
         Action moveAction = new Action();
         moveAction.type = ActionType.MOVEMENT;
-        moveAction.nodes = movementPath.path;
+        moveAction.moveTiles = movementPath.path;
         unit.AddAction(moveAction);
     }
 

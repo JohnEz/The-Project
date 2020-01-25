@@ -41,16 +41,18 @@ public class AttackAction : AbilityAction {
         return Cooldown > 0;
     }
 
-    private void AbilityEffectUnit(UnitController caster, UnitController target) {
+    private void AbilityEffectUnit(UnitController caster, Node target) {
+        UnitController targetUnit = target.MyUnit;
+
         // todo this should be effected by varing stats and weapon types
         float hitRoll = Random.Range(0, 20) + caster.myStats.Agility;
 
-        if (hitRoll < target.myStats.AC) {
-            target.CreateBasicText("Miss");
+        if (hitRoll < targetUnit.myStats.AC) {
+            targetUnit.CreateBasicText("Miss");
             return;
         }
 
-        AddAbilityTarget(target.myNode, () => {
+        AddAbilityTarget(target, () => {
             attackEffects.ForEach(attackEffect => {
                 attackEffect.AbilityEffect(caster, target);
             });
@@ -69,7 +71,7 @@ public class AttackAction : AbilityAction {
     public virtual void UseAbility(UnitController caster, Node target) {
         OnUseSingleEventActions(target);
         if (tileTarget == TileTarget.UNIT) {
-            AbilityEffectUnit(caster, target.myUnit);
+            AbilityEffectUnit(caster, target);
         } else {
             AbilityEffectNode(caster, target);
         }
@@ -78,14 +80,14 @@ public class AttackAction : AbilityAction {
 
     // AOE on use
     public virtual void UseAbility(List<Node> effectedNodes, Node target) {
-        OnUseAOEEventActions(effectedNodes, target);
-        AbilityEffectNode(caster, target);
-        effectedNodes.ForEach(node => {
-            if (CanHitUnit(node)) {
-                AbilityEffectUnit(caster, node.myUnit);
-            }
-        });
-        AbilityUsed();
+        //OnUseAOEEventActions(effectedNodes, target);
+        //AbilityEffectNode(caster, target);
+        //effectedNodes.ForEach(node => {
+        //    if (CanHitUnit(node)) {
+        //        AbilityEffectUnit(caster, node.MyUnit);
+        //    }
+        //});
+        //AbilityUsed();
     }
 
     public void AbilityUsed() {
@@ -107,45 +109,45 @@ public class AttackAction : AbilityAction {
     }
 
     // Creates effects on cast start
-    private void OnUseAOEEventActions(List<Node> effectedNodes, Node target) {
-        eventActions.ForEach((eventAction) => {
-            if (eventAction.eventTrigger == AbilityEvent.CAST_START) {
-                if (eventAction.eventTarget == EventTarget.CASTER || eventAction.eventTarget == EventTarget.TARGETEDTILE) {
-                    eventAction.action(caster, target);
-                } else if (eventAction.eventTarget == EventTarget.TARGETUNIT) {
-                    effectedNodes.ForEach((targetNode) => {
-                        if (CanHitUnit(targetNode)) {
-                            eventAction.action(caster, targetNode);
-                        }
-                    });
-                }
-            }
-        });
+    private void OnUseAOEEventActions(List<Node> effectedNodes, NodeCollection target) {
+        //eventActions.ForEach((eventAction) => {
+        //    if (eventAction.eventTrigger == AbilityEvent.CAST_START) {
+        //        if (eventAction.eventTarget == EventTarget.CASTER || eventAction.eventTarget == EventTarget.TARGETEDTILE) {
+        //            eventAction.action(caster, target);
+        //        } else if (eventAction.eventTarget == EventTarget.TARGETUNIT) {
+        //            effectedNodes.ForEach((targetNode) => {
+        //                if (CanHitUnit(targetNode)) {
+        //                    eventAction.action(caster, targetNode);
+        //                }
+        //            });
+        //        }
+        //    }
+        //});
     }
 
     public bool CanTargetTile(Node targetNode) {
-        if (tileTarget == TileTarget.UNIT && !CanHitUnit(targetNode)) {
+        if (tileTarget == TileTarget.UNIT && !CanHitUnit(targetNode.MyUnit)) {
             return false;
         }
 
-        if (tileTarget == TileTarget.EMPTY_TILE && targetNode.myUnit != null) {
+        if (tileTarget == TileTarget.EMPTY_TILE && targetNode.MyUnit != null) {
             return false;
         }
 
         return true;
     }
 
-    public bool CanHitUnit(Node targetNode) {
-        if (caster.myNode == targetNode && !CanTargetSelf) {
+    public bool CanHitUnit(UnitController targetUnit) {
+        if (caster == targetUnit && !CanTargetSelf) {
             return false;
         }
 
-        if (targetNode.myUnit && targetNode.myUnit.IsStealthed()) {
+        if (targetUnit && targetUnit.IsStealthed()) {
             return false;
         }
 
-        bool hasTarget = targetNode.myUnit != null;
-        bool isEnemy = hasTarget && targetNode.myUnit.myPlayer.faction != caster.myPlayer.faction;
+        bool hasTarget = targetUnit != null;
+        bool isEnemy = hasTarget && targetUnit.myPlayer.faction != caster.myPlayer.faction;
 
         switch (targets) {
             case TargetType.ENEMY:

@@ -54,17 +54,17 @@ public class ProjectileController : MonoBehaviour {
         }
     }
 
-    public void SetTarget(UnitController caster, Node target, float movementSpeed) {
+    public void SetTarget(UnitController caster, Node targetedNode, float movementSpeed) {
         myCaster = caster;
-        myTarget = target;
+        myTarget = targetedNode;
         speed = movementSpeed;
 
         Vector3 startPosition = caster.transform.Find("Token").position;
         transform.position = startPosition;
 
-        Vector3 targetPosition = target.myUnit != null ?
-            target.myUnit.transform.Find("Token").position :
-            target.transform.position;
+        Vector3 targetPosition = targetedNode.MyUnit != null ?
+            targetedNode.MyUnit.transform.Find("Token").position :
+            targetedNode.transform.position;
 
         direction = targetPosition - transform.position;
         direction.y = 0;

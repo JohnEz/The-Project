@@ -1,29 +1,25 @@
 ﻿using UnityEngine;
 
 public class Neighbour {
-
-    //public Vector2 direction;
-    public Node n1;
-
-    public Node n2;
+    public Tile n1;
+    public Tile n2;
     public GameObject myDoor;
 
-    public Neighbour(Node _n1, Node _n2) {
+    public Neighbour(Tile _n1, Tile _n2) {
         n1 = _n1;
         n2 = _n2;
         myDoor = null;
     }
 
-    public Node GetOppositeNode(Node startNode) {
-        // TODO this isnt safe, what if its neither of the nodes?
-        return startNode == n2 ? n1 : n2;
+    public Tile GetOppositeTile(Tile startTile) {
+        return startTile.Equals(n2) ? n1 : n2;
     }
 
-    public Vector2 GetDirectionFrom(Node startNode) {
-        Node endNode = GetOppositeNode(startNode);
+    public Vector2 GetDirectionFrom(Tile startTile) {
+        Tile endTile = GetOppositeTile(startTile);
 
         // we have to inverse the y axis as the map renders from the top left rather than bottom left
-        return new Vector2(startNode.x - endNode.x, endNode.y - startNode.y);
+        return new Vector2(startTile.x - endTile.x, endTile.y - startTile.y);
     }
 
     public bool HasDoor() {
@@ -45,25 +41,6 @@ public class Neighbour {
         }
 
         myDoor = GameObject.Instantiate(doorPrefab, position, rotation);
-        return true;
-    }
-
-    public bool OpenDoor() {
-        if (!HasDoor()) {
-            Debug.LogError("Tried to open a door that didnt exist: " + ToString());
-            return false;
-        }
-
-        if (!TileMap.instance.IsRoomActive(n1.room)) {
-            TileMap.instance.ActivateRoom(n1.room);
-        }
-
-        if (!TileMap.instance.IsRoomActive(n2.room)) {
-            TileMap.instance.ActivateRoom(n2.room);
-        }
-
-        GameObject.Destroy(myDoor);
-        myDoor = null;
         return true;
     }
 

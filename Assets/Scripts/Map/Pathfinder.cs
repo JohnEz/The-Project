@@ -4,15 +4,37 @@ using System.Linq;
 using UnityEngine;
 
 public struct MovementPath {
-    public List<Node> path;
+    public List<Tile> path;
 
     //public List<Node> dashPath;
     public int movementCost;
 }
 
 public struct ReachableTiles {
-    public Dictionary<Node, float> basic;
-    public Dictionary<Node, float> extended;
+    public Dictionary<Tile, float> basic;
+    public Dictionary<Tile, float> extended;
+
+    public static List<Node> GetBasicNodes(ReachableTiles tiles) {
+        return GetNodesFromTileList(tiles.basic.Keys.ToList());
+    }
+
+    public static List<Node> GetExtendedNodes(ReachableTiles tiles) {
+        return GetNodesFromTileList(tiles.extended.Keys.ToList());
+    }
+
+    private static List<Node> GetNodesFromTileList(List<Tile> tiles) {
+        List<Node> reachableNodes = new List<Node>();
+
+        tiles.ToList().ForEach((Tile tile) => {
+            tile.Nodes.ForEach((Node node) => {
+                if (!reachableNodes.Contains(node)) {
+                    reachableNodes.Add(node);
+                }
+            });
+        });
+
+        return reachableNodes;
+    }
 }
 
 public struct MovementAndAttackPath {
@@ -24,18 +46,21 @@ public class PathSearchOptions {
     public bool canDash = false;
     public bool canPassThroughAllies = true;
     public int faction = -1;
+    public UnitSize size = UnitSize.SMALL;
 
     public PathSearchOptions() {
     }
 
-    public PathSearchOptions(int _faction) {
+    public PathSearchOptions(int _faction, UnitSize _size) {
         faction = _faction;
+        size = _size;
     }
 
-    public PathSearchOptions(bool _canDash, bool _canPassThroughAllies, int _faction) {
+    public PathSearchOptions(bool _canDash, bool _canPassThroughAllies, int _faction, UnitSize _size) {
         canDash = _canDash;
         canPassThroughAllies = _canPassThroughAllies;
         faction = _faction;
+        size = _size;
     }
 }
 
@@ -71,89 +96,27 @@ public class Pathfinder : MonoBehaviour {
         return new Vector2(Math.Sign(from.x - to.x), Math.Sign(to.y - from.y));
     }
 
-    // find all nodes that can be reached
-    public ReachableTiles findReachableTiles(Node startNode, float distance, Walkable walkingType, PathSearchOptions pSOptions) {
-        PathSearchOptions options = pSOptions == null ? new PathSearchOptions() : pSOptions;
-        map.resetTiles();
+    public MovementPath getPathFromTile(Tile endTile) {
+        Tile currentTile = endTile;
+        MovementPath newPath = new MovementPath();
+        newPath.path = new List<Tile>();
+        newPath.movementCost = (int)endTile.cost;
 
-        List<Node> openList = new List<Node>();
-        List<Node> currentList;
-        Dictionary<Node, float> reachableNodes = new Dictionary<Node, float>();
+        newPath.path.Add(endTile);
 
-        float maxDistance = options.canDash ? distance * 2 : distance;
-
-        bool changed = true;
-
-        startNode.cost = 0;
-        openList.Add(startNode);
-
-        while (changed) {
-            changed = false;
-            currentList = openList;
-            openList = new List<Node>();
-
-            // for each node in our current list
-            foreach (Node node in currentList) {
-                // loop through all its neighbours
-                foreach (Neighbour neighbour in node.neighbours) {
-                    // get the new node from the neighbour
-                    Node neighbourNode = neighbour.GetOppositeNode(node);
-
-                    // if the new node is not the starting node, there isnt a door in the way and can be walked on
-                    if (neighbourNode != startNode && !neighbour.HasDoor() && IsTileWalkable(node, neighbourNode, walkingType, options)) {
-                        // caclulate the cost to move here
-                        float totalCost = node.cost + neighbourNode.moveCost;
-
-                        // if the cost is less or equal to our distance
-                        if (totalCost <= maxDistance) {
-                            // check to see if we haven't already added it, and if we have, see if this way is faster to it
-                            if (!reachableNodes.ContainsKey(neighbourNode) || reachableNodes[neighbourNode] > totalCost) {
-                                // set the previous neighbour to the one we just used and set costs
-                                neighbourNode.previous = neighbour;
-                                neighbourNode.cost = totalCost;
-                                reachableNodes[neighbourNode] = totalCost;
-                                openList.Add(neighbourNode);
-                                changed = true;
-                            }
-                        }
-                    }
-                }
-            }
+        //while there is a previous node
+        while (currentTile.previous != null) {
+            Tile previousTile = currentTile.previous.GetOppositeTile(currentTile);
+            newPath.path.Add(previousTile);
+            currentTile = previousTile;
         }
 
-        //if you cant end your path on a unit THIS IS DANGEROUS
-        if (options.faction != -1) {
-            reachableNodes = reachableNodes.Where(item => item.Key.myUnit == null).ToDictionary(item => item.Key, item => item.Value);
-        }
+        //need to remove the last added node as that was the starting node
+        newPath.path.RemoveAt(newPath.path.Count - 1);
 
-        ReachableTiles reachableTiles;
-        reachableTiles.basic = reachableNodes.Where(item => item.Key.cost <= distance).ToDictionary(item => item.Key, item => item.Value);
-        reachableTiles.extended = reachableNodes.Where(item => item.Key.cost > distance).ToDictionary(item => item.Key, item => item.Value);
+        newPath.path.Reverse();
 
-        return reachableTiles;
-    }
-
-    public MovementPath FindShortestPathToUnit(Node source, Node target, Walkable walkingType, PathSearchOptions pSOptions) {
-        PathSearchOptions options = pSOptions == null ? new PathSearchOptions() : pSOptions;
-        List<MovementPath> paths = new List<MovementPath>();
-        map.resetTiles();
-
-        // loop through all the target nodes neighbours
-        target.neighbours.ForEach(neighbour => {
-            // check to see if we can stand on the tile
-            Node neighbourNode = neighbour.GetOppositeNode(target);
-            if (neighbourNode.myUnit == null && UnitCanStandOnTile(neighbourNode, walkingType)) {
-                paths.Add(FindPath(source, neighbourNode, walkingType, options));
-            }
-        });
-
-        List<MovementPath> pathsWithoutUnitsAtEnd = paths.Where(movementPath => {
-            return movementPath.movementCost > -1 &&
-                movementPath.path[movementPath.path.Count - 1].myUnit == null;
-        }).ToList();
-
-        return GetSortestPath(pathsWithoutUnitsAtEnd.Count > 0 ? pathsWithoutUnitsAtEnd : paths);
-        //return GetSortestPath(paths);
+        return newPath;
     }
 
     public static MovementPath GetSortestPath(List<MovementPath> paths) {
@@ -173,93 +136,216 @@ public class Pathfinder : MonoBehaviour {
         return shortestPath;
     }
 
-    // this finds the fastest path ONTO a tile
-    public MovementPath FindPath(Node source, Node target, Walkable walkingType, PathSearchOptions pSOptions) {
+    // find all nodes that can be reached
+    public ReachableTiles findReachableTiles(Tile startTile, float distance, WalkableLevel walkingType, PathSearchOptions pSOptions) {
         PathSearchOptions options = pSOptions == null ? new PathSearchOptions() : pSOptions;
-        MovementPath path = new MovementPath();
-        path.movementCost = -1;
-
-        if (source == target) {
-            path.movementCost = 0;
-            return path;
-        }
-
         map.resetTiles();
 
-        List<Node> openList = new List<Node>();
-        source.cost = 0;
+        List<Tile> openList = new List<Tile>();
+        List<Tile> currentList;
+        Dictionary<Tile, float> reachableNodes = new Dictionary<Tile, float>();
 
-        openList.Add(source);
+        float maxDistance = options.canDash ? distance * 2 : distance;
 
-        // while we still have nodes to check
-        while (openList.Count > 0) {
-            //find the current lowest cost tile
-            Node currentNode = null;
-            foreach (Node n in openList) {
-                if (currentNode == null || n.Value < currentNode.Value) {
-                    currentNode = n;
-                }
-            }
+        bool changed = true;
 
-            // if we couldnt find a node or its the target node
-            if (currentNode == null || currentNode == target) {
-                // quit out loop
-                break;
-            }
+        startTile.cost = 0;
+        openList.Add(startTile);
 
-            openList.Remove(currentNode);
+        while (changed) {
+            changed = false;
+            currentList = openList;
+            openList = new List<Tile>();
 
-            // loop through all the nodes neighbours
-            foreach (Neighbour neighbour in currentNode.neighbours) {
-                // get the new node from the neighbour
-                Node neighbourNode = neighbour.GetOppositeNode(currentNode);
+            // for each node in our current list
+            foreach (Tile tile in currentList) {
+                // loop through all its neighbours
+                foreach (Neighbour neighbour in tile.neighbours) {
+                    // get the new node from the neighbour
+                    Tile neighbourTile = neighbour.GetOppositeTile(tile);
 
-                // if the new node is not the starting node, there isnt a door in the way and can be walked on
-                if (neighbourNode != source && !neighbour.HasDoor() && IsTileWalkable(currentNode, neighbourNode, walkingType, options)) {
-                    // caclulate the cost to move here
-                    float totalCost = currentNode.cost + neighbourNode.moveCost;
+                    // if the new node is not the starting node, there isnt a door in the way and can be walked on
+                    if (neighbourTile != startTile && !neighbour.HasDoor() && IsTileWalkable(tile, neighbourTile, walkingType, options)) {
+                        // caclulate the cost to move here
+                        float totalCost = tile.cost + neighbourTile.MoveCost;
 
-                    // check to see if our new path is faster to this node
-                    if (neighbourNode.cost > totalCost) {
-                        // set the previous neighbour to the one we just used and set costs
-                        neighbourNode.previous = neighbour;
-                        neighbourNode.cost = totalCost;
-                        openList.Add(neighbourNode);
+                        // if the cost is less or equal to our distance
+                        if (totalCost <= maxDistance) {
+                            // check to see if we haven't already added it, and if we have, see if this way is faster to it
+                            if (!reachableNodes.ContainsKey(neighbourTile) || reachableNodes[neighbourTile] > totalCost) {
+                                // set the previous neighbour to the one we just used and set costs
+                                neighbourTile.previous = neighbour;
+                                neighbourTile.cost = totalCost;
+                                reachableNodes[neighbourTile] = totalCost;
+                                openList.Add(neighbourTile);
+                                changed = true;
+                            }
+                        }
                     }
                 }
             }
         }
 
-        // if the target tile has a previous node, we found a path
-        if (target.previous != null) {
-            path = getPathFromTile(target);
+        //if you cant end your path on a unit THIS IS DANGEROUS
+        if (options.faction != -1) {
+            reachableNodes = reachableNodes.Where(item => item.Key.MyUnit == null).ToDictionary(item => item.Key, item => item.Value);
         }
 
-        return path;
+        ReachableTiles reachableTiles;
+        reachableTiles.basic = reachableNodes.Where(item => item.Key.cost <= distance).ToDictionary(item => item.Key, item => item.Value);
+        reachableTiles.extended = reachableNodes.Where(item => item.Key.cost > distance).ToDictionary(item => item.Key, item => item.Value);
+
+        return reachableTiles;
     }
 
-    public MovementPath getPathFromTile(Node endNode) {
-        Node currentNode = endNode;
-        MovementPath newPath = new MovementPath();
-        newPath.path = new List<Node>();
-        newPath.movementCost = (int)endNode.cost;
+    //// find all nodes that can be reached
+    //public ReachableTiles findReachableTilesLegacy(Node startNode, float distance, Walkable walkingType, PathSearchOptions pSOptions) {
+    //    PathSearchOptions options = pSOptions == null ? new PathSearchOptions() : pSOptions;
+    //    map.resetTiles();
 
-        newPath.path.Add(endNode);
+    //    List<Node> openList = new List<Node>();
+    //    List<Node> currentList;
+    //    Dictionary<Node, float> reachableNodes = new Dictionary<Node, float>();
 
-        //while there is a previous node
-        while (currentNode.previous != null) {
-            Node previousNode = currentNode.previous.GetOppositeNode(currentNode);
-            newPath.path.Add(previousNode);
-            currentNode = previousNode;
-        }
+    //    float maxDistance = options.canDash ? distance * 2 : distance;
 
-        //need to remove the last added node as that was the starting node
-        newPath.path.RemoveAt(newPath.path.Count - 1);
+    //    bool changed = true;
 
-        newPath.path.Reverse();
+    //    startNode.cost = 0;
+    //    openList.Add(startNode);
 
-        return newPath;
-    }
+    //    while (changed) {
+    //        changed = false;
+    //        currentList = openList;
+    //        openList = new List<Node>();
+
+    //        // for each node in our current list
+    //        foreach (Tile tile in currentList) {
+    //            // loop through all its neighbours
+    //            foreach (Neighbour neighbour in node.neighbours) {
+    //                // get the new node from the neighbour
+    //                Node neighbourNode = neighbour.GetOppositeTile(tile);
+
+    //                // if the new node is not the starting node, there isnt a door in the way and can be walked on
+    //                if (neighbourNode != startNode && !neighbour.HasDoor() && IsTileWalkable(node, neighbourNode, walkingType, options)) {
+    //                    // caclulate the cost to move here
+    //                    float totalCost = node.cost + neighbourNode.moveCost;
+
+    //                    // if the cost is less or equal to our distance
+    //                    if (totalCost <= maxDistance) {
+    //                        // check to see if we haven't already added it, and if we have, see if this way is faster to it
+    //                        if (!reachableNodes.ContainsKey(neighbourNode) || reachableNodes[neighbourNode] > totalCost) {
+    //                            // set the previous neighbour to the one we just used and set costs
+    //                            neighbourNode.previous = neighbour;
+    //                            neighbourNode.cost = totalCost;
+    //                            reachableNodes[neighbourNode] = totalCost;
+    //                            openList.Add(neighbourNode);
+    //                            changed = true;
+    //                        }
+    //                    }
+    //                }
+    //            }
+    //        }
+    //    }
+
+    //    //if you cant end your path on a unit THIS IS DANGEROUS
+    //    if (options.faction != -1) {
+    //        reachableNodes = reachableNodes.Where(item => item.Key.MyUnit == null).ToDictionary(item => item.Key, item => item.Value);
+    //    }
+
+    //    ReachableTiles reachableTiles;
+    //    reachableTiles.basic = reachableNodes.Where(item => item.Key.cost <= distance).ToDictionary(item => item.Key, item => item.Value);
+    //    reachableTiles.extended = reachableNodes.Where(item => item.Key.cost > distance).ToDictionary(item => item.Key, item => item.Value);
+
+    //    return reachableTiles;
+    //}
+
+    //public MovementPath FindShortestPathToUnit(Node source, Node target, Walkable walkingType, PathSearchOptions pSOptions) {
+    //PathSearchOptions options = pSOptions == null ? new PathSearchOptions() : pSOptions;
+    //List<MovementPath> paths = new List<MovementPath>();
+    //map.resetTiles();
+
+    //// loop through all the target nodes neighbours
+    //target.neighbours.ForEach(neighbour => {
+    //    // check to see if we can stand on the tile
+    //    Node neighbourNode = neighbour.GetOppositeNode(target);
+    //    if (neighbourNode.MyUnit == null && UnitCanStandOnTile(neighbourNode, walkingType)) {
+    //        paths.Add(FindPath(source, neighbourNode, walkingType, options));
+    //    }
+    //});
+
+    //List<MovementPath> pathsWithoutUnitsAtEnd = paths.Where(movementPath => {
+    //    return movementPath.movementCost > -1 &&
+    //        movementPath.path[movementPath.path.Count - 1].myUnit == null;
+    //}).ToList();
+
+    //return GetSortestPath(pathsWithoutUnitsAtEnd.Count > 0 ? pathsWithoutUnitsAtEnd : paths);
+    //}
+
+    // this finds the fastest path ONTO a tile
+    //public MovementPath FindPath(NodeCollection source, Node target, Walkable walkingType, PathSearchOptions pSOptions) {
+    //PathSearchOptions options = pSOptions == null ? new PathSearchOptions() : pSOptions;
+    //MovementPath path = new MovementPath();
+    //path.movementCost = -1;
+
+    //if (source == target) {
+    //    path.movementCost = 0;
+    //    return path;
+    //}
+
+    //map.resetTiles();
+
+    //List<Node> openList = new List<Node>();
+    //source.cost = 0;
+
+    //openList.Add(source);
+
+    //// while we still have nodes to check
+    //while (openList.Count > 0) {
+    //    //find the current lowest cost tile
+    //    Node currentNode = null;
+    //    foreach (Node n in openList) {
+    //        if (currentNode == null || n.Value < currentNode.Value) {
+    //            currentNode = n;
+    //        }
+    //    }
+
+    //    // if we couldnt find a node or its the target node
+    //    if (currentNode == null || currentNode == target) {
+    //        // quit out loop
+    //        break;
+    //    }
+
+    //    openList.Remove(currentNode);
+
+    //    // loop through all the nodes neighbours
+    //    foreach (Neighbour neighbour in currentNode.neighbours) {
+    //        // get the new node from the neighbour
+    //        Node neighbourNode = neighbour.GetOppositeNode(currentNode);
+
+    //        // if the new node is not the starting node, there isnt a door in the way and can be walked on
+    //        if (neighbourNode != source && !neighbour.HasDoor() && IsTileWalkable(currentNode, neighbourNode, walkingType, options)) {
+    //            // caclulate the cost to move here
+    //            float totalCost = currentNode.cost + neighbourNode.moveCost;
+
+    //            // check to see if our new path is faster to this node
+    //            if (neighbourNode.cost > totalCost) {
+    //                // set the previous neighbour to the one we just used and set costs
+    //                neighbourNode.previous = neighbour;
+    //                neighbourNode.cost = totalCost;
+    //                openList.Add(neighbourNode);
+    //            }
+    //        }
+    //    }
+    //}
+
+    //// if the target tile has a previous node, we found a path
+    //if (target.previous != null) {
+    //    path = getPathFromTile(target);
+    //}
+
+    //return path;
+    //}
 
     //public MovementAndAttackPath findMovementAndAttackTiles(UnitController unit, AttackAction action, int actions) {
     //	bool canDash = actions > 1;
@@ -269,7 +355,7 @@ public class Pathfinder : MonoBehaviour {
 
     //	//Need to do a test for the starting tile
     //	foreach (Neighbour neighbour in unit.myNode.neighbours) {
-    //		UnitController targetUnit = neighbour.node.myUnit;
+    //		UnitController targetUnit = neighbour.node.MyUnit;
     //		if (targetUnit && action.CanTargetTile (neighbour.node)) {
     //			reachableTiles.attackTiles.Add (neighbour.node);
     //			neighbour.node.previous = new Neighbour ();
@@ -286,7 +372,7 @@ public class Pathfinder : MonoBehaviour {
     //				if (!reachableTiles.movementTiles.basic.Keys.Contains (neighbour.node)) {
     //					//if its not already highligheted or if the new parent is faster than previous
     //					if (!reachableTiles.attackTiles.Contains (neighbour.node) || tile.cost < neighbour.node.previous.node.cost) {
-    //						UnitController targetUnit = neighbour.node.myUnit;
+    //						UnitController targetUnit = neighbour.node.MyUnit;
     //						if (targetUnit && action.CanTargetTile (neighbour.node)) {
     //							neighbour.node.previousMoveNode = tile;
     //							neighbour.node.previous = new Neighbour ();
@@ -303,41 +389,52 @@ public class Pathfinder : MonoBehaviour {
     //	return reachableTiles;
     //}
 
-    public static bool IsTileWalkable(Node startNode, Node endNode, Walkable walkingType, PathSearchOptions options) {
-        return UnitCanStandOnTile(endNode, walkingType) && !UnitInTheWay(endNode, walkingType, options) && UnitCanChangeLevel(startNode, endNode, walkingType);
+    public static bool IsTileWalkable(Tile startTile, Tile endTile, WalkableLevel walkingType, PathSearchOptions options) {
+        return UnitCanStandOnTile(endTile, walkingType) && !UnitInTheWay(endTile, walkingType, options) && UnitCanChangeLevel(startTile, endTile, walkingType);
     }
 
-    public static bool UnitCanStandOnTile(Node node, Walkable walkingType) {
-        return node.walkable <= walkingType;
+    public static bool UnitCanStandOnTile(Tile tile, WalkableLevel walkingType) {
+        return tile.Walkable <= walkingType;
     }
 
-    public static bool UnitInTheWay(Node node, Walkable walkingType, PathSearchOptions options) {
-        bool hasUnit = node.myUnit != null;
+    public static bool UnitInTheWay(Tile tile, WalkableLevel walkingType, PathSearchOptions options) {
+        bool unitInTheWay = false;
+        tile.Nodes.ForEach((Node node) => {
+            if (UnitInTheWay(node, walkingType, options, "temp")) {
+                unitInTheWay = true;
+            }
+        });
+        return unitInTheWay;
+    }
+
+    private static bool UnitInTheWay(Node node, WalkableLevel walkingType, PathSearchOptions options, string randomShit) {
+        bool hasUnit = node.MyUnit != null;
         bool ignoreFaction = options.faction == -1;
-        bool unitIsSameFaction = hasUnit && node.myUnit.myPlayer.faction == options.faction;
+        bool unitIsSameFaction = hasUnit && node.MyUnit.myPlayer.faction == options.faction;
         bool canWalkThroughUnit = ignoreFaction || (unitIsSameFaction && options.canPassThroughAllies);
-        bool movementIsFlying = walkingType == Walkable.Flying;
+        bool movementIsFlying = walkingType == WalkableLevel.Flying;
 
         return hasUnit && !canWalkThroughUnit && !movementIsFlying;
     }
 
-    public static bool UnitCanChangeLevel(Node startNode, Node endNode, Walkable walkingType) {
-        int levelDifference = Math.Abs(startNode.height - endNode.height);
-        int maxDifference = (int)walkingType;
+    public static bool UnitCanChangeLevel(Tile startNode, Tile endNode, WalkableLevel walkingType) {
+        //int levelDifference = Math.Abs(startNode.height - endNode.height);
+        //int maxDifference = (int)walkingType;
 
-        return levelDifference <= maxDifference + 1;
+        //return levelDifference <= maxDifference + 1;
+        return true;
     }
 
-    public List<Node> FindEffectedTiles(Node unitNode, Node targetNode, AttackAction action) {
+    public List<Node> FindEffectedTiles(Tile unitTile, Node targetNode, AttackAction action) {
         switch (action.areaOfEffect) {
-            case AreaOfEffect.AURA:
-                return FindAttackableTiles(unitNode, action);
+            //case AreaOfEffect.AURA:
+            //    return FindAttackableTiles(unitNode, action);
 
-            case AreaOfEffect.CIRCLE:
-                return FindAttackableTiles(targetNode, action);
+            //case AreaOfEffect.CIRCLE:
+            //    return FindAttackableTiles(targetNode, action);
 
-            case AreaOfEffect.CLEAVE:
-                return FindCleaveTargetTiles(targetNode, action, unitNode);
+            //case AreaOfEffect.CLEAVE:
+            //    return FindCleaveTargetTiles(targetNode, action, unitNode);
 
             case AreaOfEffect.SINGLE:
             default:
@@ -347,73 +444,91 @@ public class Pathfinder : MonoBehaviour {
         }
     }
 
-    public List<Node> FindAttackableTiles(Node node, AttackAction action) {
+    public List<Node> FindAttackableTiles(Tile tile, AttackAction action) {
         switch (action.areaOfEffect) {
-            case AreaOfEffect.AURA:
-                return FindAOEHitTiles(node, action);
+            //case AreaOfEffect.AURA:
+            //    return FindAOEHitTiles(nodes, action);
 
-            case AreaOfEffect.CIRCLE:
-            case AreaOfEffect.CLEAVE:
-                return FindCircleTargetTiles(node, action);
+            //case AreaOfEffect.CIRCLE:
+            //case AreaOfEffect.CLEAVE:
+            //    return FindCircleTargetTiles(nodes, action);
 
             case AreaOfEffect.SINGLE:
             default:
-                return FindSingleTargetTiles(node, action);
+                return FindSingleTargetTiles(tile, action);
         }
     }
 
-    private List<Node> FindSingleTargetTiles(Node startNode, AttackAction action) {
-        List<Node> reachableTiles = findReachableTiles(startNode, action.range, Walkable.Flying, null).basic.Keys.ToList();
+    private List<Node> FindSingleTargetTiles(Tile startTile, AttackAction action) {
+        List<Tile> reachableTiles = findReachableTiles(startTile, action.range, WalkableLevel.Flying, null).basic.Keys.ToList();
+        List<Node> reachableNodes = new List<Node>();
+
+        reachableTiles.ForEach((Tile tile) => {
+            tile.Nodes.ForEach((Node node) => {
+                if (!reachableNodes.Contains(node)) {
+                    reachableNodes.Add(node);
+                }
+            });
+        });
+
         if (action.CanTargetSelf) {
-            reachableTiles.Insert(0, startNode);
+            startTile.Nodes.ForEach((Node node) => {
+                if (!reachableNodes.Contains(node)) {
+                    reachableNodes.Add(node);
+                }
+            });
         }
 
-        reachableTiles = reachableTiles.FindAll(node =>
-            HasLineOfSight(startNode, node) &&
+        reachableNodes = reachableNodes.FindAll(node =>
+            HasLineOfSight(startTile, node) &&
             // TODO this wont work when we have slowing terrain
             node.cost >= action.minRange
         );
 
-        return reachableTiles;
+        return reachableNodes;
     }
 
-    private List<Node> FindCircleTargetTiles(Node startNode, AttackAction action) {
-        List<Node> reachableTiles = FindSingleTargetTiles(startNode, action);
+    //private List<Node> FindCircleTargetTiles(Node startNode, AttackAction action) {
+    //    List<Node> reachableTiles = FindSingleTargetTiles(startNode, action);
 
-        return reachableTiles.Where(tile => action.CanTargetTile(tile)).ToList();
-    }
+    //    return reachableTiles.Where(tile => action.CanTargetTile(tile)).ToList();
+    //}
 
-    public List<Node> FindAOEHitTiles(Node node, AttackAction action) {
-        List<Node> targetTiles = findReachableTiles(node, action.aoeRange, Walkable.Flying, null).basic.Keys.ToList();
-        targetTiles.Insert(0, node);
-        return targetTiles;
-    }
+    //public List<Node> FindAOEHitTiles(Node node, AttackAction action) {
+    //    List<Node> targetTiles = findReachableTiles(node, action.aoeRange, Walkable.Flying, null).basic.Keys.ToList();
+    //    targetTiles.Insert(0, node);
+    //    return targetTiles;
+    //}
 
-    public List<Node> FindCleaveTargetTiles(Node node, AttackAction action, Node start) {
-        //TODO write a smarter way of doing this
-        bool attackingHorizontally = start.x != node.x;
-        List<Node> targetTiles = findReachableTiles(node, action.aoeRange, Walkable.Flying, null).basic.Keys.ToList();
-        List<Node> removeTiles = new List<Node>();
-        targetTiles.Insert(0, node);
-        if (attackingHorizontally) {
-            targetTiles.ForEach((tile) => {
-                if (tile.x != node.x) {
-                    removeTiles.Add(tile);
-                }
-            });
-        } else {
-            targetTiles.ForEach((tile) => {
-                if (tile.y != node.y) {
-                    removeTiles.Add(tile);
-                }
-            });
-        }
+    //public List<Node> FindCleaveTargetTiles(Node node, AttackAction action, Node start) {
+    //    //TODO write a smarter way of doing this
+    //    bool attackingHorizontally = start.x != node.x;
+    //    List<Node> targetTiles = findReachableTiles(node, action.aoeRange, Walkable.Flying, null).basic.Keys.ToList();
+    //    List<Node> removeTiles = new List<Node>();
+    //    targetTiles.Insert(0, node);
+    //    if (attackingHorizontally) {
+    //        targetTiles.ForEach((tile) => {
+    //            if (tile.x != node.x) {
+    //                removeTiles.Add(tile);
+    //            }
+    //        });
+    //    } else {
+    //        targetTiles.ForEach((tile) => {
+    //            if (tile.y != node.y) {
+    //                removeTiles.Add(tile);
+    //            }
+    //        });
+    //    }
 
-        removeTiles.ForEach((tile) => {
-            targetTiles.Remove(tile);
-        });
+    //    removeTiles.ForEach((tile) => {
+    //        targetTiles.Remove(tile);
+    //    });
 
-        return targetTiles;
+    //    return targetTiles;
+    //}
+
+    public bool HasLineOfSight(Tile tile, Node end) {
+        return tile.Nodes.Exists((Node node) => HasLineOfSight(node, end));
     }
 
     public bool HasLineOfSight(Node start, Node end) {

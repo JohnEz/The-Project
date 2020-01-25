@@ -11,15 +11,15 @@ public enum DamageType {
 public class DamageEffect : AttackEffect {
     public DamageType myType = DamageType.BLUDGEONING;
 
-    public override void AbilityEffect(UnitController caster, UnitController target) {
-        base.AbilityEffect(caster, target);
+    public override void AbilityEffect(UnitController caster, Node targetNode) {
+        base.AbilityEffect(caster, targetNode);
 
         //check where it is
 
-        HitLocationData location = target.myStats.GetRandomHitLocation(myType);
+        HitLocationData location = targetNode.MyUnit.myStats.GetRandomHitLocation(myType);
 
         //work out injury
-        float majorInjuryChance = ((float)caster.myStats.Strength / (float)target.myStats.Constitution) * location.majorInjuryChance;
+        float majorInjuryChance = ((float)caster.myStats.Strength / (float)targetNode.MyUnit.myStats.Constitution) * location.majorInjuryChance;
         float injuryRoll = Random.value;
         bool isMajorInjury = injuryRoll <= majorInjuryChance;
 
@@ -31,6 +31,6 @@ public class DamageEffect : AttackEffect {
             injury = location.minorInjuries.First();
         }
 
-        target.CreateBasicText(injury.description);
+        targetNode.MyUnit.CreateBasicText(injury.description);
     }
 }

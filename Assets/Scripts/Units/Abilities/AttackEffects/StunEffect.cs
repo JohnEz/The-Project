@@ -3,8 +3,8 @@
 [CreateAssetMenu(fileName = "New Attack Action", menuName = "Ability/Attack/Stun")]
 public class StunEffect : AttackEffect {
 
-    public override void AbilityEffect(UnitController caster, UnitController target) {
-        base.AbilityEffect(caster, target);
-        TargetUnit.ApplyBuff(new Stun(1));
+    public override void AbilityEffect(UnitController caster, Node targetNode) {
+        base.AbilityEffect(caster, targetNode);
+        targetNode.MyUnit.ApplyBuff(new Stun(1));
     }
 }

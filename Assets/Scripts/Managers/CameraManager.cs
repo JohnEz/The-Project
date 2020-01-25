@@ -109,13 +109,13 @@ public class CameraManager : MonoBehaviour {
     }
 
     public void MoveToLocation(Node node) {
-        MoveToLocation(TileMap.instance.getPositionOfNode(node));
+        MoveToLocation(TileMap.getPositionOfNode(node));
     }
 
-    public void JumpToLocation(Node node) {
+    public void JumpToLocation(Tile tile) {
         TurnOffCameras();
         controlledCamera.TurnOn();
-        controlledCamera.JumpToLocation(TileMap.instance.getPositionOfNode(node));
+        controlledCamera.JumpToLocation(tile.Position);
     }
 
     public void FollowTarget(Transform target) {

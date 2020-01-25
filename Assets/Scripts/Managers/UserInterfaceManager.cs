@@ -34,8 +34,8 @@ public class UserInterfaceManager : MonoBehaviour {
 
     public void UnshowAbility(bool clearSelectedUnit = false) {
         ActionBar.instance.UnselectAbilities();
-        HighlightManager.instance.UnhighlightTiles();
-        HighlightManager.instance.ClearEffectedTiles(clearSelectedUnit);
+        HighlightManager.instance.UnhighlightNodes();
+        HighlightManager.instance.ClearEffectedNodes(clearSelectedUnit);
     }
 
     private void UserControls() {
@@ -182,12 +182,12 @@ public class UserInterfaceManager : MonoBehaviour {
         // TODO, use same flow as cancel
         UnshowAbility();
 
-        if (!node.myUnit) {
+        if (!node.MyUnit) {
             UnitSelectionManager.instance.UnselectUnit();
             return;
         }
 
-        UnitSelectionManager.instance.SelectUnit(node.myUnit);
+        UnitSelectionManager.instance.SelectUnit(node.MyUnit);
         UnitController selectedUnit = UnitSelectionManager.instance.SelectedUnit;
 
         if (TurnManager.instance.PlayersTurn == selectedUnit.myPlayer.id && selectedUnit.myStats.ActionPoints > 0) {
@@ -316,7 +316,7 @@ public class UserInterfaceManager : MonoBehaviour {
     public void SelectNextUnit() {
         UnitController nextUnit = UnitSelectionManager.instance.SelectNextUnit();
         if (nextUnit != null) {
-            CameraManager.instance.JumpToLocation(nextUnit.myNode);
+            CameraManager.instance.JumpToLocation(nextUnit.myTile);
             ShowMovement();
         }
     }

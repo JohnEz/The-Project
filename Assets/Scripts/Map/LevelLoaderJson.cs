@@ -47,7 +47,7 @@ public struct MapData {
     public string name;
     public int width;
     public int height;
-    public Walkable[] walkableData;
+    public WalkableLevel[] walkableData;
     public LineOfSight[] lineOfSightData;
     public int[] roomData;
     public List<SpawnLocation> spawnLocations;
@@ -89,8 +89,8 @@ public class LevelLoaderJson : MonoBehaviour {
         loadedLevel.spawnLocations = CreateSpawnLocations();
     }
 
-    public Walkable[] CreateWalkableMap() {
-        Walkable[] walkableArray = new Walkable[loadedData.height * loadedData.width];
+    public WalkableLevel[] CreateWalkableMap() {
+        WalkableLevel[] walkableArray = new WalkableLevel[loadedData.height * loadedData.width];
 
         Layer walkableLayer = loadedData.layers.Find(layer => layer.name.Equals("Walkable"));
 
@@ -101,15 +101,15 @@ public class LevelLoaderJson : MonoBehaviour {
                 switch (walkableLayer.data[i]) {
                     default:
                     case 2:
-                        walkableArray[i] = Walkable.Walkable;
+                        walkableArray[i] = WalkableLevel.Walkable;
                         break;
 
                     case 4:
-                        walkableArray[i] = Walkable.Flying;
+                        walkableArray[i] = WalkableLevel.Flying;
                         break;
 
                     case 6:
-                        walkableArray[i] = Walkable.Impassable;
+                        walkableArray[i] = WalkableLevel.Impassable;
                         break;
                 }
             }

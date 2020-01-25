@@ -109,7 +109,7 @@ public class UnitSelectionManager : MonoBehaviour {
             return;
         }
 
-        HighlightManager.instance.SetEffectedTile(selectedUnit.myNode, SquareTarget.SELECTED_UNIT);
+        HighlightManager.instance.SetEffectedNodes(selectedUnit.myTile.Nodes, SquareTarget.SELECTED_UNIT);
     }
 
     public void UnselectUnit() {
@@ -117,7 +117,7 @@ public class UnitSelectionManager : MonoBehaviour {
             return;
         }
 
-        HighlightManager.instance.UnhighlightTile(selectedUnit.myNode);
+        HighlightManager.instance.UnhighlightNodes(selectedUnit.myTile.Nodes);
         selectedUnit = null;
     }
 

@@ -4,8 +4,8 @@
 public class SlowEffect : AttackEffect {
     public int duration = 1;
 
-    public override void AbilityEffect(UnitController caster, UnitController target) {
-        base.AbilityEffect(caster, target);
-        TargetUnit.ApplyBuff(new Slow(duration));
+    public override void AbilityEffect(UnitController caster, Node targetNode) {
+        base.AbilityEffect(caster, targetNode);
+        targetNode.MyUnit.ApplyBuff(new Slow(duration));
     }
 }

@@ -1,19 +1,16 @@
 ﻿using UnityEngine;
 
 public class AttackEffect : ScriptableObject {
-    private UnitController targetUnit;
+    //private Node targetNode;
 
     public bool targetSelf = false;
 
-    public UnitController TargetUnit {
-        get { return targetUnit; }
-    }
-
-    public virtual void AbilityEffect(UnitController caster, UnitController unit) {
-        targetUnit = targetSelf ? caster : unit;
-    }
+    //public Node TargetNode {
+    //    get { return targetNode; }
+    //}
 
     public virtual void AbilityEffect(UnitController caster, Node targetNode) {
+        //targetNode = targetSelf ? caster.myNodes.First() : targetNode;
     }
 
     public int PowerModToInt(int power, float mod) {

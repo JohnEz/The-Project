@@ -6,8 +6,8 @@ public class SnareEffect : AttackEffect {
 
     public GameObject effectPrefab;
 
-    public override void AbilityEffect(UnitController caster, UnitController target) {
-        base.AbilityEffect(caster, target);
-        TargetUnit.ApplyBuff(new Snare(duration, effectPrefab));
+    public override void AbilityEffect(UnitController caster, Node targetNode) {
+        base.AbilityEffect(caster, targetNode);
+        targetNode.MyUnit.ApplyBuff(new Snare(duration, effectPrefab));
     }
 }

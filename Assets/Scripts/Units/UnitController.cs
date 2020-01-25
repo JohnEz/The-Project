@@ -21,7 +21,8 @@ public enum ActionType {
 
 public struct Action {
     public ActionType type;
-    public List<Node> nodes;
+    public List<Node> effectedNodes;
+    public List<Tile> moveTiles;
     public AttackAction ability;
 }
 
@@ -68,12 +69,12 @@ public class UnitController : MonoBehaviour {
     private const float CLOSE_ENOUGH_TO_TILE = 0.005f;
 
     //Pathfinding
-    private List<Node> myPath = new List<Node>();
+    private List<Tile> myPath = new List<Tile>();
 
     [System.NonSerialized]
-    public Node myNode;
+    public Tile myTile;
 
-    private Node forceMoveNode;
+    private Tile forceMovedTile;
 
     //Gameplay variables
     public Player myPlayer;
@@ -153,9 +154,10 @@ public class UnitController : MonoBehaviour {
         ActionPoints = 0;
     }
 
-    public void Spawn(Player player, Node startNode, UnitObject startingStats) {
+    public void Spawn(Player player, Tile startTile, UnitObject startingStats) {
         myPlayer = player;
-        myNode = startNode;
+        myTile = startTile;
+        Debug.Log("Might need to set unit on tile");
         myStats = startingStats;
     }
 
@@ -193,19 +195,19 @@ public class UnitController : MonoBehaviour {
     }
 
     public Vector2 GetDirectionToTile(Node target) {
-        if (myNode == target) {
+        if (myTile.Nodes.Contains(target)) {
             return new Vector2(0, 0);
         }
 
-        Neighbour neighbour = myNode.FindNeighbourTo(target);
+        Neighbour neighbour = myTile.FindNeighbourTo(target);
 
         if (neighbour != null) {
             return neighbour.GetDirectionFrom(target);
         }
 
         //find if we want to check x or y
-        float minusX = target.x - myNode.x;
-        float minusY = myNode.y - target.y;
+        float minusX = target.x - myTile.x;
+        float minusY = myTile.y - target.y;
         float difX = Mathf.Abs(minusX);
         float difY = Mathf.Abs(minusY);
 
@@ -239,7 +241,7 @@ public class UnitController : MonoBehaviour {
     }
 
     public bool IsBeingForceMoved() {
-        return forceMoveNode != null;
+        return forceMovedTile != null;
     }
 
     public void FollowPath() {
@@ -270,7 +272,7 @@ public class UnitController : MonoBehaviour {
         }
 
         Vector3 my2DPosition = new Vector3(transform.position.x, 0, transform.position.z);
-        Vector3 target2DPosition = new Vector3(forceMoveNode.transform.position.x, 0, forceMoveNode.transform.position.z);
+        Vector3 target2DPosition = new Vector3(forceMovedTile.transform.position.x, 0, forceMovedTile.transform.position.z);
         float distanceToNode = Vector3.Distance(my2DPosition, target2DPosition);
 
         if (distanceToNode > 2f) {
@@ -280,7 +282,7 @@ public class UnitController : MonoBehaviour {
         } else {
             target2DPosition.y = transform.position.y;
             transform.position = target2DPosition;
-            forceMoveNode = null;
+            forceMovedTile = null;
         }
     }
 
@@ -305,21 +307,21 @@ public class UnitController : MonoBehaviour {
 
             switch (nextAction.type) {
                 case ActionType.MOVEMENT:
-                    SetPath(nextAction.nodes);
+                    SetPath(nextAction.moveTiles);
                     break;
 
                 case ActionType.ATTACK:
-                    AttackTarget(nextAction.nodes, nextAction.ability);
+                    AttackTarget(nextAction.effectedNodes, nextAction.ability);
                     break;
             }
         }
     }
 
-    public void SetPath(List<Node> path) {
-        myNode.myUnit = null;
+    public void SetPath(List<Tile> path) {
+        myTile.MyUnit = null;
         myPath = path;
-        myPath[myPath.Count - 1].myUnit = this;
-        myNode = myPath[myPath.Count - 1];
+        myPath[myPath.Count - 1].MyUnit = this;
+        myTile = myPath[myPath.Count - 1];
         FaceDirection(myPath[0].previous.GetDirectionFrom(myPath[0]));
         SetWalking(true);
         myManager.UnitStartedMoving();
@@ -328,11 +330,6 @@ public class UnitController : MonoBehaviour {
 
     private void FinishWalking() {
         //anim.IsWalking(false);
-
-        // TODO only the player should be able to open doors
-        if (myNode.HasDoor()) {
-            myNode.OpenDoors();
-        }
 
         RunNextAction(true);
         myManager.UnitFinishedMoving(this);
@@ -444,30 +441,30 @@ public class UnitController : MonoBehaviour {
         abilityEffects.Clear();
     }
 
-    public void Pull(Node pullOrigin, int distance) {
+    public void Pull(Tile pullOrigin, int distance) {
         ForceMove(pullOrigin, distance, true);
     }
 
-    public void Push(Node pushOrigin, int distance) {
+    public void Push(Tile pushOrigin, int distance) {
         ForceMove(pushOrigin, distance, false);
     }
 
-    private void ForceMove(Node origin, int distance, bool isPull) {
-        Node nodeToMoveTo = FindForceMoveNode(origin, distance, isPull);
+    private void ForceMove(Tile origin, int distance, bool isPull) {
+        Tile tileToMoveTo = FindForceMoveTile(origin, distance, isPull);
 
-        if (nodeToMoveTo == null) {
+        if (tileToMoveTo == null) {
             return;
         }
 
-        forceMoveNode = nodeToMoveTo;
-        myNode.myUnit = null;
-        forceMoveNode.myUnit = this;
-        myNode = forceMoveNode;
+        forceMovedTile = tileToMoveTo;
+        myTile.MyUnit = null;
+        forceMovedTile.MyUnit = this;
+        myTile = forceMovedTile;
     }
 
-    private Node FindForceMoveNode(Node origin, int distance, bool isPull) {
-        ReachableTiles tiles = TileMap.instance.pathfinder.findReachableTiles(myNode, distance, Walkable.Walkable, new PathSearchOptions(false, false, myPlayer.faction));
-        Vector2 forceDirection = new Vector2(origin.x - myNode.x, origin.y - myNode.y).normalized;
+    private Tile FindForceMoveTile(Tile origin, int distance, bool isPull) {
+        ReachableTiles tiles = TileMap.instance.pathfinder.findReachableTiles(myTile, distance, WalkableLevel.Walkable, new PathSearchOptions(false, false, myPlayer.faction, myStats.size));
+        Vector2 forceDirection = new Vector2(origin.x - myTile.x, origin.y - myTile.y).normalized;
         forceDirection = isPull ? forceDirection : -forceDirection;
 
         // No tiles to move to
@@ -481,8 +478,8 @@ public class UnitController : MonoBehaviour {
 
             if (n1Distance == n2Distance) {
                 //compare direction from node
-                Vector2 n1Direction = new Vector2(n1.x - myNode.x, n1.y - myNode.y).normalized;
-                Vector2 n2Direction = new Vector2(n2.x - myNode.x, n2.y - myNode.y).normalized;
+                Vector2 n1Direction = new Vector2(n1.x - myTile.x, n1.y - myTile.y).normalized;
+                Vector2 n2Direction = new Vector2(n2.x - myTile.x, n2.y - myTile.y).normalized;
 
                 if (Vector2.Distance(n1Direction, forceDirection) == Vector2.Distance(n2Direction, forceDirection)) {
                     Vector2 absoluteFacing = new Vector2(Mathf.Sign(facingDirection.x), Mathf.Sign(facingDirection.y));
@@ -546,10 +543,11 @@ public class UnitController : MonoBehaviour {
     }
 
     public IEnumerator CreateEffectRoutine(EffectOptions effectOptions) {
-        Node location = effectOptions.location ? effectOptions.location : myNode;
+        //TODO check what the default value should be
+        Node location = effectOptions.location != null ? effectOptions.location : myTile.Nodes.First();
 
         yield return new WaitForSeconds(effectOptions.delay);
-        Transform spawnTransform = location.myUnit != null ? location.myUnit.transform.Find("Token") : location.transform;
+        Transform spawnTransform = location.MyUnit != null ? location.MyUnit.transform.Find("Token") : location.transform;
         GameObject myEffect = Instantiate(effectOptions.effect, spawnTransform);
         if (!effectOptions.rotateWithCharacter) {
             myEffect.transform.rotation = effectOptions.effect.transform.rotation;
@@ -564,18 +562,18 @@ public class UnitController : MonoBehaviour {
         abilityEffects.Remove(effectToRemove);
     }
 
-    public IEnumerator CreateProjectile(GameObject projectile, Node target, float speed, float delay = 0) {
+    public IEnumerator CreateProjectile(GameObject projectile, Node targetedNode, float speed, float delay = 0) {
         yield return new WaitForSeconds(delay);
         GameObject createdProjectile = Instantiate(projectile);
 
         ProjectileController createdProjectileController = createdProjectile.GetComponent<ProjectileController>();
-        createdProjectileController.SetTarget(this, target, speed);
+        createdProjectileController.SetTarget(this, targetedNode, speed);
         projectiles.Add(createdProjectileController);
         projectilesToCreate--;
     }
 
-    public void CreateProjectileWithDelay(GameObject projectile, Node target, float speed, float delay) {
-        StartCoroutine(CreateProjectile(projectile, target, speed, delay));
+    public void CreateProjectileWithDelay(GameObject projectile, Node targetedNode, float speed, float delay) {
+        StartCoroutine(CreateProjectile(projectile, targetedNode, speed, delay));
     }
 
     public void ProjectileHit(ProjectileController projectile) {

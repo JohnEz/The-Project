@@ -5,14 +5,14 @@ public class DispellEffect : AttackEffect {
     public int dispellCount = 1;
     public bool debuff = true;
 
-    public override void AbilityEffect(UnitController caster, UnitController target) {
-        base.AbilityEffect(caster, target);
+    public override void AbilityEffect(UnitController caster, Node targetNode) {
+        base.AbilityEffect(caster, targetNode);
 
         if (dispellCount == -1) {
-            target.DispellAll(debuff);
+            targetNode.MyUnit.DispellAll(debuff);
         } else {
             for (int i = 0; i < dispellCount; i++) {
-                target.Dispell(debuff);
+                targetNode.MyUnit.Dispell(debuff);
             }
         }
     }

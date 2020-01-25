@@ -14,6 +14,12 @@ public enum Stats {
     AP,
 }
 
+public enum UnitSize {
+    SMALL,
+    MEDIUM,
+    LARGE
+}
+
 [Serializable]
 public struct UnitToken {
     public Sprite frontSprite;
@@ -27,6 +33,7 @@ public class UnitObject : ScriptableObject {
     public Sprite Icon;
 
     public UnitToken[] unitTokens;
+    public UnitSize size = UnitSize.SMALL;
 
     public UnitBuffs buffs;
 
@@ -56,9 +63,9 @@ public class UnitObject : ScriptableObject {
     private int actionPoints;
 
     //Stats for AI
-    public Walkable baseWalkingType = Walkable.Walkable;
+    public WalkableLevel baseWalkingType = WalkableLevel.Walkable;
 
-    public Walkable walkingType;
+    public WalkableLevel walkingType;
 
     public bool isActive = false;
 
@@ -93,6 +100,21 @@ public class UnitObject : ScriptableObject {
 
         Vector3 tokenPos = tokenTransform.localPosition;
         tokenTransform.localPosition = new Vector3(tokenPos.x, displayToken.frontSprite.rect.height / 96, tokenPos.z);
+
+        myUnit.transform.Find("SmallBase").gameObject.SetActive(false);
+        switch (size) {
+            case UnitSize.SMALL:
+                myUnit.transform.Find("SmallBase").gameObject.SetActive(true);
+                break;
+
+            case UnitSize.MEDIUM:
+                myUnit.transform.Find("MediumBase").gameObject.SetActive(true);
+                break;
+
+            case UnitSize.LARGE:
+                myUnit.transform.Find("LargeBase").gameObject.SetActive(true);
+                break;
+        }
     }
 
     public void Reset(UnitController myUnit = null) {
@@ -177,7 +199,7 @@ public class UnitObject : ScriptableObject {
         get { return GetModifiedStat(baseSpeed, Stats.SPEED); }
     }
 
-    public Walkable WalkingType {
+    public WalkableLevel WalkingType {
         get { return walkingType; }
     }
 

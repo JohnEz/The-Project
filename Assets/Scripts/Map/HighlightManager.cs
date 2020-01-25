@@ -16,37 +16,37 @@ public class HighlightManager : MonoBehaviour {
     private void Update() {
     }
 
-    public List<Node> GetHighlightedTiles() {
+    public List<Node> GetHighlightedNodes() {
         return TileMap.instance.GetNodes().FindAll(node => node.GetComponentInChildren<TileHighlighter>().GetHighlighted());
     }
 
-    public List<Node> GetEffectedTiles() {
+    public List<Node> GetEffectedNodes() {
         return TileMap.instance.GetNodes().FindAll(node => node.GetComponentInChildren<TileHighlighter>().GetEffected());
     }
 
-    public void ShowPath(List<Node> effectedTiles) {
-        SetEffectedTiles(effectedTiles, SquareTarget.UNDEFINED, true);
+    public void ShowPath(List<Node> effectedNodes) {
+        SetEffectedNodes(effectedNodes, SquareTarget.UNDEFINED, true);
     }
 
-    public void ShowAbilityTiles(List<Node> effectedTiles, AttackAction action) {
+    public void ShowAbilityNodes(List<Node> effectedNodes, AttackAction action) {
         SquareTarget targetType = action.targets == TargetType.ALLY ? SquareTarget.HELPFULL : SquareTarget.ATTACK;
-        SetEffectedTiles(effectedTiles, targetType, false, action);
+        SetEffectedNodes(effectedNodes, targetType, false, action);
     }
 
     // TODO, re write this trash
-    public void SetEffectedTiles(List<Node> effectedTiles, SquareTarget targetType = SquareTarget.UNDEFINED, bool path = false, AttackAction action = null) {
-        ClearEffectedTiles();
+    public void SetEffectedNodes(List<Node> effectedNodes, SquareTarget targetType = SquareTarget.UNDEFINED, bool path = false, AttackAction action = null) {
+        ClearEffectedNodes();
         int i = 0;
 
-        effectedTiles.ForEach((tile) => {
-            TileHighlighter highlighter = tile.GetComponentInChildren<TileHighlighter>();
+        effectedNodes.ForEach((node) => {
+            TileHighlighter highlighter = node.GetComponentInChildren<TileHighlighter>();
 
-            SetEffectedTile(tile, targetType);
+            SetEffectedNode(node, targetType);
 
             if (path) {
                 // if we are not at the end node, set the next direction to the direction between this and the next node
-                Vector2 previousDirection = tile.previous.GetDirectionFrom(tile);
-                Vector2 nextDirection = i == effectedTiles.Count - 1 ? new Vector2(0, 0) : effectedTiles[i + 1].previous.GetDirectionFrom(effectedTiles[i + 1]);
+                Vector2 previousDirection = node.previous.GetDirectionFrom(node);
+                Vector2 nextDirection = i == effectedNodes.Count - 1 ? new Vector2(0, 0) : effectedNodes[i + 1].previous.GetDirectionFrom(effectedNodes[i + 1]);
 
                 highlighter.CreateArrowDecal(previousDirection, nextDirection);
             }
@@ -54,8 +54,8 @@ public class HighlightManager : MonoBehaviour {
         });
     }
 
-    public void SetEffectedTile(Node tileToHighlight, SquareTarget targetType) {
-        TileHighlighter highlighter = tileToHighlight.GetComponentInChildren<TileHighlighter>();
+    public void SetEffectedNode(Node nodeToHighlight, SquareTarget targetType) {
+        TileHighlighter highlighter = nodeToHighlight.GetComponentInChildren<TileHighlighter>();
         highlighter.SetEffected(true);
 
         if (targetType != SquareTarget.UNDEFINED) {
@@ -63,47 +63,53 @@ public class HighlightManager : MonoBehaviour {
         }
     }
 
-    public void ClearEffectedTiles(bool clearSelectedUnit = false) {
-        List<Node> currentlyHighlightedNodes = GetHighlightedTiles();
-        GetEffectedTiles().ForEach((tile) => {
-            TileHighlighter highlighter = tile.GetComponentInChildren<TileHighlighter>();
+    public void ClearEffectedNodes(bool clearSelectedUnit = false) {
+        List<Node> currentlyHighlightedNodes = GetHighlightedNodes();
+        GetEffectedNodes().ForEach((node) => {
+            TileHighlighter highlighter = node.GetComponentInChildren<TileHighlighter>();
             if (!clearSelectedUnit && highlighter.myTarget == SquareTarget.SELECTED_UNIT) {
                 return;
             }
 
             highlighter.SetEffected(false);
-            if (!currentlyHighlightedNodes.Contains(tile)) {
+            if (!currentlyHighlightedNodes.Contains(node)) {
                 highlighter.CleanHighlight();
             }
             highlighter.ClearDecals();
         });
     }
 
-    public void HighlightTiles(List<Node> tilesToHighlight, SquareTarget targetType) {
-        foreach (Node n in tilesToHighlight) {
+    public void HighlightNodes(List<Node> nodesToHighlight, SquareTarget targetType) {
+        foreach (Node n in nodesToHighlight) {
             TileHighlighter highlighter = n.GetComponentInChildren<TileHighlighter>();
             highlighter.SetTargetType(targetType);
             highlighter.SetHighlighted(true);
         }
     }
 
-    public void HighlightTile(Node tileToHighlight, SquareTarget targetType) {
-        tileToHighlight.GetComponentInChildren<TileHighlighter>().SetTargetType(targetType);
-        tileToHighlight.GetComponentInChildren<TileHighlighter>().SetHighlighted(true);
+    public void HighlightNode(Node nodeToHighlight, SquareTarget targetType) {
+        nodeToHighlight.GetComponentInChildren<TileHighlighter>().SetTargetType(targetType);
+        nodeToHighlight.GetComponentInChildren<TileHighlighter>().SetHighlighted(true);
     }
 
-    public void UnhighlightTiles() {
-        foreach (Node n in GetHighlightedTiles()) {
-            UnhighlightTile(n);
+    public void UnhighlightNodes() {
+        foreach (Node n in GetHighlightedNodes()) {
+            UnhighlightNode(n);
         }
     }
 
-    public void UnhighlightAllTiles() {
-        UnhighlightTiles();
-        ClearEffectedTiles();
+    public void UnhighlightAllNodes() {
+        UnhighlightNodes();
+        ClearEffectedNodes();
     }
 
-    public void UnhighlightTile(Node tileToHighlight) {
-        tileToHighlight.GetComponentInChildren<TileHighlighter>().CleanHighlight();
+    public void UnhighlightNodes(List<Node> nodesToUnhighlight) {
+        foreach (Node n in nodesToUnhighlight) {
+            UnhighlightNode(n);
+        }
+    }
+
+    public void UnhighlightNode(Node nodeToHighlight) {
+        nodeToHighlight.GetComponentInChildren<TileHighlighter>().CleanHighlight();
     }
 }

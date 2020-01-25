@@ -26,7 +26,9 @@ public class TileMap : MonoBehaviour {
 
     private int mapWidth;
     private int mapHeight;
-    private Node[] tiles;
+    private Node[] tilesSmall;
+    private NodeCollection[] tilesMedium;
+    private Tile[] tilesLarge;
     private Dictionary<int, Room> rooms;
 
     public GameObject basicNodePrefab;
@@ -54,14 +56,14 @@ public class TileMap : MonoBehaviour {
         lLoaderJson.Initialise();
         Instantiate(GameDetails.Level.mapObject);
 
-        GenerateMap(lLoaderJson.loadedLevel);
-        CalculateNeighbours();
+        GenerateSmallTiles(lLoaderJson.loadedLevel);
+        GenerateMediumTiles();
 
         isMapLoaded = true;
     }
 
     public List<Node> GetNodes() {
-        return new List<Node>(tiles);
+        return new List<Node>(tilesSmall);
     }
 
     public Node GetNode(Vector2 pos) {
@@ -69,10 +71,30 @@ public class TileMap : MonoBehaviour {
     }
 
     public Node GetNode(int x, int y) {
-        return tiles[y * mapWidth + x];
+        return tilesSmall[y * mapWidth + x];
     }
 
-    public Vector3 getPositionOfNode(Node targetNode) {
+    private static Tile GetTile(Tile[] tiles, int width, int x, int y) {
+        int index = y * width + x;
+        if (index > tiles.Length - 1 || index < 0) {
+            Debug.Log("x:" + x);
+            Debug.Log("y:" + y);
+            Debug.Log("tiles.length:" + tiles.Length);
+            Debug.Log("width:" + width);
+        }
+
+        return tiles[y * width + x];
+    }
+
+    public static Vector3 getPositionOfNodes(NodeCollection targetNodes) {
+        Vector3 sumOfNodes = Vector3.zero;
+
+        targetNodes.Nodes.ForEach((Node node) => { sumOfNodes += getPositionOfNode(node); });
+
+        return sumOfNodes;
+    }
+
+    public static Vector3 getPositionOfNode(Node targetNode) {
         return targetNode.transform.position;
     }
 
@@ -89,7 +111,7 @@ public class TileMap : MonoBehaviour {
     }
 
     public void resetTiles() {
-        foreach (Node n in tiles) {
+        foreach (Node n in tilesSmall) {
             n.Reset();
         }
     }
@@ -111,20 +133,20 @@ public class TileMap : MonoBehaviour {
         return direction.normalized;
     }
 
-    private void GenerateMap(MapData data) {
+    private void GenerateSmallTiles(MapData data) {
         mapWidth = data.width;
         mapHeight = data.height;
-        tiles = new Node[mapWidth * mapHeight];
+        tilesSmall = new Node[mapWidth * mapHeight];
 
         spawnLocations = data.spawnLocations;
 
         float halfTileSize = TILE_SIZE / 2;
 
         //Generate empty nodes
-        for (int i = 0; i < tiles.Length; ++i) {
+        for (int i = 0; i < tilesSmall.Length; ++i) {
             Quaternion rot = basicNodePrefab.transform.rotation;
-            int x = i % data.width;
-            int y = i / data.width;
+            int x = i % mapWidth;
+            int y = i / mapWidth;
 
             Vector3 pos = new Vector3((x * TILE_SIZE) + halfTileSize, 0, (-y * TILE_SIZE) - halfTileSize);
 
@@ -133,55 +155,82 @@ public class TileMap : MonoBehaviour {
 
             baseNode.GetComponentInChildren<TileHighlighter>().Initialise();
 
-            tiles[i] = baseNode.GetComponent<Node>();
-            tiles[i].x = x;
-            tiles[i].y = y;
-            tiles[i].walkable = data.walkableData[i];
-            tiles[i].lineOfSight = data.lineOfSightData[i];
-            tiles[i].room = data.roomData[i];
-            tiles[i].height = 0;
-            tiles[i].moveCost = 1;
+            tilesSmall[i] = baseNode.GetComponent<Node>();
+            tilesSmall[i].x = x;
+            tilesSmall[i].y = y;
+            tilesSmall[i].Walkable = data.walkableData[i];
+            tilesSmall[i].lineOfSight = data.lineOfSightData[i];
+            tilesSmall[i].room = data.roomData[i];
+            tilesSmall[i].height = 0;
+            tilesSmall[i].MoveCost = 1;
 
-            AddNodeToRoom(data.roomData[i], tiles[i]);
+            AddNodeToRoom(data.roomData[i], tilesSmall[i]);
         }
+
+        CalculateNeighbours(tilesSmall, mapWidth, mapHeight);
     }
 
-    private void AddNeighbour(Node startNode, int dirX, int dirY) {
-        Node endNode = GetNode(startNode.x + dirX, startNode.y + dirY);
+    private void GenerateMediumTiles() {
+        int width = mapWidth - 1;
+        int height = mapHeight - 1;
 
-        Neighbour exisitingNeighbour = endNode.neighbours != null ? endNode.FindNeighbourTo(startNode) : null;
+        tilesMedium = new NodeCollection[width * height];
+
+        //Generate empty tiles
+        for (int i = 0; i < tilesMedium.Length; ++i) {
+            Quaternion rot = basicNodePrefab.transform.rotation;
+
+            //xy = top left node of tile
+            int x = i % width;
+            int y = i / width;
+
+            Vector3 pos = new Vector3(((x + 1) * TILE_SIZE), 0, ((-y - 1) * TILE_SIZE));
+            GameObject baseTile = Instantiate(tileTemplatePrefab, pos, rot);
+            baseTile.transform.parent = this.transform;
+
+            tilesMedium[i] = baseTile.GetComponent<NodeCollection>();
+
+            // TODO do i need a check here to make sure it doesnt go out of bounds?
+            tilesMedium[i].x = x;
+            tilesMedium[i].y = y;
+            tilesMedium[i].Add(GetNode(x, y));
+            tilesMedium[i].Add(GetNode(x + 1, y));
+            tilesMedium[i].Add(GetNode(x, y + 1));
+            tilesMedium[i].Add(GetNode(x + 1, y + 1));
+        }
+
+        CalculateNeighbours(tilesMedium, width, height);
+    }
+
+    private void AddNeighbour(Tile[] tiles, Tile startTile, int width, int dirX, int dirY) {
+        int x = startTile.x + dirX;
+        int y = startTile.y + dirY;
+        Tile endTile = GetTile(tiles, width, x, y);
+
+        Neighbour exisitingNeighbour = endTile.neighbours != null ? endTile.FindNeighbourTo(startTile) : null;
         // check to see if the end node has already created a neighbour
         if (exisitingNeighbour != null) {
-            startNode.neighbours.Add(exisitingNeighbour);
+            startTile.neighbours.Add(exisitingNeighbour);
             return;
         }
 
-        Neighbour neighbour = new Neighbour(startNode, endNode);
+        Neighbour neighbour = new Neighbour(startTile, endTile);
 
-        bool bothRoomsInMap = startNode.room != 0 && endNode.room != 0;
-        bool differentRooms = startNode.room != endNode.room;
-        if (bothRoomsInMap && differentRooms) {
-            neighbour.AddDoor(doorPrefab);
-        }
-
-        startNode.neighbours.Add(neighbour);
+        startTile.neighbours.Add(neighbour);
     }
 
-    private void CalculateNeighbours() {
-        int x = 0;
-        int y = 0;
-
+    private void CalculateNeighbours(Tile[] tiles, int width, int height) {
         //find neighbours
         for (int i = 0; i < tiles.Length; ++i) {
-            x = i % mapWidth;
-            y = i / mapWidth;
+            int x = i % width;
+            int y = i / width;
 
-            Node node = GetNode(x, y);
-            node.neighbours = new List<Neighbour>();
+            Tile tile = GetTile(tiles, width, x, y);
+            tile.neighbours = new List<Neighbour>();
 
             //set all neighbours
             if (x > 0) {
-                AddNeighbour(node, -1, 0);
+                AddNeighbour(tiles, tile, width, -1, 0);
                 //if (y > 0) {
                 //    AddNeighbour(node, -1, -1);
                 //}
@@ -189,8 +238,8 @@ public class TileMap : MonoBehaviour {
                 //    AddNeighbour(node, -1, 1);
                 //}
             }
-            if (x < mapWidth - 1) {
-                AddNeighbour(node, 1, 0);
+            if (x < width - 1) {
+                AddNeighbour(tiles, tile, width, 1, 0);
                 //if (y > 0) {
                 //    AddNeighbour(node, 1, -1);
                 //}
@@ -199,10 +248,10 @@ public class TileMap : MonoBehaviour {
                 //}
             }
             if (y > 0) {
-                AddNeighbour(node, 0, -1);
+                AddNeighbour(tiles, tile, width, 0, -1);
             }
-            if (y < mapHeight - 1) {
-                AddNeighbour(node, 0, 1);
+            if (y < height - 1) {
+                AddNeighbour(tiles, tile, width, 0, 1);
             }
         }
     }
