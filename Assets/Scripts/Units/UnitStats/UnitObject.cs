@@ -121,15 +121,21 @@ public class UnitObject : ScriptableObject {
         instantiatedAbilities.Clear();
 
         ItemInfo mainHandItem = equipment.GetItemInSlot(EquipmentSlotType.MainHand);
-        Ability mainHandAbility;
-        if (mainHandItem == null || mainHandItem.ability == null) {
-            mainHandAbility = Instantiate(unarmedAbility);
-        } else {
+        Ability mainHandAbility = null;
+        bool hasMainHandAbility = mainHandItem != null && mainHandItem.ability != null;
+
+        if (hasMainHandAbility) {
             mainHandAbility = Instantiate(mainHandItem.ability);
+        } else if (unarmedAbility != null) {
+            mainHandAbility = Instantiate(unarmedAbility);
         }
 
-        mainHandAbility.caster = myUnit;
-        instantiatedAbilities.Add(mainHandAbility);
+        if (mainHandAbility != null) {
+            mainHandAbility.caster = myUnit;
+            instantiatedAbilities.Add(mainHandAbility);
+        } else {
+            Debug.Log(className + " doesnt have a main hand ability?!");
+        }
 
         baseAbilities.ForEach(ability => {
             Ability instantaitedAbility = Instantiate(ability);
