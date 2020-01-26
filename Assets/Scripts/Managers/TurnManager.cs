@@ -70,7 +70,7 @@ public class TurnManager : MonoBehaviour {
         PlayerManager.instance.StartNewTurn(currentPlayersTurn);
 
         if (isAiTurn()) {
-            AIManager.instance.NewTurn(playersTurn);
+            StartCoroutine(AIManager.instance.NewTurn(playersTurn));
         } else if (currentPlayersTurn.units.Count > 0) {
             UserInterfaceManager.instance.SelectNextUnit();
         }
@@ -134,6 +134,7 @@ public class TurnManager : MonoBehaviour {
     }
 
     public void FinishStartingTurn() {
+        //Debug.Log("FinishStartingTurn");
         ChangeToWaitingForInput();
     }
 
@@ -142,6 +143,7 @@ public class TurnManager : MonoBehaviour {
     }
 
     public void FinishedMoving() {
+        //Debug.Log("FinishedMoving");
         ChangeToWaitingForInput();
         UserInterfaceManager.instance.FinishedMoving();
     }
@@ -151,7 +153,7 @@ public class TurnManager : MonoBehaviour {
     }
 
     public void FinishedAttacking() {
-        // TODO check for triggers?
+        //Debug.Log("FinishedAttacking");
         ChangeToWaitingForInput();
         UserInterfaceManager.instance.FinishedAttacking();
     }

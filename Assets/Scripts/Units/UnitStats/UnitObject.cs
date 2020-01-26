@@ -26,7 +26,7 @@ public struct UnitToken {
     public Sprite backSprite;
 }
 
-[CreateAssetMenu(fileName = "New Unit", menuName = "Unit")]
+[CreateAssetMenu(fileName = "New Unit", menuName = "Unit/Unit")]
 public class UnitObject : ScriptableObject {
     public string characterName;
     public string className;
@@ -115,7 +115,7 @@ public class UnitObject : ScriptableObject {
         }
     }
 
-    public void Reset(UnitController myUnit = null) {
+    public virtual void Reset(UnitController myUnit = null) {
         buffs.Clear();
         instantiatedAttacks.Clear();
         instantiatedAbilities.Clear();

@@ -216,7 +216,7 @@ public class UnitManager : MonoBehaviour {
         }
 
         Action action = new Action();
-        action.type = ActionType.ATTACK;
+        action.type = UnitActionType.ATTACK;
         action.ability = attackAction;
         action.effectedNodes = TileMap.instance.pathfinder.FindEffectedTiles(unit.myTile, targetNode, attackAction);
 
@@ -228,7 +228,7 @@ public class UnitManager : MonoBehaviour {
     // Adds a move action to a units queue
     public void SetUnitPath(UnitController unit, MovementPath movementPath) {
         Action moveAction = new Action();
-        moveAction.type = ActionType.MOVEMENT;
+        moveAction.type = UnitActionType.MOVEMENT;
         moveAction.moveTiles = movementPath.path;
         unit.AddAction(moveAction);
     }

@@ -13,14 +13,14 @@ public struct AbilityTarget {
     }
 }
 
-public enum ActionType {
+public enum UnitActionType {
     MOVEMENT,
     ATTACK,
     NULL
 }
 
 public struct Action {
-    public ActionType type;
+    public UnitActionType type;
     public List<Node> effectedNodes;
     public List<Tile> moveTiles;
     public AttackAction ability;
@@ -66,7 +66,7 @@ public class UnitController : MonoBehaviour {
     //constants
     private const float WALKSPEED = 32.5f;
 
-    private const float CLOSE_ENOUGH_TO_TILE = 0.005f;
+    private const float CLOSE_ENOUGH_TO_TILE = 0.0005f;
 
     //Pathfinding
     private List<Tile> myPath = new List<Tile>();
@@ -192,7 +192,7 @@ public class UnitController : MonoBehaviour {
         facingDirection = dir;
     }
 
-    public Vector2 GetDirectionToTile(Node target) {
+    public Vector2 GetDirectionToTile(Tile target) {
         if (myTile.Nodes.Contains(target)) {
             return new Vector2(0, 0);
         }
@@ -256,7 +256,8 @@ public class UnitController : MonoBehaviour {
         } else {
             transform.position = new Vector3(myPath[0].transform.position.x, transform.position.y, myPath[0].transform.position.z);
             if (myPath.Count > 1) {
-                FaceDirection(myPath[1].previous.GetDirectionFrom(myPath[1]));
+                Neighbour neighbour = myPath[1].FindNeighbourTo(myPath[0]);
+                FaceDirection(neighbour.GetDirectionFrom(myPath[1]));
             } else {
                 FinishWalking();
             }
@@ -304,11 +305,11 @@ public class UnitController : MonoBehaviour {
             Action nextAction = actionQueue.Peek();
 
             switch (nextAction.type) {
-                case ActionType.MOVEMENT:
+                case UnitActionType.MOVEMENT:
                     SetPath(nextAction.moveTiles);
                     break;
 
-                case ActionType.ATTACK:
+                case UnitActionType.ATTACK:
                     AttackTarget(nextAction.effectedNodes, nextAction.ability);
                     break;
             }

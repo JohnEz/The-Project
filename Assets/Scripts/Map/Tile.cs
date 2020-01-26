@@ -38,6 +38,17 @@ public class Tile : MonoBehaviour {
         return Nodes.Exists((Node node) => node.MyUnit != null && node.MyUnit != ignoredUnit);
     }
 
+    public bool OverlapsTile(Tile other) {
+        bool overlaps = false;
+        Nodes.ForEach(node => {
+            if (other.Nodes.Contains(node)) {
+                overlaps = true;
+            }
+        });
+
+        return overlaps;
+    }
+
     public virtual UnitController MyUnit {
         get { return myUnit; }
         set { myUnit = value; }
@@ -49,6 +60,10 @@ public class Tile : MonoBehaviour {
 
     public virtual float Y {
         get { return y; }
+    }
+
+    public float Value {
+        get { return cost + dist; }
     }
 
     public virtual bool Equals(Tile other) {

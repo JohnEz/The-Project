@@ -40,10 +40,6 @@ public class Node : Tile {
         return Mathf.Abs(diffX) + Mathf.Abs(diffY);
     }
 
-    public float Value {
-        get { return cost + dist; }
-    }
-
     public bool HasDoor() {
         return neighbours.Exists(n => n.HasDoor());
     }
