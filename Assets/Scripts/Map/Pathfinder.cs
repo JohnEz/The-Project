@@ -79,6 +79,10 @@ public class Pathfinder : MonoBehaviour {
 
     // cleans up the "previous" variables of a list of nodes to form a path
     public static List<Tile> CleanPath(List<Tile> path, Tile startingTile) {
+        if (path.Count == 0) {
+            return path;
+        }
+
         List<Tile> cleanedPath = new List<Tile>();
 
         Tile previousTile = startingTile;
@@ -209,16 +213,16 @@ public class Pathfinder : MonoBehaviour {
         // loop through all the target nodes neighbours
         target.neighbours.ForEach(neighbour => {
             // check to see if we can stand on the tile
-            Tile neighbourNode = neighbour.GetOppositeTile(target);
-            if (neighbourNode.MyUnit == null && UnitCanStandOnTile(neighbourNode, walkingType)) {
-                paths.Add(FindPath(start, neighbourNode, walkingType, options));
+            Tile neighbourTile = neighbour.GetOppositeTile(target);
+            if ((neighbourTile.MyUnit == null || neighbourTile.MyUnit == start.MyUnit) && UnitCanStandOnTile(neighbourTile, walkingType)) {
+                paths.Add(FindPath(start, neighbourTile, walkingType, options));
             }
         });
 
         List<MovementPath> pathsWithoutUnitsAtEnd = paths.Where(movementPath => {
             // TODO will probably need to check if tile contains unit instead
-            return movementPath.movementCost > -1 &&
-                movementPath.path[movementPath.path.Count - 1].MyUnit == null;
+            return movementPath.movementCost == 0 || (movementPath.movementCost > 0 &&
+                movementPath.path[movementPath.path.Count - 1].ContainsAUnitExcluding(start.MyUnit));
         }).ToList();
 
         return GetShortestDestination(pathsWithoutUnitsAtEnd.Count > 0 ? pathsWithoutUnitsAtEnd : paths);
@@ -231,7 +235,8 @@ public class Pathfinder : MonoBehaviour {
         path.movementCost = -1;
         Tile endTile = null;
 
-        if (start == target) {
+        if (start == target || start.OverlapsTile(target)) {
+            path.path = new List<Tile>();
             path.movementCost = 0;
             return path;
         }

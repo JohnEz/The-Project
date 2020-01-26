@@ -45,7 +45,10 @@ public class AttackAction : AbilityAction {
         UnitController targetUnit = target.MyUnit;
 
         // todo this should be effected by varing stats and weapon types
-        float hitRoll = Random.Range(0, 20) + caster.myStats.Agility;
+        float hitRoll = Random.Range(0, 20) + caster.myStats.Strength;
+
+        Debug.Log("HitRoll: " + hitRoll);
+        Debug.Log("AC: " + targetUnit.myStats.AC);
 
         if (hitRoll < targetUnit.myStats.AC) {
             targetUnit.CreateBasicText("Miss");

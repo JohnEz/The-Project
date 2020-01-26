@@ -391,6 +391,12 @@ public class UnitController : MonoBehaviour {
         return true;
     }
 
+    public void TakeInjury(Injury injury) {
+        CreateBasicText(injury.description);
+        PlayRandomWoundSound();
+        myStats.AddInjury(injury);
+    }
+
     public IEnumerator AttackRoutine() {
         yield return new WaitForSeconds(0.33f);
 

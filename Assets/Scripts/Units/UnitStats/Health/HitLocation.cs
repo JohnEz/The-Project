@@ -4,11 +4,19 @@ using System.Collections.Generic;
 using System;
 
 [Serializable]
-public struct HitLocationData {
+public class HitLocationData {
     public DamageType damageType;
     public float majorInjuryChance;
-    public List<Injury> minorInjuries;
-    public List<Injury> majorInjuries;
+    public List<Injury> minorInjuryPrefabs;
+    public List<Injury> majorInjuryPrefabs;
+
+    public List<Injury> MinorInjuries { get; set; }
+
+    public List<Injury> MajorInjuries { get; set; }
+
+    public bool HasMajorInjury() {
+        return MajorInjuries.Exists(injury => injury.isActive);
+    }
 }
 
 [Serializable]
@@ -17,11 +25,39 @@ public class HitLocation : ScriptableObject {
     public string locationName;
     public List<HitLocationData> data;
 
+    public Stats effectedStat;
+    public int mod;
+
+    public void Initialise() {
+        data.ForEach(location => {
+            location.MinorInjuries = new List<Injury>();
+            location.MajorInjuries = new List<Injury>();
+
+            foreach (Injury prefab in location.minorInjuryPrefabs) {
+                Injury injury = Instantiate(prefab);
+                location.MinorInjuries.Add(injury);
+            }
+
+            foreach (Injury prefab in location.majorInjuryPrefabs) {
+                Injury injury = Instantiate(prefab);
+                location.MajorInjuries.Add(injury);
+            }
+        });
+    }
+
     public bool CanBeHitBy(DamageType damageType) {
         return data.Exists((HitLocationData data) => data.damageType == damageType);
     }
 
     public HitLocationData GetData(DamageType damageType) {
         return data.Find((HitLocationData data) => data.damageType == damageType);
+    }
+
+    public bool HasMajorInjury() {
+        return data.Exists(hitLocationData => hitLocationData.HasMajorInjury());
+    }
+
+    public int GetModifiedStat(Stats stat) {
+        return HasMajorInjury() && stat == effectedStat ? mod : 0;
     }
 }

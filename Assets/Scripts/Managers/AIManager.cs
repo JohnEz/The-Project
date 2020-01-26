@@ -158,7 +158,7 @@ public class AIManager : MonoBehaviour {
 
         switch (action.MoveType) {
             case MonsterMoveType.TOWARDS_TARGET:
-                Debug.Log("Finding path to target");
+                //Debug.Log("Finding path to target");
                 pathToTarget = TileMap.instance.pathfinder.FindShortestPathToUnit(unit.myTile, target.myTile, unit.myStats.walkingType, new PathSearchOptions(unit.myPlayer.faction, unit.myStats.size));
                 //pathToTarget = TileMap.instance.pathfinder.FindPath(unit.myTile, shortestDestination, unit.myStats.walkingType, new PathSearchOptions(unit.myPlayer.faction, unit.myStats.size));
                 break;
@@ -186,6 +186,10 @@ public class AIManager : MonoBehaviour {
     }
 
     private MovementPath RemoveTilesWithUnits(UnitController unit, MovementPath movementPath) {
+        if (movementPath.movementCost == 0) {
+            return movementPath;
+        }
+
         movementPath.path = movementPath.path.Take(unit.myStats.Speed).ToList();
 
         //Debug.Log("I want to move to node: " + shortestPath.path.Last());

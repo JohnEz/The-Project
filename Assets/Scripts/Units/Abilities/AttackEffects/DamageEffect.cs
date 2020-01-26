@@ -26,11 +26,11 @@ public class DamageEffect : AttackEffect {
         Injury injury;
 
         if (isMajorInjury) {
-            injury = location.majorInjuries.First();
+            injury = location.MajorInjuries.First();
         } else {
-            injury = location.minorInjuries.First();
+            injury = location.MinorInjuries.First();
         }
 
-        targetNode.MyUnit.CreateBasicText(injury.description);
+        targetNode.MyUnit.TakeInjury(injury);
     }
 }

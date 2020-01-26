@@ -50,7 +50,11 @@ public class UnitObject : ScriptableObject {
 
     public OnStatChangeEvent onStatChange = new OnStatChangeEvent();
 
+    public HitLocations myHitLocationsPrefab;
+
+    [HideInInspector]
     public HitLocations myHitLocations;
+
     public int baseStrength = 1;
     public int baseAgility = 1;
     public int baseConstitution = 1;
@@ -120,6 +124,9 @@ public class UnitObject : ScriptableObject {
         instantiatedAttacks.Clear();
         instantiatedAbilities.Clear();
 
+        myHitLocations = Instantiate(myHitLocationsPrefab);
+        myHitLocations.Initialise();
+
         ItemInfo mainHandItem = equipment.GetItemInSlot(EquipmentSlotType.MainHand);
         Ability mainHandAbility = null;
         bool hasMainHandAbility = mainHandItem != null && mainHandItem.ability != null;
@@ -150,6 +157,8 @@ public class UnitObject : ScriptableObject {
 
         // get stats from equipment
         flatMods += equipment.GetModifiedStat(stat);
+
+        flatMods += myHitLocations.GetModifiedStat(stat);
 
         foreach (Buff buff in buffs.GetBuffs()) {
             flatMods += buff.GetFlatMod((int)stat);
@@ -252,6 +261,12 @@ public class UnitObject : ScriptableObject {
 
     public void RemoveBuffs(List<Buff> buffsToRemove, bool withEffects = true) {
         buffs.RemoveBuffs(buffsToRemove, withEffects);
+
+        OnStatChange();
+    }
+
+    public void AddInjury(Injury injury) {
+        injury.isActive = true;
 
         OnStatChange();
     }

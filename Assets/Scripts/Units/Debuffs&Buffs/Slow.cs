@@ -4,12 +4,12 @@
     public Slow(int maxDuration) : base(maxDuration) {
         name = "Slow";
         icon = "buffMomentum";
-        flatMod[(int)Stats.SPEED] = -speedReduction;
+        flatMod[(int)Stats.SPEED] = -1;
         maxStack = 5;
         isDebuff = true;
     }
 
     public override string GetDescription() {
-        return "Speed reduced by " + (speedReduction * stacks) + " for one turn.";
+        return "Speed reduced by " + (speedReduction * stacks);
     }
 }
