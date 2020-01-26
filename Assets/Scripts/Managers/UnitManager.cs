@@ -63,14 +63,14 @@ public class UnitManager : MonoBehaviour {
             dir = Vector2.left;
         }
         // TODO 3d Refactor, unit spawn locations should only do X and Z
-        GameObject newUnit = (GameObject)Instantiate(UnitPrefab, TileMap.instance.getPositionOfNode(x, y), Quaternion.identity);
+        Tile startingTile = TileMap.instance.GetTile(unit.size, x, y);
+        GameObject newUnit = (GameObject)Instantiate(UnitPrefab, TileMap.getPositionOfTile(startingTile), Quaternion.identity);
         newUnit.transform.parent = TileMap.instance.transform;
 
-        Node startingNode = TileMap.instance.GetNode(x, y);
         UnitController unitController = newUnit.GetComponent<UnitController>();
 
-        startingNode.MyUnit = unitController;
-        unitController.Spawn(player, startingNode, unit);
+        startingTile.MyUnit = unitController;
+        unitController.Spawn(player, startingTile, unit);
         unitController.FaceDirection(Vector2.down);
         unitController.myManager = this;
         unitController.Initialise();
@@ -146,8 +146,8 @@ public class UnitManager : MonoBehaviour {
 
         List<Node> basicNodes = ReachableTiles.GetBasicNodes(walkingTiles);
         List<Node> extendedNodes = ReachableTiles.GetExtendedNodes(walkingTiles);
-        HighlightManager.instance.HighlightNodes(basicNodes, SquareTarget.MOVEMENT);
         HighlightManager.instance.HighlightNodes(extendedNodes, SquareTarget.DASH);
+        HighlightManager.instance.HighlightNodes(basicNodes, SquareTarget.MOVEMENT);
     }
 
     // Shows where the ability can target
@@ -235,8 +235,8 @@ public class UnitManager : MonoBehaviour {
     }
 
     // Tells the unit to move to a set node
-    public void MoveToTile(UnitController unit, Node targetNode) {
-        MovementPath movementPath = TileMap.instance.pathfinder.getPathFromTile(targetNode);
+    public void MoveToTile(UnitController unit, Tile targetTile) {
+        MovementPath movementPath = TileMap.instance.pathfinder.getPathFromTile(targetTile);
         SetUnitPath(unit, movementPath);
     }
 

@@ -11,23 +11,24 @@ public struct MovementPath {
 }
 
 public struct ReachableTiles {
+    public Tile startingTile;
     public Dictionary<Tile, float> basic;
     public Dictionary<Tile, float> extended;
 
     public static List<Node> GetBasicNodes(ReachableTiles tiles) {
-        return GetNodesFromTileList(tiles.basic.Keys.ToList());
+        return GetNodesFromTileList(tiles.basic.Keys.ToList(), tiles.startingTile);
     }
 
     public static List<Node> GetExtendedNodes(ReachableTiles tiles) {
-        return GetNodesFromTileList(tiles.extended.Keys.ToList());
+        return GetNodesFromTileList(tiles.extended.Keys.ToList(), tiles.startingTile);
     }
 
-    private static List<Node> GetNodesFromTileList(List<Tile> tiles) {
+    private static List<Node> GetNodesFromTileList(List<Tile> tiles, Tile startingTile) {
         List<Node> reachableNodes = new List<Node>();
 
         tiles.ToList().ForEach((Tile tile) => {
             tile.Nodes.ForEach((Node node) => {
-                if (!reachableNodes.Contains(node)) {
+                if (!reachableNodes.Contains(node) && !startingTile.Nodes.Contains(node)) {
                     reachableNodes.Add(node);
                 }
             });
@@ -192,6 +193,7 @@ public class Pathfinder : MonoBehaviour {
         }
 
         ReachableTiles reachableTiles;
+        reachableTiles.startingTile = startTile;
         reachableTiles.basic = reachableNodes.Where(item => item.Key.cost <= distance).ToDictionary(item => item.Key, item => item.Value);
         reachableTiles.extended = reachableNodes.Where(item => item.Key.cost > distance).ToDictionary(item => item.Key, item => item.Value);
 

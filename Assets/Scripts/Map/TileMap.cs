@@ -21,6 +21,7 @@ public class Room {
 
 public class TileMap : MonoBehaviour {
     public const float TILE_SIZE = 12.8f;
+    public const int MEDIUM_SIZE = 2;
 
     public static TileMap instance;
 
@@ -74,13 +75,29 @@ public class TileMap : MonoBehaviour {
         return tilesSmall[y * mapWidth + x];
     }
 
-    private static Tile GetTile(Tile[] tiles, int width, int x, int y) {
-        int index = y * width + x;
-        if (index > tiles.Length - 1 || index < 0) {
-            Debug.Log("x:" + x);
-            Debug.Log("y:" + y);
-            Debug.Log("tiles.length:" + tiles.Length);
-            Debug.Log("width:" + width);
+    public Tile GetTileClosestToClick(UnitSize size, int posX, int posY, int targetX, int targetY) {
+        int solutionX = targetX;
+        int solutionY = targetY;
+
+        if (size != UnitSize.SMALL) {
+            int xDir = Mathf.Clamp(targetX - posX, 0, 1);
+            int yDir = Mathf.Clamp(targetY - posY, 0, 1);
+
+            solutionX -= xDir;
+            solutionY -= yDir;
+        }
+
+        return GetTile(size, solutionX, solutionY);
+    }
+
+    public Tile GetTile(UnitSize unitSize, int x, int y) {
+        int width = getWidth(unitSize);
+        Tile[] tiles;
+
+        if (unitSize == UnitSize.SMALL) {
+            tiles = tilesSmall;
+        } else {
+            tiles = tilesMedium;
         }
 
         return tiles[y * width + x];
@@ -89,42 +106,60 @@ public class TileMap : MonoBehaviour {
     public static Vector3 getPositionOfNodes(NodeCollection targetNodes) {
         Vector3 sumOfNodes = Vector3.zero;
 
-        targetNodes.Nodes.ForEach((Node node) => { sumOfNodes += getPositionOfNode(node); });
+        targetNodes.Nodes.ForEach((Node node) => { sumOfNodes += getPositionOfTile(node); });
 
-        return sumOfNodes;
+        return sumOfNodes / targetNodes.Nodes.Count;
     }
 
-    public static Vector3 getPositionOfNode(Node targetNode) {
-        return targetNode.transform.position;
+    public static Vector3 getPositionOfTile(Tile targetTile) {
+        return targetTile.Position;
     }
 
     public Vector3 getPositionOfNode(int x, int y) {
-        return getPositionOfNode(GetNode(x, y));
+        return getPositionOfTile(GetNode(x, y));
     }
 
-    public float getWidth() {
-        return mapWidth;
-    }
+    public Tile[] getTiles(UnitSize size = UnitSize.SMALL) {
+        switch (size) {
+            case UnitSize.MEDIUM:
+                return tilesMedium;
 
-    public float getHeight() {
-        return mapHeight;
-    }
-
-    public void resetTiles() {
-        foreach (Node n in tilesSmall) {
-            n.Reset();
+            case UnitSize.SMALL:
+            default:
+                return tilesSmall;
         }
     }
 
-    public bool IsRoomActive(int roomId) {
-        return rooms[roomId].isActive;
+    public int getWidth(UnitSize size = UnitSize.SMALL) {
+        int mod = 0;
+
+        switch (size) {
+            case UnitSize.MEDIUM:
+                mod = MEDIUM_SIZE / 2;
+                break;
+        }
+        return mapWidth - mod;
     }
 
-    public void ActivateRoom(int roomId) {
-        rooms[roomId].isActive = true;
-        rooms[roomId].nodes.ForEach(node => {
-            node.Activate();
-        });
+    public int getHeight(UnitSize size = UnitSize.SMALL) {
+        int mod = 0;
+
+        switch (size) {
+            case UnitSize.MEDIUM:
+                mod = MEDIUM_SIZE / 2;
+                break;
+        }
+        return mapHeight - mod;
+    }
+
+    public void resetTiles() {
+        foreach (Tile t in tilesSmall) {
+            t.Reset();
+        }
+
+        foreach (Tile t in tilesMedium) {
+            t.Reset();
+        }
     }
 
     public Vector2 GetDirectionBetweenNodes(Node startNode, Node endNode) {
@@ -160,14 +195,12 @@ public class TileMap : MonoBehaviour {
             tilesSmall[i].y = y;
             tilesSmall[i].Walkable = data.walkableData[i];
             tilesSmall[i].lineOfSight = data.lineOfSightData[i];
-            tilesSmall[i].room = data.roomData[i];
+            tilesSmall[i].room = 0;
             tilesSmall[i].height = 0;
             tilesSmall[i].MoveCost = 1;
-
-            AddNodeToRoom(data.roomData[i], tilesSmall[i]);
         }
 
-        CalculateNeighbours(tilesSmall, mapWidth, mapHeight);
+        CalculateNeighbours(UnitSize.SMALL);
     }
 
     private void GenerateMediumTiles() {
@@ -190,7 +223,6 @@ public class TileMap : MonoBehaviour {
 
             tilesMedium[i] = baseTile.GetComponent<NodeCollection>();
 
-            // TODO do i need a check here to make sure it doesnt go out of bounds?
             tilesMedium[i].x = x;
             tilesMedium[i].y = y;
             tilesMedium[i].Add(GetNode(x, y));
@@ -199,13 +231,13 @@ public class TileMap : MonoBehaviour {
             tilesMedium[i].Add(GetNode(x + 1, y + 1));
         }
 
-        CalculateNeighbours(tilesMedium, width, height);
+        CalculateNeighbours(UnitSize.MEDIUM);
     }
 
-    private void AddNeighbour(Tile[] tiles, Tile startTile, int width, int dirX, int dirY) {
+    private void AddNeighbour(UnitSize size, Tile startTile, int dirX, int dirY) {
         int x = startTile.x + dirX;
         int y = startTile.y + dirY;
-        Tile endTile = GetTile(tiles, width, x, y);
+        Tile endTile = GetTile(size, x, y);
 
         Neighbour exisitingNeighbour = endTile.neighbours != null ? endTile.FindNeighbourTo(startTile) : null;
         // check to see if the end node has already created a neighbour
@@ -219,18 +251,22 @@ public class TileMap : MonoBehaviour {
         startTile.neighbours.Add(neighbour);
     }
 
-    private void CalculateNeighbours(Tile[] tiles, int width, int height) {
+    private void CalculateNeighbours(UnitSize size) {
+        int width = getWidth(size);
+        int height = getHeight(size);
+        Tile[] tiles = getTiles(size);
+
         //find neighbours
         for (int i = 0; i < tiles.Length; ++i) {
             int x = i % width;
             int y = i / width;
 
-            Tile tile = GetTile(tiles, width, x, y);
+            Tile tile = GetTile(size, x, y);
             tile.neighbours = new List<Neighbour>();
 
             //set all neighbours
             if (x > 0) {
-                AddNeighbour(tiles, tile, width, -1, 0);
+                AddNeighbour(size, tile, -1, 0);
                 //if (y > 0) {
                 //    AddNeighbour(node, -1, -1);
                 //}
@@ -239,7 +275,7 @@ public class TileMap : MonoBehaviour {
                 //}
             }
             if (x < width - 1) {
-                AddNeighbour(tiles, tile, width, 1, 0);
+                AddNeighbour(size, tile, 1, 0);
                 //if (y > 0) {
                 //    AddNeighbour(node, 1, -1);
                 //}
@@ -248,10 +284,10 @@ public class TileMap : MonoBehaviour {
                 //}
             }
             if (y > 0) {
-                AddNeighbour(tiles, tile, width, 0, -1);
+                AddNeighbour(size, tile, 0, -1);
             }
             if (y < height - 1) {
-                AddNeighbour(tiles, tile, width, 0, 1);
+                AddNeighbour(size, tile, 0, 1);
             }
         }
     }

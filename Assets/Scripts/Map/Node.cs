@@ -44,12 +44,6 @@ public class Node : Tile {
         get { return cost + dist; }
     }
 
-    public void Reset() {
-        cost = Mathf.Infinity;
-        previous = null;
-        previousMoveNode = null;
-    }
-
     public bool HasDoor() {
         return neighbours.Exists(n => n.HasDoor());
     }

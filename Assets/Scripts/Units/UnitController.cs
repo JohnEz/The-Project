@@ -104,7 +104,7 @@ public class UnitController : MonoBehaviour {
         projectiles = new List<ProjectileController>();
         myDialogController = GetComponentInChildren<UnitDialogController>();
 
-        gameObject.SetActive(myStats.isActive);
+        Activate();
     }
 
     // Update is called once per frame
@@ -157,12 +157,10 @@ public class UnitController : MonoBehaviour {
     public void Spawn(Player player, Tile startTile, UnitObject startingStats) {
         myPlayer = player;
         myTile = startTile;
-        Debug.Log("Might need to set unit on tile");
         myStats = startingStats;
     }
 
     public void Activate() {
-        myStats.isActive = true;
         gameObject.SetActive(true);
 
         // TODO sort this problem, it shouldnt try to create camera for allies and the player, only enemies

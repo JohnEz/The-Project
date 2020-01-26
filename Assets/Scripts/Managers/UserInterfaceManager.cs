@@ -172,10 +172,15 @@ public class UserInterfaceManager : MonoBehaviour {
     public void ClickedMovement(Node node) {
         UnshowAbility(true);
 
-        int cost = Mathf.CeilToInt(node.cost / UnitSelectionManager.instance.SelectedUnit.myStats.Speed);
+        UnitController selectedUnit = UnitSelectionManager.instance.SelectedUnit;
+
+        // TODO this isnt always the right tile, need to find the closest
+        Tile tile = TileMap.instance.GetTileClosestToClick(selectedUnit.myStats.size, selectedUnit.myTile.x, selectedUnit.myTile.y, node.x, node.y);
+
+        int cost = Mathf.CeilToInt(tile.cost / selectedUnit.myStats.Speed);
 
         UnitSelectionManager.instance.SelectedUnit.ActionPoints -= cost;
-        UnitManager.instance.MoveToTile(UnitSelectionManager.instance.SelectedUnit, node);
+        UnitManager.instance.MoveToTile(selectedUnit, tile);
     }
 
     public void ClickedUnselected(Node node) {

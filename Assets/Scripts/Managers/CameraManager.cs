@@ -109,7 +109,7 @@ public class CameraManager : MonoBehaviour {
     }
 
     public void MoveToLocation(Node node) {
-        MoveToLocation(TileMap.getPositionOfNode(node));
+        MoveToLocation(TileMap.getPositionOfTile(node));
     }
 
     public void JumpToLocation(Tile tile) {

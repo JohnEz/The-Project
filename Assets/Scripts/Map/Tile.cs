@@ -29,6 +29,11 @@ public class Tile : MonoBehaviour {
     protected WalkableLevel walkable;
     protected float moveCost = 1;
 
+    public void Reset() {
+        cost = Mathf.Infinity;
+        previous = null;
+    }
+
     public virtual UnitController MyUnit {
         get { return myUnit; }
         set { myUnit = value; }

@@ -37,7 +37,7 @@ public class GameManager : MonoBehaviour {
 
             UnitManager.instance.SpawnUnit("Fighter", humanPlayer, playerSpawnLocation[0].x, playerSpawnLocation[0].y);
             UnitManager.instance.SpawnUnit("Cleric", humanPlayer, playerSpawnLocation[1].x, playerSpawnLocation[1].y);
-            UnitManager.instance.SpawnUnit("Criminal", humanPlayer, playerSpawnLocation[2].x, playerSpawnLocation[2].y);
+            UnitManager.instance.SpawnUnit("Ogre", humanPlayer, playerSpawnLocation[2].x, playerSpawnLocation[2].y);
         } else {
             LoadPlayerCharacters(humanPlayer);
         }
@@ -48,8 +48,6 @@ public class GameManager : MonoBehaviour {
         Player allyAI = PlayerManager.instance.AddAiPlayer(1);
 
         LoadMapUnits(enemyAI, allyAI);
-
-        TileMap.instance.ActivateRoom(0);
     }
 
     private void LoadPlayerCharacters(Player humanPlayer) {

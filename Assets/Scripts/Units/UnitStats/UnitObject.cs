@@ -67,8 +67,6 @@ public class UnitObject : ScriptableObject {
 
     public WalkableLevel walkingType;
 
-    public bool isActive = false;
-
     [HideInInspector]
     public List<AttackAction> instantiatedAttacks;
 
