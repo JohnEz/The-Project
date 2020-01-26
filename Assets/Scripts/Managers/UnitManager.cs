@@ -195,8 +195,7 @@ public class UnitManager : MonoBehaviour {
     // shows the path to the selected node
     public void ShowPath(Node targetNode) {
         MovementPath movementPath = TileMap.instance.pathfinder.getPathFromTile(targetNode);
-        Debug.Log("Need to fix path drawing");
-        //HighlightManager.instance.ShowPath(movementPath.path);
+        HighlightManager.instance.ShowPath(movementPath.path);
     }
 
     // Uses the specified ability of at the target location

@@ -24,7 +24,17 @@ public class HighlightManager : MonoBehaviour {
         return TileMap.instance.GetNodes().FindAll(node => node.GetComponentInChildren<TileHighlighter>().GetEffected());
     }
 
-    public void ShowPath(List<Node> effectedNodes) {
+    public void ShowPath(List<Tile> effectedTiles) {
+        List<Node> effectedNodes = new List<Node>();
+
+        effectedTiles.ForEach((Tile tile) => {
+            tile.Nodes.ForEach((Node node) => {
+                if (!effectedNodes.Contains(node)) {
+                    effectedNodes.Add(node);
+                }
+            });
+        });
+
         SetEffectedNodes(effectedNodes, SquareTarget.UNDEFINED, true);
     }
 

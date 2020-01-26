@@ -34,6 +34,10 @@ public class Tile : MonoBehaviour {
         previous = null;
     }
 
+    public bool ContainsAUnitExcluding(UnitController ignoredUnit) {
+        return Nodes.Exists((Node node) => node.MyUnit != null && node.MyUnit != ignoredUnit);
+    }
+
     public virtual UnitController MyUnit {
         get { return myUnit; }
         set { myUnit = value; }

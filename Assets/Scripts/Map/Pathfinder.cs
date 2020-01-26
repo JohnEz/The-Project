@@ -189,7 +189,7 @@ public class Pathfinder : MonoBehaviour {
 
         //if you cant end your path on a unit THIS IS DANGEROUS
         if (options.faction != -1) {
-            reachableNodes = reachableNodes.Where(item => item.Key.MyUnit == null).ToDictionary(item => item.Key, item => item.Value);
+            reachableNodes = reachableNodes.Where(item => !item.Key.ContainsAUnitExcluding(startTile.MyUnit)).ToDictionary(item => item.Key, item => item.Value);
         }
 
         ReachableTiles reachableTiles;
