@@ -25,9 +25,13 @@ public class HitLocations : ScriptableObject {
     }
 
     public HitLocationData RandomHitLocation(DamageType damageType) {
-        List<HitLocation> hitLocations = myLocations.FindAll((HitLocation location) => location.CanBeHitBy(damageType));
-        int index = Random.Range(0, hitLocations.Count);
-        return hitLocations[index].GetData(damageType);
+        List<HitLocation> hitLocations = myLocations.FindAll((HitLocation location) => location.HasAvailableWounds(damageType));
+        HitLocationData hitLocation = null;
+        if (hitLocations.Count > 0) {
+            int index = Random.Range(0, hitLocations.Count);
+            hitLocation = hitLocations[index].GetData(damageType);
+        }
+        return hitLocation;
     }
 
     public int GetModifiedStat(Stats stat) {

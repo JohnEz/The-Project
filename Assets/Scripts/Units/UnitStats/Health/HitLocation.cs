@@ -17,6 +17,18 @@ public class HitLocationData {
     public bool HasMajorInjury() {
         return MajorInjuries.Exists(injury => injury.isActive);
     }
+
+    public bool HasAvailableMinorWound() {
+        return MinorInjuries.Exists(injury => !injury.isActive);
+    }
+
+    public bool HasAvailableMajorWound() {
+        return MajorInjuries.Exists(injury => !injury.isActive);
+    }
+
+    public bool HasAvailableWound() {
+        return HasAvailableMinorWound() || HasAvailableMajorWound();
+    }
 }
 
 [Serializable]
@@ -43,6 +55,14 @@ public class HitLocation : ScriptableObject {
                 location.MajorInjuries.Add(injury);
             }
         });
+    }
+
+    public bool HasAvailableWounds(DamageType damageType) {
+        if (!CanBeHitBy(damageType)) {
+            return false;
+        }
+
+        return GetData(damageType).HasAvailableWound();
     }
 
     public bool CanBeHitBy(DamageType damageType) {

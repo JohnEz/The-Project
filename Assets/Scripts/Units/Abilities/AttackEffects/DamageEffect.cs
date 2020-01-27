@@ -14,23 +14,29 @@ public class DamageEffect : AttackEffect {
     public override void AbilityEffect(UnitController caster, Node targetNode) {
         base.AbilityEffect(caster, targetNode);
 
-        //check where it is
-
         HitLocationData location = targetNode.MyUnit.myStats.GetRandomHitLocation(myType);
+
+        //TODO fix this
+        if (location == null) {
+            return;
+        }
 
         //work out injury
         float majorInjuryChance = ((float)caster.myStats.Strength / (float)targetNode.MyUnit.myStats.Constitution) * location.majorInjuryChance;
         float injuryRoll = Random.value;
         bool isMajorInjury = injuryRoll <= majorInjuryChance;
 
-        Injury injury;
+        Injury injury = null;
 
-        if (isMajorInjury) {
+        // TODO fix this
+        if ((isMajorInjury && location.HasAvailableMajorWound()) || (!isMajorInjury && !location.HasAvailableMinorWound())) {
             injury = location.MajorInjuries.First();
-        } else {
+        } else if (location.HasAvailableMinorWound()) {
             injury = location.MinorInjuries.First();
         }
 
-        targetNode.MyUnit.TakeInjury(injury);
+        if (injury != null) {
+            targetNode.MyUnit.TakeInjury(injury);
+        }
     }
 }

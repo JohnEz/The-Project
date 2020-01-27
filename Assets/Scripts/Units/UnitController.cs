@@ -103,6 +103,7 @@ public class UnitController : MonoBehaviour {
         myStats.Initialise(this);
         projectiles = new List<ProjectileController>();
         myDialogController = GetComponentInChildren<UnitDialogController>();
+        unitCanvasController.Initialise();
 
         myStats.onInjuryChange.AddListener(OnInjuryChange);
 

@@ -13,7 +13,7 @@ public class UnitCanvasController : MonoBehaviour {
     private const float COMBAT_TEXT_THROTTLE = 0.5f;
 
     public GameObject combatTextPrefab;
-    public GameObject buffIconPrefab;
+    public GameObject woundIconPrefab;
 
     private BuffController buffs;
     private List<GameObject> buffIcons = new List<GameObject>();
@@ -26,6 +26,8 @@ public class UnitCanvasController : MonoBehaviour {
 
     private Dictionary<string, Sprite[]> buffSprites = new Dictionary<string, Sprite[]>();
 
+    private List<GameObject> woundPoints;
+
     private Color[] teamColours = new Color[] {
         new Color (0, 0.9647f, 1), //blue
         new Color(0.8039f, 0.4039f, 0.2039f), //red
@@ -33,10 +35,19 @@ public class UnitCanvasController : MonoBehaviour {
         //new Color (0.8431f, 0.2f, 0.2f), //red
     };
 
-    // Use this for initialization
-    private void Start() {
+    public void Initialise() {
         myUnit = GetComponentInParent<UnitController>();
         myTeam = myUnit.myPlayer.id;
+
+        woundPoints = new List<GameObject>();
+
+        Transform woundPointsParent = transform.Find("Wound Points");
+        for (int i = 0; i < myUnit.myStats.WoundLimit; i++) {
+            GameObject woundPoint = Instantiate(woundIconPrefab, woundPointsParent);
+            woundPoints.Add(woundPoint);
+        }
+
+        myUnit.myStats.onInjuryChange.AddListener(UpdateWoundPoints);
     }
 
     // Update is called once per frame
@@ -48,6 +59,12 @@ public class UnitCanvasController : MonoBehaviour {
         }
 
         FaceCamera();
+    }
+
+    public void UpdateWoundPoints() {
+        for (int i = 0; i < woundPoints.Count; ++i) {
+            woundPoints[i].transform.Find("Fill").gameObject.SetActive(i < myUnit.myStats.WoundCount);
+        }
     }
 
     public void FaceCamera() {
