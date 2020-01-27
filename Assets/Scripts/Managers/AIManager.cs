@@ -119,7 +119,7 @@ public class AIManager : MonoBehaviour {
                     break;
 
                 case MonsterTarget.CLOSEST:
-                    target = FindClosestTarget(unit);
+                    target = FindClosestTarget(unit, UnitManager.instance.Units);
                     break;
             }
         });
@@ -156,8 +156,23 @@ public class AIManager : MonoBehaviour {
         return closestFacedUnit;
     }
 
-    private UnitController FindClosestTarget(UnitController unit) {
-        return null;
+    private UnitController FindClosestTarget(UnitController unit, List<UnitController> targets) {
+        int shortestPath = -1;
+        UnitController closestTarget = null;
+        targets.ForEach(otherUnit => {
+            if (otherUnit.myPlayer.faction != unit.myPlayer.faction) {
+                MovementPath pathToTarget = TileMap.instance.pathfinder.FindShortestPathToUnit(unit.myTile, otherUnit.myTile, unit.myStats.walkingType, new PathSearchOptions(unit.myPlayer.faction, unit.myStats.size));
+
+                if (pathToTarget.movementCost > -1) {
+                    if (pathToTarget.movementCost < shortestPath || shortestPath == -1) {
+                        shortestPath = pathToTarget.movementCost;
+                        closestTarget = otherUnit;
+                    }
+                }
+            }
+        });
+
+        return closestTarget;
     }
 
     /// Movement
