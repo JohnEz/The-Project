@@ -12,14 +12,10 @@ internal struct CombatText {
 public class UnitCanvasController : MonoBehaviour {
     private const float COMBAT_TEXT_THROTTLE = 0.5f;
 
-    public GameObject hpBarPrefab;
     public GameObject combatTextPrefab;
     public GameObject buffIconPrefab;
-    public GameObject actionPointsPrefab;
 
-    private HpBarController hpBar;
     private BuffController buffs;
-    private TextMeshProUGUI actionPointsText;
     private List<GameObject> buffIcons = new List<GameObject>();
     private Queue<CombatText> combatTextQueue = new Queue<CombatText>();
 
@@ -41,9 +37,6 @@ public class UnitCanvasController : MonoBehaviour {
     private void Start() {
         myUnit = GetComponentInParent<UnitController>();
         myTeam = myUnit.myPlayer.id;
-        SetupUnitFrame();
-
-        actionPointsText = hpBar.gameObject.GetComponentInChildren<TextMeshProUGUI>();
     }
 
     // Update is called once per frame
@@ -57,18 +50,6 @@ public class UnitCanvasController : MonoBehaviour {
         FaceCamera();
     }
 
-    public void SetupUnitFrame() {
-        hpBar = Instantiate(hpBarPrefab, transform, false).GetComponent<HpBarController>();
-        buffs = hpBar.GetComponent<BuffController>();
-
-        RectTransform hpRect = hpBar.GetComponent<RectTransform>();
-        Vector3 anchoredposition = hpRect.anchoredPosition;
-        anchoredposition.y += myUnit.myStats.displayToken.frontSprite.rect.height / 5;
-        hpRect.anchoredPosition = anchoredposition;
-
-        buffs.Initialise(myUnit.myStats.buffs);
-    }
-
     public void FaceCamera() {
         transform.LookAt(CameraManager.instance.physicalCamera.transform.position);
         transform.Rotate(0, 180, 0);
@@ -76,14 +57,6 @@ public class UnitCanvasController : MonoBehaviour {
         Vector3 currentRotation = transform.rotation.eulerAngles;
         currentRotation.y = CameraManager.instance.GetCameraRotation().y;
         transform.rotation = Quaternion.Euler(currentRotation);
-    }
-
-    public void UpdateActionPoints(int ap) {
-        if (actionPointsText == null) {
-            return;
-        }
-
-        actionPointsText.text = ap.ToString();
     }
 
     public void CreateDamageText(string damage) {

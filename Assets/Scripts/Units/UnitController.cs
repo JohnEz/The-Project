@@ -230,12 +230,7 @@ public class UnitController : MonoBehaviour {
 
     public int ActionPoints {
         get { return myStats.ActionPoints; }
-        set {
-            myStats.ActionPoints = value;
-            if (unitCanvasController != null) {
-                unitCanvasController.UpdateActionPoints(value);
-            }
-        }
+        set { myStats.ActionPoints = value; }
     }
 
     public bool IsBeingForceMoved() {
