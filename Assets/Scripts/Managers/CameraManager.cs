@@ -46,7 +46,7 @@ public class CameraManager : MonoBehaviour {
     }
 
     public void AddEncounteredTarget(UnitController target) {
-        if (target == null) {
+        if (target == null || Debug.isDebugBuild) {
             return;
         }
 
