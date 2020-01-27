@@ -104,6 +104,8 @@ public class UnitController : MonoBehaviour {
         projectiles = new List<ProjectileController>();
         myDialogController = GetComponentInChildren<UnitDialogController>();
 
+        myStats.onInjuryChange.AddListener(OnInjuryChange);
+
         Activate();
     }
 
@@ -390,6 +392,17 @@ public class UnitController : MonoBehaviour {
         CreateBasicText(injury.description);
         PlayRandomWoundSound();
         myStats.AddInjury(injury);
+    }
+
+    public void OnInjuryChange() {
+        Debug.Log("Wounds: " + myStats.WoundCount);
+        Debug.Log("Wound Limit: " + myStats.WoundLimit);
+        if (myStats.WoundCount >= myStats.WoundLimit) {
+            // TODO add death animation
+            PlayRandomDeathSound();
+            myManager.UnitDied(this);
+            DestroySelf();
+        }
     }
 
     public IEnumerator AttackRoutine() {

@@ -48,7 +48,6 @@ public class AttackAction : AbilityAction {
         float hitRoll = Random.Range(0, 20) + caster.myStats.Strength;
 
         Debug.Log("HitRoll: " + hitRoll);
-        Debug.Log("AC: " + targetUnit.myStats.AC);
 
         if (hitRoll < targetUnit.myStats.AC) {
             targetUnit.CreateBasicText("Miss");

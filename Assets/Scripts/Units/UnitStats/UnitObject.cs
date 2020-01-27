@@ -12,6 +12,7 @@ public enum Stats {
     AC,
     SPEED,
     AP,
+    WOUND_LIMIT,
 }
 
 public enum UnitSize {
@@ -50,6 +51,10 @@ public class UnitObject : ScriptableObject {
 
     public OnStatChangeEvent onStatChange = new OnStatChangeEvent();
 
+    [Serializable] public class OnInjuryChangeEvent : UnityEvent { }
+
+    public OnInjuryChangeEvent onInjuryChange = new OnInjuryChangeEvent();
+
     public HitLocations myHitLocationsPrefab;
 
     [HideInInspector]
@@ -63,6 +68,7 @@ public class UnitObject : ScriptableObject {
     public int baseAC = 10;
     public int baseSpeed = 3;
     public int baseActionPoints = 2;
+    public int baseWoundLimit = 3;
 
     private int actionPoints;
 
@@ -212,6 +218,14 @@ public class UnitObject : ScriptableObject {
         get { return GetModifiedStat(baseSpeed, Stats.SPEED); }
     }
 
+    public int WoundLimit {
+        get { return GetModifiedStat(baseWoundLimit, Stats.WOUND_LIMIT); }
+    }
+
+    public int WoundCount {
+        get { return myHitLocations.GetWoundCount(); }
+    }
+
     public WalkableLevel WalkingType {
         get { return walkingType; }
     }
@@ -245,6 +259,11 @@ public class UnitObject : ScriptableObject {
             this.onStatChange.Invoke();
     }
 
+    public void OnInjuryChange() {
+        if (this.onInjuryChange != null)
+            this.onInjuryChange.Invoke();
+    }
+
     public bool ApplyBuff(Buff newBuff) {
         buffs.ApplyBuff(newBuff);
 
@@ -268,6 +287,7 @@ public class UnitObject : ScriptableObject {
     public void AddInjury(Injury injury) {
         injury.isActive = true;
 
+        OnInjuryChange();
         OnStatChange();
     }
 

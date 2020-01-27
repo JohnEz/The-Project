@@ -38,4 +38,8 @@ public class HitLocations : ScriptableObject {
 
         return mod;
     }
+
+    public int GetWoundCount() {
+        return myLocations.FindAll(location => location.HasMajorInjury()).Count;
+    }
 }

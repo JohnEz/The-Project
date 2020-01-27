@@ -117,6 +117,10 @@ public class AIManager : MonoBehaviour {
                 case MonsterTarget.FACING:
                     target = FindFacingTarget(unit);
                     break;
+
+                case MonsterTarget.CLOSEST:
+                    target = FindClosestTarget(unit);
+                    break;
             }
         });
 
@@ -139,14 +143,21 @@ public class AIManager : MonoBehaviour {
             }
         });
 
-        UnitController closestFacedUnit = unitToDistance.First().Key;
-        unitToDistance.Keys.ToList().ForEach((otherUnit) => {
-            if (unitToDistance[otherUnit] < unitToDistance[closestFacedUnit]) {
-                closestFacedUnit = otherUnit;
-            }
-        });
+        UnitController closestFacedUnit = null;
+        if (unitToDistance.Count > 0) {
+            closestFacedUnit = unitToDistance.First().Key;
+            unitToDistance.Keys.ToList().ForEach((otherUnit) => {
+                if (unitToDistance[otherUnit] < unitToDistance[closestFacedUnit]) {
+                    closestFacedUnit = otherUnit;
+                }
+            });
+        }
 
         return closestFacedUnit;
+    }
+
+    private UnitController FindClosestTarget(UnitController unit) {
+        return null;
     }
 
     /// Movement
