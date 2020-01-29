@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Audio Effect", menuName = "Card/EventFX/Audio Effect")]
+[CreateAssetMenu(fileName = "New Audio Effect", menuName = "Ability/EventFX/Audio Effect")]
 public class AudioEventAction : EventAction {
     public AudioClip audioClip = null;
 

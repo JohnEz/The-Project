@@ -15,6 +15,9 @@ public class AttackAction : AbilityAction {
     public bool canTargetSelf = false;
     public bool isAutoCast = false;
 
+    public Stats targetStat = Stats.AC;
+    public Stats attackStat = Stats.STRENGTH;
+
     public List<AttackEffect> attackEffects = new List<AttackEffect>(0);
 
     // TODO remove for ability cooldown AI Variables
@@ -44,21 +47,29 @@ public class AttackAction : AbilityAction {
     private void AbilityEffectUnit(UnitController caster, Node target) {
         UnitController targetUnit = target.MyUnit;
 
-        // todo this should be effected by varing stats and weapon types
-        float hitRoll = Random.Range(0, 20) + caster.myStats.Strength;
+        bool hitTarget = CheckIfHit(caster, targetUnit);
 
-        Debug.Log("HitRoll: " + hitRoll);
+        if (hitTarget) {
+            AddAbilityTarget(target, () => {
+                attackEffects.ForEach(attackEffect => {
+                    attackEffect.AbilityEffect(caster, target);
+                });
+            });
+        }
+    }
 
-        if (hitRoll < targetUnit.myStats.AC) {
-            targetUnit.CreateBasicText("Miss");
-            return;
+    private bool CheckIfHit(UnitController caster, UnitController targetUnit) {
+        float hitRoll = Random.Range(0, 20) + caster.myStats.GetStat(attackStat);
+
+        int targetStatValue = targetUnit.myStats.GetStat(targetStat);
+        int targetRoll = targetStat == Stats.AC ? targetStatValue : targetStatValue + 8;
+
+        if (hitRoll < targetRoll) {
+            targetUnit.CreateBasicText(targetStat == Stats.AC ? "Miss" : "Resist");
+            return false;
         }
 
-        AddAbilityTarget(target, () => {
-            attackEffects.ForEach(attackEffect => {
-                attackEffect.AbilityEffect(caster, target);
-            });
-        });
+        return true;
     }
 
     private void AbilityEffectNode(UnitController caster, Node targetNode) {
@@ -82,14 +93,14 @@ public class AttackAction : AbilityAction {
 
     // AOE on use
     public virtual void UseAbility(List<Node> effectedNodes, Node target) {
-        //OnUseAOEEventActions(effectedNodes, target);
+        OnUseAOEEventActions(effectedNodes, target);
         //AbilityEffectNode(caster, target);
-        //effectedNodes.ForEach(node => {
-        //    if (CanHitUnit(node)) {
-        //        AbilityEffectUnit(caster, node.MyUnit);
-        //    }
-        //});
-        //AbilityUsed();
+        effectedNodes.ForEach(node => {
+            if (CanHitUnit(node.MyUnit)) {
+                AbilityEffectUnit(caster, node);
+            }
+        });
+        AbilityUsed();
     }
 
     public void AbilityUsed() {
@@ -111,20 +122,20 @@ public class AttackAction : AbilityAction {
     }
 
     // Creates effects on cast start
-    private void OnUseAOEEventActions(List<Node> effectedNodes, NodeCollection target) {
-        //eventActions.ForEach((eventAction) => {
-        //    if (eventAction.eventTrigger == AbilityEvent.CAST_START) {
-        //        if (eventAction.eventTarget == EventTarget.CASTER || eventAction.eventTarget == EventTarget.TARGETEDTILE) {
-        //            eventAction.action(caster, target);
-        //        } else if (eventAction.eventTarget == EventTarget.TARGETUNIT) {
-        //            effectedNodes.ForEach((targetNode) => {
-        //                if (CanHitUnit(targetNode)) {
-        //                    eventAction.action(caster, targetNode);
-        //                }
-        //            });
-        //        }
-        //    }
-        //});
+    private void OnUseAOEEventActions(List<Node> effectedNodes, Node target) {
+        eventActions.ForEach((eventAction) => {
+            if (eventAction.eventTrigger == AbilityEvent.CAST_START) {
+                if (eventAction.eventTarget == EventTarget.CASTER || eventAction.eventTarget == EventTarget.TARGETEDTILE) {
+                    eventAction.action(caster, target);
+                } else if (eventAction.eventTarget == EventTarget.TARGETUNIT) {
+                    effectedNodes.ForEach((targetNode) => {
+                        if (CanHitUnit(targetNode.MyUnit)) {
+                            eventAction.action(caster, targetNode);
+                        }
+                    });
+                }
+            }
+        });
     }
 
     public bool CanTargetTile(Node targetNode) {

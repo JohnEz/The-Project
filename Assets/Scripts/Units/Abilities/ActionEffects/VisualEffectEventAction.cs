@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Visual Effect", menuName = "Card/EventFX/Visual Effect")]
+[CreateAssetMenu(fileName = "New Visual Effect", menuName = "Ability/EventFX/Visual Effect")]
 public class VisualEffectEventAction : EventAction {
     public GameObject effectObject = null;
     public float delay = 0;

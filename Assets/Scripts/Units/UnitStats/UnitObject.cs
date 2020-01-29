@@ -218,6 +218,24 @@ public class UnitObject : ScriptableObject {
         get { return GetModifiedStat(baseSpeed, Stats.SPEED); }
     }
 
+    public int GetStat(Stats stat) {
+        switch (stat) {
+            case Stats.AC: return AC;
+            case Stats.AGILITY: return Agility;
+            case Stats.AP: return MaxActionPoints;
+            case Stats.CONSTITUTION: return Constitution;
+            case Stats.INTELLIGENCE: return Intelligence;
+            case Stats.SPEED: return Speed;
+            case Stats.STRENGTH: return Strength;
+            case Stats.WISDOM: return Wisdom;
+            case Stats.WOUND_LIMIT: return WoundLimit;
+            default:
+                Debug.LogError("Tried to access unknown stat");
+                Debug.LogError(stat);
+                return 0;
+        }
+    }
+
     public int WoundLimit {
         get { return GetModifiedStat(baseWoundLimit, Stats.WOUND_LIMIT); }
     }

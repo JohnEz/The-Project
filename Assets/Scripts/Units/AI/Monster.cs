@@ -7,6 +7,7 @@ public enum MonsterTarget {
     FACING,
     CLOSEST,
     BEHIND,
+    ALL,
     NONE,
 }
 

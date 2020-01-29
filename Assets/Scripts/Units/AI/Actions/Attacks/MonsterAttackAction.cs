@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[CreateAssetMenu(fileName = "New move to target", menuName = "Monster/Movement/Basic Attack")]
+[CreateAssetMenu(fileName = "New move to target", menuName = "Monster/Attack/Basic Attack")]
 public class MonsterAttackAction : MonsterAction {
     public AttackAction baseAttack;
     private AttackAction instantiatedAttack;

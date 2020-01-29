@@ -107,6 +107,8 @@ public class UnitController : MonoBehaviour {
 
         myStats.onInjuryChange.AddListener(OnInjuryChange);
 
+        gameObject.name = myStats.className;
+
         Activate();
     }
 
@@ -294,6 +296,18 @@ public class UnitController : MonoBehaviour {
         return true;
     }
 
+    public void MoveToTile(Tile tileToMoveTo) {
+        MovementPath movementPath = TileMap.instance.pathfinder.getPathFromTile(tileToMoveTo);
+        AddMoveAction(movementPath);
+    }
+
+    public void AddMoveAction(MovementPath movementPath) {
+        Action moveAction = new Action();
+        moveAction.type = UnitActionType.MOVEMENT;
+        moveAction.moveTiles = movementPath.path;
+        AddAction(moveAction);
+    }
+
     private void RunNextAction(bool removeAction) {
         if (removeAction && actionQueue.Count > 0) {
             actionQueue.Dequeue();
@@ -463,17 +477,27 @@ public class UnitController : MonoBehaviour {
         ForceMove(pushOrigin, distance, false);
     }
 
-    private void ForceMove(Tile origin, int distance, bool isPull) {
+    public void Fear(Tile fearOrigin, int distance) {
+        // TODO make them not slide
+        ForceMove(fearOrigin, distance, false, true);
+        this.CreateBasicText("Feared!");
+    }
+
+    private void ForceMove(Tile origin, int distance, bool isPull, bool walk = false) {
         Tile tileToMoveTo = FindForceMoveTile(origin, distance, isPull);
 
         if (tileToMoveTo == null) {
             return;
         }
 
-        forceMovedTile = tileToMoveTo;
-        myTile.MyUnit = null;
-        forceMovedTile.MyUnit = this;
-        myTile = forceMovedTile;
+        if (walk) {
+            MoveToTile(tileToMoveTo);
+        } else {
+            forceMovedTile = tileToMoveTo;
+            myTile.MyUnit = null;
+            forceMovedTile.MyUnit = this;
+            myTile = forceMovedTile;
+        }
     }
 
     private Tile FindForceMoveTile(Tile origin, int distance, bool isPull) {

@@ -218,25 +218,24 @@ public class UnitManager : MonoBehaviour {
         Action action = new Action();
         action.type = UnitActionType.ATTACK;
         action.ability = attackAction;
-        action.effectedNodes = TileMap.instance.pathfinder.FindEffectedTiles(unit.myTile, targetNode, attackAction);
+
+        if (attackAction.areaOfEffect == AreaOfEffect.ALL) {
+            action.effectedNodes = new List<Node>();
+            Units.ForEach(targetUnit => {
+                action.effectedNodes.Add(targetUnit.myTile.Nodes.First());
+            });
+        } else {
+            action.effectedNodes = TileMap.instance.pathfinder.FindEffectedTiles(unit.myTile, targetNode, attackAction);
+        }
 
         unit.AddAction(action);
 
         return true;
     }
 
-    // Adds a move action to a units queue
-    public void SetUnitPath(UnitController unit, MovementPath movementPath) {
-        Action moveAction = new Action();
-        moveAction.type = UnitActionType.MOVEMENT;
-        moveAction.moveTiles = movementPath.path;
-        unit.AddAction(moveAction);
-    }
-
     // Tells the unit to move to a set node
     public void MoveToTile(UnitController unit, Tile targetTile) {
-        MovementPath movementPath = TileMap.instance.pathfinder.getPathFromTile(targetTile);
-        SetUnitPath(unit, movementPath);
+        unit.MoveToTile(targetTile);
     }
 
     // Called when the unit starts following a path

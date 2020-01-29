@@ -10,7 +10,7 @@ public class AttackEffect : ScriptableObject {
     //}
 
     public virtual void AbilityEffect(UnitController caster, Node targetNode) {
-        //targetNode = targetSelf ? caster.myNodes.First() : targetNode;
+        targetNode = targetSelf ? caster.myTile.Nodes[0] : targetNode;
     }
 
     public int PowerModToInt(int power, float mod) {

@@ -20,7 +20,8 @@ public enum AreaOfEffect {
     SINGLE,
     CIRCLE,
     CLEAVE,
-    AURA
+    AURA,
+    ALL,
 }
 
 public enum AbilityEvent {

@@ -74,8 +74,10 @@ public class AIManager : MonoBehaviour {
         monster.currentTarget = FindTarget(unit, monster, monsterTurn);
 
         // If it cant find a suitable target, do default turn instead
-        if (monster.currentTarget == null && !monsterTurn.targetPriority.Contains(MonsterTarget.NONE)) {
+        if (monster.currentTarget == null && !(monsterTurn.targetPriority.Contains(MonsterTarget.NONE) || monsterTurn.targetPriority.Contains(MonsterTarget.ALL))) {
+            // TODO this should not require a target
             monsterTurn = monster.defaultTurn;
+            monster.currentTarget = FindTarget(unit, monster, monsterTurn);
         }
 
         foreach (MonsterAction monsterAction in monsterTurn.actions) {
@@ -120,6 +122,10 @@ public class AIManager : MonoBehaviour {
 
                 case MonsterTarget.CLOSEST:
                     target = FindClosestTarget(unit, UnitManager.instance.Units);
+                    break;
+
+                case MonsterTarget.ALL:
+                    target = unit;
                     break;
             }
         });
@@ -201,7 +207,7 @@ public class AIManager : MonoBehaviour {
 
             // Tell unit to follow path
             if (pathToTarget.path.Count > 0) {
-                UnitManager.instance.SetUnitPath(unit, pathToTarget);
+                unit.AddMoveAction(pathToTarget);
             }
             unit.ActionPoints--;
         } else {

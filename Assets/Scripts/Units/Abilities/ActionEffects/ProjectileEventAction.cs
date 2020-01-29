@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Projectile Effect", menuName = "Card/EventFX/Projectile Effect")]
+[CreateAssetMenu(fileName = "New Projectile Effect", menuName = "Ability/EventFX/Projectile Effect")]
 public class ProjectileEventAction : EventAction {
     public GameObject projectileObject = null;
     public float speed = 1f;
