@@ -10,6 +10,7 @@ public class CameraManager : MonoBehaviour {
     public CameraController3D controlledCamera;
     public GameObject followCameraPrefab;
     public GameObject personalCameraPrefab;
+    public GameObject distanceCameraPrefab;
 
     [HideInInspector]
     public CinemachineVirtualCamera activeFollowCamera;
@@ -122,6 +123,20 @@ public class CameraManager : MonoBehaviour {
         TurnOffCameras();
         GameObject followCamera = Instantiate(followCameraPrefab);
         CinemachineVirtualCamera newFollowCamera = followCamera.GetComponent<CinemachineVirtualCamera>();
+
+        newFollowCamera.Follow = target;
+        newFollowCamera.Priority = 10;
+
+        if (activeFollowCamera != null) {
+            Destroy(activeFollowCamera.gameObject, blendTime + 1f);
+        }
+        activeFollowCamera = newFollowCamera;
+    }
+
+    public void ZoomOutCamera(Transform target) {
+        TurnOffCameras();
+        GameObject distanceCamera = Instantiate(distanceCameraPrefab);
+        CinemachineVirtualCamera newFollowCamera = distanceCamera.GetComponent<CinemachineVirtualCamera>();
 
         newFollowCamera.Follow = target;
         newFollowCamera.Priority = 10;

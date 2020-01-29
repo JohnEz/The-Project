@@ -242,6 +242,9 @@ public class AIManager : MonoBehaviour {
         if (target != unit) {
             CameraManager.instance.FollowTarget(target.transform);
             yield return new WaitForSeconds(CameraManager.instance.blendTime);
+        } else {
+            CameraManager.instance.ZoomOutCamera(target.transform);
+            yield return new WaitForSeconds(CameraManager.instance.blendTime);
         }
 
         AttackTile(unit, target.myTile.Nodes.First(), action.Attack);
