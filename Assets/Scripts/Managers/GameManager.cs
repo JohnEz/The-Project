@@ -38,6 +38,7 @@ public class GameManager : MonoBehaviour {
             UnitManager.instance.SpawnUnit("Fighter", humanPlayer, playerSpawnLocation[0].x, playerSpawnLocation[0].y);
             UnitManager.instance.SpawnUnit("Cleric", humanPlayer, playerSpawnLocation[1].x, playerSpawnLocation[1].y);
             UnitManager.instance.SpawnUnit("Criminal", humanPlayer, playerSpawnLocation[2].x, playerSpawnLocation[2].y);
+            UnitManager.instance.SpawnUnit("Criminal", humanPlayer, playerSpawnLocation[3].x, playerSpawnLocation[3].y);
         } else {
             LoadPlayerCharacters(humanPlayer);
         }
