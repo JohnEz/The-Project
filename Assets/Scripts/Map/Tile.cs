@@ -38,6 +38,7 @@ public class Tile : MonoBehaviour {
         return Nodes.Exists((Node node) => node.MyUnit != null && node.MyUnit != ignoredUnit);
     }
 
+    // Overlaps with other tile
     public bool OverlapsTile(Tile other) {
         bool overlaps = false;
         Nodes.ForEach(node => {
@@ -47,6 +48,18 @@ public class Tile : MonoBehaviour {
         });
 
         return overlaps;
+    }
+
+    // Fully contains other tile
+    public bool Contains(Tile other) {
+        bool contains = true;
+        other.Nodes.ForEach(node => {
+            if (!Nodes.Contains(node)) {
+                contains = false;
+            }
+        });
+
+        return contains;
     }
 
     public virtual UnitController MyUnit {

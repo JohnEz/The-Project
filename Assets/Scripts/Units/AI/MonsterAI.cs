@@ -8,6 +8,8 @@ public class MonsterAI : ScriptableObject {
 
     public List<MonsterTarget> targetPriority;
 
+    public bool ignoreBlindSpot = false;
+
     public List<MonsterAction> actions;
 
     public void Instantiate(UnitController myUnit) {

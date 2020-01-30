@@ -71,13 +71,13 @@ public class AIManager : MonoBehaviour {
         int turnIndex = UnityEngine.Random.Range(0, monster.myTurns.Count);
         MonsterAI monsterTurn = monster.myTurns[turnIndex];
 
-        monster.currentTarget = FindTarget(unit, monster, monsterTurn);
+        monster.currentTarget = FindTarget(unit, monsterTurn);
 
         // If it cant find a suitable target, do default turn instead
         if (monster.currentTarget == null && !(monsterTurn.targetPriority.Contains(MonsterTarget.NONE) || monsterTurn.targetPriority.Contains(MonsterTarget.ALL))) {
             // TODO this should not require a target
             monsterTurn = monster.defaultTurn;
-            monster.currentTarget = FindTarget(unit, monster, monsterTurn);
+            monster.currentTarget = FindTarget(unit, monsterTurn);
         }
 
         foreach (MonsterAction monsterAction in monsterTurn.actions) {
@@ -105,23 +105,25 @@ public class AIManager : MonoBehaviour {
     /// Target Picking
     ///////////////////
 
-    private UnitController FindTarget(UnitController unit, Monster monster, MonsterAI turn) {
+    private UnitController FindTarget(UnitController unit, MonsterAI turn) {
         UnitController target = null;
+        Tile blindSpot = GetBlindSpot(unit);
+
         turn.targetPriority.ForEach((MonsterTarget targetType) => {
             if (target != null) {
                 return;
             }
             switch (targetType) {
                 case MonsterTarget.FOCUSED:
-                    target = monster.focusedTarget;
+                    target = FindFocusedTarget(unit, blindSpot, turn.ignoreBlindSpot);
                     break;
 
                 case MonsterTarget.FACING:
-                    target = FindFacingTarget(unit);
+                    target = FindFacingTarget(unit, blindSpot, turn.ignoreBlindSpot);
                     break;
 
                 case MonsterTarget.CLOSEST:
-                    target = FindClosestTarget(unit, UnitManager.instance.Units);
+                    target = FindClosestTarget(unit, UnitManager.instance.Units, blindSpot, turn.ignoreBlindSpot);
                     break;
 
                 case MonsterTarget.ALL:
@@ -133,12 +135,24 @@ public class AIManager : MonoBehaviour {
         return target;
     }
 
-    private UnitController FindFacingTarget(UnitController unit) {
+    private UnitController FindFocusedTarget(UnitController unit, Tile blindSpot, bool ignoreBlindSpot) {
+        Monster monster = (Monster)unit.myStats;
+        if (monster.focusedTarget) {
+            bool canSee = ignoreBlindSpot || !blindSpot.Contains(monster.focusedTarget.myTile);
+            if (canSee) {
+                return monster.focusedTarget;
+            }
+        }
+        return null;
+    }
+
+    private UnitController FindFacingTarget(UnitController unit, Tile blindSpot, bool ignoreBlindSpot) {
         Dictionary<UnitController, float> unitToDistance = new Dictionary<UnitController, float>();
         UnitManager.instance.Units.ForEach(otherUnit => {
             if (otherUnit.myPlayer.faction != unit.myPlayer.faction) {
                 //TODO add LoS check
-                if (unit.facingDirection == unit.GetDirectionToTile(otherUnit.myTile)) {
+                bool canSee = ignoreBlindSpot || !blindSpot.Contains(otherUnit.myTile);
+                if (unit.facingDirection == unit.GetDirectionToTile(otherUnit.myTile) && canSee) {
                     //TODO change this to move distance
                     Vector2 my2DPosition = new Vector2(unit.myTile.X, unit.myTile.Y);
                     Vector2 target2DPosition = new Vector2(otherUnit.myTile.X, otherUnit.myTile.Y);
@@ -162,11 +176,16 @@ public class AIManager : MonoBehaviour {
         return closestFacedUnit;
     }
 
-    private UnitController FindClosestTarget(UnitController unit, List<UnitController> targets) {
+    private UnitController FindClosestTarget(UnitController unit, List<UnitController> targets, Tile blindSpot, bool ignoreBlindSpot) {
         int shortestPath = -1;
         UnitController closestTarget = null;
         targets.ForEach(otherUnit => {
             if (otherUnit.myPlayer.faction != unit.myPlayer.faction) {
+                bool canSee = ignoreBlindSpot || !blindSpot.Contains(otherUnit.myTile);
+                if (!canSee) {
+                    return;
+                }
+
                 MovementPath pathToTarget = TileMap.instance.pathfinder.FindShortestPathToUnit(unit.myTile, otherUnit.myTile, unit.myStats.walkingType, new PathSearchOptions(unit.myPlayer.faction, unit.myStats.size));
 
                 if (pathToTarget.movementCost > -1) {
@@ -179,6 +198,12 @@ public class AIManager : MonoBehaviour {
         });
 
         return closestTarget;
+    }
+
+    public Tile GetBlindSpot(UnitController unit) {
+        int x = unit.myTile.x - (int)unit.facingDirection.x;
+        int y = unit.myTile.y + (int)unit.facingDirection.y;
+        return TileMap.instance.GetTile(unit.myStats.size, x, y);
     }
 
     /// Movement
