@@ -410,8 +410,6 @@ public class UnitController : MonoBehaviour {
     }
 
     public void OnInjuryChange() {
-        Debug.Log("Wounds: " + myStats.WoundCount);
-        Debug.Log("Wound Limit: " + myStats.WoundLimit);
         if (myStats.WoundCount >= myStats.WoundLimit) {
             // TODO add death animation
             PlayRandomDeathSound();
