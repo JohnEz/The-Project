@@ -57,7 +57,7 @@ public class UserInterfaceManager : MonoBehaviour {
                 }
             } else if (UnitSelectionManager.instance.IsAnAbilitySelected()) {
                 UnitSelectionManager.instance.CancelCurrentAbility();
-                if (!ShowMovement()) {
+                if (!ShowAvailableAction()) {
                     UnshowAbility();
                     UnitSelectionManager.instance.UnselectUnit();
                 }
@@ -72,6 +72,10 @@ public class UserInterfaceManager : MonoBehaviour {
                     PauseMenuController.instance.Pause();
                 }
             }
+        }
+
+        if (Input.GetKeyUp(KeyCode.Tab)) {
+            SelectNextUnit();
         }
 
         if (UnitSelectionManager.instance.SelectedUnit) {
@@ -164,7 +168,7 @@ public class UserInterfaceManager : MonoBehaviour {
             lastAttackedNode = node;
 
             if (UnitSelectionManager.instance.CurrentActionIndex == 0) {
-                UnitSelectionManager.instance.SelectedUnit.ActionPoints -= UnitSelectionManager.instance.ActiveAbility.actionPointCost;
+                UnitSelectionManager.instance.SelectedUnit.myStats.ActionPoints -= UnitSelectionManager.instance.ActiveAbility.actionPointCost;
             }
         }
     }
@@ -179,7 +183,7 @@ public class UserInterfaceManager : MonoBehaviour {
 
         int cost = Mathf.CeilToInt(tile.cost / selectedUnit.myStats.Speed);
 
-        UnitSelectionManager.instance.SelectedUnit.ActionPoints -= cost;
+        UnitSelectionManager.instance.SelectedUnit.myStats.MoveActionPoints -= cost;
         UnitManager.instance.MoveToTile(selectedUnit, tile);
     }
 
@@ -195,8 +199,8 @@ public class UserInterfaceManager : MonoBehaviour {
         UnitSelectionManager.instance.SelectUnit(node.MyUnit);
         UnitController selectedUnit = UnitSelectionManager.instance.SelectedUnit;
 
-        if (TurnManager.instance.PlayersTurn == selectedUnit.myPlayer.id && selectedUnit.myStats.ActionPoints > 0) {
-            ShowMovement();
+        if (TurnManager.instance.PlayersTurn == selectedUnit.myPlayer.id) {
+            ShowAvailableAction();
         }
     }
 
@@ -214,8 +218,28 @@ public class UserInterfaceManager : MonoBehaviour {
         }
     }
 
+    public bool ShowAvailableAction() {
+        UnitController selectedUnit = UnitSelectionManager.instance.SelectedUnit;
+
+        if (selectedUnit == null) {
+            return false;
+        }
+
+        if (selectedUnit.myStats.MoveActionPoints > 0) {
+            ShowMovement();
+            return true;
+        }
+
+        if (selectedUnit.myStats.ActionPoints > 0) {
+            UseAbility(0);
+            return true;
+        }
+
+        return false;
+    }
+
     public bool ShowMovement() {
-        if (!UnitSelectionManager.instance.CanDisplayMovement() || UnitSelectionManager.instance.SelectedUnit == null) {
+        if (!UnitSelectionManager.instance.CanDisplayMovement() || UnitSelectionManager.instance.SelectedUnit == null || UnitSelectionManager.instance.SelectedUnit.myStats.MoveActionPoints < 1) {
             return false;
         }
 
@@ -310,10 +334,12 @@ public class UserInterfaceManager : MonoBehaviour {
 
     public bool ReselectUnit() {
         UnitController lastSelectedCharacter = UnitSelectionManager.instance.selectedUnit;
-        if (lastSelectedCharacter != null && lastSelectedCharacter.ActionPoints > 0) {
-            UnitSelectionManager.instance.SelectUnit(lastSelectedCharacter);
-            ShowMovement();
-            return true;
+        if (lastSelectedCharacter != null) {
+            if (lastSelectedCharacter.HasRemainingActionPoints()) {
+                UnitSelectionManager.instance.SelectUnit(lastSelectedCharacter);
+                ShowAvailableAction();
+                return true;
+            }
         }
         return false;
     }
@@ -322,7 +348,7 @@ public class UserInterfaceManager : MonoBehaviour {
         UnitController nextUnit = UnitSelectionManager.instance.SelectNextUnit();
         if (nextUnit != null) {
             CameraManager.instance.JumpToLocation(nextUnit.myTile);
-            ShowMovement();
+            ShowAvailableAction();
         }
     }
 

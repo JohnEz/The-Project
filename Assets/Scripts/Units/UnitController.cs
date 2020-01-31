@@ -143,20 +143,22 @@ public class UnitController : MonoBehaviour {
     }
 
     public void NewTurn() {
-        if (IsStunned()) {
+        bool isStunned = IsStunned();
+        if (isStunned) {
             unitCanvasController.CreateBasicText("Stunned");
-        } else {
-            ActionPoints = myStats.MaxActionPoints;
         }
 
-        myStats.NewTurn();
+        myStats.NewTurn(isStunned);
         myCounters.NewTurn();
+    }
+
+    public bool HasRemainingActionPoints() {
+        return myStats.MoveActionPoints > 0 || myStats.ActionPoints > 0;
     }
 
     public void EndTurn() {
         myStats.EndTurn();
         myCounters.EndTurn();
-        ActionPoints = 0;
     }
 
     public void Spawn(Player player, Tile startTile, UnitObject startingStats) {
@@ -231,11 +233,6 @@ public class UnitController : MonoBehaviour {
 
     public void SetSelected(bool selected) {
         //anim.IsSelected(selected);
-    }
-
-    public int ActionPoints {
-        get { return myStats.ActionPoints; }
-        set { myStats.ActionPoints = value; }
     }
 
     public bool IsBeingForceMoved() {

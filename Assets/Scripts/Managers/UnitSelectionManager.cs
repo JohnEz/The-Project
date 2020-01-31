@@ -72,7 +72,7 @@ public class UnitSelectionManager : MonoBehaviour {
     }
 
     public bool CanUseAbility(Ability ability) {
-        return CanUseAbility() && ability.caster.ActionPoints >= ability.actionPointCost;
+        return CanUseAbility() && ability.caster.myStats.ActionPoints >= ability.actionPointCost;
     }
 
     public void UseAbility(Ability usedAbility) {
@@ -122,9 +122,13 @@ public class UnitSelectionManager : MonoBehaviour {
     }
 
     public UnitController SelectNextUnit() {
-        SelectUnit(FindNextUnit());
+        UnitController nextUnit = FindNextUnit();
+        if (nextUnit) {
+            SelectUnit(nextUnit);
+            return selectedUnit;
+        }
 
-        return selectedUnit;
+        return null;
     }
 
     public UnitController FindNextUnit() {
@@ -136,7 +140,7 @@ public class UnitSelectionManager : MonoBehaviour {
         bool isNextUnitFound = false;
 
         while (index != currentSelectedIndex && !isNextUnitFound) {
-            if (playerUnits[index].ActionPoints > 0) {
+            if (playerUnits[index].HasRemainingActionPoints()) {
                 isNextUnitFound = true;
             } else {
                 index = (index + 1) % playerUnits.Count;

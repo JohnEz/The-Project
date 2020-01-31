@@ -13,6 +13,7 @@ public enum Stats {
     SPEED,
     AP,
     WOUND_LIMIT,
+    MOVE_AP,
 }
 
 public enum UnitSize {
@@ -67,12 +68,13 @@ public class UnitObject : ScriptableObject {
     public int baseIntelligence = 1;
     public int baseAC = 10;
     public int baseSpeed = 3;
-    public int baseActionPoints = 2;
+    public int baseActionPoints = 1;
+    public int baseMoveActionPoints = 1;
     public int baseWoundLimit = 3;
 
+    private int moveActionPoints;
     private int actionPoints;
 
-    //Stats for AI
     public WalkableLevel baseWalkingType = WalkableLevel.Walkable;
 
     public WalkableLevel walkingType;
@@ -177,6 +179,15 @@ public class UnitObject : ScriptableObject {
         get { return instantiatedAttacks; }
     }
 
+    public int MoveActionPoints {
+        get { return moveActionPoints; }
+        set {
+            moveActionPoints = value;
+
+            OnStatChange();
+        }
+    }
+
     public int ActionPoints {
         get { return actionPoints; }
         set {
@@ -188,6 +199,10 @@ public class UnitObject : ScriptableObject {
 
     public int MaxActionPoints {
         get { return baseActionPoints; }
+    }
+
+    public int MaxMoveActionPoints {
+        get { return baseMoveActionPoints; }
     }
 
     public int Strength {
@@ -251,7 +266,7 @@ public class UnitObject : ScriptableObject {
     public void ApplyStartingTurnBuffs(System.Action<int> takeDamage, System.Action<int> takeHealing) {
     }
 
-    public void NewTurn() {
+    public void NewTurn(bool isStunned) {
         Attacks.ForEach(attack => {
             if (attack.IsOnCooldown()) {
                 attack.Cooldown--;
@@ -264,12 +279,19 @@ public class UnitObject : ScriptableObject {
             }
         });
 
+        if (!isStunned) {
+            ActionPoints = MaxActionPoints;
+            MoveActionPoints = MaxMoveActionPoints;
+        }
+
         buffs.NewTurn();
 
         OnStatChange();
     }
 
     public void EndTurn() {
+        ActionPoints = 0;
+        MoveActionPoints = 0;
     }
 
     public void OnStatChange() {

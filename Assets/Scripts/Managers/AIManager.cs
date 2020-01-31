@@ -234,7 +234,6 @@ public class AIManager : MonoBehaviour {
             if (pathToTarget.path.Count > 0) {
                 unit.AddMoveAction(pathToTarget);
             }
-            unit.ActionPoints--;
         } else {
             Debug.LogError(String.Format("Unit \"{0}\" cant move to node {1}", unit.name, target.myTile));
         }
@@ -273,7 +272,6 @@ public class AIManager : MonoBehaviour {
         }
 
         AttackTile(unit, target.myTile.Nodes.First(), action.Attack);
-        unit.ActionPoints--;
 
         yield return TurnManager.instance.WaitForWaitingForInput();
     }
