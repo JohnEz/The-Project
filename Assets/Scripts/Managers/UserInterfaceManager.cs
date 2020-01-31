@@ -225,6 +225,8 @@ public class UserInterfaceManager : MonoBehaviour {
             return false;
         }
 
+        UnshowAbility();
+
         if (selectedUnit.myStats.MoveActionPoints > 0) {
             ShowMovement();
             return true;

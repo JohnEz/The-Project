@@ -79,12 +79,18 @@ public class AIManager : MonoBehaviour {
             monster.currentTarget = FindTarget(unit, monsterTurn);
         }
 
+        unit.CreateBasicText(monsterTurn.turnName);
+
         foreach (MonsterAction monsterAction in monsterTurn.actions) {
             yield return RunMonsterAction(unit, monsterAction, monster.currentTarget);
         }
 
         monster.currentTarget = null;
         yield return TurnManager.instance.WaitForWaitingForInput();
+
+        if (monsterTurn.takeAnotherTurn) {
+            yield return RunAI(unit);
+        }
     }
 
     public IEnumerator RunMonsterAction(UnitController unit, MonsterAction action, UnitController target) {
@@ -117,6 +123,10 @@ public class AIManager : MonoBehaviour {
                     target = FindFocusedTarget(unit, blindSpot, turn.ignoreBlindSpot);
                     break;
 
+                case MonsterTarget.LAST_INJURY:
+                    target = FindLastInjuryTarget(unit, blindSpot, turn.ignoreBlindSpot);
+                    break;
+
                 case MonsterTarget.FACING:
                     target = FindFacingTarget(unit, blindSpot, turn.ignoreBlindSpot);
                     break;
@@ -134,12 +144,24 @@ public class AIManager : MonoBehaviour {
         return target;
     }
 
+    // TODO these two methods can become one
     private UnitController FindFocusedTarget(UnitController unit, Tile blindSpot, bool ignoreBlindSpot) {
         Monster monster = (Monster)unit.myStats;
         if (monster.focusedTarget) {
             bool canSee = ignoreBlindSpot || !blindSpot.Contains(monster.focusedTarget.myTile);
             if (canSee) {
                 return monster.focusedTarget;
+            }
+        }
+        return null;
+    }
+
+    private UnitController FindLastInjuryTarget(UnitController unit, Tile blindSpot, bool ignoreBlindSpot) {
+        Monster monster = (Monster)unit.myStats;
+        if (monster.lastInjuryTarget) {
+            bool canSee = ignoreBlindSpot || !blindSpot.Contains(monster.lastInjuryTarget.myTile);
+            if (canSee) {
+                return monster.lastInjuryTarget;
             }
         }
         return null;

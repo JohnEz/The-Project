@@ -400,10 +400,10 @@ public class UnitController : MonoBehaviour {
         return true;
     }
 
-    public void TakeInjury(Injury injury) {
+    public void TakeInjury(Injury injury, UnitController sourceUnit) {
         CreateBasicText(injury.description);
         PlayRandomWoundSound();
-        myStats.AddInjury(injury);
+        myStats.AddInjury(injury, sourceUnit);
     }
 
     public void OnInjuryChange() {

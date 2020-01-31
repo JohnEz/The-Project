@@ -324,7 +324,7 @@ public class UnitObject : ScriptableObject {
         OnStatChange();
     }
 
-    public void AddInjury(Injury injury) {
+    public virtual void AddInjury(Injury injury, UnitController sourceUnit) {
         injury.isActive = true;
 
         OnInjuryChange();

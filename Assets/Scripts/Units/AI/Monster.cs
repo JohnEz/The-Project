@@ -9,6 +9,7 @@ public enum MonsterTarget {
     BEHIND,
     ALL,
     NONE,
+    LAST_INJURY
 }
 
 [CreateAssetMenu(fileName = "New Monster", menuName = "Monster/New Monster")]
@@ -23,6 +24,9 @@ public class Monster : UnitObject {
 
     [HideInInspector]
     public UnitController focusedTarget;
+
+    [HideInInspector]
+    public UnitController lastInjuryTarget;
 
     public Queue<MonsterAI> TurnQueue { get; set; }
 
@@ -49,6 +53,14 @@ public class Monster : UnitObject {
             int index = Random.Range(0, n);
             TurnQueue.Enqueue(remainingTurns[index]);
             remainingTurns.RemoveAt(index);
+        }
+    }
+
+    public override void AddInjury(Injury injury, UnitController sourceUnit) {
+        base.AddInjury(injury, sourceUnit);
+
+        if (sourceUnit) {
+            lastInjuryTarget = sourceUnit;
         }
     }
 

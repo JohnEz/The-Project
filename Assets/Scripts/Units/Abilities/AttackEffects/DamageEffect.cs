@@ -36,7 +36,7 @@ public class DamageEffect : AttackEffect {
         }
 
         if (injury != null) {
-            targetNode.MyUnit.TakeInjury(injury);
+            targetNode.MyUnit.TakeInjury(injury, caster);
         }
     }
 }
