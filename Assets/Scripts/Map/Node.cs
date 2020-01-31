@@ -33,13 +33,6 @@ public class Node : Tile {
         return Vector2.Distance(new Vector2(x, y), new Vector2(n.x, n.y));
     }
 
-    public int GridDistanceTo(NodeCollection collection) {
-        //TODO double check the outcome of this int rounding
-        int diffX = (int)collection.x - x;
-        int diffY = (int)collection.y - y;
-        return Mathf.Abs(diffX) + Mathf.Abs(diffY);
-    }
-
     public bool HasDoor() {
         return neighbours.Exists(n => n.HasDoor());
     }

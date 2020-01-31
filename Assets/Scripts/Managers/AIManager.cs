@@ -278,6 +278,10 @@ public class AIManager : MonoBehaviour {
     public void AttackTile(UnitController unit, Node targetTile, AttackAction attack) {
         // gets the first target of the first ability
         //Debug.Log("AI - attacking tile: " + targetTile);
+        if (attack.range > -1 && attack.range > targetTile.GridDistanceTo(unit.myTile)) {
+            return;
+        }
+
         UnitManager.instance.AttackTile(unit, targetTile, attack);
     }
 }
