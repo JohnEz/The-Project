@@ -15,13 +15,16 @@ public enum MonsterTarget {
 public class Monster : UnitObject {
     public MonsterAI defaultTurn;
 
-    public List<MonsterAI> myTurns;
+    [SerializeField]
+    protected List<MonsterAI> myTurns;
 
     [HideInInspector]
     public UnitController currentTarget;
 
     [HideInInspector]
     public UnitController focusedTarget;
+
+    public Queue<MonsterAI> TurnQueue { get; set; }
 
     public override void Reset(UnitController myUnit = null) {
         base.Reset(myUnit);
@@ -30,5 +33,38 @@ public class Monster : UnitObject {
         myTurns.ForEach(turn => {
             turn.Instantiate(myUnit);
         });
+
+        TurnQueue = new Queue<MonsterAI>();
+        ShuffleTurnQueue();
+    }
+
+    public void ShuffleTurnQueue() {
+        TurnQueue.Clear();
+        List<MonsterAI> remainingTurns = new List<MonsterAI>();
+        remainingTurns.AddRange(myTurns);
+
+        int n = remainingTurns.Count;
+        while (n > 0) {
+            n--;
+            int index = Random.Range(0, n);
+            TurnQueue.Enqueue(remainingTurns[index]);
+            remainingTurns.RemoveAt(index);
+        }
+    }
+
+    public MonsterAI GetNextTurn() {
+        if (TurnQueue.Count == 0) {
+            ShuffleTurnQueue();
+        }
+
+        return TurnQueue.Dequeue();
+    }
+
+    public MonsterAI PeekNextTurn() {
+        if (TurnQueue.Count == 0) {
+            ShuffleTurnQueue();
+        }
+
+        return TurnQueue.Peek();
     }
 }

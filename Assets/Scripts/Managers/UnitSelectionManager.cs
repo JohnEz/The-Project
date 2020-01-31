@@ -137,14 +137,17 @@ public class UnitSelectionManager : MonoBehaviour {
         int currentSelectedIndex = selectedUnit != null ? playerUnits.IndexOf(selectedUnit) : -1;
 
         int index = (currentSelectedIndex + 1) % playerUnits.Count;
+        int loopLimit = playerUnits.Count;
+        int loopCount = 0;
         bool isNextUnitFound = false;
 
-        while (index != currentSelectedIndex && !isNextUnitFound) {
+        while (loopCount < loopLimit && !isNextUnitFound) {
             if (playerUnits[index].HasRemainingActionPoints()) {
                 isNextUnitFound = true;
             } else {
                 index = (index + 1) % playerUnits.Count;
             }
+            loopCount++;
         }
 
         return isNextUnitFound ? playerUnits[index] : null;

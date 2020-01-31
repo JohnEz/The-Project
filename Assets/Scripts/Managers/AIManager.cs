@@ -68,8 +68,7 @@ public class AIManager : MonoBehaviour {
     public IEnumerator RunAI(UnitController unit) {
         Monster monster = (Monster)unit.myStats;
 
-        int turnIndex = UnityEngine.Random.Range(0, monster.myTurns.Count);
-        MonsterAI monsterTurn = monster.myTurns[turnIndex];
+        MonsterAI monsterTurn = monster.GetNextTurn();
 
         monster.currentTarget = FindTarget(unit, monsterTurn);
 
