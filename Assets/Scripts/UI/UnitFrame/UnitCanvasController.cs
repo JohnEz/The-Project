@@ -11,9 +11,12 @@ internal struct CombatText {
 
 public class UnitCanvasController : MonoBehaviour {
     private const float COMBAT_TEXT_THROTTLE = 0.5f;
+    private float SCALE = 0.05f;
 
     public GameObject combatTextPrefab;
     public GameObject woundIconPrefab;
+
+    public Image telegraph;
 
     private BuffController buffs;
     private List<GameObject> buffIcons = new List<GameObject>();
@@ -39,6 +42,8 @@ public class UnitCanvasController : MonoBehaviour {
         myUnit = GetComponentInParent<UnitController>();
         myTeam = myUnit.myPlayer.id;
 
+        transform.localScale = new Vector3(SCALE, SCALE, SCALE);
+
         woundPoints = new List<GameObject>();
 
         Transform woundPointsParent = transform.Find("Wound Points");
@@ -48,6 +53,8 @@ public class UnitCanvasController : MonoBehaviour {
         }
 
         myUnit.myStats.onInjuryChange.AddListener(UpdateWoundPoints);
+
+        HideTelegraph();
     }
 
     // Update is called once per frame
@@ -114,5 +121,27 @@ public class UnitCanvasController : MonoBehaviour {
     private IEnumerator AllowCreateCombatText() {
         yield return new WaitForSeconds(COMBAT_TEXT_THROTTLE);
         canCreateCombatText = true;
+    }
+
+    public void HideTelegraph() {
+        if (!telegraph || !telegraph.gameObject.activeSelf) {
+            return;
+        }
+
+        telegraph.gameObject.SetActive(false);
+    }
+
+    public void ShowTelegraph(Sprite sprite = null) {
+        if (!telegraph) {
+            return;
+        }
+
+        if (sprite) {
+            telegraph.sprite = sprite;
+        }
+
+        if (!telegraph.gameObject.activeSelf) {
+            telegraph.gameObject.SetActive(true);
+        }
     }
 }

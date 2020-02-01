@@ -57,7 +57,9 @@ public class UnitController : MonoBehaviour {
     [System.NonSerialized]
     public UnitManager myManager;
 
-    private UnitCanvasController unitCanvasController;
+    [System.NonSerialized]
+    public UnitCanvasController unitCanvasController;
+
     private UnitDialogController myDialogController;
 
     [System.NonSerialized]

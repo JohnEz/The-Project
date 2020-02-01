@@ -31,17 +31,9 @@ public class UnitManager : MonoBehaviour {
         set { currentlyHoveredNode = value; }
     }
 
-    // Use this for initialization
-    private void Start() {
-    }
-
     public void Initialise() {
         Units = new List<UnitController>();
         unitsToRemove = new List<UnitController>();
-    }
-
-    // Update is called once per frame
-    private void Update() {
     }
 
     public List<UnitController> GetPlayersUnits(int playerId) {

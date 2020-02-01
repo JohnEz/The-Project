@@ -44,6 +44,19 @@ public class AIManager : MonoBehaviour {
         set { myUnits = value; }
     }
 
+    public void Initialise(int myPlayerId) {
+        myUnits = UnitManager.instance.GetPlayersUnits(myPlayerId);
+
+        foreach (UnitController unit in myUnits) {
+            if (unit) {
+                DisplayNextTurn(unit);
+            }
+        }
+    }
+
+    /// Turns
+    ///////////////////
+
     // NewTurn is called at the start of each of the AIs turns.
     public IEnumerator NewTurn(int myPlayerId) {
         myUnits = UnitManager.instance.GetPlayersUnits(myPlayerId);
@@ -54,8 +67,9 @@ public class AIManager : MonoBehaviour {
                 CameraManager.instance.FollowTarget(unit.transform);
                 yield return new WaitForSeconds(CameraManager.instance.blendTime);
                 yield return TurnManager.instance.WaitForWaitingForInput();
-                //yield return PlanTurnTwoActions(unit);
+                unit.unitCanvasController.HideTelegraph();
                 yield return RunAI(unit);
+                DisplayNextTurn(unit);
             }
         }
 
@@ -105,6 +119,13 @@ public class AIManager : MonoBehaviour {
         }
 
         yield return TurnManager.instance.WaitForWaitingForInput();
+    }
+
+    private void DisplayNextTurn(UnitController unit) {
+        Monster monster = (Monster)unit.myStats;
+        MonsterAI monsterTurn = monster.PeekNextTurn();
+
+        unit.unitCanvasController.ShowTelegraph(monsterTurn.telegraph);
     }
 
     /// Target Picking

@@ -27,6 +27,7 @@ public class TurnManager : MonoBehaviour {
 
     // Use this for initialization
     public void Initialise() {
+        PlayerManager.instance.GetAIPlayers().ForEach(ai => AIManager.instance.Initialise(ai.id));
     }
 
     // Update is called once per frame
@@ -43,6 +44,8 @@ public class TurnManager : MonoBehaviour {
 
     public void StartGame() {
         PlayerManager.instance.StartGame();
+
+        Initialise();
 
         StartNewTurn();
     }

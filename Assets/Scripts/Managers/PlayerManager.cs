@@ -83,4 +83,15 @@ public class PlayerManager : MonoBehaviour {
     public bool IsMainPlayer(int playerId) {
         return players[playerId] == mainPlayer;
     }
+
+    public List<Player> GetAIPlayers() {
+        List<Player> aiPlayers = new List<Player>();
+        players.ForEach(player => {
+            if (player.ai) {
+                aiPlayers.Add(player);
+            }
+        });
+
+        return aiPlayers;
+    }
 }
