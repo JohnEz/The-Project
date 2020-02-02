@@ -30,13 +30,17 @@ public class Ability : ScriptableObject {
     [HideInInspector]
     public UnitController caster;
 
+    public int baseCooldown = 1;
+    public int baseUses = -1;
+
     [HideInInspector]
     private int cooldown;
 
-    public int baseCooldown = 1;
-
     [HideInInspector]
     public int maxCooldown = 1;
+
+    [HideInInspector]
+    public int remainingUses;
 
     public void Awake() {
         instansiatedActions = new List<AbilityAction>(0);
@@ -49,6 +53,7 @@ public class Ability : ScriptableObject {
         });
         maxCooldown = baseCooldown;
         cooldown = 0;
+        remainingUses = baseUses;
         actionPointCost = baseActionPointCost;
     }
 

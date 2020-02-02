@@ -20,34 +20,21 @@ public class AttackAction : AbilityAction {
 
     public List<AttackEffect> attackEffects = new List<AttackEffect>(0);
 
-    // TODO remove for ability cooldown AI Variables
-    private int cooldown;
-
-    public int maxCooldown = 1;
-
     public bool CanTargetSelf {
         get { return canTargetSelf; }
         set { canTargetSelf = value; }
     }
 
-    public int Cooldown {
-        get { return cooldown; }
-        set { cooldown = value; }
-    }
-
-    public int MaxCooldown {
-        get { return maxCooldown; }
-        set { maxCooldown = value; }
-    }
-
-    public bool IsOnCooldown() {
-        return Cooldown > 0;
-    }
-
     private void AbilityEffectUnit(UnitController caster, Node target) {
         UnitController targetUnit = target.MyUnit;
+        bool isAllyAttack = caster.myPlayer.faction == target.MyUnit.myPlayer.faction;
 
-        bool hitTarget = CheckIfHit(caster, targetUnit);
+        if (targetUnit.IsParrying() && !isAllyAttack && targetStat == Stats.AC) {
+            targetUnit.Parry(caster);
+            return;
+        }
+
+        bool hitTarget = isAllyAttack || CheckIfHit(caster, targetUnit);
 
         if (hitTarget) {
             AddAbilityTarget(target, () => {
@@ -104,8 +91,6 @@ public class AttackAction : AbilityAction {
     }
 
     public void AbilityUsed() {
-        Cooldown = MaxCooldown;
-
         if (caster.IsStealthed()) {
             Buff stealthBuff = caster.myStats.buffs.FindBuff("Stealth");
             caster.myStats.RemoveBuff(stealthBuff);

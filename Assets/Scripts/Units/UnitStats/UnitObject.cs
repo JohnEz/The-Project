@@ -67,7 +67,7 @@ public class UnitObject : ScriptableObject {
     public int baseWisdom = 1;
     public int baseIntelligence = 1;
     public int baseAC = 10;
-    public int baseSpeed = 3;
+    public int baseSpeed = 5;
     public int baseActionPoints = 1;
     public int baseMoveActionPoints = 1;
     public int baseWoundLimit = 3;
@@ -92,6 +92,9 @@ public class UnitObject : ScriptableObject {
     [HideInInspector]
     public UnitToken displayToken;
 
+    [HideInInspector]
+    public float unitHalfHeight;
+
     public void Awake() {
         buffs = new UnitBuffs();
         equipment = equipment != null ? equipment : new UnitEquipment();
@@ -109,7 +112,12 @@ public class UnitObject : ScriptableObject {
         tokenTransform.Find("BackSprite").GetComponent<SpriteRenderer>().sprite = displayToken.backSprite;
 
         Vector3 tokenPos = tokenTransform.localPosition;
-        tokenTransform.localPosition = new Vector3(tokenPos.x, displayToken.frontSprite.rect.height / 96, tokenPos.z);
+
+        int pixelsPerUnit = 50;
+        float baseHeight = 0.1f;
+        unitHalfHeight = (displayToken.frontSprite.rect.height / pixelsPerUnit) / 2;
+
+        tokenTransform.localPosition = new Vector3(tokenPos.x, unitHalfHeight + baseHeight, tokenPos.z);
 
         myUnit.transform.Find("SmallBase").gameObject.SetActive(false);
         switch (size) {
@@ -267,12 +275,6 @@ public class UnitObject : ScriptableObject {
     }
 
     public void NewTurn(bool isStunned) {
-        Attacks.ForEach(attack => {
-            if (attack.IsOnCooldown()) {
-                attack.Cooldown--;
-            }
-        });
-
         instantiatedAbilities.ForEach(ability => {
             if (ability.IsOnCooldown()) {
                 ability.Cooldown--;

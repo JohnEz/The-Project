@@ -11,12 +11,18 @@ internal struct CombatText {
 
 public class UnitCanvasController : MonoBehaviour {
     private const float COMBAT_TEXT_THROTTLE = 0.5f;
-    private float SCALE = 0.05f;
+
+    //Canvas
+    private const float SCALE = 0.05f;
+
+    private const float INVERSE_SCALE = 1 / SCALE;
+    private const float HALF_CANVAS_HEIGHT = 200 * SCALE;
 
     public GameObject combatTextPrefab;
     public GameObject woundIconPrefab;
 
     public Image telegraph;
+    public GameObject unitFrame;
 
     private BuffController buffs;
     private List<GameObject> buffIcons = new List<GameObject>();
@@ -46,7 +52,7 @@ public class UnitCanvasController : MonoBehaviour {
 
         woundPoints = new List<GameObject>();
 
-        Transform woundPointsParent = transform.Find("Wound Points");
+        Transform woundPointsParent = unitFrame.transform.Find("Wound Points");
         for (int i = 0; i < myUnit.myStats.WoundLimit; i++) {
             GameObject woundPoint = Instantiate(woundIconPrefab, woundPointsParent);
             woundPoints.Add(woundPoint);
@@ -54,6 +60,10 @@ public class UnitCanvasController : MonoBehaviour {
 
         myUnit.myStats.onInjuryChange.AddListener(UpdateWoundPoints);
 
+        float unitFullHeight = (myUnit.myStats.unitHalfHeight * 2);
+        float unitHeightToCanvas = (unitFullHeight - HALF_CANVAS_HEIGHT) * INVERSE_SCALE;
+
+        unitFrame.transform.localPosition = new Vector3(0, unitHeightToCanvas + unitFrame.transform.localPosition.y, 0);
         HideTelegraph();
     }
 

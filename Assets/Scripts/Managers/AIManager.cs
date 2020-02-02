@@ -274,6 +274,7 @@ public class AIManager : MonoBehaviour {
 
             // Tell unit to follow path
             if (pathToTarget.path.Count > 0) {
+                CameraManager.instance.FollowTarget(unit.transform);
                 unit.AddMoveAction(pathToTarget);
             }
         } else {

@@ -18,10 +18,6 @@ public class AttackEditor : Editor {
         GUILayout.Space(8);
 
         showAIVariables = EditorGUILayout.Foldout(showAIVariables, "AI Variables");
-
-        if (showAIVariables) {
-            myTarget.MaxCooldown = EditorGUILayout.IntField("Cooldown", myTarget.MaxCooldown);
-        }
     }
 
     public override void OnInspectorGUI() {

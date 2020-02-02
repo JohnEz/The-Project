@@ -132,12 +132,8 @@ public class UnitController : MonoBehaviour {
         return myStats.buffs.FindBuff("Stun") != null;
     }
 
-    public bool IsTaunted() {
-        return myStats.buffs.FindBuff("Taunt") != null;
-    }
-
-    public List<UnitController> GetTaunters() {
-        return myStats.buffs.FindBuffs("Taunt").Select((taunt) => ((Taunt)taunt).taunter).ToList();
+    public bool IsParrying() {
+        return myStats.buffs.FindBuff("Parry") != null;
     }
 
     public bool HasRemainingQueuedActions() {
@@ -400,6 +396,25 @@ public class UnitController : MonoBehaviour {
 
     public bool getAttackHasLanded() {
         return true;
+    }
+
+    public void Parry(UnitController target) {
+        Parry parryBuff = (Parry)myStats.buffs.FindBuff("Parry");
+
+        if (!parryBuff) {
+            Debug.LogError("Tried to parry but parry didnt exist");
+            return;
+        }
+
+        myStats.RemoveBuff(parryBuff);
+
+        CreateBasicText("Parry");
+
+        AttackAction attack = parryBuff.parryAttack;
+
+        //TODO check its in range?
+
+        UnitManager.instance.AttackTile(this, target.myTile.Nodes[0], attack);
     }
 
     public void TakeInjury(Injury injury, UnitController sourceUnit) {
