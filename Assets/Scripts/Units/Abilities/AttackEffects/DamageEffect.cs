@@ -5,6 +5,7 @@ public enum DamageType {
     BLUDGEONING,
     SLASHING,
     PIERCING,
+    ALL,
 }
 
 [CreateAssetMenu(fileName = "New damage effect", menuName = "Ability/Attack/Damage")]
@@ -14,29 +15,25 @@ public class DamageEffect : AttackEffect {
     public override void AbilityEffect(UnitController caster, Node targetNode) {
         base.AbilityEffect(caster, targetNode);
 
-        HitLocationData location = targetNode.MyUnit.myStats.GetRandomHitLocation(myType);
+        HitLocation location = targetNode.MyUnit.myStats.GetRandomHitLocation(myType);
 
         //TODO fix this
         if (location == null) {
             return;
         }
 
-        //work out injury
-        float majorInjuryChance = ((float)caster.myStats.Strength / (float)targetNode.MyUnit.myStats.Constitution) * location.majorInjuryChance;
-        float injuryRoll = Random.value;
-        bool isMajorInjury = injuryRoll <= majorInjuryChance;
+        ////work out injury
+        //float majorInjuryChance = ((float)caster.myStats.Strength / (float)targetNode.MyUnit.myStats.Constitution) * location.majorInjuryChance;
+        //float injuryRoll = Random.value;
+        //bool isMajorInjury = injuryRoll <= majorInjuryChance;
 
-        Injury injury = null;
+        //// TODO fix this
+        //if ((isMajorInjury && location.HasAvailableMajorWound()) || (!isMajorInjury && !location.HasAvailableMinorWound())) {
+        //    injury = location.MajorInjuries.First();
+        //} else if (location.HasAvailableMinorWound()) {
+        //    injury = location.MinorInjuries.First();
+        //}
 
-        // TODO fix this
-        if ((isMajorInjury && location.HasAvailableMajorWound()) || (!isMajorInjury && !location.HasAvailableMinorWound())) {
-            injury = location.MajorInjuries.First();
-        } else if (location.HasAvailableMinorWound()) {
-            injury = location.MinorInjuries.First();
-        }
-
-        if (injury != null) {
-            targetNode.MyUnit.TakeInjury(injury, caster);
-        }
+        targetNode.MyUnit.HitlocationWounded(location, caster);
     }
 }

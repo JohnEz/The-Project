@@ -31,14 +31,6 @@ public class AIManager : MonoBehaviour {
         instance = this;
     }
 
-    // Use this for initialization
-    private void Start() {
-    }
-
-    // Update is called once per frame
-    private void Update() {
-    }
-
     public List<UnitController> MyUnits {
         get { return myUnits; }
         set { myUnits = value; }
@@ -258,7 +250,7 @@ public class AIManager : MonoBehaviour {
         switch (action.MoveType) {
             case MonsterMoveType.TOWARDS_TARGET:
                 //Debug.Log("Finding path to target");
-                pathToTarget = TileMap.instance.pathfinder.FindShortestPathToUnit(unit.myTile, target.myTile, unit.myStats.walkingType, new PathSearchOptions(unit.myPlayer.faction, unit.myStats.size));
+                pathToTarget = TileMap.instance.pathfinder.FindShortestPathToUnit(unit.myTile, target.myTile, unit.myStats.walkingType, new PathSearchOptions(-1, unit.myStats.size));
                 //pathToTarget = TileMap.instance.pathfinder.FindPath(unit.myTile, shortestDestination, unit.myStats.walkingType, new PathSearchOptions(unit.myPlayer.faction, unit.myStats.size));
                 break;
 
@@ -306,6 +298,13 @@ public class AIManager : MonoBehaviour {
     ///////////////////
 
     public IEnumerator Attack(UnitController unit, MonsterAttackAction action, UnitController target) {
+        Node targetTile = target.myTile.Nodes.First();
+        AttackAction attack = action.Attack;
+
+        if (attack.range > -1 && attack.range < targetTile.GridDistanceTo(unit.myTile)) {
+            yield break;
+        }
+
         if (target != unit) {
             CameraManager.instance.FollowTarget(target.transform);
             yield return new WaitForSeconds(CameraManager.instance.blendTime);
@@ -314,15 +313,14 @@ public class AIManager : MonoBehaviour {
             yield return new WaitForSeconds(CameraManager.instance.blendTime);
         }
 
-        AttackTile(unit, target.myTile.Nodes.First(), action.Attack);
+        AttackTile(unit, targetTile, attack);
 
         yield return TurnManager.instance.WaitForWaitingForInput();
     }
 
     public void AttackTile(UnitController unit, Node targetTile, AttackAction attack) {
-        // gets the first target of the first ability
         //Debug.Log("AI - attacking tile: " + targetTile);
-        if (attack.range > -1 && attack.range > targetTile.GridDistanceTo(unit.myTile)) {
+        if (attack.range > -1 && attack.range < targetTile.GridDistanceTo(unit.myTile)) {
             return;
         }
 

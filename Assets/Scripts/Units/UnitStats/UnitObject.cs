@@ -52,9 +52,9 @@ public class UnitObject : ScriptableObject {
 
     public OnStatChangeEvent onStatChange = new OnStatChangeEvent();
 
-    [Serializable] public class OnInjuryChangeEvent : UnityEvent { }
+    [Serializable] public class OnHitLocationEvent : UnityEvent { }
 
-    public OnInjuryChangeEvent onInjuryChange = new OnInjuryChangeEvent();
+    public OnHitLocationEvent onHitLocationChange = new OnHitLocationEvent();
 
     public HitLocations myHitLocationsPrefab;
 
@@ -301,9 +301,9 @@ public class UnitObject : ScriptableObject {
             this.onStatChange.Invoke();
     }
 
-    public void OnInjuryChange() {
-        if (this.onInjuryChange != null)
-            this.onInjuryChange.Invoke();
+    public void OnHitLocationChange() {
+        if (this.onHitLocationChange != null)
+            this.onHitLocationChange.Invoke();
     }
 
     public bool ApplyBuff(Buff newBuff) {
@@ -326,15 +326,27 @@ public class UnitObject : ScriptableObject {
         OnStatChange();
     }
 
-    public virtual void AddInjury(Injury injury, UnitController sourceUnit) {
-        injury.isActive = true;
-
-        OnInjuryChange();
+    public virtual void UpdateHitLocation(HitLocation location, UnitController sourceUnit) {
+        OnHitLocationChange();
         OnStatChange();
     }
 
-    public HitLocationData GetRandomHitLocation(DamageType damageType) {
+    public HitLocation GetRandomHitLocation(DamageType damageType) {
         return myHitLocations.RandomHitLocation(damageType);
+    }
+
+    public HitLocation GetRecentWoundedHitLocation() {
+        return myHitLocations.GetRecentWoundedHitLocation();
+    }
+
+    public void DamageHitLocation(HitLocation location, UnitController sourceUnit) {
+        myHitLocations.DamageLocation(location);
+        UpdateHitLocation(location, sourceUnit);
+    }
+
+    public void HealHitLocation(HitLocation location, UnitController sourceUnit) {
+        myHitLocations.HealLocation(location);
+        UpdateHitLocation(location, sourceUnit);
     }
 
     public override string ToString() {

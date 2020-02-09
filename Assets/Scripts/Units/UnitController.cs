@@ -92,10 +92,6 @@ public class UnitController : MonoBehaviour {
     private int effectsToCreate = 0;
     private List<GameObject> abilityEffects = new List<GameObject>();
 
-    // Use this for initialization
-    private void Start() {
-    }
-
     public void Initialise() {
         GameObject unitCanvas = Instantiate(unitCanvasPrefab);
         unitCanvas.transform.SetParent(transform, false);
@@ -107,7 +103,7 @@ public class UnitController : MonoBehaviour {
         myDialogController = GetComponentInChildren<UnitDialogController>();
         unitCanvasController.Initialise();
 
-        myStats.onInjuryChange.AddListener(OnInjuryChange);
+        myStats.onHitLocationChange.AddListener(OnHitLocationChange);
 
         gameObject.name = myStats.className;
 
@@ -255,6 +251,16 @@ public class UnitController : MonoBehaviour {
                 FaceDirection(neighbour.GetDirectionFrom(myPath[1]));
             } else {
                 FinishWalking();
+            }
+
+            // knockback for monsters
+            if (myPath.Count > 1) {
+                myPath[1].FindContainedUnits().ForEach(unit => {
+                    if (unit != this) {
+                        unit.Push(myPath[0], 6);
+                        unit.ApplyBuff(new Stun(1));
+                    }
+                });
             }
             myPath.RemoveAt(0);
         }
@@ -417,13 +423,18 @@ public class UnitController : MonoBehaviour {
         UnitManager.instance.AttackTile(this, target.myTile.Nodes[0], attack);
     }
 
-    public void TakeInjury(Injury injury, UnitController sourceUnit) {
-        CreateBasicText(injury.description);
-        PlayRandomWoundSound();
-        myStats.AddInjury(injury, sourceUnit);
+    public void HitLocationHealed(HitLocation location, UnitController sourceUnit) {
+        CreateHealText(location.locationName);
+        myStats.HealHitLocation(location, sourceUnit);
     }
 
-    public void OnInjuryChange() {
+    public void HitlocationWounded(HitLocation location, UnitController sourceUnit) {
+        CreateBasicText(location.locationName);
+        PlayRandomWoundSound();
+        myStats.DamageHitLocation(location, sourceUnit);
+    }
+
+    public void OnHitLocationChange() {
         if (myStats.WoundCount >= myStats.WoundLimit) {
             // TODO add death animation
             PlayRandomDeathSound();
@@ -482,10 +493,12 @@ public class UnitController : MonoBehaviour {
     }
 
     public void Pull(Tile pullOrigin, int distance) {
+        CreateBasicText("Knockback " + distance);
         ForceMove(pullOrigin, distance, true);
     }
 
     public void Push(Tile pushOrigin, int distance) {
+        CreateBasicText("Knockback " + distance);
         ForceMove(pushOrigin, distance, false);
     }
 
@@ -512,8 +525,14 @@ public class UnitController : MonoBehaviour {
         }
     }
 
-    private Tile FindForceMoveTile(Tile origin, int distance, bool isPull) {
-        ReachableTiles tiles = TileMap.instance.pathfinder.findReachableTiles(myTile, distance, WalkableLevel.Walkable, new PathSearchOptions(false, false, myPlayer.faction, myStats.size));
+    private Tile FindForceMoveTile(Tile baseOrigin, int distance, bool isPull) {
+        Tile origin = baseOrigin.Nodes.Find((node) => node.FindNeighbourTo(myTile) != null);
+
+        if (origin == null) {
+            origin = baseOrigin;
+        }
+
+        ReachableTiles tiles = TileMap.instance.pathfinder.findReachableTiles(myTile, distance, WalkableLevel.Walkable, new PathSearchOptions(false, false, -1, myStats.size));
         Vector2 forceDirection = new Vector2(origin.x - myTile.x, origin.y - myTile.y).normalized;
         forceDirection = isPull ? forceDirection : -forceDirection;
 
@@ -527,10 +546,11 @@ public class UnitController : MonoBehaviour {
             int n2Distance = n2.GridDistanceTo(origin);
 
             if (n1Distance == n2Distance) {
-                //compare direction from node
+                //compare direction from my node to both nodes
                 Vector2 n1Direction = new Vector2(n1.x - myTile.x, n1.y - myTile.y).normalized;
                 Vector2 n2Direction = new Vector2(n2.x - myTile.x, n2.y - myTile.y).normalized;
 
+                // see which node is closer to the original force direction
                 if (Vector2.Distance(n1Direction, forceDirection) == Vector2.Distance(n2Direction, forceDirection)) {
                     Vector2 absoluteFacing = new Vector2(Mathf.Sign(facingDirection.x), Mathf.Sign(facingDirection.y));
 
@@ -632,5 +652,9 @@ public class UnitController : MonoBehaviour {
 
     public void CreateBasicText(string text) {
         unitCanvasController.CreateBasicText(text);
+    }
+
+    public void CreateHealText(string healing) {
+        unitCanvasController.CreateHealText(healing);
     }
 }

@@ -58,7 +58,7 @@ public class UnitCanvasController : MonoBehaviour {
             woundPoints.Add(woundPoint);
         }
 
-        myUnit.myStats.onInjuryChange.AddListener(UpdateWoundPoints);
+        myUnit.myStats.onHitLocationChange.AddListener(UpdateWoundPoints);
 
         float unitFullHeight = (myUnit.myStats.unitHalfHeight * 2);
         float unitHeightToCanvas = (unitFullHeight - HALF_CANVAS_HEIGHT) * INVERSE_SCALE;

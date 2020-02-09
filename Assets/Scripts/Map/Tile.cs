@@ -29,6 +29,45 @@ public class Tile : MonoBehaviour {
     protected WalkableLevel walkable;
     protected float moveCost = 1;
 
+    public virtual UnitController MyUnit {
+        get { return myUnit; }
+        set { myUnit = value; }
+    }
+
+    public virtual float X {
+        get { return x; }
+    }
+
+    public virtual float Y {
+        get { return y; }
+    }
+
+    public float Value {
+        get { return cost + dist; }
+    }
+
+    public virtual bool Equals(Tile other) {
+        return x == other.x && y == other.y;
+    }
+
+    public virtual Vector3 Position {
+        get { return transform.position; }
+    }
+
+    public virtual List<Node> Nodes {
+        get { return new List<Node> { (Node)this }; }
+    }
+
+    public virtual WalkableLevel Walkable {
+        get { return walkable; }
+        set { walkable = value; }
+    }
+
+    public virtual float MoveCost {
+        get { return moveCost; }
+        set { moveCost = value; }
+    }
+
     public void Reset() {
         cost = Mathf.Infinity;
         previous = null;
@@ -62,33 +101,16 @@ public class Tile : MonoBehaviour {
         return contains;
     }
 
-    public virtual UnitController MyUnit {
-        get { return myUnit; }
-        set { myUnit = value; }
-    }
+    public List<UnitController> FindContainedUnits() {
+        List<UnitController> containedUnits = new List<UnitController>();
 
-    public virtual float X {
-        get { return x; }
-    }
+        Nodes.ForEach(node => {
+            if (node.MyUnit && !containedUnits.Contains(node.myUnit)) {
+                containedUnits.Add(node.myUnit);
+            }
+        });
 
-    public virtual float Y {
-        get { return y; }
-    }
-
-    public float Value {
-        get { return cost + dist; }
-    }
-
-    public virtual bool Equals(Tile other) {
-        return x == other.x && y == other.y;
-    }
-
-    public virtual Vector3 Position {
-        get { return transform.position; }
-    }
-
-    public virtual List<Node> Nodes {
-        get { return new List<Node> { (Node)this }; }
+        return containedUnits;
     }
 
     public virtual int GridDistanceTo(Tile t) {
@@ -97,17 +119,17 @@ public class Tile : MonoBehaviour {
         return Mathf.Abs(diffX) + Mathf.Abs(diffY);
     }
 
+    public virtual float AbsoluteGridDistanceTo(Tile t) {
+        float diffX = t.X - X;
+        float diffY = t.Y - Y;
+        return Mathf.Abs(diffX) + Mathf.Abs(diffY);
+    }
+
     public virtual Neighbour FindNeighbourTo(Tile target) {
         return neighbours.Find(neighbour => neighbour.GetOppositeTile(this) == target);
     }
 
-    public virtual WalkableLevel Walkable {
-        get { return walkable; }
-        set { walkable = value; }
-    }
-
-    public virtual float MoveCost {
-        get { return moveCost; }
-        set { moveCost = value; }
+    public override string ToString() {
+        return string.Format("[ X: {0} Y: {1} MyUnit: {2} ]", x, y, myUnit != null ? myUnit.name : "None");
     }
 }

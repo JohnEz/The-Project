@@ -42,8 +42,4 @@ public class Node : Tile {
             myUnit.Activate();
         }
     }
-
-    public override string ToString() {
-        return string.Format("[ X: {0} Y: {1} MyUnit: {2} ]", x, y, myUnit != null ? myUnit.name : "None");
-    }
 }

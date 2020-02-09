@@ -56,8 +56,8 @@ public class Monster : UnitObject {
         }
     }
 
-    public override void AddInjury(Injury injury, UnitController sourceUnit) {
-        base.AddInjury(injury, sourceUnit);
+    public override void UpdateHitLocation(HitLocation location, UnitController sourceUnit) {
+        base.UpdateHitLocation(location, sourceUnit);
 
         if (sourceUnit) {
             lastInjuryTarget = sourceUnit;
