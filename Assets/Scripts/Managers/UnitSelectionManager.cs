@@ -110,6 +110,12 @@ public class UnitSelectionManager : MonoBehaviour {
         }
 
         HighlightManager.instance.SetEffectedNodes(selectedUnit.myTile.Nodes, SquareTarget.SELECTED_UNIT);
+
+        // TODO add blind spot to characters
+        if (selectedUnit.myPlayer.ai) {
+            Tile blindSpot = AIManager.instance.GetBlindSpot(selectedUnit);
+            HighlightManager.instance.AddDecal(blindSpot.Nodes, SquareDecal.NO_SIGHT);
+        }
     }
 
     public void UnselectUnit() {
@@ -118,6 +124,13 @@ public class UnitSelectionManager : MonoBehaviour {
         }
 
         HighlightManager.instance.UnhighlightNodes(selectedUnit.myTile.Nodes);
+
+        // TODO add blind spot to characters
+        if (selectedUnit.myPlayer.ai) {
+            Tile blindSpot = AIManager.instance.GetBlindSpot(selectedUnit);
+            HighlightManager.instance.RemoveDecals(blindSpot.Nodes);
+        }
+
         selectedUnit = null;
     }
 

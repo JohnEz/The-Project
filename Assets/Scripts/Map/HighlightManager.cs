@@ -8,14 +8,6 @@ public class HighlightManager : MonoBehaviour {
         instance = this;
     }
 
-    // Use this for initialization
-    private void Start() {
-    }
-
-    // Update is called once per frame
-    private void Update() {
-    }
-
     public List<Node> GetHighlightedNodes() {
         return TileMap.instance.GetNodes().FindAll(node => node.GetComponentInChildren<TileHighlighter>().GetHighlighted());
     }
@@ -87,6 +79,20 @@ public class HighlightManager : MonoBehaviour {
             }
             highlighter.ClearDecals();
         });
+    }
+
+    public void AddDecal(List<Node> nodesToHighlight, SquareDecal decal) {
+        foreach (Node n in nodesToHighlight) {
+            TileHighlighter highlighter = n.GetComponentInChildren<TileHighlighter>();
+            highlighter.AddDecal(decal);
+        }
+    }
+
+    public void RemoveDecals(List<Node> nodesToHighlight) {
+        foreach (Node n in nodesToHighlight) {
+            TileHighlighter highlighter = n.GetComponentInChildren<TileHighlighter>();
+            highlighter.ClearDecals();
+        }
     }
 
     public void HighlightNodes(List<Node> nodesToHighlight, SquareTarget targetType) {

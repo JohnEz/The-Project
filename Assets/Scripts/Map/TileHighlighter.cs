@@ -15,7 +15,8 @@ public enum SquareTarget {
 public enum SquareDecal {
     NONE,
     TARGET,
-    ARROW
+    ARROW,
+    NO_SIGHT,
 }
 
 //TODO SORT THIS TRASH WHY TF DIDNT I USE SOME FORM OF DICTIONARY?
@@ -79,6 +80,7 @@ public class TileHighlighter : MonoBehaviour {
 
     //Decals
 
+    public Sprite noVisionDecal;
     public Sprite targetDecal;
     public Sprite arrowStraight;
     public Sprite arrowCorner;
@@ -250,10 +252,17 @@ public class TileHighlighter : MonoBehaviour {
         myDecals.Clear();
     }
 
+    public void ClearPathDecals() {
+    }
+
     public void AddDecal(SquareDecal decal) {
         switch (decal) {
             case SquareDecal.TARGET:
                 CreateDecal(targetDecal);
+                break;
+
+            case SquareDecal.NO_SIGHT:
+                CreateDecal(noVisionDecal);
                 break;
         }
     }
