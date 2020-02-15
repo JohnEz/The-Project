@@ -136,8 +136,8 @@ public class GUIController : MonoBehaviour {
 
     public void ShowErrorMessage(string message) {
         GameObject newDamageText = Instantiate(errorMessagePrefab);
-        newDamageText.GetComponent<Text>().text = message;
-        newDamageText.GetComponent<Text>().color = new Color(0.95f, 0.25f, 0.25f);
+        newDamageText.GetComponent<TextMeshProUGUI>().text = message;
+        newDamageText.GetComponent<TextMeshProUGUI>().color = new Color(0.95f, 0.25f, 0.25f);
         newDamageText.transform.SetParent(this.transform);
     }
 
