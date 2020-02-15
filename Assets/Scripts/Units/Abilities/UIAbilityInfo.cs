@@ -5,5 +5,6 @@ using DuloGames.UI;
 [Serializable]
 public class UIAbilityInfo : UISpellInfo {
     public Ability ability;
+    public int RemainingUses;
     public int MaxCooldown;
 }

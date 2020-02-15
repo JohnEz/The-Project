@@ -92,6 +92,7 @@ public class UnitSelectionManager : MonoBehaviour {
     public void FinishedUsingAbility() {
         if (ActiveAbility) {
             ActiveAbility.SetOnCooldown(true);
+            ActiveAbility.RemainingUses -= 1;
             ActiveAbility = null;
         }
         abilityState = AbilityState.NONE;

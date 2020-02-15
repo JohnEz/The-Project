@@ -113,7 +113,7 @@ public class Tile : MonoBehaviour {
         return containedUnits;
     }
 
-    public virtual int GridDistanceTo(Tile t) {
+    public int GridDistanceTo(Tile t) {
         int diffX = t.x - x;
         int diffY = t.y - y;
         return Mathf.Abs(diffX) + Mathf.Abs(diffY);

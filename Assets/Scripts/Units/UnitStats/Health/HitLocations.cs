@@ -59,7 +59,7 @@ public class HitLocations : ScriptableObject {
     }
 
     public HitLocation GetRecentWoundedHitLocation() {
-        return woundedLocations.Last();
+        return woundedLocations.Count > 0 ? woundedLocations.Last() : null;
     }
 
     public int GetModifiedStat(Stats stat) {

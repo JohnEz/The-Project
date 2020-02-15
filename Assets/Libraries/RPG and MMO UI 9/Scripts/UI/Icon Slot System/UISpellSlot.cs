@@ -4,6 +4,7 @@ using UnityEngine.EventSystems;
 using System;
 using System.Collections.Generic;
 using Object = UnityEngine.Object;
+using TMPro;
 
 namespace DuloGames.UI {
 

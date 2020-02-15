@@ -263,13 +263,18 @@ public class UserInterfaceManager : MonoBehaviour {
 
         Ability ability = UnitSelectionManager.instance.SelectedUnit.myStats.instantiatedAbilities[i];
 
+        if (UnitSelectionManager.instance.SelectedUnit.myStats.ActionPoints < ability.actionPointCost) {
+            GUIController.instance.ShowErrorMessage("Not enough action points");
+            return false;
+        }
+
         if (ability.IsOnCooldown()) {
             GUIController.instance.ShowErrorMessage("Ability is on cooldown");
             return false;
         }
 
-        if (UnitSelectionManager.instance.SelectedUnit.myStats.ActionPoints < ability.actionPointCost) {
-            GUIController.instance.ShowErrorMessage("Not enough action points");
+        if (!ability.HasRemainingUses()) {
+            GUIController.instance.ShowErrorMessage("No uses left");
             return false;
         }
 

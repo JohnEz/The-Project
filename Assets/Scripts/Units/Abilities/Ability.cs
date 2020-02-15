@@ -11,6 +11,10 @@ public class Ability : ScriptableObject {
 
     public OnCooldownChangeEvent onCooldownChange = new OnCooldownChangeEvent();
 
+    [Serializable] public class OnUsesChangeEvent : UnityEvent<UIAbilityInfo> { }
+
+    public OnUsesChangeEvent onUsesChange = new OnUsesChangeEvent();
+
     public new string name = "UNNAMED";
     public string description = "No description set!";
     public Sprite icon;
@@ -40,7 +44,7 @@ public class Ability : ScriptableObject {
     public int maxCooldown = 1;
 
     [HideInInspector]
-    public int remainingUses;
+    private int remainingUses;
 
     public void Awake() {
         instansiatedActions = new List<AbilityAction>(0);
@@ -105,6 +109,20 @@ public class Ability : ScriptableObject {
         return Cooldown > 0;
     }
 
+    public int RemainingUses {
+        get { return remainingUses; }
+        set {
+            remainingUses = value;
+
+            if (this.onUsesChange != null)
+                this.onUsesChange.Invoke(ToAbilityInfo());
+        }
+    }
+
+    public bool HasRemainingUses() {
+        return baseUses == -1 || remainingUses > 0;
+    }
+
     public void SetOnCooldown(bool isOnCooldown) {
         Cooldown = isOnCooldown ? maxCooldown : 0;
     }
@@ -137,6 +155,7 @@ public class Ability : ScriptableObject {
         info.PowerCost = baseActionPointCost;
         info.ability = this;
         info.Range = GetRange();
+        info.RemainingUses = remainingUses;
 
         return info;
     }
