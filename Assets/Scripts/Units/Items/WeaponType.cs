@@ -9,4 +9,5 @@ public enum WeaponType : int {
     Mace = 2,
     Shield = 3,
     Dagger = 4,
+    Bow = 5,
 }

@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
 public class ProjectileController : MonoBehaviour {
-    public const float HIT_DISTANCE = 50;
-    public const float SCALE_SPEED = 0.07f;
+    public const float MAX_LIFE_SECONDS = 1.5f;
+    public const float SCALE_SPEED = 1f;
     public const float MIN_SCALE_DISTANCE = 0.005f;
 
     [SerializeField]
@@ -15,14 +15,23 @@ public class ProjectileController : MonoBehaviour {
 
     private bool hitTarget = false;
 
+    private float timeAlive = 0;
+    private float previousDistance = Mathf.Infinity;
+
     private void Start() {
     }
 
     private void Update() {
+        timeAlive += Time.deltaTime;
+
         if (hitTarget) {
             ScaleDown();
         } else {
             MoveToTarget();
+
+            if (timeAlive >= MAX_LIFE_SECONDS) {
+                ReachedTarget();
+            }
         }
     }
 
@@ -46,12 +55,14 @@ public class ProjectileController : MonoBehaviour {
 
         float distanceToNode = Vector3.Distance(targetPosition, transform.position);
 
-        if (distanceToNode >= speed / 20) {
+        if (distanceToNode > speed / 200 && previousDistance > distanceToNode) {
             transform.position = transform.position + (direction * speed * Time.deltaTime);
         } else {
-            transform.position = targetPosition;
+            //transform.position = targetPosition;
             ReachedTarget();
         }
+
+        previousDistance = distanceToNode;
     }
 
     public void SetTarget(UnitController caster, Node targetedNode, float movementSpeed) {
