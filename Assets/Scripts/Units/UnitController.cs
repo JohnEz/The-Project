@@ -256,7 +256,7 @@ public class UnitController : MonoBehaviour {
             // knockback for monsters
             if (myPath.Count > 1) {
                 myPath[1].FindContainedUnits().ForEach(unit => {
-                    if (unit != this) {
+                    if (unit != this && unit.myPlayer.faction != myPlayer.faction) {
                         unit.Push(myPath[0], 6);
                         unit.ApplyBuff(new Stun(1));
                     }
