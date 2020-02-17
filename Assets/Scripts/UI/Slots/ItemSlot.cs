@@ -134,7 +134,7 @@ public class ItemSlot : UISlotBase, IntrItemSlot {
     }
 
     public static string EquipTypeToString(EquipmentType type) {
-        string str = "Undefined";
+        string str = "UNDEFINED_EQUIP_TYPE";
 
         switch (type) {
             case EquipmentType.Weapon: str = "One Hand"; break;
@@ -154,13 +154,14 @@ public class ItemSlot : UISlotBase, IntrItemSlot {
     }
 
     public static string WeaponTypeToString(WeaponType type) {
-        string str = "Undefined";
+        string str = "UNDEFINED_WEAPON_TYPE";
 
         switch (type) {
             case WeaponType.Dagger: str = "Dagger"; break;
             case WeaponType.Mace: str = "Mace"; break;
             case WeaponType.Shield: str = "Shield"; break;
             case WeaponType.Sword: str = "Sword"; break;
+            case WeaponType.Bow: str = "Bow"; break;
         }
 
         return str;
