@@ -1,7 +1,7 @@
 ﻿public class Dodge : Buff {
 
     public Dodge(int maxDuration) : base(maxDuration) {
-        name = "Dodging";
+        name = "Dodge";
         maxStack = 5;
         icon = "icon_dodge";
     }

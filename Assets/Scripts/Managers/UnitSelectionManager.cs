@@ -91,6 +91,15 @@ public class UnitSelectionManager : MonoBehaviour {
 
     public void FinishedUsingAbility() {
         if (ActiveAbility) {
+            // Active ability can be null if it was a parry attack
+            ActiveAbility.SetOnCooldown(true);
+            ActiveAbility.RemainingUses -= 1;
+        }
+        CancelAbility();
+    }
+
+    public void CancelAbility() {
+        if (ActiveAbility) {
             ActiveAbility = null;
         }
         abilityState = AbilityState.NONE;

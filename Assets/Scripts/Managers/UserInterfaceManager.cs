@@ -49,7 +49,7 @@ public class UserInterfaceManager : MonoBehaviour {
                     GUIController.instance.ShowErrorMessage("You have available options!");
                 } else {
                     UnshowAbility();
-                    UnitSelectionManager.instance.FinishedUsingAbility();
+                    UnitSelectionManager.instance.CancelAbility();
                 }
             } else if (UnitSelectionManager.instance.IsAnAbilitySelected()) {
                 UnitSelectionManager.instance.CancelCurrentAbility();
@@ -294,7 +294,8 @@ public class UserInterfaceManager : MonoBehaviour {
                 ShowAction();
 
                 if (typeof(AttackAction).IsAssignableFrom(currentAction.GetType()) && ((AttackAction)currentAction).isAutoCast) {
-                    ClickedAttack(lastAttackedNode);
+                    Node targetedTile = lastAttackedNode ? lastAttackedNode : UnitSelectionManager.instance.SelectedUnit.myTile.Nodes[0];
+                    ClickedAttack(targetedTile);
                 }
             }
 
@@ -377,13 +378,6 @@ public class UserInterfaceManager : MonoBehaviour {
 
     public void FinishedAttacking() {
         if (!TurnManager.instance.isAiTurn()) {
-            // TODO i dont like this being in here also if a move has multiple attacks, this could be wrong?
-            // Active ability can be null if it was a parry attack
-            if (UnitSelectionManager.instance.ActiveAbility) {
-                UnitSelectionManager.instance.ActiveAbility.SetOnCooldown(true);
-                UnitSelectionManager.instance.ActiveAbility.RemainingUses -= 1;
-            }
-
             FinishedAction();
         }
     }
