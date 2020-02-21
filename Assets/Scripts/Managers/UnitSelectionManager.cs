@@ -91,8 +91,6 @@ public class UnitSelectionManager : MonoBehaviour {
 
     public void FinishedUsingAbility() {
         if (ActiveAbility) {
-            ActiveAbility.SetOnCooldown(true);
-            ActiveAbility.RemainingUses -= 1;
             ActiveAbility = null;
         }
         abilityState = AbilityState.NONE;
@@ -114,8 +112,10 @@ public class UnitSelectionManager : MonoBehaviour {
 
         // TODO add blind spot to characters
         if (selectedUnit.myPlayer.ai) {
-            Tile blindSpot = AIManager.instance.GetBlindSpot(selectedUnit);
-            HighlightManager.instance.AddDecal(blindSpot.Nodes, SquareDecal.NO_SIGHT);
+            Tile blindSpot = AIManager.GetBlindSpot(selectedUnit);
+            if (blindSpot) {
+                HighlightManager.instance.AddDecal(blindSpot.Nodes, SquareDecal.NO_SIGHT);
+            }
         }
     }
 
@@ -128,8 +128,10 @@ public class UnitSelectionManager : MonoBehaviour {
 
         // TODO add blind spot to characters
         if (selectedUnit.myPlayer.ai) {
-            Tile blindSpot = AIManager.instance.GetBlindSpot(selectedUnit);
-            HighlightManager.instance.RemoveDecals(blindSpot.Nodes);
+            Tile blindSpot = AIManager.GetBlindSpot(selectedUnit);
+            if (blindSpot) {
+                HighlightManager.instance.RemoveDecals(blindSpot.Nodes);
+            }
         }
 
         selectedUnit = null;

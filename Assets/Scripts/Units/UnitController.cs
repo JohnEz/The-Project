@@ -41,8 +41,6 @@ public struct EffectOptions {
 }
 
 public class UnitController : MonoBehaviour {
-    private const float DAMAGE_LOWER_BOUND = 0.75f;
-    private const float DAMAGE_UPPER_BOUND = 1.25f;
     private const float BLOCK_MODIFIER = 0.5f;
     private const float CRIT_MODIFIER = 2f;
 
@@ -103,8 +101,6 @@ public class UnitController : MonoBehaviour {
         myDialogController = GetComponentInChildren<UnitDialogController>();
         unitCanvasController.Initialise();
 
-        myStats.onHitLocationChange.AddListener(OnHitLocationChange);
-
         gameObject.name = myStats.className;
 
         Activate();
@@ -130,6 +126,22 @@ public class UnitController : MonoBehaviour {
 
     public bool IsParrying() {
         return myStats.buffs.FindBuff("Parry") != null;
+    }
+
+    public bool HasAdvantageToAttack() {
+        return myStats.buffs.FindBuff("Inspired") != null; ;
+    }
+
+    public bool HasAdvantageAgainstMe() {
+        return myStats.buffs.FindBuff("Exposed Weakness") != null;
+    }
+
+    public bool HasDisdvantageToAttack() {
+        return false;
+    }
+
+    public bool HasDisadvantageAgainstMe() {
+        return myStats.buffs.FindBuff("Dodge") != null;
     }
 
     public bool HasRemainingQueuedActions() {
@@ -205,8 +217,8 @@ public class UnitController : MonoBehaviour {
         }
 
         //find if we want to check x or y
-        float minusX = target.x - myTile.x;
-        float minusY = myTile.y - target.y;
+        float minusX = target.X - myTile.X;
+        float minusY = myTile.Y - target.Y;
         float difX = Mathf.Abs(minusX);
         float difY = Mathf.Abs(minusY);
 
@@ -256,7 +268,7 @@ public class UnitController : MonoBehaviour {
             // knockback for monsters
             if (myPath.Count > 1) {
                 myPath[1].FindContainedUnits().ForEach(unit => {
-                    if (unit != this && unit.myPlayer.faction != myPlayer.faction) {
+                    if (unit != this && unit.myPlayer.faction != myPlayer.faction && myStats.size > unit.myStats.size) {
                         unit.Push(myPath[0], 6);
                         unit.ApplyBuff(new Stun(1));
                     }
@@ -434,13 +446,110 @@ public class UnitController : MonoBehaviour {
         myStats.DamageHitLocation(location, sourceUnit);
     }
 
-    public void OnHitLocationChange() {
-        if (myStats.WoundCount >= myStats.WoundLimit) {
-            // TODO add death animation
+    public int TakeDamage(UnitController attacker, int damage, bool ignoreArmour = false) {
+        //if the damage has a source
+        if (attacker) {
+        }
+
+        int modifiedDamage = damage;
+
+        ////check to see if attack was blocked
+        //float blockRoll = Random.value * 100;
+        //if (!ignoreArmour && blockRoll <= myStats.Block) {
+        //    modifiedDamage = (int)(modifiedDamage * BLOCK_MODIFIER);
+        //    unitCanvasController.CreateBasicText("Block");
+        //}
+
+        int damageAfterShield = Mathf.Max(0, modifiedDamage - myStats.Shield);
+
+        myStats.Shield -= modifiedDamage;
+        myStats.Health -= damageAfterShield;
+        unitCanvasController.CreateDamageText(modifiedDamage.ToString());
+
+        myDialogController.Attacked();
+
+        if (myStats.Health > 0) {
+            //anim.PlayHitAnimation();
+            PlayRandomWoundSound();
+        } else {
+            // TODO add death
             PlayRandomDeathSound();
             myManager.UnitDied(this);
             DestroySelf();
         }
+
+        return modifiedDamage;
+    }
+
+    public bool DealDamageTo(UnitController target, int damage, bool ignoreArmour = false) {
+        float endDamage = damage;
+
+        bool hasCrit = HasCrit();
+
+        endDamage *= hasCrit ? CRIT_MODIFIER : 1;
+
+        float damageDealt = target.TakeDamage(this, Mathf.RoundToInt(endDamage), ignoreArmour);
+
+        CameraManager.instance.ShakeCamera(15f);
+
+        //if (myStats.LifeStealAsPercent > 0) {
+        //    TakeHealing(this, (int)(damageDealt * myStats.LifeStealAsPercent));
+        //}
+
+        return target.myStats.Health > 0;
+    }
+
+    public bool TakeHealing(UnitController caster, int healing) {
+        myStats.Health += healing;
+        unitCanvasController.CreateHealText(healing.ToString());
+
+        if (caster != this) {
+            myDialogController.Helped();
+        }
+
+        return true;
+    }
+
+    public bool GiveHealingTo(UnitController target, int healing) {
+        float endHealing = healing;
+
+        bool hasCrit = HasCrit();
+
+        endHealing *= hasCrit ? CRIT_MODIFIER : 1;
+
+        if (target != this) {
+            myDialogController.Helping();
+        }
+
+        return target.TakeHealing(this, Mathf.RoundToInt(endHealing));
+    }
+
+    public bool TakeShield(UnitController caster, int shield) {
+        myStats.Shield += shield;
+        unitCanvasController.CreateShieldText(shield.ToString());
+
+        myDialogController.Helped();
+
+        return true;
+    }
+
+    public bool GiveShieldTo(UnitController target, float shield) {
+        float endShield = shield;
+
+        bool hasCrit = HasCrit();
+
+        endShield *= hasCrit ? CRIT_MODIFIER : 1;
+
+        if (target != this) {
+            myDialogController.Helping();
+        }
+
+        return target.TakeShield(this, Mathf.RoundToInt(endShield));
+    }
+
+    public bool HasCrit() {
+        //return myStats.CritChance >= Random.Range(1, 100);
+        return false;
     }
 
     public IEnumerator AttackRoutine() {

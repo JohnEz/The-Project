@@ -20,6 +20,20 @@ public class AttackAction : AbilityAction {
 
     public List<AttackEffect> attackEffects = new List<AttackEffect>(0);
 
+    public static bool AttackerHasAdvantage(UnitController attacker, UnitController defender) {
+        bool hasAdvantage = attacker.HasAdvantageToAttack() || defender.HasAdvantageAgainstMe();
+        bool hasDisadvantage = attacker.HasDisdvantageToAttack() || defender.HasDisadvantageAgainstMe();
+
+        return hasAdvantage && !hasDisadvantage;
+    }
+
+    public static bool AttackerHasDisadvantage(UnitController attacker, UnitController defender) {
+        bool hasAdvantage = attacker.HasAdvantageToAttack() || defender.HasAdvantageAgainstMe();
+        bool hasDisadvantage = attacker.HasDisdvantageToAttack() || defender.HasDisadvantageAgainstMe();
+
+        return hasDisadvantage && !hasAdvantage;
+    }
+
     public bool CanTargetSelf {
         get { return canTargetSelf; }
         set { canTargetSelf = value; }
@@ -34,7 +48,10 @@ public class AttackAction : AbilityAction {
             return;
         }
 
-        bool hitTarget = isAllyAttack || CheckIfHit(caster, targetUnit);
+        bool hasAdvantage = AttackerHasAdvantage(caster, targetUnit);
+        bool hasDisadvantage = AttackerHasDisadvantage(caster, targetUnit);
+
+        bool hitTarget = isAllyAttack || CheckIfHit(caster, targetUnit, hasAdvantage, hasDisadvantage);
 
         if (hitTarget) {
             AddAbilityTarget(target, () => {
@@ -45,13 +62,30 @@ public class AttackAction : AbilityAction {
         }
     }
 
-    private bool CheckIfHit(UnitController caster, UnitController targetUnit) {
-        float hitRoll = Random.Range(0, 20) + caster.myStats.GetStat(attackStat);
+    private bool CheckIfHit(UnitController caster, UnitController targetUnit, bool hasAdvantage, bool hasDisadvantage) {
+        int hitRoll1 = Random.Range(0, 20);
+        int hitRoll2 = Random.Range(0, 20);
+        int finalRoll = hitRoll1;
+
+        if (hasAdvantage && !hasDisadvantage) {
+            finalRoll = Mathf.Max(hitRoll1, hitRoll2);
+        } else if (hasDisadvantage && !hasAdvantage) {
+            finalRoll = Mathf.Min(hitRoll1, hitRoll2);
+        }
+
+        Debug.Log(string.Format("Advantage: {0}, Disadvantage: {1}, Roll1: {2}, Roll2: {3}, Final Roll: {4}", hasAdvantage, hasDisadvantage, hitRoll1, hitRoll2, finalRoll));
+
+        Tile blindSpot = AIManager.GetBlindSpot(targetUnit);
+        int blindSpotMod = blindSpot && blindSpot.OverlapsTile(caster.myTile) ? 1 : 0;
+
+        int attackValue = caster.myStats.GetStat(attackStat) + caster.myStats.Hit + blindSpotMod;
 
         int targetStatValue = targetUnit.myStats.GetStat(targetStat);
         int targetRoll = targetStat == Stats.AC ? targetStatValue : targetStatValue + 8;
 
-        if (hitRoll < targetRoll) {
+        //Debug.Log(string.Format("Roll: {0}, BlindSpot: {1}, AttackValue: {2}, AC: {3}", hitRoll, blindSpotMod, attackValue, targetRoll));
+
+        if (finalRoll + attackValue < targetRoll) {
             targetUnit.CreateBasicText(targetStat == Stats.AC ? "Miss" : "Resist");
             return false;
         }

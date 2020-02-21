@@ -10,9 +10,12 @@ public enum Stats {
     WISDOM,
     INTELLIGENCE,
     AC,
+    MAX_HEALTH,
+    MAX_SHIELD,
+    SHIELD,
     SPEED,
+    HIT,
     AP,
-    WOUND_LIMIT,
     MOVE_AP,
 }
 
@@ -61,6 +64,9 @@ public class UnitObject : ScriptableObject {
     [HideInInspector]
     public HitLocations myHitLocations;
 
+    public int baseHealth = 100;
+    private int currentHealth;
+    private int currentShield;
     public int baseStrength = 1;
     public int baseAgility = 1;
     public int baseConstitution = 1;
@@ -68,6 +74,7 @@ public class UnitObject : ScriptableObject {
     public int baseIntelligence = 1;
     public int baseAC = 10;
     public int baseSpeed = 5;
+    public int baseHit = 1;
     public int baseActionPoints = 1;
     public int baseMoveActionPoints = 1;
     public int baseWoundLimit = 3;
@@ -136,12 +143,15 @@ public class UnitObject : ScriptableObject {
     }
 
     public virtual void Reset(UnitController myUnit = null) {
+        myHitLocations = Instantiate(myHitLocationsPrefab);
+        myHitLocations.Initialise();
+
+        currentHealth = MaxHealth;
+        Shield = 0;
+
         buffs.Clear();
         instantiatedAttacks.Clear();
         instantiatedAbilities.Clear();
-
-        myHitLocations = Instantiate(myHitLocationsPrefab);
-        myHitLocations.Initialise();
 
         ItemInfo mainHandItem = equipment.GetItemInSlot(EquipmentSlotType.MainHand);
         Ability mainHandAbility = null;
@@ -237,8 +247,38 @@ public class UnitObject : ScriptableObject {
         get { return GetModifiedStat(baseAC, Stats.AC); }
     }
 
+    public int Health {
+        get { return currentHealth; }
+        set {
+            currentHealth = Mathf.Clamp(value, 0, MaxHealth);
+
+            OnStatChange();
+        }
+    }
+
+    public int Shield {
+        get { return currentShield; }
+        set {
+            currentShield = Mathf.Clamp(value, 0, MaxShield);
+
+            OnStatChange();
+        }
+    }
+
+    public int MaxHealth {
+        get { return GetModifiedStat(baseHealth, Stats.MAX_HEALTH); }
+    }
+
+    public int MaxShield {
+        get { return GetModifiedStat(MaxHealth, Stats.MAX_SHIELD); }
+    }
+
     public int Speed {
         get { return GetModifiedStat(baseSpeed, Stats.SPEED); }
+    }
+
+    public int Hit {
+        get { return GetModifiedStat(baseHit, Stats.HIT); }
     }
 
     public int GetStat(Stats stat) {
@@ -251,16 +291,14 @@ public class UnitObject : ScriptableObject {
             case Stats.SPEED: return Speed;
             case Stats.STRENGTH: return Strength;
             case Stats.WISDOM: return Wisdom;
-            case Stats.WOUND_LIMIT: return WoundLimit;
+            case Stats.MAX_HEALTH: return MaxHealth;
+            case Stats.MAX_SHIELD: return MaxShield;
+            case Stats.SHIELD: return Shield;
             default:
                 Debug.LogError("Tried to access unknown stat");
                 Debug.LogError(stat);
                 return 0;
         }
-    }
-
-    public int WoundLimit {
-        get { return GetModifiedStat(baseWoundLimit, Stats.WOUND_LIMIT); }
     }
 
     public int WoundCount {

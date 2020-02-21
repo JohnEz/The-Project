@@ -377,6 +377,13 @@ public class UserInterfaceManager : MonoBehaviour {
 
     public void FinishedAttacking() {
         if (!TurnManager.instance.isAiTurn()) {
+            // TODO i dont like this being in here also if a move has multiple attacks, this could be wrong?
+            // Active ability can be null if it was a parry attack
+            if (UnitSelectionManager.instance.ActiveAbility) {
+                UnitSelectionManager.instance.ActiveAbility.SetOnCooldown(true);
+                UnitSelectionManager.instance.ActiveAbility.RemainingUses -= 1;
+            }
+
             FinishedAction();
         }
     }

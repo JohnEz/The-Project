@@ -92,6 +92,12 @@ public class TileMap : MonoBehaviour {
 
     public Tile GetTile(UnitSize unitSize, int x, int y) {
         int width = getWidth(unitSize);
+        int height = getHeight(unitSize);
+
+        if (x < 0 || x >= width || y < 0 || y >= height) {
+            return null;
+        }
+
         Tile[] tiles;
 
         if (unitSize == UnitSize.SMALL) {

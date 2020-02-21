@@ -5,7 +5,7 @@
         name = "Parry";
         maxStack = 5;
         parryAttack = attack;
-        icon = "icon_invisible";
+        icon = "icon_parry";
     }
 
     public override string GetDescription() {

@@ -6,7 +6,16 @@ using TMPro;
 public enum UnitStatText {
     NAME,
     CLASS,
+    STRENGTH,
+    AGILITY,
+    CONSTITUTION,
+    WISDOM,
+    INTELLIGENCE,
+    AC,
+    HEALTH,
+    SHIELD,
     SPEED,
+    HIT,
 }
 
 public class CharacterStatText : MonoBehaviour {
@@ -73,7 +82,16 @@ public class CharacterStatText : MonoBehaviour {
         switch (stat) {
             case UnitStatText.NAME: return currentCharacter.characterName;
             case UnitStatText.CLASS: return currentCharacter.className;
+            case UnitStatText.STRENGTH: return currentCharacter.Strength.ToString();
+            case UnitStatText.AGILITY: return currentCharacter.Agility.ToString();
+            case UnitStatText.CONSTITUTION: return currentCharacter.Constitution.ToString();
+            case UnitStatText.WISDOM: return currentCharacter.Wisdom.ToString();
+            case UnitStatText.INTELLIGENCE: return currentCharacter.Intelligence.ToString();
+            case UnitStatText.AC: return currentCharacter.AC.ToString();
+            case UnitStatText.HEALTH: return currentCharacter.Health.ToString() + " / " + currentCharacter.MaxHealth;
+            case UnitStatText.SHIELD: return currentCharacter.Shield.ToString();
             case UnitStatText.SPEED: return currentCharacter.Speed.ToString();
+            case UnitStatText.HIT: return currentCharacter.Hit.ToString();
         }
 
         return "";

@@ -10,7 +10,6 @@ internal struct CombatText {
 }
 
 public class UnitCanvasController : MonoBehaviour {
-    private const float COMBAT_TEXT_THROTTLE = 0.5f;
 
     //Canvas
     private const float SCALE = 0.05f;
@@ -18,15 +17,18 @@ public class UnitCanvasController : MonoBehaviour {
     private const float INVERSE_SCALE = 1 / SCALE;
     private const float HALF_CANVAS_HEIGHT = 200 * SCALE;
 
+    private const float COMBAT_TEXT_THROTTLE = 0.5f;
+
     public GameObject combatTextPrefab;
-    public GameObject woundIconPrefab;
+    public GameObject buffIconPrefab;
 
-    public Image telegraph;
-    public GameObject unitFrame;
-
+    private HpBarController hpBar;
     private BuffController buffs;
+    private TextMeshProUGUI actionPointsText;
     private List<GameObject> buffIcons = new List<GameObject>();
     private Queue<CombatText> combatTextQueue = new Queue<CombatText>();
+
+    public Image telegraph;
 
     private bool canCreateCombatText = true;
 
@@ -35,37 +37,12 @@ public class UnitCanvasController : MonoBehaviour {
 
     private Dictionary<string, Sprite[]> buffSprites = new Dictionary<string, Sprite[]>();
 
-    private List<GameObject> woundPoints;
-
     private Color[] teamColours = new Color[] {
         new Color (0, 0.9647f, 1), //blue
         new Color(0.8039f, 0.4039f, 0.2039f), //red
         new Color (0.7294f, 0.9569f, 0.1176f), //green
         //new Color (0.8431f, 0.2f, 0.2f), //red
     };
-
-    public void Initialise() {
-        myUnit = GetComponentInParent<UnitController>();
-        myTeam = myUnit.myPlayer.id;
-
-        transform.localScale = new Vector3(SCALE, SCALE, SCALE);
-
-        woundPoints = new List<GameObject>();
-
-        Transform woundPointsParent = unitFrame.transform.Find("Wound Points");
-        for (int i = 0; i < myUnit.myStats.WoundLimit; i++) {
-            GameObject woundPoint = Instantiate(woundIconPrefab, woundPointsParent);
-            woundPoints.Add(woundPoint);
-        }
-
-        myUnit.myStats.onHitLocationChange.AddListener(UpdateWoundPoints);
-
-        float unitFullHeight = (myUnit.myStats.unitHalfHeight * 2);
-        float unitHeightToCanvas = (unitFullHeight - HALF_CANVAS_HEIGHT) * INVERSE_SCALE;
-
-        unitFrame.transform.localPosition = new Vector3(0, unitHeightToCanvas + unitFrame.transform.localPosition.y, 0);
-        HideTelegraph();
-    }
 
     // Update is called once per frame
     private void Update() {
@@ -78,10 +55,26 @@ public class UnitCanvasController : MonoBehaviour {
         FaceCamera();
     }
 
-    public void UpdateWoundPoints() {
-        for (int i = 0; i < woundPoints.Count; ++i) {
-            woundPoints[i].transform.Find("Fill").gameObject.SetActive(i < myUnit.myStats.WoundCount);
-        }
+    public void Initialise() {
+        myUnit = GetComponentInParent<UnitController>();
+        myTeam = myUnit.myPlayer.id;
+        Transform unitFrameParent = transform.Find("UnitFrameParent");
+
+        transform.localScale = new Vector3(SCALE, SCALE, SCALE);
+
+        hpBar = unitFrameParent.Find("UnitFrame").GetComponent<HpBarController>();
+        buffs = hpBar.GetComponent<BuffController>();
+
+        hpBar.Initialize(myUnit.myStats);
+        hpBar.SetHPColor(teamColours[myTeam]);
+
+        buffs.Initialise(myUnit.myStats.buffs);
+
+        float unitFullHeight = (myUnit.myStats.unitHalfHeight * 2);
+        float unitHeightToCanvas = (unitFullHeight - HALF_CANVAS_HEIGHT) * INVERSE_SCALE;
+
+        unitFrameParent.localPosition = new Vector3(0, unitHeightToCanvas + unitFrameParent.localPosition.y, 0);
+        HideTelegraph();
     }
 
     public void FaceCamera() {
@@ -91,6 +84,14 @@ public class UnitCanvasController : MonoBehaviour {
         Vector3 currentRotation = transform.rotation.eulerAngles;
         currentRotation.y = CameraManager.instance.GetCameraRotation().y;
         transform.rotation = Quaternion.Euler(currentRotation);
+    }
+
+    public void UpdateActionPoints(int ap) {
+        if (actionPointsText == null) {
+            return;
+        }
+
+        actionPointsText.text = ap.ToString();
     }
 
     public void CreateDamageText(string damage) {

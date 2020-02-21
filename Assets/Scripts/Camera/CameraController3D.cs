@@ -1,5 +1,15 @@
 ﻿using Cinemachine;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+
+[Serializable]
+public struct CameraAndOrientation {
+    public CinemachineVirtualCamera camera;
+    public Vector3 forwardDir;
+    public Vector3 rightDir;
+}
 
 public class CameraController3D : MonoBehaviour {
     private const float MOVE_SPEED = 120; //speed the camera moves
@@ -11,22 +21,25 @@ public class CameraController3D : MonoBehaviour {
     private const float BOUNDARY = -5; //distance from edge of screen that the camera starts to move
     private const int TARGET_WIDTH = 1280;
 
+    [HideInInspector]
     public float mapWidth = 0;
+
+    [HideInInspector]
     public float mapHeight = 0;
 
     private bool isControllable = true;
     private Vector3 targetLocation;
 
-    //[HideInInspector]
+    [HideInInspector]
     public float minX = -100000;
 
-    //[HideInInspector]
+    [HideInInspector]
     public float minZ = -100000;
 
-    //[HideInInspector]
+    [HideInInspector]
     public float maxX = 100000;
 
-    //[HideInInspector]
+    [HideInInspector]
     public float maxZ = 100000;
 
     private float textureSize = 12.8f;
@@ -34,17 +47,19 @@ public class CameraController3D : MonoBehaviour {
     private float currentZoom = 1f;
     private float targetZoom = 1f;
 
-    //private int cardBuffer = 384; // how much the cards take up at the bottom of the screen
-
     private Vector3 movement = new Vector3();
 
-    public CinemachineVirtualCamera cam;
+    public List<CameraAndOrientation> cameraAngles;
+    public int currentCameraIndex = 0;
+
+    public CinemachineVirtualCamera activeCam;
 
     private void Awake() {
     }
 
     // Use this for initialization
     private void Start() {
+        activeCam = cameraAngles[currentCameraIndex].camera;
     }
 
     public void Initialise() {
@@ -55,12 +70,12 @@ public class CameraController3D : MonoBehaviour {
 
     public void TurnOff() {
         isControllable = false;
-        cam.GetComponent<CinemachineVirtualCamera>().Priority = 1;
+        activeCam.GetComponent<CinemachineVirtualCamera>().Priority = 1;
     }
 
     public void TurnOn() {
         isControllable = true;
-        cam.GetComponent<CinemachineVirtualCamera>().Priority = 10;
+        activeCam.GetComponent<CinemachineVirtualCamera>().Priority = 10;
     }
 
     public void CalculateBounds() {
@@ -88,8 +103,8 @@ public class CameraController3D : MonoBehaviour {
             movement = new Vector3(0, 0, 0);
 
             // TODO calculate this correctly
-            Vector3 forward = new Vector3(1, 0, 1);
-            Vector3 right = new Vector3(1, 0, -1);
+            Vector3 forward = cameraAngles[currentCameraIndex].forwardDir;
+            Vector3 right = cameraAngles[currentCameraIndex].rightDir;
 
             if ((Input.GetKey(KeyCode.W) || Input.GetKey("up") || (Input.mousePosition.y > Screen.height - BOUNDARY && GameSettings.MouseCanMoveCamera))) {
                 movement += forward;
@@ -102,6 +117,29 @@ public class CameraController3D : MonoBehaviour {
             }
             if ((Input.GetKey(KeyCode.D) || Input.GetKey("right") || (Input.mousePosition.x > Screen.width - BOUNDARY && GameSettings.MouseCanMoveCamera))) {
                 movement += right;
+            }
+
+            if (Input.GetKeyDown(KeyCode.Q)) {
+                TurnOff();
+
+                currentCameraIndex++;
+                currentCameraIndex = currentCameraIndex % cameraAngles.Count;
+
+                activeCam = cameraAngles[currentCameraIndex].camera;
+
+                TurnOn();
+            }
+            if (Input.GetKeyDown(KeyCode.E)) {
+                TurnOff();
+
+                currentCameraIndex--;
+                if (currentCameraIndex < 0) {
+                    currentCameraIndex = cameraAngles.Count - 1;
+                }
+
+                activeCam = cameraAngles[currentCameraIndex].camera;
+
+                TurnOn();
             }
 
             movement.Normalize();

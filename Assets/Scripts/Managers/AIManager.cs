@@ -234,7 +234,8 @@ public class AIManager : MonoBehaviour {
         return closestTarget;
     }
 
-    public Tile GetBlindSpot(UnitController unit) {
+    //TODO move to somewhere else
+    public static Tile GetBlindSpot(UnitController unit) {
         int x = unit.myTile.x - (int)unit.facingDirection.x;
         int y = unit.myTile.y + (int)unit.facingDirection.y;
         return TileMap.instance.GetTile(unit.myStats.size, x, y);

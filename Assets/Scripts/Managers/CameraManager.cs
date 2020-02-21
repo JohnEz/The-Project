@@ -180,23 +180,24 @@ public class CameraManager : MonoBehaviour {
         }
     }
 
-    public void ShakeCamera(float shakePower = 1f) {
-        float shakeIntensity = Mathf.Pow(shakePower + 0.2f, 3);
+    public void ShakeCamera(float shakePower = 15f) {
+        //float shakeIntensity = Mathf.Pow(shakePower + 0.2f, 3);
+        float shakeIntensity = shakePower;
 
-        shakeIntensity = Mathf.Min(shakeIntensity, 5f);
+        shakeIntensity = Mathf.Min(shakeIntensity, 30f);
 
         StartCoroutine(_ProcessShake(shakeIntensity, 0.2f));
     }
 
     private IEnumerator _ProcessShake(float shakeIntensity = 5f, float shakeTiming = 0.5f) {
-        Noise(shakeIntensity, 1);
+        Noise(shakeIntensity, 10);
         yield return new WaitForSeconds(shakeTiming);
         Noise(0, 0);
     }
 
     public void Noise(float amplitudeGain, float frequencyGain) {
         if (controlledCamera != null) {
-            CameraNoise(controlledCamera.cam, amplitudeGain, frequencyGain);
+            CameraNoise(controlledCamera.activeCam, amplitudeGain, frequencyGain);
         }
 
         if (activeFollowCamera != null) {
