@@ -10,8 +10,9 @@ public class BuffIcon : UITooltipShow {
 
     public bool showTooltip = true;
     public TextMeshProUGUI stackCounterText;
+    public Image icon;
 
-    public void SetBuff(Buff _buff, Sprite icon = null) {
+    public void SetBuff(Buff _buff, Sprite iconImage = null) {
         buff = _buff;
 
         if (buff == null) {
@@ -20,7 +21,7 @@ public class BuffIcon : UITooltipShow {
 
         stackCounterText.text = buff.stacks > 1 ? buff.stacks.ToString() : "";
 
-        GetComponent<Image>().sprite = icon;
+        icon.sprite = iconImage;
     }
 
     /// <summary>

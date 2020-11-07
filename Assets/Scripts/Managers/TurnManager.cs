@@ -126,7 +126,6 @@ public class TurnManager : MonoBehaviour {
 
     public void ChangeToWaitingForInput() {
         GameOutcome gameOutcome = ObjectiveManager.instance.CheckObjectives(PlayerManager.instance.mainPlayer);
-
         if (gameOutcome != GameOutcome.NONE) {
             ChangeState(TurnPhase.GAME_OVER);
 

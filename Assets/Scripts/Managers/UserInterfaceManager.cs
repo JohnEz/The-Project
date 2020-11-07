@@ -368,6 +368,7 @@ public class UserInterfaceManager : MonoBehaviour {
     public void FinishedAction() {
         UnitSelectionManager.instance.CurrentActionIndex++;
         if (!RunNextAbilityAction(UnitSelectionManager.instance.ActiveAbility, UnitSelectionManager.instance.CurrentActionIndex)) {
+            lastAttackedNode = null;
             UnitSelectionManager.instance.FinishedUsingAbility();
 
             if (!ReselectUnit()) {

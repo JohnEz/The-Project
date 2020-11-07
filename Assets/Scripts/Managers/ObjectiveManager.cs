@@ -87,6 +87,7 @@ public class ObjectiveManager : MonoBehaviour {
     }
 
     public void OnUnitDie(UnitController deadUnit) {
+        Debug.Log("Unit died, updating objectives");
         UpdateObjectives();
     }
 
@@ -102,6 +103,7 @@ public class ObjectiveManager : MonoBehaviour {
         switch (objective.type) {
             case ObjectiveType.ANNIHILATION:
                 objective.Status = GetAnnihilationStatus(player);
+                Debug.Log("objective.Status" + objective.Status);
                 break;
 
             case ObjectiveType.UNIT_SURVIVE:
@@ -206,8 +208,8 @@ public class ObjectiveManager : MonoBehaviour {
     }
 
     private ObjectiveStatus GetAnnihilationStatus(Player player) {
-        // TODO the health check seems hacky to me, what if i want a unit to not die at 0 health
-        List<UnitController> aliveEnemyUnits = UnitManager.instance.Units.FindAll(unit => (unit.myPlayer.faction != player.faction));
+        // TODO probably want an isAlive stat rather than using Health
+        List<UnitController> aliveEnemyUnits = UnitManager.instance.Units.FindAll(unit => (unit.myPlayer.faction != player.faction && unit.myStats.Health > 0));
 
         return aliveEnemyUnits.Count <= 0 ? ObjectiveStatus.COMPLETE : ObjectiveStatus.NONE;
     }
