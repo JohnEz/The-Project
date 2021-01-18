@@ -105,6 +105,7 @@ public class UnitObject : ScriptableObject {
     public void Awake() {
         buffs = new UnitBuffs();
         equipment = equipment != null ? equipment : new UnitEquipment();
+        myHitLocations = myHitLocations != null ? myHitLocations : ScriptableObject.CreateInstance<HitLocations>();
         Reset();
         displayToken = unitTokens[UnityEngine.Random.Range(0, unitTokens.Length)];
     }

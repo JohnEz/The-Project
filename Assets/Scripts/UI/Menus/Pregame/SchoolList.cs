@@ -9,6 +9,9 @@ public class SchoolList : MonoBehaviour {
 
     public Transform listTransform;
 
+    // DEBUG
+    public List<UnitObject> debugCharacters;
+
     public void Start() {
         GenerateCharacterList();
     }
@@ -17,6 +20,13 @@ public class SchoolList : MonoBehaviour {
         PlayerSchool.Roster.ForEach((unit) => {
             CreateCharacterCard(unit);
         });
+
+        if (Debug.isDebugBuild) {
+            debugCharacters.ForEach((unit) => {
+                UnitObject newUnit = Instantiate(unit);
+                CreateCharacterCard(newUnit);
+            });
+        }
     }
 
     private void CreateCharacterCard(UnitObject character) {

@@ -522,7 +522,7 @@ namespace DuloGames.UI {
         public virtual bool Assign(Object source) {
             if (source is UISlotBase) {
                 UISlotBase sourceSlot = source as UISlotBase;
-
+                Debug.Log(sourceSlot);
                 if (sourceSlot != null) {
                     // Assign by sprite or texture
                     if (sourceSlot.GetIconSprite() != null) {

@@ -31,11 +31,13 @@ public class CharacterCard : MonoBehaviour {
     }
 
     public void OnClickInfo() {
-        CharacterInfoWindow characterInfoWindow = UIWindow.GetWindow(UIWindowID.Character).GetComponent<CharacterInfoWindow>();
+        UIWindow characterWindow = UIWindow.GetWindow(UIWindowID.Character);
+        CharacterInfoWindow characterInfoWindow = characterWindow.GetComponent<CharacterInfoWindow>();
         if (characterInfoWindow == null) {
             return;
         }
 
+        characterWindow.Show();
         characterInfoWindow.Character = myCharacter;
     }
 }

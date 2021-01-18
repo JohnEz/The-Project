@@ -1,11 +1,19 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
 using DuloGames.UI;
 using System.Collections.Generic;
+using System;
+using UnityEngine.Events;
+using UnityEngine;
 
 public class ItemSlot : UISlotBase, IntrItemSlot {
     [SerializeField] private UIItemSlot_Group slotGroup = UIItemSlot_Group.None;
     [SerializeField] private int id = 0;
+
+    [Serializable] public class OnAssignEvent : UnityEvent<ItemSlot> { }
+
+    [Serializable] public class OnAssignWithSourceEvent : UnityEvent<ItemSlot, UnityEngine.Object> { }
+
+    [Serializable] public class OnUnassignEvent : UnityEvent<ItemSlot> { }
 
     public UIItemSlot_Group SlotGroup {
         get { return this.slotGroup; }
@@ -17,12 +25,46 @@ public class ItemSlot : UISlotBase, IntrItemSlot {
         set { this.id = value; }
     }
 
-    public bool Assign(ItemInfo itemInfo, Object source) {
-        throw new System.NotImplementedException();
-    }
+    public OnAssignEvent onAssign = new OnAssignEvent();
+
+    public OnAssignWithSourceEvent onAssignWithSource = new OnAssignWithSourceEvent();
+
+    public OnUnassignEvent onUnassign = new OnUnassignEvent();
+
+    private ItemInfo m_ItemInfo;
 
     public ItemInfo GetItemInfo() {
-        throw new System.NotImplementedException();
+        return this.m_ItemInfo;
+    }
+
+    public bool Assign(ItemInfo itemInfo) {
+        return this.Assign(itemInfo, null);
+    }
+
+    public bool Assign(ItemInfo itemInfo, UnityEngine.Object source) {
+        if (itemInfo == null)
+            return false;
+
+        // Make sure we unassign first, so the event is called before new assignment
+        this.Unassign();
+
+        // Use the base class assign to set the icon
+        this.Assign(itemInfo.icon);
+
+        this.m_ItemInfo = itemInfo;
+
+        Debug.Log(this.m_ItemInfo);
+
+        // Invoke the on assign event
+        if (this.onAssign != null)
+            this.onAssign.Invoke(this);
+
+        // Invoke the on assign event
+        if (this.onAssignWithSource != null)
+            this.onAssignWithSource.Invoke(this, source);
+
+        // Success
+        return true;
     }
 
     #region Static Methods
@@ -40,11 +82,11 @@ public class ItemSlot : UISlotBase, IntrItemSlot {
         return slots;
     }
 
-    public static List<UIItemSlot> GetSlotsWithID(int ID) {
-        List<UIItemSlot> slots = new List<UIItemSlot>();
-        UIItemSlot[] sl = Resources.FindObjectsOfTypeAll<UIItemSlot>();
+    public static List<ItemSlot> GetSlotsWithID(int ID) {
+        List<ItemSlot> slots = new List<ItemSlot>();
+        ItemSlot[] sl = Resources.FindObjectsOfTypeAll<ItemSlot>();
 
-        foreach (UIItemSlot s in sl) {
+        foreach (ItemSlot s in sl) {
             // Check if the slow is active in the hierarchy
             if (s.gameObject.activeInHierarchy && s.ID == ID)
                 slots.Add(s);
